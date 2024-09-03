@@ -1,0 +1,59 @@
+.flex-row-between {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flex-row-items {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+.flex-row-all-center {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-col-between {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+
+.flex-col-all-center {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-col-x-center {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+}
+
+.flex-row-between-end {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.row-show-1 {   // 文字最多显示一行,多余省略号代替
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.row-show-2 {   // 文字最多显示量两行,多余省略号代替
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden;
+}
