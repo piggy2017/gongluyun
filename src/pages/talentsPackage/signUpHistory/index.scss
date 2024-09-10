@@ -1,0 +1,155 @@
+@import '@/app.scss';
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #E8F1FF 0%, #edf3fc00 100%) #F4F4F4;
+    background-size: 100% 1158rpx;
+    background-repeat: no-repeat;
+
+    .record_title {
+        padding: 46rpx 0 48rpx 36rpx;
+
+        .record_title_item {
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 32rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            position: relative;
+        }
+
+        .record_title_item:nth-child(2) {
+            margin-left: 36rpx;
+        }
+
+        .record_title_item_active {
+            font-weight: 500;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: -10rpx;
+                left: calc(50% - 19rpx);
+                width: 38rpx;
+                height: 6rpx;
+                background: #1678FF;
+                border-radius: 3rpx;
+            }
+        }
+    }
+
+    .record_content {
+        width: 710rpx;
+        margin: 0 auto;
+
+        .record_item {
+            width: 100%;
+            margin-bottom: 40rpx;
+
+            .record_item_title {
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                margin: 0 0 12rpx 16rpx;
+            }
+
+            .record_item_list {
+                width: 100%;
+
+                .record_item_list_item {
+                    width: 710rpx;
+                    height: 144rpx;
+                    flex-shrink: 0;
+                    background-color: #FFF;
+                    border-radius: 20rpx;
+                    margin-bottom: 20rpx;
+
+                    .record_item_names {
+                        padding: 22rpx 20rpx 0 20rpx;
+
+                        .record_item_list_item_name {
+                            width: 440rpx;
+                            flex-shrink: 0;
+                            color: #222222;
+                            font-family: "PingFang SC";
+                            font-size: 32rpx;
+                            font-style: normal;
+                            font-weight: 600;
+                            line-height: normal;
+                        }
+
+                        .record_item_list_item_price {
+                            color: #1678ff;
+                            text-align: right;
+                            font-family: "D-DIN-PRO";
+                            font-size: 38rpx;
+                            font-style: normal;
+                            font-weight: 600;
+
+                            text {
+                                color: #1678ff;
+                                font-family: "PingFang SC";
+                                font-size: 24rpx;
+                                font-style: normal;
+                                font-weight: 600;
+                                line-height: normal;
+                            }
+                        }
+                    }
+
+                    .record_item_list_item_addr {
+                        padding: 16rpx 0 0 22rpx;
+                        color: #666666;
+                        font-family: "PingFang SC";
+                        font-size: 26rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: normal;
+
+                        image {
+                            width: 40rpx;
+                            height: 40rpx;
+                            flex-shrink: 0;
+                            margin-right: 2rpx;
+                        }
+                    }
+
+                }
+
+                .record_item_list_item:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+
+    }
+
+    .bottom_wrapper {
+        width: 100%;
+        position: fixed;
+        z-index: 9;
+        bottom: 0;
+        left: 0;
+        background-color: #FFFFFF;
+
+        .interview_btn {
+            width: 694rpx;
+            height: 96rpx;
+            border-radius: 8rpx;
+            background: #1678FF;
+            color: #ffffff;
+            text-align: center;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 96rpx;
+            margin: 0 auto;
+        }
+    }
+}

@@ -2,14 +2,15 @@
   "miniprogramRoot": "./dist",
   "projectname": "myApp",
   "description": "saas小程序",
-  "appid": "touristappid",
   "setting": {
     "urlCheck": true,
     "es6": false,
     "enhance": false,
     "compileHotReLoad": false,
     "postcss": false,
-    "minified": false
+    "minified": false,
+    "ignoreUploadUnusedFiles": true
   },
-  "compileType": "miniprogram"
+  "compileType": "miniprogram",
+  "appid": "wx6632e13819fade69"
 }

@@ -1,0 +1,101 @@
+@import '@/app.scss';
+.change_flow_layout {
+    .at-float-layout__container {
+        height: auto !important;
+        min-height: auto !important;
+        overflow: hidden;
+        border-radius: 20rpx 20rpx 0 0 !important;
+
+        .layout-body {
+            min-height: auto !important;
+        }
+    }
+
+    .layout-body__content {
+        min-height: auto !important;
+    }
+
+    .flow_wrapper {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        background-color: #ffffff;
+
+        .filter_wrapper_bg {
+            width: 100%;
+            height: 100%;
+
+            .filter_wrapper_title {
+                flex-shrink: 0;
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 34rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                padding: 40rpx 0 40rpx 38rpx;
+            }
+
+            .filter_title {
+                @include flex-center(space-between);
+                padding: 26rpx 26rpx 0 26rpx;
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 34rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+            }
+
+            .filter_content {
+                padding: 0 26rpx;
+                margin-bottom: 60rpx;
+
+                .filter_content_sexs {
+                    margin-top: 42rpx;
+                    @include flex-center(space-between);
+                    padding: 0 4rpx;
+
+                    .filter_content_sex {
+                        width: 206rpx;
+                        height: 68rpx;
+                        border-radius: 6rpx;
+                        background: #F2F2F2;
+                        color: #222222;
+                        font-family: "PingFang SC";
+                        font-size: 28rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: 68rpx;
+                        text-align: center;
+                    }
+
+                    .filter_content_sex_active {
+                        background-color: #0483FF;
+                        color: #ffffff;
+                    }
+                }
+
+                .save_btn {
+                    width: 682rpx;
+                    height: 100rpx;
+                    flex-shrink: 0;
+                    border-radius: 10rpx;
+                    margin: 84rpx auto 0 auto;
+                    color: #ffffff;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 32rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: 100rpx;
+                    background-color: #0483FF;
+                }
+
+                .marginTop_60 {
+                    margin-top: 20rpx !important;
+                }
+            }
+        }
+    }
+}

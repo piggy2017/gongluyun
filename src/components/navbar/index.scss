@@ -1,0 +1,41 @@
+@import '@/app.scss';
+.navbar{
+    width: 100%;
+    .my_header_hr {
+        width: 100%;
+        height: var(--statusBarHeight);
+    }
+
+    .my_header_content {
+        height: var(--navContentHeight);
+        @include flex-center(flex-start);
+        .navbar_back{
+            width: 60rpx;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: flex-end;
+            image{
+                width: 48rpx;
+                height: 48rpx;
+            }
+        }
+        .navbar_title{
+            color: #000000;
+            text-align: center;
+            font-family: "PingFang SC";
+            font-size: 34rpx;
+            font-style: normal;
+            font-weight: 600;
+            line-height: normal;
+            opacity: 0.9;
+            width: 630rpx;
+        }
+    }
+}
+.navbar_fixed{
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+}

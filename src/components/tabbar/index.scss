@@ -1,0 +1,337 @@
+// 登录框
+
+@import '@/app.scss';
+
+.at-tab-bar {
+  padding-top: 0;
+  z-index: 10;
+
+  .at-tab-bar__item {
+    // padding: 0rpx 12rpx;
+  }
+
+  .at-badge {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    .at-tab-bar__icon {
+      width: 52rpx;
+      height: 52rpx;
+
+      >image {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .at-tab-bar__title {
+      max-width: 300rpx;
+    }
+
+    .at-badge__num {
+      top: 8rpx;
+      right: -3rpx;
+    }
+  }
+}
+
+
+.at-tab-bar_diy {
+  width: 100%;
+  height: 328rpx;
+  // transform: rotate(-41.306deg);
+  // flex-shrink: 0;
+  // background: #17bfbe2b;
+  // filter: blur(90rpx);
+  background: url($cdnUrl + '/entrust/order_top.webp') no-repeat;
+  background-size: 100% 100%;
+  position: relative;
+  .box_info{
+    width: 100%;
+    padding: 0 32rpx;
+    position: absolute;
+    bottom: 46rpx;
+    @include flex-center(space-between);
+  }
+  .left_bar {
+    @include flex-center;
+
+    .avart {
+      width: 72rpx;
+      height: 72rpx;
+      margin-right: 12rpx;
+      >image {
+        width: 100%;
+        height: 100%;
+        border-radius: 100%;
+      }
+    }
+
+    .info {
+      >view:nth-child(1) {
+        color: #ffffff;
+        font-family: "PingFang SC";
+        font-size: 32rpx;
+        font-style: normal;
+        font-weight: 600;
+      }
+
+      >view:nth-child(2) {
+        width: 136rpx;
+        height: 36rpx;
+
+        >image {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+
+  .right_bar {
+    width: 172rpx;
+    height: 52rpx;
+    @include flex-center;
+    color: #bac3c3;
+    font-family: "PingFang SC";
+    font-size: 20rpx;
+    border: 1rpx solid #bac3c366;
+    border-radius: 26rpx;
+  }
+}
+
+.tab-bar {
+  width: 100%;
+  // height: 114rpx;
+  background: #FFFFFF;
+  box-shadow: 0 -2rpx 20rpx 0 #0000000d;
+  position: fixed;
+  bottom: 0;
+  padding-bottom: calc(0rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(0rpx + env(safe-area-inset-bottom));
+  left: 0;
+  z-index: 9;
+
+  @include flex-center;
+
+  .every_bar {
+    width: calc(100% / 3);
+    height: 114rpx;
+    @include flex-center;
+    flex-wrap: wrap;
+    align-content: center;
+    position: relative;
+
+    >image {
+      width: 48rpx;
+      height: 48rpx;
+      display: inline-block;
+      margin: 0 auto;
+    }
+
+    .words {
+      width: 100%;
+      text-align: center;
+      font-family: PingFangSC-Medium;
+      font-weight: 500;
+      font-size: 20rpx;
+      color: #CECECE;
+    }
+
+    .un_read {
+      position: absolute;
+      right: 70rpx;
+      top: 20rpx;
+      width: 30rpx;
+      height: 30rpx;
+      border-radius: 100%;
+      background-color: red;
+      font-size: 22rpx;
+      @include flex-center;
+      color: #fff;
+    }
+
+    .new_tab {
+      height: 92rpx;
+      background-image: linear-gradient(270deg, rgba(42, 81, 149, 0.3) 0%, rgba(31, 61, 117, 0.3) 87%);
+      box-shadow: 0 4rpx 10rpx 0 #06094e4d;
+      border-radius: 55.68rpx;
+      @include flex-center(space-between);
+      padding: 0 8rpx;
+
+      .jobType_icon {
+        width: 76rpx;
+        height: 76rpx;
+        flex-shrink: 0;
+
+        >image {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .jobType_box {
+        font-family: PingFangSC-SNaNrpxibold;
+        font-weight: 600;
+        font-size: 28.8rpx;
+        color: #152F60;
+        margin: 0 6rpx;
+        @include ellipsis;
+
+        .at-noticebar {
+          padding: 0 !important;
+          background-color: transparent;
+          color: $theme-color;
+
+          .at-noticebar__content-text {
+            font-size: 28.8rpx;
+          }
+        }
+      }
+
+      .change_role {
+        width: 44rpx;
+        height: 44rpx;
+        flex-shrink: 0;
+
+        >image {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+
+  }
+
+  .new_every_bar {
+    width: 40%;
+
+  }
+
+  .activeTab {
+    .words {
+      color: #21417C;
+    }
+
+    .new_tab {
+      animation: showTabMove 0.3s ease forwards;
+
+      .jobType_box {
+        width: 100%;
+        display: block;
+        opacity: 0;
+        text-align: center;
+        animation: wordsShow 0.3s 0.5s ease forwards;
+
+        .has_animation {
+          display: inline-block;
+          position: relative;
+          // transform: translateX(100%);
+          animation: scroll-text 5s 0.8s linear infinite;
+        }
+      }
+
+      @keyframes scroll-text {
+        0% {
+          transform: translateX(0%);
+        }
+
+        50% {
+          transform: translateX(-110%);
+        }
+
+        50.01% {
+          transform: translateX(100%);
+        }
+
+        100% {
+          transform: translateX(0%);
+        }
+
+        // 50% {
+        //   transform: translateX(-120%);
+        // }
+        // 70%{
+        //   opacity: 0;
+        // } 
+        // 85% {
+        //   opacity: 0;
+        //   transform: translateX(100%);
+        // }
+        // 86% {
+        //   opacity: 1;
+        // }
+        // 100% {
+        //   opacity: 1;
+        //   transform: translateX(0%);
+        // }
+      }
+    }
+  }
+
+  @keyframes wordsShow {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes showTabMove {
+    from {
+      width: 76rpx;
+      background-image: inherit;
+      box-shadow: inherit;
+      padding: 0;
+    }
+
+    to {
+      width: 100%;
+      background-image: linear-gradient(270deg, rgba(42, 81, 149, 0.3) 0%, rgba(31, 61, 117, 0.3) 87%);
+      box-shadow: 0 4rpx 10rpx 0 #06094e4d;
+      padding: 0 8rpx;
+    }
+
+  }
+
+  .normal_state {
+    .new_tab {
+      animation: tabMove 0.3s ease forwards;
+
+      .jobType_box {
+        display: none;
+        opacity: 0;
+      }
+
+      .change_role {
+        display: none;
+      }
+    }
+
+  }
+
+  @keyframes tabMove {
+    from {
+      width: 100%;
+      background-image: linear-gradient(270deg, rgba(42, 81, 149, 0.3) 0%, rgba(31, 61, 117, 0.3) 87%);
+      box-shadow: 0 4rpx 10rpx 0 #06094e4d;
+      padding: 0 8rpx;
+    }
+
+    to {
+      width: 76rpx;
+      background-image: inherit;
+      box-shadow: inherit;
+      padding: 0;
+    }
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}

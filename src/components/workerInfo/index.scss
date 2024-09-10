@@ -1,0 +1,79 @@
+@import '@/app.scss';
+
+.userInfo {
+    width: 710rpx;
+    border-radius: 20rpx;
+    padding-bottom: 32rpx;
+    margin: 20rpx auto 0 auto;
+    background-color: #FFFFFF;
+
+    .userInfo_title {
+        padding: 24rpx 0 0 26rpx;
+        color: #222222;
+        font-family: "PingFang SC";
+        font-size: 28rpx;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        @include flex-center(flex-start);
+
+        .userInfo_title_name {
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 36rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            margin-right: 10rpx;
+        }
+    }
+
+    .userInfo_tel {
+        padding: 22rpx 0 0 24rpx;
+        color: #1678ff;
+        font-family: "D-DIN-PRO";
+        font-size: 38rpx;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+
+        image {
+            width: 44rpx;
+            height: 44rpx;
+            margin-right: 2rpx;
+        }
+    }
+
+    .userInfo_item {
+        padding: 22rpx 40rpx 0 24rpx;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: flex-start;
+
+        image {
+            width: 36rpx;
+            height: 36rpx;
+            flex-shrink: 0;
+            margin-right: 8rpx;
+        }
+
+        .userInfo_item_content {
+            width: 600rpx;
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+
+            text {
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+            }
+        }
+    }
+}

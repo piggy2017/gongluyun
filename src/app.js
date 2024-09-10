@@ -2,22 +2,29 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-03 13:45:56
+ * @LastEditTime: 2024-09-10 11:27:41
  * @Description: 
  */
 import { useEffect } from 'react';
 import Taro, { useLaunch } from '@tarojs/taro'
 import { Provider } from 'mobx-react'
-import dataStore from '@/store/counter'
-import './app.styl'
+import baseStore from '@/store/base'
+import userStore from '@/store/user'
+import './app.scss'
 const store = {
-  dataStore
+  baseStore,userStore
 }
 function App({ children }) {
 
   useLaunch(() => {
     console.log('App launched.')
   })
+
+  useEffect(()=>{
+    baseStore.setSystemInfo();
+    Taro.$cdnUrl = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject';
+    Taro.$cdnBackIcon = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/mine/back_icon.webp';
+  },[])
 
   useEffect(() => {
     // 在 onLaunch 中执行逻辑

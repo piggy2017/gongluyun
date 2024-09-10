@@ -1,0 +1,271 @@
+@import '@/app.scss';
+
+.job_choose_box {
+    width: 100%;
+    // height: 100%;
+
+    .seatch_box {
+        width: 670rpx;
+        height: 80rpx;
+        margin: 16rpx auto 20rpx;
+        border-radius: 10rpx;
+        background-color: #F6F6F7;
+        @include flex-center(space-between);
+
+        .at-icon {
+            margin: 0 14rpx 0 30rpx;
+            flex-shrink: 0;
+        }
+
+        >.info_input {
+            width: 100%;
+            height: 100%;
+            font-size: 28rpx;
+        }
+    }
+
+
+
+    .type_content {
+        width: 100%;
+        // height: calc(100%);
+        background-color: #fff;
+        position: relative;
+        z-index: 1;
+        border-radius: 20rpx 20rpx 0 0;
+
+        .full-time {
+            // padding-top: 40rpx;
+            width: 100%;
+            height: 100%;
+            @include flex-center(flex-start);
+            position: relative;
+            overflow-y: scroll;
+
+            .left_nav {
+                width: 216rpx;
+                height: 100%;
+                overflow-y: scroll;
+                background: #F6F6F7;
+
+                .every_nav {
+                    width: 100%;
+                    height: 110rpx;
+                    // background: #FFFFFF;
+                    @include flex-center;
+                    position: relative;
+                    font-size: 28rpx;
+
+                    .num {
+                        width: 28rpx;
+                        height: 28rpx;
+                        border-radius: 100%;
+                        background-color: $boss-color;
+                        color: #fff;
+                        font-size: 24rpx;
+                        @include flex-center;
+                        position: absolute;
+                        right: 0;
+                        top: 42rpx;
+                    }
+                }
+
+                .active_nav {
+                    color: $boss-color;
+                    background-color: rgba(4, 131, 255, 0.1);
+                }
+            }
+
+            .right_cont {
+                width: calc(100% - 216rpx);
+                height: 100%;
+                overflow-y: scroll;
+
+                .type_cont {
+                    padding: 0 36rpx;
+                    // height: 100%;
+
+                    .cont_title {
+                        font-family: PingFangSC-SNaNrpxibold;
+                        font-weight: 600;
+                        font-size: 32rpx;
+                        color: #222222;
+                        padding: 10rpx 0 32rpx;
+
+                        &:first-child {
+                            padding-top: 32rpx;
+                        }
+                    }
+
+                    .every_type {
+                        width: 100%;
+                        @include flex-center(space-between);
+                        flex-wrap: wrap;
+
+                        >view {
+                            width: 220rpx;
+                            height: 80rpx;
+                            // background: rgba(33, 65, 124, 0.1);
+                            background: #F5F6F8;
+                            border-radius: 8rpx;
+                            @include flex-center;
+                            font-family: PingFangSC-Regular;
+                            font-weight: 400;
+                            font-size: 28rpx;
+                            color: #222222;
+                            margin-bottom: 22rpx;
+                            position: relative;
+
+                            >image {
+                                width: 28rpx;
+                                height: 28rpx;
+                                position: absolute;
+                                right: 0;
+                                top: 0;
+                            }
+                        }
+
+                        .active_type {
+                            background: $boss-color;
+                            color: #fff;
+                        }
+
+                    }
+                }
+            }
+
+            .full_search {
+                position: absolute;
+                top: 0;
+                left: 0;
+                background-color: #fff;
+                width: 100%;
+                height: 100%;
+
+                .search_item {
+                    width: 100%;
+                    padding: 40rpx;
+                    border-bottom: 1rpx solid #EEE;
+
+                    >view {
+                        color: #222222;
+                        font-size: 32rpx;
+                    }
+
+                    >view:nth-child(2) {
+                        font-size: 22rpx;
+                        color: #CCCCCC;
+                    }
+                }
+            }
+        }
+
+        .close_popup {
+            width: 100%;
+            // height: 14%;
+            @include flex-center;
+            flex-wrap: wrap;
+            align-content: center;
+            position: fixed;
+            bottom: 0;
+            padding-top: 10rpx;
+            background-color: #fff;
+            left: 0;
+            padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+
+            // padding-bottom: constant(safe-area-inset-bottom);
+            >image {
+                width: 92rpx;
+                height: 92rpx;
+            }
+
+            .choose_box {
+                width: 100%;
+                padding: 14rpx 32rpx 14rpx;
+                // height: 138rpx;
+
+                .choose_title {
+                    width: 100%;
+                    @include flex-center(space-between);
+
+                    >view:nth-child(1) {
+                        font-family: PingFangSC-Medium;
+                        font-weight: 500;
+                        font-size: 28rpx;
+                        color: #222222;
+                    }
+
+                    >view:nth-child(2) {
+                        font-family: PingFangSC-Regular;
+                        font-weight: 400;
+                        font-size: 28rpx;
+                        color: #999999;
+                    }
+                }
+
+                .choose_job {
+                    width: 100%;
+                    @include flex-center(flex-start);
+                    flex-wrap: wrap;
+                    margin-top: 10rpx;
+
+                    >view {
+                        padding: 0 10rpx;
+                        height: 60rpx;
+                        background: rgba(33, 65, 124, 0.1);
+                        border-radius: 14rpx;
+                        @include flex-center();
+                        font-family: PingFangSC-Medium;
+                        font-weight: 500;
+                        font-size: 24rpx;
+                        color: #21417C;
+                        margin-right: 14rpx;
+                        margin-bottom: 14rpx;
+
+                        .at-icon {
+                            margin-left: 10rpx;
+                        }
+                    }
+                }
+            }
+
+            .btn_box {
+                width: 100%;
+                padding: 0 32rpx;
+                @include flex-center(space-between);
+
+                .save_choose {
+                    width: 418rpx;
+                    height: 100rpx;
+                    flex-shrink: 0;
+                    border-radius: 18rpx;
+                    background: #0483FF;
+                    @include flex-center;
+                    color: #ffffff;
+                    font-size: 32rpx;
+                    font-weight: 600;
+                }
+
+                .cancel_choose {
+                    width: 248rpx;
+                    height: 100rpx;
+                    flex-shrink: 0;
+                    border-radius: 18rpx;
+                    border: 2rpx solid $boss-color;
+                    @include flex-center;
+                    color: $boss-color;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 32rpx;
+                    font-style: normal;
+                    font-weight: 600;
+
+                }
+            }
+
+
+        }
+    }
+
+
+}

@@ -53,11 +53,17 @@ export default defineConfig(async (merge, { command, mode }) => {
           }
         },
         cssModules: {
-          enable: true, // 默认为 false，如需使用 css modules 功能，则设为 true
+          enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
           config: {
             namingPattern: 'module', // 转换模式，取值为 global/module
             generateScopedName: '[name]__[local]___[hash:base64:5]'
           }
+        },
+        // 添加 scss 支持
+        scss: {
+          enable: true,
+          // 如果需要，可以在此处设置全局 SCSS 变量或 mixins 文件
+          additionalData: `@import "@/styles/variables.scss";`
         }
       }
     },
@@ -84,6 +90,12 @@ export default defineConfig(async (merge, { command, mode }) => {
             namingPattern: 'module', // 转换模式，取值为 global/module
             generateScopedName: '[name]__[local]___[hash:base64:5]'
           }
+        },
+        // 添加 scss 支持
+        scss: {
+          enable: true,
+          // 如果需要，可以在此处设置全局 SCSS 变量或 mixins 文件
+          additionalData: `@import "@/styles/variables.scss";`
         }
       }
     },
