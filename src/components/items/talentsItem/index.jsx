@@ -1,0 +1,59 @@
+/*
+ * @Author: 孙林 1164700321@qq.com
+ * @Date: 2024-09-10 14:51:53
+ * @LastEditors: 孙林
+ * @LastEditTime: 2024-09-11 10:38:49
+ * @Description: 人才库列表结果的item,需要传入 index，item
+ */
+import React, { useState, useEffect } from 'react';
+import Taro from '@tarojs/taro';
+import { observer, inject } from 'mobx-react';
+import { View, Image, Text } from '@tarojs/components';
+import './index.scss';
+
+const TalentsItem = observer(({ store, index, item }) => {
+    const {
+        baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+    } = store
+
+    return (
+        <>
+            <View className='talents_item' key={index}>
+                <View className='talents_item_title'>
+                    <View className='talents_item_title_left'>
+                        <View className='talents_item_title_name'>{item.userName}</View>
+                        <View className='talents_item_title_detail'>{item.detail}</View>
+                    </View>
+                    <View className='talents_item_title_right'>
+                        <Image src={`${Taro.$cdnUrl}/mine/tel_icon.webp`}></Image>
+                        <View>{item.phone}</View>
+                    </View>
+                </View>
+                {
+                    item.labels.length > 0 &&
+                    <View className='talents_item_labels'>
+                        {
+                            item.labels.map((label, idx) => {
+                                return (
+                                    <View key={idx} className='talents_item_label'>
+                                        {label}
+                                    </View>
+                                )
+                            })
+                        }
+                    </View>
+                }
+                <View className='talents_item_jobIntention row-show-1'>求职意向：{item.jobIntention}</View>
+                <View className='talents_item_line'></View>
+                <View className='talents_item_bottom'>
+                    <View>求职历史</View>
+                    <View>安排面试</View>
+                </View>
+            </View>
+        </>
+    );
+});
+
+export default inject('store')(React.memo(TalentsItem, (prevProps, nextProps) => {
+    return prevProps.index === nextProps.index && prevProps.store === nextProps.store;
+}));

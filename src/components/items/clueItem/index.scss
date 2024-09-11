@@ -1,0 +1,72 @@
+@import '@/app.scss';
+.clue_item {
+    width: 100%;
+    background-color: #FFF;
+    margin: 0 auto 16rpx auto;
+    border-bottom: 1rpx solid #0000000a;
+
+    .clue_item_wrap {
+        width: 710rpx;
+        margin: 0 auto;
+
+        .clue_item_title {
+            padding: 0 24rpx 0 22rpx;
+            @include flex-center(space-between);
+
+            .clue_item_title_left {
+                @include flex-center(flex-start);
+            }
+
+            .clue_item_title_sort {
+                color: #222222;
+                font-family: "D-DIN-PRO";
+                font-size: 32rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+            }
+
+            .clue_item_title_name {
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 32rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                margin-left: 22rpx;
+            }
+
+            .clue_item_title_right {
+                width: 152rpx;
+                height: 60rpx;
+                border-radius: 8rpx;
+                border: 2rpx solid #1678FF;
+                background: #1678FF;
+                color: #ffffff;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 500;
+                text-align: center;
+                line-height: 60rpx;
+            }
+        }
+        .clue_item_info{
+            padding: 0 30rpx 0 58rpx;
+            color: #666666;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 45rpx;
+            margin-bottom: 8rpx;
+            text{
+                color: #222222;
+            }
+        }
+        .clue_item_info:first-child{
+            margin-top: 16rpx;
+        }
+
+    }
+}

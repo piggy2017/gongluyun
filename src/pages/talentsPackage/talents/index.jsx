@@ -18,6 +18,7 @@ import './index.scss'
 
 import SexPicker from '@/components/sexPicker';
 import AgePicker from '@/components/agePicker';
+import TalentsItem from '@/components/items/talentsItem'
 
 const Index = observer(({ store }) => {
     const {
@@ -143,43 +144,7 @@ const Index = observer(({ store }) => {
                 >
                     {
                         list.length > 0 && list.map((item, index) => {
-                            return (
-                                <View className='talents_item' key={index}>
-                                    <View className='talents_item_title'>
-                                        <View className='talents_item_title_left'>
-                                            <View className='talents_item_title_name'>{item.userName}</View>
-                                            <View className='talents_item_title_detail'>{item.detail}</View>
-                                        </View>
-                                        <View className='talents_item_title_right'>
-                                            <Image src={`${Taro.$cdnUrl}/mine/tel_icon.webp`}></Image>
-                                            <View>{item.phone}</View>
-                                        </View>
-                                    </View>
-
-                                    {
-                                        item.labels.length > 0 &&
-                                        <View className='talents_item_labels'>
-                                            {
-                                                item.labels.map((label, idx) => {
-                                                    return (
-                                                        <View key={idx} className='talents_item_label'>
-                                                            {label}
-                                                        </View>
-                                                    )
-                                                })
-                                            }
-                                        </View>
-                                    }
-                                    <View className='talents_item_jobIntention row-show-1'>求职意向：{item.jobIntention}</View>
-                                    <View className='talents_item_line'></View>
-
-                                    <View className='talents_item_bottom'>
-                                        <View>求职历史</View>
-                                        <View>安排面试</View>
-                                    </View>
-
-                                </View>
-                            )
+                            return <TalentsItem index={index} item={item}></TalentsItem>
                         })
                     }
 

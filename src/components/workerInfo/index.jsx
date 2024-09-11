@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-10 16:41:47
+ * @LastEditTime: 2024-09-11 10:36:43
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -47,5 +47,5 @@ const WorkerInfo = observer(({ store }) => {
 
 export default inject('store')(React.memo(WorkerInfo, (prevProps, nextProps) => {
     // 自定义比较函数，只有 props 发生变化时才重新渲染
-    return prevProps.showPicker === nextProps.showPicker && prevProps.store === nextProps.store;
+    return prevProps.store === nextProps.store;
 }));

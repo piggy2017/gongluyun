@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-10 17:24:18
+ * @LastEditTime: 2024-09-11 16:53:57
  * @Description: 
  */
 export default defineAppConfig({
@@ -18,20 +18,20 @@ export default defineAppConfig({
         navigationBarTitleText: 'WeChat',
         navigationBarTextStyle: 'black'
     },
-    // permission: {
-    //   "scope.userLocation": {
-    //     "desc": "获取用户手机号"
-    //   },
-    //   "scope.userLocation": {
-    //     "desc": "你的位置信息将用于小程序位置接口的效果展示"
-    //   },
-    //   "scope.userFuzzyLocation": {
-    //     "desc": "你的位置信息将用于小程序位置接口的效果展示"
-    //   }
-    // },
-    // requiredPrivateInfos: [
-    //   "getLocation", "chooseLocation",
-    // ],
+    permission: {
+      "scope.userLocation": {
+        "desc": "获取用户手机号"
+      },
+      "scope.userLocation": {
+        "desc": "你的位置信息将用于小程序位置接口的效果展示"
+      },
+      "scope.userFuzzyLocation": {
+        "desc": "你的位置信息将用于小程序位置接口的效果展示"
+      }
+    },
+    requiredPrivateInfos: [
+      "getLocation", "chooseLocation",
+    ],
     tabBar: {
         custom: true,
         "list": [{
@@ -59,12 +59,21 @@ export default defineAppConfig({
                 "signUpHistory/index",
                 "interview/index",
                 "filterJob/index",
+                "search/index"
             ]
         },
         {
             "root": "pages/selectorPackage/", // 删选库子包
             "pages": [
                 "jobChoose/index", // 筛选岗位类型
+            ]
+        },
+        {
+            "root": "pages/newPackage/", // 新增库子包
+            "pages": [
+                "newProject/index",      // 新增项目
+                "newWorker/index",       // 新增求职者信息
+                "newEmployee/index",     // 新增员工
             ]
         }
     ]

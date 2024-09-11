@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-10 15:21:09
+ * @LastEditTime: 2024-09-11 14:29:42
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -46,8 +46,6 @@ const Navbar = observer(({ store, fixed = false, back = true, title = '', bgColo
     );
 });
 
-// export default inject('store')(AgePicker);
 export default inject('store')(React.memo(Navbar, (prevProps, nextProps) => {
-    // 自定义比较函数，只有 props 发生变化时才重新渲染
-    return prevProps.showPicker === nextProps.showPicker && prevProps.store === nextProps.store;
+    return prevProps.store === nextProps.store;
 }));

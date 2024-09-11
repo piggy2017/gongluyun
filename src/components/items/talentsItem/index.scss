@@ -1,0 +1,107 @@
+@import '@/app.scss';
+.talents_item {
+    width: 710rpx;
+    height: 300rpx;
+    flex-shrink: 0;
+    background-color: #FFF;
+    border-radius: 20rpx;
+    margin: 0 auto 20rpx auto;
+
+    .talents_item_title {
+        padding: 24rpx 24rpx 0 24rpx;
+        @include flex-center(space-between);
+
+        .talents_item_title_left {
+            @include flex-center(flex-start);
+
+            .talents_item_title_name {
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                margin-right: 12rpx;
+            }
+
+            .talents_item_title_detail {
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+            }
+        }
+
+        .talents_item_title_right {
+            color: #333333;
+            font-family: "D-DIN-PRO";
+            font-size: 32rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 46rpx;
+            @include flex-center(flex-start);
+
+            image {
+                width: 40rpx;
+                height: 40rpx;
+                margin-right: 4rpx;
+            }
+        }
+    }
+
+    .talents_item_labels{
+        padding: 0 24rpx;
+        margin-top: 20rpx;
+        height: 48rpx;
+        overflow: hidden;
+        display: flex;
+        flex-flow: row wrap;
+        .talents_item_label{
+            color: #666666;
+            font-family: "PingFang SC";
+            font-size: 24rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 28rpx;
+            padding: 10rpx 18rpx;
+            border-radius: 4rpx;
+            margin-right: 10rpx;
+            background: #F4F4F4;
+        }
+        .talents_item_label:last-child{
+            margin-right: 0;
+        }
+    }
+
+    .talents_item_jobIntention{
+        color: #222222;
+        font-family: "PingFang SC";
+        font-size: 28rpx;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        padding: 10rpx 46rpx 0 24rpx;
+        text-align: left;
+    }
+
+    .talents_item_line{
+        width: 654rpx;
+        height: 2rpx;
+        margin: 24rpx auto 0 auto;
+        background-color:#0000000a ;
+    }
+
+    .talents_item_bottom{
+        padding: 24rpx 110rpx;
+        @include flex-center(space-between);
+        color: #1678ff;
+        text-align: center;
+        font-family: "PingFang SC";
+        font-size: 28rpx;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+    }
+}

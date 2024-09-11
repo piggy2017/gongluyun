@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-10 10:17:14
+ * @LastEditTime: 2024-09-11 11:27:19
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -17,11 +17,11 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
 
-
+import ClueItem from '@/components/items/clueItem'
 
 const Index = observer(({ store }) => {
   const {
-    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight,bottomSafeAreaHeight },
+    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
     userStore: { isLogin, authentication }
   } = store
   const [type, setType] = useState('客户池');
@@ -106,10 +106,7 @@ const Index = observer(({ store }) => {
             <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
           </View>
         </View>
-        {
-          (isLogin === 1 && authentication === 1) &&
-          <View className='search_total'>客户池共 <Text>172</Text> 名求职者等待领取并跟进</View>
-        }
+
       </View>
 
       {
@@ -134,34 +131,12 @@ const Index = observer(({ store }) => {
           lowerThreshold={300}
         >
           {
+            (isLogin === 1 && authentication === 1 && list.length>0) &&
+            <View className='search_total'>客户池共 <Text>172</Text> 名求职者等待领取并跟进</View>
+          }
+          {
             list.length > 0 && list.map((item, index) => {
-              return (
-                <View className='clue_item' key={index}>
-                  <View className='clue_item_title'>
-                    <View className='clue_item_title_left'>
-                      <View className='clue_item_title_sort'>{index + 1}</View>
-                      <View className='clue_item_title_name'>{item.userName}</View>
-                    </View>
-                    <View className='clue_item_title_right'>立即领取</View>
-                  </View>
-                  <View className='clue_item_content_item'>
-                    <View className='clue_item_content_item_label'>录入时间：</View>
-                    <View className='clue_item_content_item_value'>{item.time}</View>
-                  </View>
-                  <View className='clue_item_content_item'>
-                    <View className='clue_item_content_item_label'>来源：</View>
-                    <View className='clue_item_content_item_value'>{item.source}</View>
-                  </View>
-                  {
-                    item.signUpJob &&
-                    <View className='clue_item_content_item'>
-                      <View className='clue_item_content_item_label'>报名岗位：</View>
-                      <View className='clue_item_content_item_value'>{item.signUpJob}</View>
-                    </View>
-                  }
-
-                </View>
-              )
+              return <ClueItem index={index} item={item}></ClueItem>
             })
           }
 

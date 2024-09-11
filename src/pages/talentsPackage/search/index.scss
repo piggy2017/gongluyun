@@ -1,0 +1,137 @@
+@import '@/app.scss';
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+    // background-color: #F4F4F4;
+    background: linear-gradient(180deg, #E8F1FF 0%, #edf3fc00 100%) #F4F4F4;
+    /* 渐变颜色 */
+    background-size: 100% 1158rpx;
+    background-repeat: no-repeat;
+    /* 不重复渐变 */
+
+
+    .my_header {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9;
+        background-color: rgba(237, 243, 254);
+
+        .my_header_hr {
+            width: 100%;
+            height: var(--statusBarHeight);
+        }
+
+        .my_header_content {
+            height: var(--navContentHeight);
+            @include flex-center(flex-start);
+            padding-left: 12rpx;
+
+            .back_icon {
+                width: 48rpx;
+                height: 48rpx;
+                flex-shrink: 0;
+            }
+
+            .search_wrap {
+                width: 448rpx;
+                height: 68rpx;
+                border-radius: 34rpx;
+                flex-shrink: 0;
+                background-color: #FFF;
+                @include flex-center(flex-start);
+                margin-left: 30rpx;
+
+                image {
+                    width: 36rpx;
+                    height: 36rpx;
+                    flex-shrink: 0;
+                    margin: 0 10rpx 0 22rpx;
+                }
+
+                .search_input {
+                    width: 366rpx;
+                    color: #000000;
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                }
+            }
+
+            .add_icon {
+                width: 48rpx;
+                height: 48rpx;
+                flex-shrink: 0;
+                margin-left: 26rpx;
+            }
+        }
+    }
+
+    .search_section {
+        width: 750rpx;
+        margin: 0 auto 20rpx auto;
+
+        .search_section_title {
+            @include flex-center(space-between);
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 28rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            padding: 24rpx 14rpx 24rpx 28rpx;
+
+            .search_section_title_right {
+                @include flex-center(flex-start);
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                    flex-shrink: 0;
+                }
+            }
+        }
+
+        .clue_wrapper {
+            width: 750rpx;
+            background: #FFF;
+            padding: 20rpx 0;
+
+            .clue_item:last-child {
+                border-bottom: none;
+            }
+        }
+
+        .jobs_wrapper {
+            width: 750rpx;
+            background: #FFF;
+
+            .jobs_item {
+                width: 686rpx;
+                height: 112rpx;
+                margin: 0 auto;
+                border-bottom: 1rpx solid #0000000a;
+                color: #222222;
+                text-align: left;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 112rpx;
+                padding-left: 22rpx;
+            }
+            .jobs_item:last-child {
+                border-bottom: none;
+            }
+        }
+    }
+}
