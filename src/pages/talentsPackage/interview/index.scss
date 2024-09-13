@@ -35,6 +35,10 @@
                     background-color: #FF385C;
                     border-radius: 50%;
                 }
+                .choose_item_left_dot_1{
+                    margin-right: 18rpx;
+                    width: 8rpx;
+                }
             }
 
             .choose_item_right {
@@ -45,6 +49,13 @@
                 line-height: normal;
                 text-align: right;
 
+                input {
+                    text-align: right;
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                }
+
                 image {
                     width: 40rpx;
                     height: 40rpx;
@@ -54,12 +65,34 @@
                 .choose_item_right_text {
                     width: 414rpx;
                     color: #222222;
-                    
+
                 }
 
                 .choose_item_right_text_gray {
                     width: 414rpx;
                     color: #999999;
+                }
+
+                .sex_item {
+                    width: 180rpx;
+                    height: 72rpx;
+                    border-radius: 6rpx;
+                    border: 1rpx solid #CACACA;
+                    color: #b7b7b7;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 72rpx;
+                }
+                .sex_item:first-child{
+                    margin-right: 20rpx;
+                }
+                .sex_item_active{
+                    background: #1678ff21;
+                    color: #1678ff;
+                    border: none;
                 }
             }
         }

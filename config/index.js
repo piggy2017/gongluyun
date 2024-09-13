@@ -63,7 +63,7 @@ export default defineConfig(async (merge, { command, mode }) => {
         scss: {
           enable: true,
           // 如果需要，可以在此处设置全局 SCSS 变量或 mixins 文件
-          additionalData: `@import "@/styles/variables.scss";`
+          additionalData: ``
         }
       }
     },

@@ -1,0 +1,237 @@
+@import '@/app.scss';
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #E8F1FF 0%, #edf3fc00 100%) #F4F4F4;
+    background-size: 100% 1158rpx;
+    background-repeat: no-repeat;
+
+    .project_baseInfo {
+        width: 710rpx;
+        height: 148rpx;
+        flex-shrink: 0;
+        background-color: #FFF;
+        margin: 30rpx auto 0 auto;
+
+        .project_name {
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 32rpx;
+            font-style: normal;
+            font-weight: 600;
+            line-height: normal;
+            width: 662rpx;
+            margin-left: 24rpx;
+            padding-top: 24rpx;
+            @include ellipsis;
+        }
+
+        .project_addr {
+            padding: 10rpx 24rpx 0 24rpx;
+            @include flex-center(space-between);
+            color: #666666;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 45rpx;
+
+            .project_push_time {
+                font-size: 28rpx;
+                line-height: 42rpx;
+            }
+        }
+    }
+
+    .project_datas {
+        width: 710rpx;
+        height: 206rpx;
+        flex-shrink: 0;
+        border-radius: 14rpx;
+        background: #FFF;
+        margin: 20rpx auto 0 auto;
+
+        .project_title {
+            padding: 20rpx 24rpx 0 24rpx;
+            @include flex-center(space-between);
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+
+            .project_more {
+                color: #1678ff;
+                text-align: right;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                @include flex-center(flex-end);
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                    flex-shrink: 0;
+                }
+            }
+        }
+
+        .project_datas_content {
+            padding: 32rpx 42rpx 0 42rpx;
+            @include flex-center(space-between);
+
+            .project_datas_item {
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: center;
+                justify-content: center;
+                color: #333333;
+                text-align: center;
+                font-family: "D-DIN-PRO";
+                font-size: 40rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+
+                .project_datas_item_label {
+                    color: #666666;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 26rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    margin-top: 12rpx;
+                }
+            }
+        }
+    }
+
+    .interview_info {
+        width: 710rpx;
+        flex-shrink: 0;
+        border-radius: 14rpx;
+        background: #FFF;
+        margin: 20rpx auto 0 auto;
+        padding-bottom: 28rpx;
+
+        .project_title {
+            padding: 20rpx 24rpx 30rpx 24rpx;
+            @include flex-center(space-between);
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+
+            .project_more {
+                color: #1678ff;
+                text-align: right;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                @include flex-center(flex-end);
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                    flex-shrink: 0;
+                }
+            }
+        }
+
+        .interview_item {
+            padding: 0 24rpx;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: flex-start;
+            justify-content: space-between;
+
+            image {
+                width: 36rpx;
+                height: 36rpx;
+                flex-shrink: 0;
+                margin-top: 8rpx;
+            }
+
+            .interview_item_content {
+                width: 614rpx;
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 51rpx;
+
+                text {
+                    color: #222222;
+                }
+            }
+        }
+
+        .job_introduce {
+            padding: 0 44rpx 0 30rpx;
+            color: #333333;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 45rpx;
+        }
+    }
+
+
+    .project_btns {
+        width: 100%;
+        background-color: #FFF;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+
+        .btn_wrap {
+            padding: 0 28rpx;
+            @include flex-center(space-between);
+
+            .btn_item {
+                color: #222222;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: center;
+                justify-content: center;
+
+                image {
+                    width: 56rpx;
+                    height: 56rpx;
+                    flex-shrink: 0;
+                }
+            }
+
+            .add_worker {
+                width: 482rpx;
+                height: 96rpx;
+                border-radius: 8rpx;
+                background: #1678FF;
+                color: #ffffff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 96rpx;
+            }
+        }
+    }
+}

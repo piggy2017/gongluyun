@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-11 16:53:57
+ * @LastEditTime: 2024-09-13 10:43:16
  * @Description: 
  */
 export default defineAppConfig({
@@ -74,6 +74,22 @@ export default defineAppConfig({
                 "newProject/index",      // 新增项目
                 "newWorker/index",       // 新增求职者信息
                 "newEmployee/index",     // 新增员工
+                "setOnsite/index",       // 设置驻场
+            ]
+        },
+        {
+            "root": "pages/minePackage/", // 我的库子包
+            "pages": [
+                "employeeManage/index",   // 员工管理
+                "employeeDetail/index",   // 员工详情
+                "componyManage/index",    // 公司管理
+                "feedback/index",         // 意见反馈
+            ]
+        },
+        {
+            "root": "pages/projectPackage/", // 项目相关
+            "pages": [
+                "projectDetail/index",       // 项目详情
             ]
         }
     ]

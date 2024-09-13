@@ -1,3 +1,10 @@
+/*
+ * @Author: 孙林 1164700321@qq.com
+ * @Date: 2024-09-10 13:43:28
+ * @LastEditors: 孙林
+ * @LastEditTime: 2024-09-12 11:55:55
+ * @Description: 
+ */
 
 import http from "./request"
 
@@ -17,4 +24,7 @@ export const jobAssoc = params => { //岗位联想
 };
 export const filterJobTypeList = params => {                     // 获取任务大厅对应的工种
     return http(API_BASE_URL + '/order/contracts/jobTypeList', params, "POST", { "Content-Type": "application/json" });
+};
+export const fetchOssConfig = params => { //获取oss校验
+    return http(API_BASE_URL + '/upload/stsToken', params, "POST", { "Content-Type": "application/json" });
 };

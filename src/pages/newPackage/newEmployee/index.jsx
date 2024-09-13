@@ -2,20 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-11 17:19:01
- * @Description: 
- */
-/*
- * @Author: 孙林 1164700321@qq.com
- * @Date: 2024-09-09 09:47:15
- * @LastEditors: 孙林
- * @LastEditTime: 2024-09-11 16:44:22
+ * @LastEditTime: 2024-09-12 10:31:42
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro';
-import { View, Image, Text, Input, Textarea, Block } from '@tarojs/components'
+import { View, Image, Text, Input, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
@@ -25,10 +18,6 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import ChooseJobType from '@/components/chooseJobType';
-import DatePicker from '@/components/datePicker'
-import SourcePicker from '@/components/sourcePcker';
-
 
 const Index = observer(({ store }) => {
     const {
@@ -36,6 +25,11 @@ const Index = observer(({ store }) => {
     } = store
     const [formData, setFormData] = useState({});
     const [ispassword, setIsPassword] = useState(true);
+
+    const [showRoleModel, setShowRoleModel] = useState(false);
+    const [roleList, setRoleList] = useState(['客服', '驻场', '销售']);
+
+    const [showLimitModel, setShowLimitModel] = useState(false);
 
     return (
         <View className='container'>
@@ -89,14 +83,14 @@ const Index = observer(({ store }) => {
             <View className='employee_group_2'>
                 <View className='employee_item'>
                     <View className='employee_item_label'>角色</View>
-                    <View className='employee_item_right'>
+                    <View className='employee_item_right' onClick={() => { setShowRoleModel(true) }}>
                         <View className={`${formData.role ? 'option_item_active' : 'option_item_text'}`}>{formData.role ? formData.role : '请选择'}</View>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
                 <View className='employee_item'>
                     <View className='employee_item_label'>权限</View>
-                    <View className='employee_item_right'>
+                    <View className='employee_item_right' onClick={() => { setShowLimitModel(true) }}>
                         <View className={`${formData.authority ? 'option_item_active' : 'option_item_text'}`}>{formData.authority ? formData.authority : '请选择'}</View>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
@@ -108,6 +102,60 @@ const Index = observer(({ store }) => {
                 <View className='post_btn'>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
+
+            <Block>
+                <AtFloatLayout catchMove className='role_init_layout' isOpened={showRoleModel} onClose={() => { setShowRoleModel(false) }}>
+                    <View className='filter_wrapper'>
+                        <View className='filter_wrapper_bg'>
+                            <View className='filter_title'>
+                                <View>选择角色</View>
+                                <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowRoleModel(false) }}></AtIcon>
+                            </View>
+                            <View className='filter_wrapper_content'>
+                                {
+                                    roleList.map((item, index) => {
+                                        return (
+                                            <View
+                                                key={index}
+                                                className={`filter_wrapper_item ${item === formData.role ? 'filter_wrapper_item_active' : ''}`}
+                                                onClick={() => setFormData({ ...formData, role: item })}
+                                            >{item}</View>
+                                        )
+                                    })
+                                }
+                            </View>
+                            <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+                        </View>
+                    </View>
+                </AtFloatLayout>
+            </Block>
+
+            <Block>
+                <AtFloatLayout catchMove className='role_init_layout' isOpened={showLimitModel} onClose={() => { setShowLimitModel(false) }}>
+                    <View className='filter_wrapper'>
+                        <View className='filter_wrapper_bg'>
+                            <View className='filter_title'>
+                                <View>选择角色</View>
+                                <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowLimitModel(false) }}></AtIcon>
+                            </View>
+                            <View className='filter_wrapper_content'>
+                                {
+                                    roleList.map((item, index) => {
+                                        return (
+                                            <View
+                                                key={index}
+                                                className={`filter_wrapper_item ${item === formData.role ? 'filter_wrapper_item_active' : ''}`}
+                                                onClick={() => setFormData({ ...formData, role: item })}
+                                            >{item}</View>
+                                        )
+                                    })
+                                }
+                            </View>
+                            <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+                        </View>
+                    </View>
+                </AtFloatLayout>
+            </Block>
         </View>
     )
 })

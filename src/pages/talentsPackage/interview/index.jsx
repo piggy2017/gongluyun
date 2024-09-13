@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-10 17:14:10
+ * @LastEditTime: 2024-09-12 16:00:56
  * @Description: 
  */
 
@@ -25,9 +25,9 @@ const Index = observer(({ store }) => {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
     } = store
 
+    const [formData, setFormData] = useState({});
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [dateText, setDateText] = useState("选择面试日期");
-    const [jobName, setJobName] = useState("请选择");
 
 
     useEffect(() => {
@@ -42,6 +42,7 @@ const Index = observer(({ store }) => {
     const datePickerSelect = (e) => {
         console.log("seleceDate", e);
         setDateText(e);
+        setFormData({ ...formData, date: e });
     }
 
     return (
@@ -53,10 +54,34 @@ const Index = observer(({ store }) => {
                 <View className='choose_item flex-col-between'>
                     <View className='choose_item_left flex-row-items'>
                         <View className='choose_item_left_dot'></View>
+                        <View>姓名</View>
+                    </View>
+                    <View className='choose_item_right flex-row-items'>
+                        <Input
+                            className='info_item_input'
+                            placeholder='输入真实姓名'
+                            value={formData.name}
+                            placeholderStyle='color: #777777;'
+                            onInput={(e) => setFormData({ ...formData, name: e.target.value })}></Input>
+                    </View>
+                </View>
+                <View className='choose_item flex-col-between'>
+                    <View className='choose_item_left flex-row-items'>
+                        <View className='choose_item_left_dot'></View>
+                        <View>性别</View>
+                    </View>
+                    <View className='choose_item_right flex-row-items'>
+                        <View onClick={() => setFormData({ ...formData, sex: 0 })} className={`sex_item ${formData.sex === 0 ? 'sex_item_active' : ''}`}>男</View>
+                        <View onClick={() => setFormData({ ...formData, sex: 1 })} className={`sex_item ${formData.sex === 1 ? 'sex_item_active' : ''}`}>女</View>
+                    </View>
+                </View>
+                <View className='choose_item flex-col-between'>
+                    <View className='choose_item_left flex-row-items'>
+                        <View className='choose_item_left_dot'></View>
                         <View>报名岗位</View>
                     </View>
                     <View className='choose_item_right flex-row-items'>
-                        <View className={`${jobName === '请选择' ? 'choose_item_right_text_gray' : 'choose_item_right_text'} row-show-1`}>请选择</View>
+                        <View className={`${!formData.jobName ? 'choose_item_right_text_gray' : 'choose_item_right_text'} row-show-1`}>{formData.jobName ? formData.jobName : '选择求职者报名的岗位(必填)'}</View>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
@@ -66,8 +91,24 @@ const Index = observer(({ store }) => {
                         <View>面试日期</View>
                     </View>
                     <View className='choose_item_right flex-row-items' onClick={() => { setShowDatePicker(true) }}>
-                        <View className={`${dateText === '选择面试日期' ? 'choose_item_right_text_gray' : 'choose_item_right_text'} row-show-1`}>{dateText}</View>
+                        <View className={`${!formData.dateText ? 'choose_item_right_text_gray' : 'choose_item_right_text'} row-show-1`}>{formData.dateText ? formData.dateText : '选择面试日期'}</View>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                    </View>
+                </View>
+                <View className='choose_item flex-col-between'>
+                    <View className='choose_item_left flex-row-items'>
+                        <View className='choose_item_left_dot_1'></View>
+                        <View>身份证号</View>
+                    </View>
+                    <View className='choose_item_right flex-row-items'>
+                        <Input
+                            type='idcard'
+                            className='info_item_input'
+                            placeholder='输入真实身份证号(选填)'
+                            placeholderStyle='color: #777777;'
+                            value={formData.idCardNo}
+                            onInput={(e) => setFormData({ ...formData, idCardNo: e.detail.value })}
+                        ></Input>
                     </View>
                 </View>
             </View>
