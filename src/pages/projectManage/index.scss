@@ -144,12 +144,19 @@
                 line-height: normal;
 
                 .compony_icon {
-                    width: 44rpx;
-                    height: 44rpx;
+                    width: 78rpx;
+                    height: 32rpx;
                     flex-shrink: 0;
-                    border-radius: 50%;
-                    margin-right: 6rpx;
-                    background-color: #04B400;
+                    border-radius: 4rpx;
+                    border: 2rpx solid #1678FF;
+                    color: #1678ff;
+                    font-family: "Alibaba PuHuiTi 2.0";
+                    font-size: 22rpx;
+                    font-style: normal;
+                    font-weight: 55 Regular;
+                    line-height: 32rpx;
+                    text-align: center;
+                    margin-right: 10rpx;
                 }
             }
 

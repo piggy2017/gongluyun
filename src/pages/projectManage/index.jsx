@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-10 09:52:20
+ * @LastEditTime: 2024-09-13 11:39:14
  * @Description: 
  */
 
@@ -33,7 +33,7 @@ const Index = observer(({ store }) => {
   const [goonLoad, setgoonLoad] = useState(true);
   const [list, setList] = useState([
     { id: 1, type: 1, name: "龙泉驿区招物流分拣全职月结", status: "招聘中", port: 311, interview: 79, pass: 13, signUp: 5, },
-    { id: 2, type: 2, name: "龙泉驿区招物流分拣全职月结", status: "招聘中", port: 311, interview: 79, pass: 13, signUp: 5, compony: '成都翔科食品有限公司', componyIcon: '' },
+    { id: 2, type: 2, name: "龙泉驿区招物流分拣全职月结", status: "招聘中", port: 311, interview: 79, pass: 13, signUp: 5, compony: '成都翔科食品有限公司' },
     { id: 3, type: 1, name: "龙泉驿区招物流分拣全职月结", status: "招聘中", port: 311, interview: 79, pass: 13, signUp: 5, },
     { id: 4, type: 1, name: "龙泉驿区招物流分拣全职月结", status: "招聘中", port: 311, interview: 79, pass: 13, signUp: 5, },
   ])
@@ -111,18 +111,18 @@ const Index = observer(({ store }) => {
                 <View className='project_item' key={index}>
                   <View className='project_item_title'>
                     <View className='project_item_title_left'>
-                      {
+                      {/* {
                         item.type === 2 &&
                         <View className='project_item_title_left_icon'>接单</View>
-                      }
+                      } */}
                       <View className='project_item_title_left_name'>{item.name}</View>
                     </View>
                     <View className='project_item_title_right'>{item.status}</View>
                   </View>
                   {
-                    item.compony &&
+                    item.type === 2 &&
                     <View className='compony_wrap'>
-                      <View className='compony_icon'></View>
+                      <View className='compony_icon'>发单方</View>
                       <View>{item.compony}</View>
                     </View>
                   }

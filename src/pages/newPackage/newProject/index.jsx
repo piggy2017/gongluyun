@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-11 16:16:47
+ * @LastEditTime: 2024-09-13 16:23:17
  * @Description: 
  */
 
@@ -115,6 +115,41 @@ const Index = observer(({ store }) => {
                             placeholder={`点击输入招工信息...`}
                         />
                     </View>
+                </View>
+            </View>
+
+            <View className='pay_setting'>
+                <View className='pay_setting_title'>
+                    <View>岗位薪资</View>
+                </View>
+                <View className='pay_input_wrap'>
+                    <View className='pay_input_item'>
+                        <Input
+                            type='number'
+                            className='pay_input'
+                            placeholder='请输入'
+                            placeholderStyle='color: #999999;'
+                            value={formData.priceOne}
+                            onInput={(e) => setFormData({ ...formData, priceOne: e.detail.value })}
+                        ></Input>
+                    </View>
+                    <View className='pay_input_hr'></View>
+                    <View className='pay_input_item'>
+                        <Input
+                            type='number'
+                            className='pay_input'
+                            placeholder='请输入'
+                            placeholderStyle='color: #999999;'
+                            value={formData.priceTwo}
+                            onInput={(e) => setFormData({ ...formData, priceTwo: e.detail.value })}
+                        ></Input>
+                    </View>
+                </View>
+
+                <View className='pay_setting_btns'>
+                    <View className={`pay_btn `}>元/小时</View>
+                    <View className={`pay_btn `}>元/天</View>
+                    <View className={`pay_btn `}>元/月</View>
                 </View>
             </View>
 

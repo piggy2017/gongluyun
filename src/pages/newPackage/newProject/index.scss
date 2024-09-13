@@ -193,6 +193,87 @@
         }
     }
 
+    .pay_setting {
+        width: 710rpx;
+        height: 342rpx;
+        flex-shrink: 0;
+        border-radius: 16rpx;
+        background: #FFF;
+        margin: 20rpx auto 0 auto;
+
+        .pay_setting_title {
+            color: #666666;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            padding: 50rpx 0 30rpx 44rpx;
+            position: relative;
+
+            &::before {
+                content: '';
+                width: 8rpx;
+                height: 8rpx;
+                flex-shrink: 0;
+                background-color: #FF385C;
+                border-radius: 50%;
+                position: absolute;
+                z-index: 9;
+                left: 22rpx;
+                top: 68rpx;
+            }
+        }
+
+        .pay_input_wrap {
+            padding: 0 32rpx 0 44rpx;
+            @include flex-center(space-between);
+
+            .pay_input_item {
+                width: 276rpx;
+                height: 80rpx;
+                border-radius: 6rpx;
+                border: 1rpx solid #999;
+
+                .pay_input {
+                    width: 100%;
+                    height: 100%;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+            }
+
+            .pay_input_hr {
+                width: 22rpx;
+                height: 2rpx;
+                background: #999;
+            }
+        }
+
+        .pay_setting_btns {
+            padding: 20rpx 32rpx 0 44rpx;
+            @include flex-center(space-between);
+
+            .pay_btn {
+                width: 200rpx;
+                height: 72rpx;
+                border-radius: 6rpx;
+                border: 1rpx solid #999;
+                color: #999999;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 72rpx;
+            }
+        }
+    }
+
     .project_group_2 {
         width: 710rpx;
         border-radius: 20rpx;
@@ -263,9 +344,10 @@
 
     }
 
-    .project_item_border{
+    .project_item_border {
         position: relative;
-        &::after{
+
+        &::after {
             content: '';
             position: absolute;
             z-index: 3;

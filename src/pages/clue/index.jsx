@@ -2,9 +2,10 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-12 10:53:33
+ * @LastEditTime: 2024-09-13 15:49:33
  * @Description: 
  */
+
 import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Button, Picker } from '@tarojs/components'
@@ -24,7 +25,7 @@ const Index = observer(({ store }) => {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
     userStore: { isLogin, authentication }
   } = store
-  const [type, setType] = useState('客户池');
+  const [type, setType] = useState('我的客户');
 
   const [searchValue, setSearchValue] = useState('');
   const [searchHeight, setSearchHeight] = useState(127);
@@ -42,6 +43,15 @@ const Index = observer(({ store }) => {
   const [sourceList, setSourceList] = useState(['全部来源', '抖音直播', '小红书', 'BOSS直聘', '微信私域', '58同城', 'BOSS直聘', '微信私域', '58同城']);
   const [sourceIndex, setSourceIndex] = useState(0);
   const [showSourceModel, setShowSourceModel] = useState(false);              //  是否显示切换状态的弹窗
+
+  const [mylist, setmyList] = useState([
+    { userName: "高小光", status: 1, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+    { userName: "高小光", status: 2, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+    { userName: "高小光", status: 3, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+    { userName: "高小光", status: 4, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+    { userName: "高小光", status: 5, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+    { userName: "高小光", status: 6, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+  ])
 
   useEffect(() => {
     setTimeout(async () => {
@@ -69,6 +79,40 @@ const Index = observer(({ store }) => {
     return `${tabbarHeight + 30}px`;
   }
 
+  const getStatus = (status) => {
+    switch (status) {
+      case 1:
+        return '已约面';
+      case 2:
+        return '已到面';
+      case 3:
+        return '面试通过';
+      case 4:
+        return '面试失败';
+      case 5:
+        return '已入职';
+      case 6:
+        return '已离职';
+    }
+  }
+
+  const getColor = (status) => {
+    switch (status) {
+      case 1:
+        return '#999999;';
+      case 2:
+        return '#F00000';
+      case 3:
+        return '#FF6B17';
+      case 4:
+        return '#04B400';
+      case 5:
+        return '#666666';
+      case 6:
+        return '#FF6B00';
+    }
+  }
+
   return (
     <View className='container'>
       <View className='my_header'>
@@ -78,6 +122,7 @@ const Index = observer(({ store }) => {
           <View onClick={() => { setType('我的客户') }} className={`type_item ${type === '我的客户' ? 'type_item_active' : ''}`}>我的客户</View>
         </View>
       </View>
+
 
       <View className='search_wrapper'>
         <View style={`height: 12rpx;`}></View>
@@ -117,50 +162,118 @@ const Index = observer(({ store }) => {
           <View className='login_btn' onClick={() => { Taro.navigateTo({ url: '/pages/login/index' }) }}>立即登录</View>
         </View> ||
         (isLogin && authentication) &&
-        <ScrollView
-          scrollY
-          className='scrollWrapper'
-          style={{ height: getHeight() }}
-          scrollWithAnimation
-          showScrollbar={false}
-          enablePassive
-          refresherEnabled
-          refresherTriggered={isRefresh}
-          onScrollToLower={handleScrollToLower}
-          onRefresherRefresh={handleScrollToUpper}
-          lowerThreshold={300}
-        >
+        <>
           {
-            (isLogin === 1 && authentication === 1 && list.length>0) &&
-            <View className='search_total'>客户池共 <Text>172</Text> 名求职者等待领取并跟进</View>
-          }
-          {
-            list.length > 0 && list.map((item, index) => {
-              return <ClueItem index={index} item={item}></ClueItem>
-            })
-          }
-
-          {
-            list.length >= 4 &&
-            <View className='loading_text'>
+            type === '客户池' &&
+            <ScrollView
+              scrollY
+              className='scrollWrapper'
+              style={{ height: getHeight() }}
+              scrollWithAnimation
+              showScrollbar={false}
+              enablePassive
+              refresherEnabled
+              refresherTriggered={isRefresh}
+              onScrollToLower={handleScrollToLower}
+              onRefresherRefresh={handleScrollToUpper}
+              lowerThreshold={300}
+            >
               {
-                goonLoad ?
-                  <>
-                    <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
-                    加载中
-                  </> :
-                  "数据已经到底了"
+                (isLogin === 1 && authentication === 1 && list.length > 0) &&
+                <View className='search_total'>客户池共 <Text>172</Text> 名求职者等待领取并跟进</View>
               }
-            </View>
+              {
+                list.length > 0 && list.map((item, index) => {
+                  return <ClueItem index={index} item={item}></ClueItem>
+                })
+              }
+
+              {
+                list.length >= 4 &&
+                <View className='loading_text'>
+                  {
+                    goonLoad ?
+                      <>
+                        <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
+                        加载中
+                      </> :
+                      "数据已经到底了"
+                  }
+                </View>
+              }
+              {
+                list.length === 0 &&
+                <View className='no_data'>
+                  <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
+                  <View>暂无相关数据~</View>
+                </View>
+              }
+            </ScrollView> ||
+            type === '我的客户' &&
+            <ScrollView
+              scrollY
+              className='myScrollWrapper'
+              style={{ height: getHeight() }}
+              scrollWithAnimation
+              showScrollbar={false}
+              enablePassive
+              refresherEnabled
+              refresherTriggered={isRefresh}
+              onScrollToLower={handleScrollToLower}
+              onRefresherRefresh={handleScrollToUpper}
+              lowerThreshold={300}
+            >
+
+              {
+                mylist.length > 0 && mylist.map((item, index) => {
+                  return (
+                    <View className='roster_item' key={index}>
+                      <View className='roster_item_title'>
+                        <View className='item_title_index'>{index + 1}</View>
+                        <View className='item_title_left'>
+                          <View className='item_title_name'>{item.userName}</View>
+                          <View>{item.detail}</View>
+                        </View>
+                        <View style={{ color: getColor(item.status) }} className='item_title_right'>{getStatus(item.status)}</View>
+                      </View>
+
+                      <View className='roster_item_phone'>
+                        <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                        <View>{item.phone}</View>
+                      </View>
+                      <View className='roster_item_source'><Text>来源：</Text>{item.source}</View>
+                      <View className='roster_item_source'><Text>报名岗位：</Text>{item.jobName}</View>
+                      <View className='roster_item_hr'></View>
+                      <View className='roster_item_time'>面试时间：{item.interviewTime}</View>
+                    </View>
+                  )
+                })
+              }
+
+              {
+                mylist.length >= 4 &&
+                <View className='loading_text'>
+                  {
+                    goonLoad ?
+                      <>
+                        <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
+                        加载中
+                      </> :
+                      "数据已经到底了"
+                  }
+                </View>
+              }
+              {
+                mylist.length === 0 &&
+                <View className='no_data'>
+                  <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
+                  <View>暂无相关数据~</View>
+                </View>
+              }
+            </ScrollView>
           }
-          {
-            list.length === 0 &&
-            <View className='no_data'>
-              <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
-              <View>暂无相关数据~</View>
-            </View>
-          }
-        </ScrollView>
+        </>
+
       }
 
       <Image style={{ bottom: getBottom() }} className='add_clue_btn' src={`${Taro.$cdnUrl}/index/add_clue.webp`}></Image>
