@@ -1,0 +1,348 @@
+/*
+ * @Author: 孙林 1164700321@qq.com
+ * @Date: 2024-07-05 10:05:22
+ * @LastEditors: 孙林
+ * @LastEditTime: 2024-09-23 14:10:33
+ * @Description: 
+ */
+ @import '@/app.scss';
+
+
+
+ .company_auth {
+   width: 100%;
+   background: #F4F4F4;
+ 
+   .order_tab {
+     width: 100%;
+     @include flex-center(space-between);
+     height: 100rpx;
+     background-color: #fff;
+ 
+     >view {
+       width: 50%;
+       @include flex-center;
+       text-align: center;
+       color: rgba(34, 34, 34, 0.6);
+       font-family: "PingFang SC";
+       font-size: 36rpx;
+       // margin-right: 126rpx;
+       // padding-right: 126rpx;
+ 
+       &:last-child {
+         padding-right: 0;
+       }
+     }
+ 
+     .active {
+       color: rgba(34, 34, 34, 1);
+       font-family: "PingFang SC";
+       font-size: 36rpx;
+       font-weight: 600;
+       position: relative;
+ 
+       &::after {
+         content: "";
+         width: 28rpx;
+         display: block;
+         font-size: 36rpx;
+         height: 6rpx;
+         background-color: $boss-color;
+         // margin-top: 12rpx;
+         // margin-left: 63rpx;
+         position: absolute;
+         bottom: -28rpx;
+         left: calc((100% - 28rpx) / 2);
+       }
+     }
+ 
+   }
+ 
+ 
+   .upload_page {
+     width: 100%;
+     background-color: #f5f5f5;
+ 
+     .upload_demo {
+       padding: 0 40rpx;
+ 
+       .demo_title {
+         font-weight: 600;
+         font-size: 36rpx;
+         color: #222222;
+         padding: 46rpx 0 8rpx 0;
+       }
+ 
+       .demo_sub {
+         font-family: PingFangSC-Regular;
+         font-weight: 400;
+         font-size: 24rpx;
+         color: #666666;
+         margin-bottom: 30rpx;
+       }
+ 
+       .demo_sub2 {
+         font-family: PingFangSC-Regular;
+         font-weight: 400;
+         font-size: 24rpx;
+         color: #666666;
+         margin-top: 40rpx;
+       }
+ 
+       .demo_image {
+         width: 100%;
+         @include flex-center(space-between);
+         flex-wrap: wrap;
+         align-content: center;
+ 
+         >view {
+           width: 324rpx;
+           height: 336rpx;
+           background: #FFFFFF;
+           // border: 6rpx solid rgba(4, 131, 255, 0.3);
+           border-radius: 20rpx;
+           // margin: 30rpx 0;
+ 
+           >image {
+             width: 100%;
+             height: 100%;
+           }
+ 
+           &:last-child {
+             width: 678rpx;
+             height: 396rpx;
+             background: #FFFFFF;
+             // border: 6rpx solid rgba(4, 131, 255, 0.3);
+             border-radius: 20rpx;
+             margin-top: 0 !important;
+           }
+         }
+       }
+ 
+       .demo_image2 {
+         width: 100%;
+         @include flex-center(space-between);
+         flex-wrap: wrap;
+         align-content: center;
+ 
+         >view {
+           width: 324rpx;
+           height: 336rpx;
+           background: #FFFFFF;
+           // border: 6rpx solid rgba(4, 131, 255, 0.3);
+           border-radius: 20rpx;
+           // margin: 30rpx 0;
+ 
+           >image {
+             width: 100%;
+             height: 234rpx;
+             // height: 100%;
+           }
+         }
+         >view:nth-child(1){
+           background: url($baseCdnUrl + '/auth/company_back1.png') no-repeat;
+           background-size: 100% 100%;
+         }
+         >view:nth-child(2){
+           background: url($baseCdnUrl + '/auth/company_back2.png') no-repeat;
+           background-size: 100% 100%;
+         }
+       }
+ 
+       .demo_type {
+         width: 100%;
+         @include flex-center(flex-start);
+         margin: 30rpx 0;
+ 
+         >view {
+           width: 152rpx;
+           height: 72rpx;
+           background: #FFFFFF;
+           box-shadow: 0 4rpx 8rpx 0 rgba(0, 0, 0, 0.1);
+           border-radius: 20rpx;
+           @include flex-center;
+           font-weight: 600;
+           font-size: 28rpx;
+           color: #666666;
+           margin-right: 22rpx;
+         }
+ 
+         .type_item_active {
+           background: #0483FF;
+           box-shadow: 0 4rpx 8rpx 0 rgba(0, 0, 0, 0.1);
+           color: #fff;
+         }
+       }
+     }
+ 
+ 
+     .company_info {
+       width: 702rpx;
+       // height: 516rpx;
+       background: #FFFFFF;
+       border-radius: 20rpx;
+       margin: 30rpx auto 0;
+ 
+       .every_info {
+         padding: 32rpx 0 26rpx;
+         width: 618rpx;
+         margin: 0 auto;
+         @include flex-center;
+         border-bottom: 2rpx solid rgba(153, 153, 153, 0.1);
+ 
+         &:last-child {
+           border-bottom: 0;
+         }
+ 
+         >view {
+           width: 180rpx;
+           // margin-right: 60rpx;
+           font-family: PingFangSC-SNaNrpxibold;
+           font-weight: 600;
+           font-size: 30rpx;
+           color: #222222;
+           text-align: left;
+           flex-shrink: 0;
+         }
+ 
+         >input {
+           font-family: PingFangSC-Regular;
+           font-weight: 400;
+           font-size: 30rpx;
+           color: #222222;
+           width: 100%;
+         }
+       }
+     }
+ 
+     .post_btn {
+       width: 686rpx;
+       height: 100rpx;
+       background: #0483FF;
+       border-radius: 18rpx;
+       margin: 28rpx auto;
+       @include flex-center;
+       font-weight: 600;
+       font-size: 32rpx;
+       color: #FFFFFF;
+     }
+ 
+     .post_next {
+       position: fixed;
+       bottom: calc(20rpx + constant(safe-area-inset-bottom));
+       bottom: calc(20rpx + env(safe-area-inset-bottom));
+       left: 32rpx;
+     }
+ 
+     .search_company {
+       width: 100%;
+       display: table;
+       .search_input{
+         width: 722rpx;
+         height: 80rpx;
+         background-color: #FFF;
+         border-radius: 40rpx;
+         margin: 24rpx auto 52rpx;
+         @include flex-center;
+         >.at-icon {
+           flex-shrink: 0;
+           margin: 0 0 0 28rpx;
+         }
+   
+         >input {
+           width: 100%;
+           font-size: 28rpx;
+         }
+       }
+       
+     }
+ 
+     .search_result {
+       padding: 0 14rpx;
+ 
+       .title {
+         width: 100%;
+         color: #222222;
+         font-family: "PingFang SC";
+         font-size: 32rpx;
+         font-style: normal;
+         font-weight: 600;
+         margin: 0 0 0 14rpx;
+       }
+ 
+       .sub_title {
+         color: #666666;
+         font-family: "PingFang SC";
+         font-size: 26rpx;
+         font-style: normal;
+         font-weight: 400;
+         margin: 12rpx 0 24rpx 14rpx;
+       }
+ 
+       .result_list {
+         width: 100%;
+         border-radius: 20rpx;
+         background: #FFF;
+         margin-bottom: 200rpx;
+         .every_list {
+           width: 676rpx;
+           margin: 0 auto;
+           padding: 30rpx 0;
+           @include flex-center(space-between);
+           border-bottom: 1rpx solid #e5e5e5;
+           &:last-child {
+             border-bottom: 0;
+           }
+           >view {
+             color: #222222;
+             font-family: "PingFang SC";
+             font-size: 28rpx;
+             font-style: normal;
+             font-weight: 400;
+ 
+             >image {
+               width: 36rpx;
+               height: 36rpx;
+             }
+           }
+         }
+       }
+     }
+ 
+     .marginBox {
+       width: 100%;
+       height: 100rpx;
+     }
+   }
+ 
+ 
+ 
+ 
+   .loading_text {
+     width: 100%;
+     text-align: center;
+     font-size: 30rpx;
+     color: #8E8E93;
+     padding-bottom: 20rpx;
+     @include flex-center;
+ 
+     .at-icon {
+       margin-right: 19rpx;
+       animation: moveLoading 1s linear infinite;
+     }
+ 
+     @keyframes moveLoading {
+       from {
+         transform: rotate(0deg);
+       }
+ 
+       to {
+         transform: rotate(360deg);
+       }
+     }
+ 
+     // position: absolute;
+     // bottom: 0;
+     // left: 0;
+   }
+ }
