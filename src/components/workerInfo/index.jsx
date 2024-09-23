@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-11 10:36:43
+ * @LastEditTime: 2024-09-19 14:52:41
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -20,8 +20,14 @@ const WorkerInfo = observer(({ store }) => {
         <>
             <View className='userInfo'>
                 <View className='userInfo_title'>
-                    <View className='userInfo_title_name'>高小光</View>
-                    <View>45岁·男·汉族</View>
+                    <View className='userInfo_title_left'>
+                        <View className='userInfo_title_name'>高小光</View>
+                        <View>45岁·男·汉族</View>
+                    </View>
+                    <View className='userInfo_title_right'>
+                        <Image src={`${Taro.$cdnUrl}/index/index_icon41.webp`}></Image>
+                        <View>编辑</View>
+                    </View>
                 </View>
                 <View className='userInfo_tel flex-row-items'>
                     <Image className='tel_img' src={`${Taro.$cdnUrl}/index/mine_icon7.webp`}></Image>

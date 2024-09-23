@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-13 15:49:33
+ * @LastEditTime: 2024-09-14 14:06:21
  * @Description: 
  */
 
@@ -138,14 +138,31 @@ const Index = observer(({ store }) => {
             value={searchValue}></Input>
         </View>
         <View className='filter_wrapper'>
-          <View className='filter_wrap_item' onClick={() => setShowSourceModel(true)}>
-            <View>{sourceList[sourceIndex]}</View>
-            <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
-          </View>
-          <View className='filter_wrap_item'>
-            <View>全部岗位</View>
-            <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
-          </View>
+          {
+            type === '客户池' &&
+            <>
+              <View className='filter_wrap_item' onClick={() => setShowSourceModel(true)}>
+                <View>{sourceList[sourceIndex]}</View>
+                <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
+              </View>
+              <View className='filter_wrap_item'>
+                <View>全部岗位</View>
+                <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
+              </View>
+            </> ||
+            type === '我的客户' &&
+            <>
+              <View className='filter_wrap_item'>
+                <View>全部岗位</View>
+                <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
+              </View>
+              <View className='filter_wrap_item'>
+                <View>全部状态</View>
+                <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
+              </View>
+            </>
+          }
+
           <View className='filter_wrap_item'>
             <View>今日</View>
             <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>

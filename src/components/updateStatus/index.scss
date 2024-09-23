@@ -1,0 +1,52 @@
+
+ @import '@/app.scss';
+ .footer_options {
+    width: 710rpx;
+    position: fixed;
+    content: '';
+    flex-shrink: 0;
+    border-radius: 12rpx;
+    background: #FFF;
+    box-shadow: 0 0 48rpx 0 #00000029;
+    left: 20rpx;
+    box-sizing: border-box;
+    z-index: 11;
+    padding: 46rpx 0;
+    display: flex;
+    flex-flow: row wrap;
+
+    .footer_options_item {
+        width: 50%;
+        @include flex-center(space-between);
+        box-sizing: border-box;
+        margin-top: 44rpx;
+        padding-right: 44rpx;
+
+        .footer_options_item_icon {
+            color: #666666;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            padding-left: 40rpx;
+            @include flex-center(flex-start);
+
+            image {
+                width: 48rpx;
+                height: 48rpx;
+                flex-shrink: 0;
+                margin-right: 10rpx;
+            }
+        }
+
+        .option_item_choose {
+            width: 40rpx;
+            height: 40rpx;
+            flex-shrink: 0;
+        }
+    }
+    .footer_options_item:nth-child(1),.footer_options_item:nth-child(2){
+        margin-top: 0;
+    }
+}

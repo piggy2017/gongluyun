@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:02:33
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-09 16:38:20
+ * @LastEditTime: 2024-09-19 17:28:32
  * @Description: 
  */
 
@@ -50,7 +50,7 @@ const Index = observer(({ store, actCurrent }) => {
         }
         return Taro.$cdnUrl + map[index]
     }
-    const getSelectIcon = (index) => {   
+    const getSelectIcon = (index) => {
         let map = {
             1: `/tabbar/index_active.webp`,
             2: `/tabbar/project_active.webp`,
@@ -62,54 +62,56 @@ const Index = observer(({ store, actCurrent }) => {
     const changeTab = (e) => {
         console.log("点击自定义tabbar触发——changeTab", e, role)
         // setActCurrent(e)
+        switch (e) {
+            case 0:
+                setRole('admin')
+                Taro.switchTab({
+                    url: '/pages/index/index'
+                });
+                break;
+            case 1:
+                Taro.switchTab({
+                    url: '/pages/projectManage/index'
+                });
+                break;
+            case 2:
+                Taro.switchTab({
+                    url: '/pages/clue/index'
+                });
+                break;
+            case 3:
+                Taro.switchTab({
+                    url: '/pages/mine/index'
+                });
+                break;
+        }
         if (role === 'admin') {
-            switch (e) {
-                case 0:
-                    setRole('admin')
-                    Taro.switchTab({
-                        url: '/pages/index/index'
-                    });
-                    break;
-                case 1:
-                    Taro.switchTab({
-                        url: '/pages/projectManage/index'
-                    });
-                    break;
-                case 2:
-                    Taro.switchTab({
-                        url: '/pages/clue/index'
-                    });
-                    break;
-                case 3:
-                    Taro.switchTab({
-                        url: '/pages/mine/index'
-                    });
-                    break;
-            }
+
         }
     }
     const getTabList = () => {
+        return [
+            { title: '工作台', image: getdefalutIcon(1), selectedImage: getSelectIcon(1) },
+            { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
+            { title: '线索', image: getdefalutIcon(3), selectedImage: getSelectIcon(3) },
+            { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
+        ]
         if (role === 'admin') {
-            return [
-                { title: '工作台', image: getdefalutIcon(1), selectedImage: getSelectIcon(1) },
-                { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
-                { title: '线索', image: getdefalutIcon(3), selectedImage: getSelectIcon(3) },
-                { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
-            ]
-        } 
+
+        }
     }
     return (
         <AtTabBar
-                fixed
-                color='#666666'
-                fontSize={11}
-                selectedColor='#1678FF'
-                tabList={getTabList()}
-                onClick={changeTab}
-                current={actCurrent}
-            />
+            fixed
+            color='#666666'
+            fontSize={11}
+            selectedColor='#1678FF'
+            tabList={getTabList()}
+            onClick={changeTab}
+            current={actCurrent}
+        />
         // <View style={{ backgroundColor: '#fff' }}>
-            
+
         // </View>
 
     )

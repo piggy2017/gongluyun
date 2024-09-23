@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-13 16:23:17
+ * @LastEditTime: 2024-09-19 14:19:05
  * @Description: 
  */
 
@@ -92,6 +92,19 @@ const Index = observer(({ store }) => {
                         ></Input>
                     </View>
                 </View>
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label project_item_label_required'>需求人数</View>
+                    <View className='project_item_right'>
+                        <Input
+                            type='number'
+                            className='new_input'
+                            placeholder='请输入所需的总人数'
+                            placeholderStyle='color: #777777;'
+                            value={formData.count}
+                            onInput={(e) => setFormData({ ...formData, count: e.detail.value })}
+                        ></Input>
+                    </View>
+                </View>
             </View>
 
             <View className='project_group_2'>
@@ -147,7 +160,7 @@ const Index = observer(({ store }) => {
                 </View>
 
                 <View className='pay_setting_btns'>
-                    <View className={`pay_btn `}>元/小时</View>
+                    <View className={`pay_btn pay_btn_active`}>元/小时</View>
                     <View className={`pay_btn `}>元/天</View>
                     <View className={`pay_btn `}>元/月</View>
                 </View>

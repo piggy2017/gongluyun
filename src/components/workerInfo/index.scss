@@ -15,16 +15,38 @@
         font-style: normal;
         font-weight: 400;
         line-height: normal;
-        @include flex-center(flex-start);
+        @include flex-center(space-between);
 
-        .userInfo_title_name {
-            color: #222222;
+        .userInfo_title_left {
+            @include flex-center(flex-start);
+
+            .userInfo_title_name {
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 36rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                margin-right: 10rpx;
+            }
+        }
+
+        .userInfo_title_right {
+            @include flex-center(flex-end);
+            color: #1678ff;
             font-family: "PingFang SC";
-            font-size: 36rpx;
+            font-size: 28rpx;
             font-style: normal;
-            font-weight: 500;
+            font-weight: 400;
             line-height: normal;
-            margin-right: 10rpx;
+            padding-right: 28rpx;
+
+            image {
+                width: 40rpx;
+                height: 40rpx;
+                flex-shrink: 0;
+                margin-right: 4rpx;
+            }
         }
     }
 

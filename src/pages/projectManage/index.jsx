@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-13 11:39:14
+ * @LastEditTime: 2024-09-19 14:05:21
  * @Description: 
  */
 
@@ -38,6 +38,8 @@ const Index = observer(({ store }) => {
     { id: 4, type: 1, name: "龙泉驿区招物流分拣全职月结", status: "招聘中", port: 311, interview: 79, pass: 13, signUp: 5, },
   ])
 
+  const [type, setType] = useState('进行中');
+
   useEffect(() => {
     setTimeout(async () => {
       const _query = await selectorQueryDomInfo('.search_wrap');
@@ -64,7 +66,10 @@ const Index = observer(({ store }) => {
     <View className='container'>
       <View className='my_header'>
         <View className='my_header_hr' style={`--statusBarHeight:${statusTitleHeight}px;`}></View>
-        <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}></View>
+        <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
+          <View onClick={() => setType('进行中')} className={`header_item ${type === '进行中' ? 'header_item_active' : ''}`}>进行中</View>
+          <View onClick={() => setType('已结束')} className={`header_item ${type === '已结束' ? 'header_item_active' : ''}`}>已结束</View>
+        </View>
       </View>
       <View className='search_wrap'>
         <View className='search_con'>
@@ -117,32 +122,40 @@ const Index = observer(({ store }) => {
                       } */}
                       <View className='project_item_title_left_name'>{item.name}</View>
                     </View>
-                    <View className='project_item_title_right'>{item.status}</View>
+                    {
+                      type === '进行中' &&
+                      <View className='project_item_title_right'>
+                        <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
+                        <View>签到码</View>
+                      </View> ||
+                      <View className='project_item_title_right_end'>已结束</View>
+                    }
+
                   </View>
                   {
-                    item.type === 2 &&
-                    <View className='compony_wrap'>
-                      <View className='compony_icon'>发单方</View>
-                      <View>{item.compony}</View>
-                    </View>
+                    // item.type === 2 &&
+                    // <View className='compony_wrap'>
+                    //   <View className='compony_icon'>发单方</View>
+                    //   <View>{item.compony}</View>
+                    // </View>
                   }
 
                   <View className='data_wrapper' style={`margin-top:${item.compony ? '10rpx' : '18rpx'}`}>
                     <View className='data_item'>
                       <View className='data_item_value'>{item.port}</View>
-                      <View className='data_item_label'>已上报</View>
+                      <View className='data_item_label'>总需求</View>
                     </View>
                     <View className='data_item'>
                       <View className='data_item_value'>{item.interview}</View>
-                      <View className='data_item_label'>已到面</View>
+                      <View className='data_item_label'>在职人数</View>
                     </View>
                     <View className='data_item'>
                       <View className='data_item_value'>{item.pass}</View>
-                      <View className='data_item_label'>面试通过</View>
+                      <View className='data_item_label'>离职率</View>
                     </View>
                     <View className='data_item'>
                       <View className='data_item_value'>{item.signUp}</View>
-                      <View className='data_item_label'>已入职</View>
+                      <View className='data_item_label'>供应商</View>
                     </View>
                   </View>
 

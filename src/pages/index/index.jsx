@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-11 16:42:46
+ * @LastEditTime: 2024-09-19 17:23:54
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -24,7 +24,7 @@ import './index.scss'
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
-    userStore: { isLogin }
+    userStore: { isLogin, role }
   } = store
   const [i, seti] = useState(0);
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -128,9 +128,10 @@ const Index = observer(({ store }) => {
       >
 
         <View className='search_wrapper'>
-          <View className='search_con'>
+          <View className='search_con' style={`width:${role === 'service' ? '608rpx' : '508rpx'}`}>
             <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
             <Input className='search_input'
+              style={`width:${role === 'service' ? '500rpx' : '400rpx'}`}
               placeholder='输入关键词搜索项目、求职者'
               confirmType='search'
               placeholderStyle='color: #777777;'
@@ -143,125 +144,226 @@ const Index = observer(({ store }) => {
           <View className='message_notice'>
             <View className='message_notice_dot'></View>
           </View>
-          <View className='add_user_icon' onClick={() => { setShowAddType(!showAddType) }}>
-            {
-              showAddType &&
-              <View className='add_types_wrapper'>
-                <View className='add_types_item'>
-                  <Image src={`${Taro.$cdnUrl}/index/index_icon11.webp`}></Image>
-                  <View>新增求职者线索</View>
+          {
+            (role === 'admin' || role === 'onSite') &&
+            <View className='add_user_icon' onClick={() => { setShowAddType(!showAddType) }}>
+              {
+                showAddType &&
+                <View className='add_types_wrapper'>
+                  <View className='add_types_item'>
+                    <Image src={`${Taro.$cdnUrl}/index/index_icon11.webp`}></Image>
+                    <View>新增求职者线索</View>
+                  </View>
+                  <View className='add_types_item'>
+                    <Image src={`${Taro.$cdnUrl}/index/index_icon10.webp`}></Image>
+                    <View>新增招聘项目</View>
+                  </View>
+                  <View className='add_types_item'>
+                    <Image src={`${Taro.$cdnUrl}/index/index_icon9.webp`}></Image>
+                    <View>新增员工账号</View>
+                  </View>
                 </View>
-                <View className='add_types_item'>
-                  <Image src={`${Taro.$cdnUrl}/index/index_icon10.webp`}></Image>
-                  <View>新增招聘项目</View>
+              }
+            </View>
+          }
+        </View>
+
+        {
+          role === "admin" &&
+          <View className='btn_wrapper'>
+            <View className='btn_wrap_item'>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon4.webp`}></Image>
+              <View>人才库</View>
+            </View>
+            <View className='btn_wrap_item'>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon5.webp`}></Image>
+              <View>员工数据</View>
+            </View>
+          </View>
+        }
+
+        {
+          (role === "admin" || role === "service") &&
+          <View className='enter_wrapper'>
+            <View className='enter_wrap_item'>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon6.webp`}></Image>
+              <View>录入求职线索</View>
+            </View>
+            <View className='enter_wrap_item' style={`margin-left:230rpx;`}>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
+              <View>反馈名单</View>
+            </View>
+          </View>
+        }
+
+        {
+          role === 'onSite' &&
+          <View className='enter_wrapper'>
+            <View className='enter_wrap_item'>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
+              <View>签到码</View>
+            </View>
+            <View className='enter_wrap_item'>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
+              <View>导出名单</View>
+            </View>
+          </View>
+        }
+
+        {
+          role === "admin" &&
+          <View className='today_data_wrapper'>
+            <View className='today_data_title'>今日数据</View>
+            <View className='today_data_content'>
+              <View className='today_data_item'>
+                <View className='today_data_number'>333</View>
+                <View className='today_data_laber'>在招岗位</View>
+              </View>
+              <View className='today_data_item'>
+                <View className='today_data_number'>333</View>
+                <View className='today_data_laber'>新增入职</View>
+              </View>
+              <View className='today_data_item'>
+                <View className='today_data_number'>333</View>
+                <View className='today_data_laber'>今日离职</View>
+              </View>
+              <View className='today_data_item'>
+                <View className='today_data_number'>333</View>
+                <View className='today_data_laber'>新增线索</View>
+              </View>
+            </View>
+          </View>
+        }
+
+        {
+          role === "service" &&
+          <View className='today_data_wrapper'>
+            <View className='today_data_title'>客服待办</View>
+            <View className='today_data_content'>
+              <View className='today_data_item'>
+                <View className='today_data_number'>333</View>
+                <View className='today_data_laber'>待处理</View>
+              </View>
+              <View className='today_data_item'>
+                <View className='today_data_number'>333</View>
+                <View className='today_data_laber'>待约面</View>
+              </View>
+              <View className='today_data_item'>
+                <View className='today_data_number'>333</View>
+                <View className='today_data_laber'>待回访</View>
+              </View>
+            </View>
+          </View>
+        }
+        {
+          role === 'onSite' &&
+          <>
+            <View className='today_data_wrapper'>
+              <View className='today_data_title'>驻场待办</View>
+              <View className='today_data_content' style={`padding: 0 58rpx`}>
+                <View className='today_data_item'>
+                  <View className='today_data_number'>333</View>
+                  <View className='today_data_laber'>待处理</View>
                 </View>
-                <View className='add_types_item'>
-                  <Image src={`${Taro.$cdnUrl}/index/index_icon9.webp`}></Image>
-                  <View>新增员工账号</View>
+                <View className='today_data_item'>
+                  <View className='today_data_number'>333</View>
+                  <View className='today_data_laber'>待约面</View>
+                </View>
+                <View className='today_data_item'>
+                  <View className='today_data_number'>333</View>
+                  <View className='today_data_laber'>待回访</View>
                 </View>
               </View>
-            }
-          </View>
-        </View>
+            </View>
 
-        <View className='btn_wrapper'>
-          <View className='btn_wrap_item'>
-            <Image src={`${Taro.$cdnUrl}/index/index_icon4.webp`}></Image>
-            <View>人才库</View>
-          </View>
-          <View className='btn_wrap_item'>
-            <Image src={`${Taro.$cdnUrl}/index/index_icon5.webp`}></Image>
-            <View>员工数据</View>
-          </View>
-        </View>
+            <View className='today_data_wrapper'>
+              <View className='today_data_title'>今日数据</View>
+              <View className='today_data_content'>
+                <View className='today_data_item'>
+                  <View className='today_data_number'>333</View>
+                  <View className='today_data_laber'>已约面</View>
+                </View>
+                <View className='today_data_item'>
+                  <View className='today_data_number'>333</View>
+                  <View className='today_data_laber'>已到面</View>
+                </View>
+                <View className='today_data_item'>
+                  <View className='today_data_number'>333</View>
+                  <View className='today_data_laber'>面试通过</View>
+                </View>
+                <View className='today_data_item'>
+                  <View className='today_data_number'>333</View>
+                  <View className='today_data_laber'>已入职</View>
+                </View>
+              </View>
+            </View>
+          </>
+        }
 
-        <View className='enter_wrapper'>
-          <View className='enter_wrap_item'>
-            <Image src={`${Taro.$cdnUrl}/index/index_icon6.webp`}></Image>
-            <View>录入求职线索</View>
+        {
+          (role === "admin" || role === "service") &&
+          <View className='clue_sea_wrapper'>
+            <View className='clue_sea_left'>
+              <View className='clue_sea_title'>线索公海</View>
+              <View className='clue_sea_today'>今日已领 <Text>1</Text> 名</View>
+              <View className='clue_sea_total'>线索池共 <Text>32</Text> 名求职者等待领取并跟进</View>
+            </View>
+            <View className='clue_sea_right'>前往领取</View>
           </View>
-          <View className='enter_wrap_item'>
-            <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
-            <View>反馈名单</View>
-          </View>
-        </View>
+        }
 
-        <View className='today_data_wrapper'>
-          <View className='today_data_title'>今日数据</View>
-          <View className='today_data_content'>
-          <View className='today_data_item'>
-              <View className='today_data_number'>333</View>
-              <View className='today_data_laber'>在招岗位</View>
+        {
+          (role === "admin" || role === "service") &&
+          <View className='drainage_data_wrapper'>
+            <View className='drainage_data_title'>
+              <View className='drainage_data_title_left'>引流数据</View>
+              <View className='drainage_data_title_right'>
+                <View onClick={() => { setDrainageData('昨日') }} className={`title_right_item ${drainageData === '昨日' ? 'title_right_item_active' : ''}`}>昨日</View>
+                <View onClick={() => { setDrainageData('本周') }} className={`title_right_item ${drainageData === '本周' ? 'title_right_item_active' : ''}`}>本周</View>
+                <View onClick={() => { setDrainageData('本月') }} className={`title_right_item ${drainageData === '本月' ? 'title_right_item_active' : ''}`}>本月</View>
+              </View>
             </View>
-            <View className='today_data_item'>
-              <View className='today_data_number'>333</View>
-              <View className='today_data_laber'>新增入职</View>
-            </View>
-            <View className='today_data_item'>
-              <View className='today_data_number'>333</View>
-              <View className='today_data_laber'>今日离职</View>
-            </View>
-            <View className='today_data_item'>
-              <View className='today_data_number'>333</View>
-              <View className='today_data_laber'>新增线索</View>
+            <View className='drainage_data_content'>
+              <View className='drainage_data_content_left'>
+                <View className='drainage_data_content_left_data'>74.2%</View>
+                <View className='drainage_data_content_left_laber'>约面率</View>
+              </View>
+              <Image className='drainage_data_content_img' src={`${Taro.$cdnUrl}/index/index_icon8.webp`}></Image>
+              <View className='drainage_data_content_right'>
+                <View className='drainage_right_item'>新增报名 <Text>52</Text> 人</View>
+                <View className='drainage_right_item'>跟进联系 <Text>52</Text> 人</View>
+                <View className='drainage_right_item'>约定面试 <Text>52</Text> 人</View>
+              </View>
             </View>
           </View>
-        </View>
+        }
 
-        <View className='clue_sea_wrapper'>
-          <View className='clue_sea_left'>
-            <View className='clue_sea_title'>线索搜索</View>
-            <View className='clue_sea_today'>今日已领 <Text>1</Text> 名</View>
-            <View className='clue_sea_total'>线索池共 <Text>32</Text> 名求职者等待领取并跟进</View>
+        {
+          role === "admin" &&
+          <View className='drainage_data_wrapper'>
+            <View className='drainage_data_title'>
+              <View className='drainage_data_title_left'>转化数据</View>
+              <View className='drainage_data_title_right'>
+                <View onClick={() => { setTransformData('昨日') }} className={`title_right_item ${transformData === '昨日' ? 'title_right_item_active' : ''}`}>昨日</View>
+                <View onClick={() => { setTransformData('本周') }} className={`title_right_item ${transformData === '本周' ? 'title_right_item_active' : ''}`}>本周</View>
+                <View onClick={() => { setTransformData('本月') }} className={`title_right_item ${transformData === '本月' ? 'title_right_item_active' : ''}`}>本月</View>
+              </View>
+            </View>
+            <View className='drainage_data_content'>
+              <View className='drainage_data_content_left'>
+                <View className='drainage_data_content_left_data'>74.2%</View>
+                <View className='drainage_data_content_left_laber'>约面率</View>
+              </View>
+              <Image className='drainage_data_content_img' src={`${Taro.$cdnUrl}/index/index_icon8.webp`}></Image>
+              <View className='drainage_data_content_right'>
+                <View className='drainage_right_item'>新增报名 <Text>52</Text> 人</View>
+                <View className='drainage_right_item'>跟进联系 <Text>52</Text> 人</View>
+                <View className='drainage_right_item'>约定面试 <Text>52</Text> 人</View>
+              </View>
+            </View>
           </View>
-          <View className='clue_sea_right'>前往领取</View>
-        </View>
+        }
 
-        <View className='drainage_data_wrapper'>
-          <View className='drainage_data_title'>
-            <View className='drainage_data_title_left'>引流数据</View>
-            <View className='drainage_data_title_right'>
-              <View onClick={() => { setDrainageData('昨日') }} className={`title_right_item ${drainageData === '昨日' ? 'title_right_item_active' : ''}`}>昨日</View>
-              <View onClick={() => { setDrainageData('本周') }} className={`title_right_item ${drainageData === '本周' ? 'title_right_item_active' : ''}`}>本周</View>
-              <View onClick={() => { setDrainageData('本月') }} className={`title_right_item ${drainageData === '本月' ? 'title_right_item_active' : ''}`}>本月</View>
-            </View>
-          </View>
-          <View className='drainage_data_content'>
-            <View className='drainage_data_content_left'>
-              <View className='drainage_data_content_left_data'>74.2%</View>
-              <View className='drainage_data_content_left_laber'>约面率</View>
-            </View>
-            <Image className='drainage_data_content_img' src={`${Taro.$cdnUrl}/index/index_icon8.webp`}></Image>
-            <View className='drainage_data_content_right'>
-              <View className='drainage_right_item'>新增报名 <Text>52</Text> 人</View>
-              <View className='drainage_right_item'>跟进联系 <Text>52</Text> 人</View>
-              <View className='drainage_right_item'>约定面试 <Text>52</Text> 人</View>
-            </View>
-          </View>
-        </View>
-
-        <View className='drainage_data_wrapper'>
-          <View className='drainage_data_title'>
-            <View className='drainage_data_title_left'>转化数据</View>
-            <View className='drainage_data_title_right'>
-              <View onClick={() => { setTransformData('昨日') }} className={`title_right_item ${transformData === '昨日' ? 'title_right_item_active' : ''}`}>昨日</View>
-              <View onClick={() => { setTransformData('本周') }} className={`title_right_item ${transformData === '本周' ? 'title_right_item_active' : ''}`}>本周</View>
-              <View onClick={() => { setTransformData('本月') }} className={`title_right_item ${transformData === '本月' ? 'title_right_item_active' : ''}`}>本月</View>
-            </View>
-          </View>
-          <View className='drainage_data_content'>
-            <View className='drainage_data_content_left'>
-              <View className='drainage_data_content_left_data'>74.2%</View>
-              <View className='drainage_data_content_left_laber'>约面率</View>
-            </View>
-            <Image className='drainage_data_content_img' src={`${Taro.$cdnUrl}/index/index_icon8.webp`}></Image>
-            <View className='drainage_data_content_right'>
-              <View className='drainage_right_item'>新增报名 <Text>52</Text> 人</View>
-              <View className='drainage_right_item'>跟进联系 <Text>52</Text> 人</View>
-              <View className='drainage_right_item'>约定面试 <Text>52</Text> 人</View>
-            </View>
-          </View>
-        </View>
 
         <View onClick={() => { setShowTimePicker(true) }}>时间选择器:{timeText}</View>
         <View onClick={() => { setShowDatePicker(true) }}>日期选择器:{dateText}</View>

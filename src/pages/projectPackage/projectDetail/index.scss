@@ -9,7 +9,8 @@
 
     .project_baseInfo {
         width: 710rpx;
-        height: 148rpx;
+        height: 288rpx;
+        border-radius: 20rpx;
         flex-shrink: 0;
         background-color: #FFF;
         margin: 30rpx auto 0 auto;
@@ -29,17 +30,46 @@
 
         .project_addr {
             padding: 10rpx 24rpx 0 24rpx;
-            @include flex-center(space-between);
             color: #666666;
             font-family: "PingFang SC";
             font-size: 30rpx;
             font-style: normal;
             font-weight: 400;
             line-height: 45rpx;
+        }
 
-            .project_push_time {
-                font-size: 28rpx;
-                line-height: 42rpx;
+        .project_count {
+            width: 662rpx;
+            height: 124rpx;
+            flex-shrink: 0;
+            border-radius: 10rpx;
+            background: #cbcbcb26;
+            margin: 16rpx auto 0 auto;
+            padding: 0 24rpx;
+            box-sizing: border-box;
+            @include flex-center(space-between);
+            .project_count_item{
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: center;
+                justify-content: center;
+                color: #333333;
+                text-align: center;
+                font-family: "D-DIN-PRO";
+                font-size: 40rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+                .project_count_item_label{
+                    color: #666666;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 26rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    margin-top: 8rpx;
+                }
             }
         }
     }

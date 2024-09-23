@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-12 17:00:59
+ * @LastEditTime: 2024-09-19 14:25:22
  * @Description: 
  */
 
@@ -29,9 +29,24 @@ const Index = observer(({ store }) => {
 
       <View className='project_baseInfo'>
         <View className='project_name'>龙泉驿区招物流分拣全职月结</View>
-        <View className='project_addr'>
-          <View>龙泉驿·普工</View>
-          <View className='project_push_time'>5月6日发布</View>
+        <View className='project_addr'>龙泉驿·普工.5月6日发布</View>
+        <View className='project_count'>
+          <View className='project_count_item'>
+            <View >311</View>
+            <View className='project_count_item_label'>总需求</View>
+          </View>
+          <View className='project_count_item'>
+            <View >311</View>
+            <View className='project_count_item_label'>在职人数</View>
+          </View>
+          <View className='project_count_item'>
+            <View >311</View>
+            <View className='project_count_item_label'>离职率</View>
+          </View>
+          <View className='project_count_item'>
+            <View >311</View>
+            <View className='project_count_item_label'>供应商</View>
+          </View>
         </View>
       </View>
 
@@ -74,7 +89,7 @@ const Index = observer(({ store }) => {
 
         <View className='interview_item'>
           <Image src={`${Taro.$cdnUrl}/index/index_icon22.webp`}></Image>
-          <View className='interview_item_content'><Text>面试联系人：</Text>王老师 17780662488</View>
+          <View className='interview_item_content'><Text>驻场联系人：</Text>王老师 17780662488</View>
         </View>
         <View className='interview_item'>
           <Image src={`${Taro.$cdnUrl}/index/index_icon23.webp`}></Image>
