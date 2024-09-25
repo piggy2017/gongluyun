@@ -2,29 +2,194 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-12 11:55:55
+ * @LastEditTime: 2024-09-25 15:29:05
  * @Description: 
  */
 
 import http from "./request"
 
-// const env = 'test'
 const env = 'prod'
-const base = env === 'prod' ? 'https://api.apujiyu.com' : 'http://test.apujiyu.com'
+const base = env === 'prod' ? 'https://sa-api.apujiyu.com' : 'https://sa-api.apujiyu.com'
 const API_BASE_URL = base + "/mini"
 // const API_BASE_URL_JOB = "https://testios.joymian.com/jobfly/order"
 const CDN_BASE_URL = "https://apu-mini.oss-accelerate.aliyuncs.com"
 const webSocketUrl = env === 'prod' ? "wss://im.apujiyu.com/websocket" : "ws://test.im.apujiyu.com/websocket"
 
+
+// 登录模块
+export const loginPhone = params => {            // 手机号登录
+    return http(API_BASE_URL + '/login/wechat/applet', params, "POST", {"Content-Type": "application/json"});
+}
+export const loginEmployeePhone = params => {    // 员工通道（通过手机号密码登录）
+    return http(API_BASE_URL + '/login/phone', params, "POST", {"Content-Type": "application/json"});
+}
+export const loginCheck = params => {    // 校验系统accessToken
+    return http(API_BASE_URL + '/login/check/token', params, "POST", {"Content-Type": "application/json"});
+}
+
+
+// 实名认证模块
+export const authLicense = params => {            // license营业执照识别
+    return http(API_BASE_URL + '/user/auth/license', params, "POST", {"Content-Type": "application/json"});
+}
+export const authInfo = params => {            // 获取认证信息
+    return http(API_BASE_URL + '/user/auth/info', params, "POST", {"Content-Type": "application/json"});
+}
+
+
+// 用户模块
+export const userCenter = params => {            // 个人中心
+    return http(API_BASE_URL + '/user/center', params, "POST", {"Content-Type": "application/json"});
+}
+
+
+// 首页工作台模块
+export const workbenchSearch = params => {              // 首页搜索
+    return http(API_BASE_URL + '/workbench/search', params, "POST", {"Content-Type": "application/json"});
+}
+export const workbenchclueList = params => {            // 人才库
+    return http(API_BASE_URL + '/workbench/clueList', params, "POST", {"Content-Type": "application/json"});
+}
+export const workbenchtodayData = params => {            // 今日数据
+    return http(API_BASE_URL + '/workbench/todayData', params, "POST", {"Content-Type": "application/json"});
+}
+export const workbenchcluePool = params => {            // 线索公海
+    return http(API_BASE_URL + '/workbench/cluePool', params, "POST", {"Content-Type": "application/json"});
+}
+export const workbenchdrainageData = params => {            // 引流数据
+    return http(API_BASE_URL + '/workbench/drainageData', params, "POST", {"Content-Type": "application/json"});
+}
+export const workbenchconvertData = params => {            // 转化数据
+    return http(API_BASE_URL + '/workbench/convertData', params, "POST", {"Content-Type": "application/json"});
+}
+
+
+// 岗位相关
+export const jobTypeList = params => {            // 获取工种数据
+    return http(API_BASE_URL + '/job/jobTypeList', params, "POST", {"Content-Type": "application/json"});
+}
+
+
+// 报名相关
+export const getUserSignUpList = params => {            // 通过手机号查询用户的报名/求职记录
+    return http(API_BASE_URL + '/signUp/getUserSignUpList', params, "POST", {"Content-Type": "application/json"});
+}
+
+
+// 公司管理
+export const companySettled = params => {            // 公司入驻
+    return http(API_BASE_URL + '/company/settled', params, "POST", {"Content-Type": "application/json"});
+}
+export const companyUpdate = params => {            // 更新公司信息
+    return http(API_BASE_URL + '/company/update', params, "POST", {"Content-Type": "application/json"});
+}
+export const getRoleAndPermission = params => {            // 获取所有角色以及角色下的所有权限
+    return http(API_BASE_URL + '/company/getRoleAndPermission', params, "POST", {"Content-Type": "application/json"});
+}
+export const getRoleAndPermissionByUserId = params => {            // 获取用户拥有角色以及角色下的所有权限
+    return http(API_BASE_URL + '/company/getRoleAndPermissionByUserId', params, "POST", {"Content-Type": "application/json"});
+}
+export const companyMemberList = params => {            // 企业成员列表
+    return http(API_BASE_URL + '/company/memberList', params, "POST", {"Content-Type": "application/json"});
+}
+export const companyAddAccount = params => {            // 添加企业账号
+    return http(API_BASE_URL + '/company/addAccount', params, "POST", {"Content-Type": "application/json"});
+}
+export const companyDisableAccount = params => {            // 停用企业账号
+    return http(API_BASE_URL + '/company/disableAccount', params, "POST", {"Content-Type": "application/json"});
+}
+export const companyUpdateMember = params => {            // 修改企业成员信息
+    return http(API_BASE_URL + '/company/updateMember', params, "POST", {"Content-Type": "application/json"});
+}
+export const companygetInfo = params => {            // 获取公司详情
+    return http(API_BASE_URL + '/company/getInfo', params, "POST", {"Content-Type": "application/json"});
+}
+
+
+// 项目相关
+export const contractsList = params => {            // 项目大厅
+    return http(API_BASE_URL + '/contracts/list', params, "POST", {"Content-Type": "application/json"});
+}
+export const contractsCreate = params => {            // 发布项目
+    return http(API_BASE_URL + '/contracts/create', params, "POST", {"Content-Type": "application/json"});
+}
+export const contractsgetRoster = params => {            // 获取花名册
+    return http(API_BASE_URL + '/contracts/getRoster', params, "POST", {"Content-Type": "application/json"});
+}
+export const getContractsInfoStatistics = params => {            // 获取项目详情-统计
+    return http(API_BASE_URL + '/contracts/getContractsInfoStatistics', params, "POST", {"Content-Type": "application/json"});
+}
+export const getContractsInfo = params => {            // 获取项目详情
+    return http(API_BASE_URL + '/contracts/getContractsInfo', params, "POST", {"Content-Type": "application/json"});
+}
+export const stopContracts = params => {            // 停止项目
+    return http(API_BASE_URL + '/contracts/stopContracts', params, "POST", {"Content-Type": "application/json"});
+}
+export const openContracts = params => {            // 打开项目
+    return http(API_BASE_URL + '/contracts/openContracts', params, "POST", {"Content-Type": "application/json"});
+}
+export const updateContracts = params => {            // 编辑项目
+    return http(API_BASE_URL + '/contracts/updateContracts', params, "POST", {"Content-Type": "application/json"});
+}
+
+
+// 线索相关
+export const cluePool = params => {            // 客户池
+    return http(API_BASE_URL + '/clue/pool', params, "POST", {"Content-Type": "application/json"});
+}
+export const clueSource = params => {       //  获取线索来源枚举
+    return http(API_BASE_URL + '/clue/source', params, "GET", { "Content-Type": "application/json" });
+};
+export const clueInsert = params => {       //  录入求职者信息
+    return http(API_BASE_URL + '/clue/insert', params, "GET", { "Content-Type": "application/json" });
+};
+export const clueReceive = params => {       //  立即领取客户
+    return http(API_BASE_URL + '/clue/receive', params, "GET", { "Content-Type": "application/json" });
+};
+export const cluemyClients = params => {       //  我的客户
+    return http(API_BASE_URL + '/clue/myClients', params, "GET", { "Content-Type": "application/json" });
+};
+export const cluegetUserInfo = params => {       //  获取客户信息
+    return http(API_BASE_URL + '/clue/getUserInfo', params, "GET", { "Content-Type": "application/json" });
+};
+export const clueStateFlow = params => {       //  求职状态流转
+    return http(API_BASE_URL + '/clue/stateFlow', params, "GET", { "Content-Type": "application/json" });
+};
+
+
+// 面试相关
+export const getArrangeableRecruitList = params => {       //  获取我可安排的岗位
+    return http(API_BASE_URL + '/interview/getArrangeableRecruitList', params, "GET", { "Content-Type": "application/json" });
+};
+export const arrangeInterview = params => {       //  安排面试
+    return http(API_BASE_URL + '/interview/arrangeInterview', params, "GET", { "Content-Type": "application/json" });
+};
+export const updateInterviewer = params => {       //  更新面试信息
+    return http(API_BASE_URL + '/interview/updateInterviewer', params, "GET", { "Content-Type": "application/json" });
+};
+
+
+
+
+
+
 export const jobTypeAllList = params => { //所有工种
-    return http(API_BASE_URL + '/job/jobTypeAllList', params, "POST", { "Content-Type": "application/json" });
+    return http(API_BASE_URL + '/job/jobTypeAllList', params, "POST", {
+        "Content-Type": "application/json"
+    });
 };
 export const jobAssoc = params => { //岗位联想
-    return http(API_BASE_URL + '/job/jobAssoc', params, "POST", { "Content-Type": "application/json" });
+    return http(API_BASE_URL + '/job/jobAssoc', params, "POST", {
+        "Content-Type": "application/json"
+    });
 };
-export const filterJobTypeList = params => {                     // 获取任务大厅对应的工种
-    return http(API_BASE_URL + '/order/contracts/jobTypeList', params, "POST", { "Content-Type": "application/json" });
+export const filterJobTypeList = params => { // 获取任务大厅对应的工种
+    return http(API_BASE_URL + '/order/contracts/jobTypeList', params, "POST", {
+        "Content-Type": "application/json"
+    });
 };
 export const fetchOssConfig = params => { //获取oss校验
-    return http(API_BASE_URL + '/upload/stsToken', params, "POST", { "Content-Type": "application/json" });
+    return http(API_BASE_URL + '/upload/stsToken', params, "POST", {
+        "Content-Type": "application/json"
+    });
 };

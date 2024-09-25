@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-11 14:29:42
+ * @LastEditTime: 2024-09-24 15:15:03
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -18,7 +18,7 @@ import './index.scss';
     bgColor: 背景颜色,默认白色
     placeholder: 当fixed=true时，是否显示占位
 */
-const Navbar = observer(({ store, fixed = false, back = true, title = '', bgColor, placeholder = false }) => {
+const Navbar = observer(({ store, fixed = false, back = true, title = '', bgColor, placeholder = false, customBack }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
     } = store
@@ -33,7 +33,14 @@ const Navbar = observer(({ store, fixed = false, back = true, title = '', bgColo
                 <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
                     <View className='navbar_back'>
                         {
-                            back && <Image src={`${Taro.$cdnBackIcon}`} onClick={() => Taro.navigateBack({ delta: 1 })}></Image>
+                            back && <Image src={`${Taro.$cdnBackIcon}`} onClick={() => {
+                                if(customBack){
+                                    customBack();
+                                }else{
+                                    Taro.navigateBack({ delta: 1 })
+                                }
+                                
+                            }}></Image>
                         }
                     </View>
                     <View className='navbar_title'>{title}</View>

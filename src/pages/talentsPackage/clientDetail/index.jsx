@@ -2,9 +2,10 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-23 11:57:03
+ * @LastEditTime: 2024-09-25 14:04:38
  * @Description: 
  */
+
 
 import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro';
@@ -256,27 +257,34 @@ const Index = observer(({ store }) => {
                         }
                     </View>
                 </View> */}
-                <UpdateStatus
-                    onClose={() => setShowbottomOptions(false)}
-                    showPicker={showbottomOptions}
-                    currentStatus={currentCliskstatus}
-                    bottomHeight={bottomHeight}
-                    onChange={changeStatus}>
 
-                </UpdateStatus>
             </Block>
 
             <View className='bottom_wrapper'>
-                <View style={`height:16rpx`}></View>
-                <View className='edit_wrap'>
-                    <View className='edit_wrap_btn' onClick={() => setShowbottomOptions(!showbottomOptions)}>修改状态</View>
-                    <View className='count_wrap'>
-                        <AtIcon onClick={() => setCurrentIndex('reduce')} value='chevron-left' size='20' color={`${current === 1 ? '#999999' : '#333333'}`}></AtIcon>
-                        <View className='count'>{current}/{totalPerson}</View>
-                        <AtIcon onClick={() => setCurrentIndex('add')} value='chevron-right' size='20' color={`${current === totalPerson ? '#999999' : '#333333'}`}></AtIcon>
+                <View className='bottom_wrapper_con'>
+                    <View className='' style={`height:16rpx`}></View>
+                    <View className='edit_wrap'>
+                        <View className='edit_wrap_btn' onClick={() => setShowbottomOptions(!showbottomOptions)}>修改状态</View>
+                        <View className='count_wrap'>
+                            <AtIcon onClick={() => setCurrentIndex('reduce')} value='chevron-left' size='20' color={`${current === 1 ? '#999999' : '#333333'}`}></AtIcon>
+                            <View className='count'>{current}/{totalPerson}</View>
+                            <AtIcon onClick={() => setCurrentIndex('add')} value='chevron-right' size='20' color={`${current === totalPerson ? '#999999' : '#333333'}`}></AtIcon>
+                        </View>
+                    </View>
+                    <View style={`height:${bottomSafeAreaHeight}px`}></View>
+
+                    <View className='options_x'>
+                        <UpdateStatus
+                            onClose={() => setShowbottomOptions(false)}
+                            showPicker={showbottomOptions}
+                            currentStatus={currentCliskstatus}
+                            bottomHeight={bottomHeight}
+                            onChange={changeStatus}>
+
+                        </UpdateStatus>
                     </View>
                 </View>
-                <View style={`height:${bottomSafeAreaHeight}px`}></View>
+
             </View>
         </View>
     )

@@ -1,0 +1,207 @@
+@import '@/app.scss';
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #1678ff24 0%, #1678ff00 100%) #fff;
+    background-size: 100% 892rpx;
+    background-repeat: no-repeat;
+
+    .my_header {
+        // position: fixed;
+        // top: 0;
+        // left: 0;
+        // z-index: 999;
+        width: 100%;
+
+        .my_header_hr {
+            width: 100%;
+            height: var(--statusBarHeight);
+        }
+        .my_header_content {
+            height: var(--navContentHeight);
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            padding-left: 30rpx;
+            image{
+                width: 48rpx;
+                height: 48rpx;
+            }
+        }
+    }
+
+    .logo_wrap {
+        margin-top: 260rpx;
+        padding-left: 92rpx;
+
+        .logo {
+            width: 200rpx;
+            height: 65rpx;
+            background-color: #026CFF;
+        }
+
+        .title {
+            color: #026cff;
+            font-family: "Alibaba PuHuiTi 2.0";
+            font-size: 31.66rpx;
+            font-style: normal;
+            font-weight: 55 Regular;
+            line-height: normal;
+            margin-top: 14rpx;
+        }
+    }
+
+    .login_bottom {
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+
+        .logn_btn {
+            width: 638rpx;
+            height: 100rpx;
+            border-radius: 12rpx;
+            background: #1678FF;
+            color: #ffffff;
+            text-align: center;
+            font-family: "PingFang SC";
+            font-size: 32rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 100rpx;
+            margin: 0 auto;
+        }
+
+        .employee_road {
+            width: 638rpx;
+            height: 100rpx;
+            border-radius: 12rpx;
+            border: 1rpx solid #1678FF;
+            color: #1678ff;
+            text-align: center;
+            font-family: "PingFang SC";
+            font-size: 32rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 100rpx;
+            margin: 24rpx auto 0 auto;
+        }
+
+        .logn_policy {
+            @include flex-center();
+            color: #6d7075;
+            text-align: center;
+            font-family: "PingFang SC";
+            font-size: 24rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            margin-top: 46rpx;
+
+            image {
+                width: 40rpx;
+                height: 40rpx;
+                flex-shrink: 0;
+                margin-right: 4rpx;
+            }
+
+            .webview_link {
+                color: #1678ff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 24rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+            }
+        }
+    }
+
+    .input_wrap {
+        width: 632rpx;
+        height: 100rpx;
+        flex-shrink: 0;
+        border-radius: 8rpx;
+        background: #FFF;
+        margin: 120rpx auto 0 auto;
+        @include flex-center(flex-start);
+
+        .input_icon {
+            width: 44rpx;
+            height: 44rpx;
+            flex-shrink: 0;
+            margin: 0 24rpx 0 28rpx;
+        }
+
+        .my_input {
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 32rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            width: 400rpx;
+        }
+    }
+
+    .input_wrap_password {
+        margin: 24rpx auto 0 auto !important;
+        position: relative;
+
+        .input_clock_icon {
+            width: 40rpx;
+            height: 40rpx;
+            flex-shrink: 0;
+            position: absolute;
+            z-index: 9;
+            top: 30rpx;
+            right: 28rpx;
+        }
+    }
+
+    .logn_policy_2 {
+        @include flex-center(flex-start);
+        color: #6d7075;
+        text-align: center;
+        font-family: "PingFang SC";
+        font-size: 24rpx;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        padding-left: 70rpx;
+        margin-top: 24rpx;
+
+        image {
+            width: 40rpx;
+            height: 40rpx;
+            flex-shrink: 0;
+            margin-right: 4rpx;
+        }
+
+        .webview_link {
+            color: #1678ff;
+            text-align: center;
+            font-family: "PingFang SC";
+            font-size: 24rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+    }
+
+    .account_login_btn {
+        width: 638rpx;
+        height: 100rpx;
+        border-radius: 12rpx;
+        background: #0483FF;
+        color: #ffffff;
+        text-align: center;
+        font-family: "PingFang SC";
+        font-size: 32rpx;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 100rpx;
+        margin: 148rpx auto 0 auto;
+    }
+}

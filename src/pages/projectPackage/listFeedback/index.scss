@@ -297,10 +297,10 @@
                     flex-shrink: 0;
                     border-radius: 12rpx;
                     background: #FFF;
-                    box-shadow: 0 0 48rpx 0 #00000029;
-                    right: 24rpx;
+                    // box-shadow: 0 0 48rpx 0 #00000029;
+                    right: 0rpx;
                     top: 100rpx;
-                    padding: 40rpx 40rpx 40rpx 28rpx;
+                    // padding: 40rpx 40rpx 40rpx 28rpx;
                     box-sizing: border-box;
                     z-index: 9;
 
@@ -411,10 +411,20 @@
     .footer_wrapper {
         position: fixed;
         background: #FFF;
-        z-index: 999;
+        z-index: 9;
         width: 100%;
         left: 0;
         bottom: 0;
+
+        .footer_wrapper_top{
+            position: relative;
+            .footer_wrapper_top_position{
+                position: absolute;
+                z-index: 11;
+                top: -340rpx;
+                left: 20rpx;
+            }
+        }
 
         .footer_wrapper_content {
             padding: 0 28rpx 0 46rpx;

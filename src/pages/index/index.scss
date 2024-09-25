@@ -65,6 +65,7 @@
                 margin-left: 10rpx;
                 font-family: "PingFang SC";
                 font-size: 28rpx;
+                color: #777777;
             }
         }
 
@@ -435,11 +436,13 @@
     }
 }
 
+
 .data_init_layout {
     .at-float-layout__container {
         height: 480rpx !important;
         max-height: 480rpx !important;
         min-height: 480rpx !important;
+        border-radius: 20rpx 20rpx 0 0 !important;
         overflow: hidden;
     }
 

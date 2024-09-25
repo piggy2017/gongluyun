@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-19 17:23:54
+ * @LastEditTime: 2024-09-25 14:31:31
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -104,6 +104,20 @@ const Index = observer(({ store }) => {
     return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px)`;
   }
 
+  const navigateFunc = (type, url) => {
+    if (type) {   // 需要校验用户是否登录
+      if (isLogin === 0) {
+        Taro.navigateTo({
+          url: '/pages/login/index'
+        })
+        return
+      }
+    }
+    Taro.navigateTo({
+      url
+    })
+  }
+
 
   return (
     <View className='container'>
@@ -128,17 +142,9 @@ const Index = observer(({ store }) => {
       >
 
         <View className='search_wrapper'>
-          <View className='search_con' style={`width:${role === 'service' ? '608rpx' : '508rpx'}`}>
+          <View className='search_con' onClick={() => navigateFunc(1, '/pages/talentsPackage/search/index')} style={`width:${role === 'service' ? '608rpx' : '508rpx'}`}>
             <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
-            <Input className='search_input'
-              style={`width:${role === 'service' ? '500rpx' : '400rpx'}`}
-              placeholder='输入关键词搜索项目、求职者'
-              confirmType='search'
-              placeholderStyle='color: #777777;'
-              onInput={(e) => { setSearchValue(e.detail.value) }}
-              onConfirm={(e) => {
-              }}
-              value={searchValue}></Input>
+            <View className='search_input' style={`width:${role === 'service' ? '500rpx' : '400rpx'}`}>输入关键词搜索项目、求职者</View>
           </View>
 
           <View className='message_notice'>
@@ -386,7 +392,7 @@ const Index = observer(({ store }) => {
           <View className='filter_wrapper_bg'>
             <View className='filter_title'>
               <View>按时间筛选</View>
-              <AtIcon value='close' size='14' color='#222222'></AtIcon>
+              <AtIcon value='close' size='14' color='#222222' onClose={() => setShowFilterDate(false)}></AtIcon>
             </View>
             <View className='filter_wrapper_content'>
               {

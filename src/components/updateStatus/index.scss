@@ -2,18 +2,18 @@
  @import '@/app.scss';
  .footer_options {
     width: 710rpx;
-    position: fixed;
     content: '';
     flex-shrink: 0;
     border-radius: 12rpx;
     background: #FFF;
     box-shadow: 0 0 48rpx 0 #00000029;
-    left: 20rpx;
     box-sizing: border-box;
-    z-index: 11;
     padding: 46rpx 0;
     display: flex;
     flex-flow: row wrap;
+    // position: fixed;
+    // left: 20rpx;
+    // z-index: 11;
 
     .footer_options_item {
         width: 50%;

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-23 11:41:37
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-23 11:56:16
+ * @LastEditTime: 2024-09-25 14:26:55
  * @Description: 更改用户状态  未到面 已到面 面试失败 面试通过 已离职 已入职
  */
 
@@ -33,9 +33,9 @@ const UpdateStatus = observer(({ onChange, showPicker, currentStatus, bottomHeig
 
     return (
         <>
-            {
-                showPicker &&
-                <View className='footer_options' style={`bottom:${bottomHeight}px;`}>
+            {  
+                // showPicker &&    // style={`bottom:${bottomHeight}px;`}
+                <View className='footer_options' >
                     <View className='footer_options_item' onClick={() => clickStatus('未到面')}>
                         <View className='footer_options_item_icon'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon42.webp`}></Image>

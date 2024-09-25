@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-23 11:08:02
+ * @LastEditTime: 2024-09-25 14:28:02
  * @Description: 
  */
 /*
@@ -26,6 +26,7 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
 
 import ClueItem from '@/components/items/clueItem'
+import UpdateStatus from '@/components/updateStatus';
 
 const Index = observer(({ store }) => {
     const {
@@ -170,6 +171,11 @@ const Index = observer(({ store }) => {
         })
     }
 
+    const changeStatus = (e) => {
+        console.log("changeStatus", e);
+        setCurrentCliskstatus(e);
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='transparent' title='名单反馈'></Navbar>
@@ -264,10 +270,18 @@ const Index = observer(({ store }) => {
                                             {
                                                 item.showOptions &&
                                                 <View className='item_status_options'>
-                                                    <OptionItem1></OptionItem1>
+                                                    {/* <OptionItem1></OptionItem1>
                                                     <OptionItem2></OptionItem2>
                                                     <OptionItem3></OptionItem3>
-                                                    <OptionItem4></OptionItem4>
+                                                    <OptionItem4></OptionItem4> */}
+                                                    <UpdateStatus
+                                                        onClose={() => setShowbottomOptions(false)}
+                                                        showPicker={true}
+                                                        currentStatus={currentCliskstatus}
+                                                        // bottomHeight={bottomHeight}
+                                                        onChange={changeStatus}>
+
+                                                    </UpdateStatus>
                                                 </View>
                                             }
                                         </> ||
@@ -280,9 +294,14 @@ const Index = observer(({ store }) => {
                                             {
                                                 item.showOptions &&
                                                 <View className='item_status_options'>
-                                                    <OptionItem2></OptionItem2>
-                                                    <OptionItem3></OptionItem3>
-                                                    <OptionItem4></OptionItem4>
+                                                    <UpdateStatus
+                                                        onClose={() => setShowbottomOptions(false)}
+                                                        showPicker={true}
+                                                        currentStatus={currentCliskstatus}
+                                                        // bottomHeight={bottomHeight}
+                                                        onChange={changeStatus}>
+
+                                                    </UpdateStatus>
                                                 </View>
                                             }
                                         </> ||
@@ -295,8 +314,14 @@ const Index = observer(({ store }) => {
                                             {
                                                 item.showOptions &&
                                                 <View className='item_status_options'>
-                                                    <OptionItem3></OptionItem3>
-                                                    <OptionItem4></OptionItem4>
+                                                    <UpdateStatus
+                                                        onClose={() => setShowbottomOptions(false)}
+                                                        showPicker={true}
+                                                        currentStatus={currentCliskstatus}
+                                                        // bottomHeight={bottomHeight}
+                                                        onChange={changeStatus}>
+
+                                                    </UpdateStatus>
                                                 </View>
                                             }
                                         </> ||
@@ -309,7 +334,15 @@ const Index = observer(({ store }) => {
                                             {
                                                 item.showOptions &&
                                                 <View className='item_status_options'>
-                                                    <OptionItem4></OptionItem4>
+                                                    {/* <OptionItem4></OptionItem4> */}
+                                                    <UpdateStatus
+                                                        onClose={() => setShowbottomOptions(false)}
+                                                        showPicker={true}
+                                                        currentStatus={currentCliskstatus}
+                                                        // bottomHeight={bottomHeight}
+                                                        onChange={changeStatus}>
+
+                                                    </UpdateStatus>
                                                 </View>
                                             }
                                         </> ||
@@ -345,7 +378,19 @@ const Index = observer(({ store }) => {
                 {
                     batchOperations &&
                     <View className='footer_wrapper'>
-                        <View style={`height:16rpx;`}></View>
+                        <View className='footer_wrapper_top' style={`height:16rpx;`}>
+                            <View className='footer_wrapper_top_position'>
+                                <UpdateStatus
+                                    onClose={() => setShowbottomOptions(false)}
+                                    showPicker={showbottomOptions}
+                                    currentStatus={currentCliskstatus}
+                                    bottomHeight={bottomHeight}
+                                    onChange={changeStatus}>
+
+                                </UpdateStatus>
+                            </View>
+
+                        </View>
                         <View className='footer_wrapper_content'>
                             <View className='footer_wrapper_left' onClick={() => chooeAllFunc()}>
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon2${chooseAll ? 7 : 8}.webp`}></Image>
@@ -356,7 +401,7 @@ const Index = observer(({ store }) => {
                         <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                     </View>
                 }
-                {
+                {/* {
                     batchOperations && showbottomOptions &&
                     <View className='footer_wrapper_options' style={`bottom:${bottomHeight + 9}px;`}>
                         <OptionItem1></OptionItem1>
@@ -364,9 +409,8 @@ const Index = observer(({ store }) => {
                         <OptionItem3></OptionItem3>
                         <OptionItem4></OptionItem4>
                     </View>
-                }
+                } */}
             </Block>
-
 
             {/* 线索来源 */}
             <AtFloatLayout catchMove className='source_init_layout' isOpened={showSourceModel} onClose={() => setShowSourceModel(false)}>
