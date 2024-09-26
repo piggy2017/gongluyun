@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-25 15:29:05
+ * @LastEditTime: 2024-09-25 15:39:32
  * @Description: 
  */
 
@@ -141,31 +141,31 @@ export const clueSource = params => {       //  获取线索来源枚举
     return http(API_BASE_URL + '/clue/source', params, "GET", { "Content-Type": "application/json" });
 };
 export const clueInsert = params => {       //  录入求职者信息
-    return http(API_BASE_URL + '/clue/insert', params, "GET", { "Content-Type": "application/json" });
+    return http(API_BASE_URL + '/clue/insert', params, "POST", { "Content-Type": "application/json" });
 };
 export const clueReceive = params => {       //  立即领取客户
-    return http(API_BASE_URL + '/clue/receive', params, "GET", { "Content-Type": "application/json" });
+    return http(API_BASE_URL + '/clue/receive', params, "POST", { "Content-Type": "application/json" });
 };
 export const cluemyClients = params => {       //  我的客户
-    return http(API_BASE_URL + '/clue/myClients', params, "GET", { "Content-Type": "application/json" });
+    return http(API_BASE_URL + '/clue/myClients', params, "POST", { "Content-Type": "application/json" });
 };
 export const cluegetUserInfo = params => {       //  获取客户信息
-    return http(API_BASE_URL + '/clue/getUserInfo', params, "GET", { "Content-Type": "application/json" });
+    return http(API_BASE_URL + '/clue/getUserInfo', params, "POST", { "Content-Type": "application/json" });
 };
 export const clueStateFlow = params => {       //  求职状态流转
-    return http(API_BASE_URL + '/clue/stateFlow', params, "GET", { "Content-Type": "application/json" });
+    return http(API_BASE_URL + '/clue/stateFlow', params, "POST", { "Content-Type": "application/json" });
 };
 
 
 // 面试相关
 export const getArrangeableRecruitList = params => {       //  获取我可安排的岗位
-    return http(API_BASE_URL + '/interview/getArrangeableRecruitList', params, "GET", { "Content-Type": "application/json" });
+    return http(API_BASE_URL + '/interview/getArrangeableRecruitList', params, "POST", { "Content-Type": "application/json" });
 };
 export const arrangeInterview = params => {       //  安排面试
-    return http(API_BASE_URL + '/interview/arrangeInterview', params, "GET", { "Content-Type": "application/json" });
+    return http(API_BASE_URL + '/interview/arrangeInterview', params, "POST", { "Content-Type": "application/json" });
 };
 export const updateInterviewer = params => {       //  更新面试信息
-    return http(API_BASE_URL + '/interview/updateInterviewer', params, "GET", { "Content-Type": "application/json" });
+    return http(API_BASE_URL + '/interview/updateInterviewer', params, "POST", { "Content-Type": "application/json" });
 };
 
 
