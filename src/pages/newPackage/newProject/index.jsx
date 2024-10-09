@@ -167,7 +167,7 @@ const Index = observer(({ store }) => {
             </View>
 
             <View className='project_group '>
-                <View className='project_item'>
+                <View className='project_item' onClick={()=>{Taro.navigateTo({ url: `/pages/newPackage/setOnsite/index` })}}>
                     <View className='project_item_label project_item_label_required'>驻场人员</View>
                     <View className='project_item_right'>
                         <Text className={`${formData.sitePeople ? 'project_item_text_active' : 'project_item_text'}`}>{formData.sitePeople ? formData.sitePeople : '驻场人员或者面试联系人(必填)'}</Text>

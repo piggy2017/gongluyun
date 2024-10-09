@@ -124,21 +124,78 @@
         }
 
         .search_total {
-            padding: 50rpx 0 0 28rpx;
-            color: #222222;
-            font-family: "PingFang SC";
-            font-size: 28rpx;
-            font-style: normal;
-            font-weight: 400;
-            line-height: normal;
+            padding: 50rpx 28rpx 0 28rpx;
+            @include flex-center(space-between);
 
-            text {
-                color: #1678ff;
-                font-family: "D-DIN-PRO";
-                font-size: 36rpx;
+            .search_total_left {
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
                 font-style: normal;
-                font-weight: 600;
+                font-weight: 400;
                 line-height: normal;
+
+                text {
+                    color: #1678ff;
+                    font-family: "D-DIN-PRO";
+                    font-size: 36rpx;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: normal;
+                }
+            }
+
+            .search_total_right_wrap {
+                @include flex-center(flex-end);
+
+                .search_total_right_item {
+                    @include flex-center;
+                    margin-left: 36rpx;
+                    color: #222222;
+                    text-align: right;
+                    font-family: "PingFang SC";
+                    font-size: 26rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+
+                    image {
+                        width: 48rpx;
+                        height: 48rpx;
+                        flex-shrink: 0;
+                        margin-right: 6rpx;
+                    }
+                }
+            }
+
+            .search_total_right {
+                color: #000000;
+                text-align: right;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                @include flex-center;
+                margin-left: 36rpx;
+
+                image {
+                    width: 44rpx;
+                    height: 44rpx;
+                    margin-left: 8rpx;
+                }
+            }
+
+            .search_total_right_t {
+                color: #1678ff;
+                text-align: right;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                padding-right: 18rpx;
+                margin-left: 36rpx;
             }
         }
     }
@@ -146,17 +203,25 @@
     .scrollWrapper {
         width: 100%;
         border: 1rpx solid red;
+        background-color: #ffffff;
 
         .roster_item {
-            border-radius: 20rpx;
-            width: 710rpx;
-            height: 272rpx;
             flex-shrink: 0;
-            background-color: #FFF;
-            margin: 20rpx auto 0 auto;
+            height: 200rpx;
+            box-sizing: border-box;
+            padding: 30rpx 40rpx 30rpx 68rpx;
+            border-bottom: 1rpx solid #0000000a;
+            position: relative;
+            .roster_item_choose {
+                position: absolute;
+                width: 40rpx;
+                height: 40rpx;
+                left: 24rpx;
+                top: 80rpx;
+                z-index: 9;
+            }
 
             .roster_item_title {
-                padding: 24rpx 24rpx 0 60rpx;
                 @include flex-center(space-between);
                 position: relative;
 
@@ -169,17 +234,17 @@
                     line-height: normal;
                     position: absolute;
                     width: 38rpx;
-                    left: 22rpx;
-                    top: 32rpx;
+                    left: -34rpx;
+                    top: 6rpx;
                 }
 
                 .item_title_left {
                     @include flex-center(flex-start);
-                    color: #666666;
-                    font-family: "PingFang SC";
-                    font-size: 28rpx;
+                    color: #1678ff;
+                    font-family: "D-DIN-PRO";
+                    font-size: 32rpx;
                     font-style: normal;
-                    font-weight: 400;
+                    font-weight: 500;
                     line-height: normal;
 
                     .item_title_name {
@@ -187,7 +252,12 @@
                         font-size: 32rpx;
                         font-style: normal;
                         font-weight: 500;
-                        margin-right: 10rpx;
+                        margin-right: 12rpx;
+                    }
+
+                    image {
+                        width: 40rpx;
+                        height: 40rpx;
                     }
                 }
 
@@ -200,8 +270,44 @@
                 }
             }
 
+            .roster_item_detail {
+                margin: 10rpx 0 8rpx 0;
+                position: relative;
+                @include flex-center(space-between);
+
+                .roster_item_detail_content {
+                    color: #666666;
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+
+                .roster_item_detail_status {
+                    @include flex-center(flex-end);
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                }
+
+                .item_status_options {
+                    position: absolute;
+                    content: '';
+                    flex-shrink: 0;
+                    border-radius: 12rpx;
+                    background: #FFF;
+                    right: -20rpx;
+                    top: 56rpx;
+                    box-sizing: border-box;
+                    z-index: 9;
+                }
+            }
+
             .roster_item_phone {
-                padding: 16rpx 0 0 56rpx;
+                // padding: 16rpx 0 0 56rpx;
                 @include flex-center(flex-start);
                 color: #1678ff;
                 font-family: "D-DIN-PRO";
@@ -218,21 +324,6 @@
                 }
             }
 
-            .roster_item_source {
-                color: #666666;
-                font-family: "PingFang SC";
-                font-size: 30rpx;
-                font-style: normal;
-                font-weight: 400;
-                line-height: normal;
-                padding: 16rpx 0 0 56rpx;
-                width: 620rpx;
-                @include ellipsis;
-
-                text {
-                    color: #222222;
-                }
-            }
 
             .roster_item_hr {
                 width: 642rpx;
@@ -243,7 +334,7 @@
             }
 
             .roster_item_time {
-                padding: 12rpx 0 0 56rpx;
+                // padding: 12rpx 0 0 56rpx;
                 color: #999999;
                 font-family: "PingFang SC";
                 font-size: 28rpx;
@@ -278,12 +369,13 @@
             line-height: normal;
             position: relative;
             @include flex-center;
+
             &:after {
                 position: absolute;
                 content: '';
                 width: 2rpx;
                 height: 28rpx;
-                background-color: rgba(255,255,255,0.3);
+                background-color: rgba(255, 255, 255, 0.3);
                 right: 0;
                 top: 30rpx
             }

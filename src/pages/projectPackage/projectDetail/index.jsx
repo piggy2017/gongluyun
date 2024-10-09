@@ -23,6 +23,13 @@ const Index = observer(({ store }) => {
     userStore: { isLogin, authentication }
   } = store
 
+  const navigateFunc = (e, url) => {
+    e.stopPropagation();
+    Taro.navigateTo({
+      url
+    })
+  }
+
   return (
     <View className='container'>
       <Navbar fixed placeholder bgColor='transparent' title='项目详情'></Navbar>
@@ -53,7 +60,7 @@ const Index = observer(({ store }) => {
       <View className='project_datas'>
         <View className='project_title'>
           <View>交付数据</View>
-          <View className='project_more'>
+          <View className='project_more' onClick={(e) => navigateFunc(e, '/pages/projectPackage/roster/index')}>
             <View>查看花名册</View>
             <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
           </View>
@@ -129,7 +136,7 @@ const Index = observer(({ store }) => {
             <Image src={`${Taro.$cdnUrl}/index/index_icon26.webp`}></Image>
             <View>编辑</View>
           </View>
-          <View className='add_worker'>录入求职者</View>
+          <View className='add_worker' onClick={(e) => navigateFunc(e, '/pages/newPackage/newWorker/index')}>录入求职者</View>
         </View>
         <View style={`height:${bottomSafeAreaHeight}px;`}></View>
       </View>

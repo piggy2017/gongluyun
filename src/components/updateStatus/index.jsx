@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-23 11:41:37
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-25 14:26:55
+ * @LastEditTime: 2024-10-08 17:10:00
  * @Description: 更改用户状态  未到面 已到面 面试失败 面试通过 已离职 已入职
  */
 
@@ -12,7 +12,8 @@ import { observer, inject } from 'mobx-react';
 import { View, Image } from '@tarojs/components';
 import './index.scss';
 
-const UpdateStatus = observer(({ onChange, showPicker, currentStatus, bottomHeight, onClose, store }) => {
+const UpdateStatus = observer(({ onChange, showPicker, currentStatus, bottomHeight, onClose, type = 1, store }) => {
+    // 默认 type=1 名单反馈和列表反馈页面,第一个状态是未到面      type=2 花名册 第一个状态是已约面
 
     // const [currentCliskstatus, setCurrentCliskstatus] = useState('未到面');
     const [status, setStatus] = useState('');
@@ -33,19 +34,33 @@ const UpdateStatus = observer(({ onChange, showPicker, currentStatus, bottomHeig
 
     return (
         <>
-            {  
+            {
                 // showPicker &&    // style={`bottom:${bottomHeight}px;`}
                 <View className='footer_options' >
-                    <View className='footer_options_item' onClick={() => clickStatus('未到面')}>
-                        <View className='footer_options_item_icon'>
-                            <Image src={`${Taro.$cdnUrl}/index/index_icon42.webp`}></Image>
-                            <View>未到面</View>
+
+                    {
+                        type === 2 &&
+                        <View className='footer_options_item' onClick={() => clickStatus('已约面')}>
+                            <View className='footer_options_item_icon'>
+                                <Image src={`${Taro.$cdnUrl}/index/index_icon50.webp`}></Image>
+                                <View style={{ color: '#08B5FF' }}>已约面</View>
+                            </View>
+                            {
+                                status === '已约面' &&
+                                <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
+                            }
+                        </View> ||
+                        <View className='footer_options_item' onClick={() => clickStatus('未到面')}>
+                            <View className='footer_options_item_icon'>
+                                <Image src={`${Taro.$cdnUrl}/index/index_icon42.webp`}></Image>
+                                <View>未到面</View>
+                            </View>
+                            {
+                                status === '未到面' &&
+                                <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
+                            }
                         </View>
-                        {
-                            status === '未到面' &&
-                            <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
-                        }
-                    </View>
+                    }
                     <View className='footer_options_item' onClick={() => clickStatus('已到面')}>
                         <View className='footer_options_item_icon'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon43.webp`}></Image>

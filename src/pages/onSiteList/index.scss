@@ -1,0 +1,366 @@
+/*
+ * @Author: 孙林 1164700321@qq.com
+ * @Date: 2024-09-09 09:48:52
+ * @LastEditors: 孙林
+ * @LastEditTime: 2024-10-08 15:28:20
+ * @Description: 
+ */
+ @import '@/app.scss';
+
+ .container {
+     width: 100%;
+     height: 100vh;
+     background: linear-gradient(180deg, #E8F1FF 0%, #edf3fc00 100%) #F4F4F4;
+     background-size: 100% 1158rpx;
+     background-repeat: no-repeat;
+ 
+     .my_header {
+         width: 100%;
+ 
+         .my_header_hr {
+             width: 100%;
+             height: var(--statusBarHeight);
+         }
+ 
+         .my_header_content {
+             height: var(--navContentHeight);
+             padding-left: 48rpx;
+             @include flex-center(flex-start);
+ 
+             .type_item {
+                 color: #222222;
+                 font-family: "PingFang SC";
+                 font-size: 30rpx;
+                 font-style: normal;
+                 font-weight: 400;
+                 line-height: normal;
+                 position: relative;
+             }
+ 
+             .type_item:nth-child(2) {
+                 margin-left: 48rpx;
+             }
+ 
+             .type_item_active {
+                 font-size: 34rpx;
+                 font-style: normal;
+                 font-weight: 500;
+ 
+                 &::after {
+                     content: '';
+                     position: absolute;
+                     width: 40rpx;
+                     height: 6rpx;
+                     background: #1678FF;
+                     border-radius: 3rpx;
+                     bottom: -6rpx;
+                     left: calc(50% - 20rpx);
+                 }
+             }
+         }
+     }
+ 
+     .search_wrapper {
+         width: 100%;
+ 
+         .search_content {
+             width: 694rpx;
+             height: 68rpx;
+             flex-shrink: 0;
+             background-color: #FFF;
+             @include flex-center(flex-start);
+             border-radius: 34rpx;
+             margin: 0 auto;
+ 
+             image {
+                 width: 36rpx;
+                 height: 36rpx;
+                 flex-shrink: 0;
+                 margin: 0 10rpx 0 22rpx;
+             }
+ 
+             .search_input {
+                 font-family: "PingFang SC";
+                 font-size: 28rpx;
+                 width: 580rpx;
+             }
+         }
+ 
+         .filter_wrapper {
+             padding: 32rpx 28rpx 32rpx 32rpx;
+             @include flex-center(space-between);
+             color: #000000;
+             text-align: right;
+             font-family: "PingFang SC";
+             font-size: 28rpx;
+             font-style: normal;
+             font-weight: 400;
+             line-height: normal;
+ 
+             .filter_wrap_item {
+                 @include flex-center;
+ 
+                 view {
+                     margin-right: 4rpx;
+                 }
+             }
+         }
+     }
+ 
+     .myScrollWrapper {
+         width: 100%;
+         border: 1rpx solid red;
+         background: none !important;
+         border-radius: 0 !important;
+ 
+         .roster_item {
+             border-radius: 20rpx;
+             width: 710rpx;
+             height: 324rpx;
+             flex-shrink: 0;
+             background-color: #FFF;
+             margin: 20rpx auto 0 auto;
+ 
+             .roster_item_title {
+                 padding: 24rpx 24rpx 0 60rpx;
+                 @include flex-center(space-between);
+                 position: relative;
+ 
+                 .item_title_index {
+                     color: #222222;
+                     font-family: "D-DIN-PRO";
+                     font-size: 32rpx;
+                     font-style: normal;
+                     font-weight: 600;
+                     line-height: normal;
+                     position: absolute;
+                     width: 38rpx;
+                     left: 22rpx;
+                     top: 32rpx;
+                 }
+ 
+                 .item_title_left {
+                     @include flex-center(flex-start);
+                     color: #666666;
+                     font-family: "PingFang SC";
+                     font-size: 28rpx;
+                     font-style: normal;
+                     font-weight: 400;
+                     line-height: normal;
+ 
+                     .item_title_name {
+                         color: #222222;
+                         font-size: 32rpx;
+                         font-style: normal;
+                         font-weight: 500;
+                         margin-right: 10rpx;
+                     }
+                 }
+ 
+                 .item_title_right {
+                     font-family: "PingFang SC";
+                     font-size: 28rpx;
+                     font-style: normal;
+                     font-weight: 400;
+                     line-height: normal;
+                 }
+             }
+ 
+             .roster_item_phone {
+                 padding: 16rpx 0 0 56rpx;
+                 @include flex-center(flex-start);
+                 color: #1678ff;
+                 font-family: "D-DIN-PRO";
+                 font-size: 34rpx;
+                 font-style: normal;
+                 font-weight: 500;
+                 line-height: normal;
+ 
+                 image {
+                     width: 40rpx;
+                     height: 40rpx;
+                     flex-shrink: 0;
+                     margin-right: 4rpx;
+                 }
+             }
+ 
+             .roster_item_source {
+                 color: #666666;
+                 font-family: "PingFang SC";
+                 font-size: 30rpx;
+                 font-style: normal;
+                 font-weight: 400;
+                 line-height: normal;
+                 padding: 16rpx 0 0 56rpx;
+                 width: 620rpx;
+                 @include ellipsis;
+ 
+                 text {
+                     color: #222222;
+                 }
+             }
+ 
+             .roster_item_hr {
+                 width: 642rpx;
+                 height: 2rpx;
+                 flex-shrink: 0;
+                 background-color: #0000000a;
+                 margin: 12rpx auto 0 auto;
+             }
+ 
+             .roster_item_time {
+                 padding: 12rpx 0 0 56rpx;
+                 color: #999999;
+                 font-family: "PingFang SC";
+                 font-size: 28rpx;
+                 font-style: normal;
+                 font-weight: 400;
+                 line-height: normal;
+             }
+         }
+     }
+ 
+     .scrollWrapper {
+         width: 100%;
+         background: #ffffff;
+         border-radius: 20rpx 20rpx 0 0;
+         border: 1rpx solid red;
+ 
+         .search_total {
+             color: #222222;
+             text-align: left;
+             font-family: "PingFang SC";
+             font-size: 28rpx;
+             font-style: normal;
+             font-weight: 400;
+             line-height: normal;
+             padding: 38rpx 0 20rpx 28rpx;
+ 
+             text {
+                 color: #1678ff;
+                 text-align: left;
+                 font-family: "D-DIN-PRO";
+                 font-size: 36rpx;
+                 font-style: normal;
+                 font-weight: 600;
+                 line-height: normal;
+             }
+         }
+ 
+         .clue_item:last-child {
+             border-bottom: none;
+         }
+ 
+ 
+     }
+ 
+     .add_clue_btn {
+         width: 120rpx;
+         height: 120rpx;
+         flex-shrink: 0;
+         display: block;
+         position: fixed;
+         z-index: 99;
+         right: 12rpx;
+     }
+ 
+     .source_init_layout {
+         .at-float-layout__container {
+             height: auto !important;
+             min-height: auto !important;
+             overflow: hidden;
+             border-radius: 20rpx 20rpx 0 0 !important;
+ 
+             .layout-body {
+                 min-height: auto !important;
+             }
+         }
+ 
+         .layout-body__content {
+             min-height: auto !important;
+         }
+ 
+         .filter_wrapper {
+             width: 100%;
+             height: 100%;
+             position: relative;
+             background-color: #ffffff;
+ 
+             .filter_wrapper_bg {
+                 width: 100%;
+                 height: 100%;
+ 
+                 .filter_title {
+                     @include flex-center(space-between);
+                     padding: 24rpx 0 40rpx 38rpx;
+                     color: #222222;
+                     font-family: "PingFang SC";
+                     font-size: 34rpx;
+                     font-style: normal;
+                     font-weight: 500;
+                     line-height: normal;
+                 }
+ 
+                 .filter_wrapper_content {
+                     display: flex;
+                     flex-flow: row wrap;
+ 
+                     .filter_wrapper_item {
+                         width: 204rpx;
+                         height: 76rpx;
+                         line-height: 76rpx;
+                         text-align: center;
+                         flex-shrink: 0;
+                         border-radius: 8rpx;
+                         background: #F2F2F2;
+                         color: #222222;
+                         font-family: "PingFang SC";
+                         font-size: 28rpx;
+                         font-style: normal;
+                         font-weight: 400;
+                         margin-bottom: 26rpx;
+ 
+                         &:nth-child(3n+1) {
+                             margin-left: 32rpx;
+                         }
+ 
+                         &:nth-child(3n+2) {
+                             margin-left: 24rpx;
+                         }
+ 
+                         &:nth-child(3n+3) {
+                             margin-left: 24rpx;
+                         }
+                     }
+ 
+                     .filter_wrapper_item_active {
+                         background: #0483FF;
+                         color: #ffffff;
+                     }
+                 }
+ 
+                 .custom_filter_date {
+                     width: 662rpx;
+                     height: 76rpx;
+                     flex-shrink: 0;
+                     border-radius: 10rpx;
+                     margin: 0 auto;
+                     text-align: center;
+                     line-height: 76rpx;
+                     font-family: "PingFang SC";
+                     font-size: 28rpx;
+                     font-style: normal;
+                     font-weight: 400;
+                     background: #F2F2F2;
+                     color: #222222;
+                 }
+ 
+                 .custom_filter_date_active {
+                     background: #0483FF;
+                     color: #ffffff;
+                 }
+             }
+         }
+     }
+ }
+ 

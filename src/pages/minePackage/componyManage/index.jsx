@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-12 14:35:19
+ * @LastEditTime: 2024-10-08 17:51:42
  * @Description: 
  */
 
@@ -30,15 +30,15 @@ const Index = observer(({ store }) => {
 
     const [openAction, setOpenAction] = useState(false);           // 是否打开选择照片弹窗
     const [images, setImages] = useState([
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/add_clue.webp',
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon1.webp',
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon2.webp',
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon3.webp',
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon4.webp',
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon5.webp',
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon6.webp',
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon7.webp',
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon8.webp'
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/add_clue.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon1.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon2.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon3.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon4.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon5.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon6.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon7.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon8.webp'
     ]);                      // 选择的照片
 
 
@@ -192,7 +192,7 @@ const Index = observer(({ store }) => {
 
                         {
                             images.length < 9 &&
-                            <View className='add_img'>
+                            <View className='add_img' onClick={() => { setOpenAction(true) }}>
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon14.webp`}></Image>
                             </View>
                         }

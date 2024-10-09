@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-10 17:31:41
+ * @LastEditTime: 2024-10-08 17:24:39
  * @Description: 
  */
 
@@ -91,7 +91,7 @@ const Index = observer(({ store }) => {
             <View className='my_header'>
                 <View className='my_header_hr' style={`--statusBarHeight:${statusTitleHeight}px;`}></View>
                 <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
-                    <Image className='back_icon' src={`${Taro.$cdnBackIcon}`}></Image>
+                    <Image className='back_icon' src={`${Taro.$cdnBackIcon}`} onClick={() => Taro.navigateBack()}></Image>
                     <View className='search_wrap'>
                         <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
                         <Input className='search_input'

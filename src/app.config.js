@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-25 14:36:15
+ * @LastEditTime: 2024-10-08 17:53:09
  * @Description: 
  */
 export default defineAppConfig({
@@ -10,6 +10,7 @@ export default defineAppConfig({
         'pages/index/index',
         'pages/projectManage/index',
         'pages/clue/index',
+        'pages/onSiteList/index',
         'pages/mine/index',
         'pages/login/index'
     ],
@@ -48,6 +49,10 @@ export default defineAppConfig({
                 "text": "线索"
             },
             {
+                "pagePath": "pages/onSiteList/index",
+                "text": "名单"
+            },
+            {
                 'pagePath': 'pages/mine/index',
                 "text": "我的"
             }
@@ -59,13 +64,13 @@ export default defineAppConfig({
                 "talents/index",
                 "signUpHistory/index",
                 "interview/index",
-                "filterJob/index",
+                "filterJob/index",         // 筛选岗位 
                 "search/index",
                 "clientDetail/index",      // 客户详情
             ]
         },
         {
-            "root": "pages/selectorPackage/", // 删选库子包
+            "root": "pages/selectorPackage/", // 筛选库子包
             "pages": [
                 "jobChoose/index", // 筛选岗位类型
             ]

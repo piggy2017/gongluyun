@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-12 11:12:54
+ * @LastEditTime: 2024-10-08 17:45:13
  * @Description: 
  */
 
@@ -102,7 +102,11 @@ const Index = observer(({ store }) => {
                 {
                     list.length>0 && list.map((item, index) => {
                         return (
-                            <View className='employee_item' key={item.id}>
+                            <View className='employee_item' key={item.id} onClick={()=>{
+                                Taro.navigateTo({
+                                    url: `/pages/minePackage/employeeDetail/index?id=${item.id}`
+                                })
+                            }}>
                                 <View className='employee_item_left'>
                                     <View className='employee_item_avatar'></View>
                                     <View className='employee_item_info'>

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-19 14:05:21
+ * @LastEditTime: 2024-10-08 17:44:04
  * @Description: 
  */
 
@@ -62,6 +62,21 @@ const Index = observer(({ store }) => {
     return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight + searchHeight}px)`;
   }
 
+  const navigateFunc = (e, url) => {
+    // if (type) {   // 需要校验用户是否登录
+    //   if (isLogin === 0) {
+    //     Taro.navigateTo({
+    //       url: '/pages/login/index'
+    //     })
+    //     return
+    //   }
+    // }
+    e.stopPropagation();
+    Taro.navigateTo({
+      url
+    })
+  }
+
   return (
     <View className='container'>
       <View className='my_header'>
@@ -83,7 +98,7 @@ const Index = observer(({ store }) => {
             }}
             value={searchValue}></Input>
         </View>
-        <Image className='add_icon' src={`${Taro.$cdnUrl}/index/index_icon3.webp`}></Image>
+        <Image className='add_icon' src={`${Taro.$cdnUrl}/index/index_icon3.webp`} onClick={(e) => navigateFunc(e, '/pages/newPackage/newProject/index')}></Image>
         {/* <View className='search_type_wrap' onClick={() => setShowChangeType(true)}>
           <View>{typeList[typeIndex]}</View>
           <AtIcon value='chevron-down' size='14' color='#222222'></AtIcon>
@@ -113,7 +128,7 @@ const Index = observer(({ store }) => {
           {
             list.length > 0 && list.map((item, index) => {
               return (
-                <View className='project_item' key={index}>
+                <View className='project_item' key={index} onClick={(e) => navigateFunc(e, '/pages/projectPackage/projectDetail/index')}>
                   <View className='project_item_title'>
                     <View className='project_item_title_left'>
                       {/* {
@@ -124,7 +139,7 @@ const Index = observer(({ store }) => {
                     </View>
                     {
                       type === '进行中' &&
-                      <View className='project_item_title_right'>
+                      <View className='project_item_title_right' onClick={(e) => navigateFunc(e, '/pages/projectPackage/signinCode/index')}>
                         <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
                         <View>签到码</View>
                       </View> ||
@@ -160,8 +175,8 @@ const Index = observer(({ store }) => {
                   </View>
 
                   <View className='project_item_bottom'>
-                    <View className='project_item_bottom_item'>花名册</View>
-                    <View className='project_item_bottom_item'>录入求职者</View>
+                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, '/pages/projectPackage/roster/index')}>花名册</View>
+                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, '/pages/newPackage/newWorker/index')}>录入求职者</View>
                   </View>
 
                 </View>

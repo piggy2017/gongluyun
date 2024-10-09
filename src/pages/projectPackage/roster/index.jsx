@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-13 14:44:04
+ * @LastEditTime: 2024-10-08 17:00:54
  * @Description: 
  */
 /*
@@ -25,6 +25,7 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
 
 import ClueItem from '@/components/items/clueItem'
+import UpdateStatus from '@/components/updateStatus';
 
 const Index = observer(({ store }) => {
     const {
@@ -35,18 +36,19 @@ const Index = observer(({ store }) => {
 
     const [searchValue, setSearchValue] = useState('');
     const [searchHeight, setSearchHeight] = useState(175);
+    const [bottomHeight, setBottomHeight] = useState(90);
 
     const [isRefresh, setIsRefresh] = useState(false);
     const [goonLoad, setgoonLoad] = useState(true);
     const [title, setTitle] = useState('龙泉驿区招物流分拣全职月结');
 
     const [list, setList] = useState([
-        { userName: "高小光", status: 1, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", status: 2, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", status: 3, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", status: 4, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", status: 5, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", status: 6, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        { userName: "高小光", status: 1, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        { userName: "高小光", status: 2, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        { userName: "高小光", status: 3, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        { userName: "高小光", status: 4, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        { userName: "高小光", status: 5, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        { userName: "高小光", status: 6, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
     ])
 
     const [sourceList, setSourceList] = useState(['全部来源', '抖音直播', '小红书', 'BOSS直聘', '微信私域', '58同城', 'BOSS直聘', '微信私域', '58同城']);
@@ -55,6 +57,10 @@ const Index = observer(({ store }) => {
 
     const [tabList, setTabList] = useState(['全部', '已约面', '已到面', '面试通过', '面试失败', '已入职', '已离职']);
     const [currentTab, setCurrentTab] = useState('全部');
+    const [currentCliskstatus, setCurrentCliskstatus] = useState('');
+    const [batchOperations, setBatchOperations] = useState(false);       // 是否进行批量操作
+    const [chooseAll, setChooseAll] = useState(false);                   // 全选反选
+    const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示底部的操作选项
 
     useEffect(() => {
         setTimeout(async () => {
@@ -75,7 +81,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + searchHeight}px)`;
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + searchHeight}px - ${batchOperations ? bottomHeight : 0}px)`;
     }
 
     const getBottom = () => {
@@ -102,18 +108,44 @@ const Index = observer(({ store }) => {
     const getColor = (status) => {
         switch (status) {
             case 1:
-                return '#999999;';
+                return '#08B5FF';
             case 2:
-                return '#F00000';
+                return '#1678FF';
             case 3:
-                return '#FF6B17';
+                return '#FF7C32';
             case 4:
-                return '#04B400';
+                return '#F00000';
             case 5:
-                return '#666666';
+                return '#04B400';
             case 6:
-                return '#FF6B00';
+                return '#666666';
         }
+    }
+
+    const showOptionFunc = (obj, index) => {
+        setList(list => {
+            let _list = list.map((item, i) => {
+                item.showOptions = i === index ? !item.showOptions : false
+                return item
+            })
+            return _list
+        })
+    }
+
+    const chooeAllFunc = () => {
+        setChooseAll(!chooseAll);
+        setList(list => {
+            let _list = list.map(item => {
+                item.isChoosed = !chooseAll
+                return item
+            })
+            return _list
+        })
+    }
+
+    const changeStatus = (e) => {
+        console.log("changeStatus", e);
+        setCurrentCliskstatus(e);
     }
 
     return (
@@ -171,8 +203,27 @@ const Index = observer(({ store }) => {
                     }
                 </ScrollView>
 
-                <View className='search_total'>共计 <Text>172</Text> 人</View>
-
+                <View className='search_total'>
+                    <View className='search_total_left'>共计 <Text>172</Text> 人</View>
+                    <View className='search_total_right_wrap'>
+                        <View className='search_total_right_item'>
+                            <Image src={`${Taro.$cdnUrl}/index/index_icon48.webp`}></Image>
+                            <View>新增</View>
+                        </View>
+                        <View className='search_total_right_item'>
+                            <Image src={`${Taro.$cdnUrl}/index/index_icon49.webp`}></Image>
+                            <View>导出</View>
+                        </View>
+                        {
+                            batchOperations ?
+                                <View className='search_total_right_t' onClick={() => setBatchOperations(false)}>完成</View> :
+                                <View className='search_total_right' onClick={() => setBatchOperations(true)}>
+                                    <Image src={`${Taro.$cdnUrl}/index/index_icon33.webp`}></Image>
+                                    <View>多选</View>
+                                </View>
+                        }
+                    </View>
+                </View>
             </View>
 
             <ScrollView
@@ -191,40 +242,46 @@ const Index = observer(({ store }) => {
                 {
                     list.length > 0 && list.map((item, index) => {
                         return (
-                            <View className='roster_item' key={index}>
+                            <View className='roster_item' key={index} style={`padding:${batchOperations ? '30rpx 28rpx 30rpx 126rpx' : '30rpx 40rpx 30rpx 68rpx'}`}>
                                 <View className='roster_item_title'>
                                     <View className='item_title_index'>{index + 1}</View>
                                     <View className='item_title_left'>
                                         <View className='item_title_name'>{item.userName}</View>
-                                        <View>{item.detail}</View>
+                                        <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                                        <View className='item_title_phone'>{item.phone}</View>
                                     </View>
-                                    <View style={{ color: getColor(item.status) }} className='item_title_right'>{getStatus(item.status)}</View>
                                 </View>
+                                <View className='roster_item_detail'>
+                                    <View className='roster_item_detail_content'>{item.detail}</View>
+                                    <View className='roster_item_detail_status' style={{ color: getColor(item.status) }} onClick={() => showOptionFunc(item, index)}>
+                                        <View>{getStatus(item.status)}</View>
+                                        <AtIcon value='chevron-down' size='14' color={getColor(item.status)} onClick={() => setShowSourceModel(false)}></AtIcon>
+                                    </View>
+                                    {
+                                        item.showOptions &&
+                                        <View className='item_status_options'>
+                                            <UpdateStatus
+                                                type={2}
+                                                onClose={() => setShowbottomOptions(false)}
+                                                showPicker={true}
+                                                currentStatus={currentCliskstatus}
+                                                // bottomHeight={bottomHeight}
+                                                onChange={changeStatus}>
 
-                                <View className='roster_item_phone'>
-                                    <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
-                                    <View>{item.phone}</View>
+                                            </UpdateStatus>
+                                        </View>
+                                    }
                                 </View>
-                                <View className='roster_item_source'><Text>来源：</Text>{item.source}</View>
-                                <View className='roster_item_hr'></View>
                                 <View className='roster_item_time'>面试时间：{item.interviewTime}</View>
+
+                                {
+                                    batchOperations && <Image className='roster_item_choose' src={`${Taro.$cdnUrl}/index/index_icon2${item.isChoosed ? 7 : 8}.webp`}></Image>
+                                }
                             </View>
                         )
                     })
                 }
             </ScrollView>
-
-            <View className='btns'>
-                <View className='btn_item'>
-                    <Image src={`${Taro.$cdnUrl}/index/index_icon30.webp`}></Image>
-                    <View>导出</View>
-                </View>
-                <View className='btn_item'>
-                    <Image src={`${Taro.$cdnUrl}/index/index_icon31.webp`}></Image>
-                    <View>新增</View>
-                </View>
-            </View>
-
 
             {/* 线索来源 */}
             <AtFloatLayout catchMove className='source_init_layout' isOpened={showSourceModel} onClose={() => setShowSourceModel(false)}>

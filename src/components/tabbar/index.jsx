@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:02:33
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-19 17:28:32
+ * @LastEditTime: 2024-10-08 15:27:09
  * @Description: 
  */
 
@@ -47,6 +47,7 @@ const Index = observer(({ store, actCurrent }) => {
             2: '/tabbar/project_default.webp',
             3: '/tabbar/clue_default.webp',
             4: '/tabbar/mine_default.webp',
+            5: '/tabbar/list_default.webp',
         }
         return Taro.$cdnUrl + map[index]
     }
@@ -56,48 +57,79 @@ const Index = observer(({ store, actCurrent }) => {
             2: `/tabbar/project_active.webp`,
             3: `/tabbar/clue_active.webp`,
             4: `/tabbar/mine_active.webp`,
+            5: `/tabbar/list_active.webp`,
         }
         return Taro.$cdnUrl + map[index]
     }
     const changeTab = (e) => {
         console.log("点击自定义tabbar触发——changeTab", e, role)
         // setActCurrent(e)
-        switch (e) {
-            case 0:
-                setRole('admin')
-                Taro.switchTab({
-                    url: '/pages/index/index'
-                });
-                break;
-            case 1:
-                Taro.switchTab({
-                    url: '/pages/projectManage/index'
-                });
-                break;
-            case 2:
-                Taro.switchTab({
-                    url: '/pages/clue/index'
-                });
-                break;
-            case 3:
-                Taro.switchTab({
-                    url: '/pages/mine/index'
-                });
-                break;
-        }
-        if (role === 'admin') {
-
+        if (role === 'admin' || role === 'service') {
+            switch (e) {
+                case 0:
+                    setRole('admin')
+                    Taro.switchTab({
+                        url: '/pages/index/index'
+                    });
+                    break;
+                case 1:
+                    Taro.switchTab({
+                        url: '/pages/projectManage/index'
+                    });
+                    break;
+                case 2:
+                    Taro.switchTab({
+                        url: '/pages/clue/index'
+                    });
+                    break;
+                case 3:
+                    Taro.switchTab({
+                        url: '/pages/mine/index'
+                    });
+                    break;
+            }
+        }else if(role === 'onSite'){
+            switch (e) {
+                case 0:
+                    setRole('admin')
+                    Taro.switchTab({
+                        url: '/pages/index/index'
+                    });
+                    break;
+                case 1:
+                    Taro.switchTab({
+                        url: '/pages/projectManage/index'
+                    });
+                    break;
+                case 2:
+                    Taro.switchTab({
+                        url: '/pages/onSiteList/index'
+                    });
+                    break;
+                case 3:
+                    Taro.switchTab({
+                        url: '/pages/mine/index'
+                    });
+                    break;
+            }
         }
     }
     const getTabList = () => {
-        return [
-            { title: '工作台', image: getdefalutIcon(1), selectedImage: getSelectIcon(1) },
-            { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
-            { title: '线索', image: getdefalutIcon(3), selectedImage: getSelectIcon(3) },
-            { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
-        ]
-        if (role === 'admin') {
 
+        if (role === 'admin' || role === 'service') {
+            return [
+                { title: '工作台', image: getdefalutIcon(1), selectedImage: getSelectIcon(1) },
+                { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
+                { title: '线索', image: getdefalutIcon(3), selectedImage: getSelectIcon(3) },
+                { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
+            ]
+        } else if (role === 'onSite') {
+            return [
+                { title: '工作台', image: getdefalutIcon(1), selectedImage: getSelectIcon(1) },
+                { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
+                { title: '名单', image: getdefalutIcon(5), selectedImage: getSelectIcon(5) },
+                { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
+            ]
         }
     }
     return (

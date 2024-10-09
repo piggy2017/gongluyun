@@ -1,3 +1,10 @@
+/*
+ * @Author: 孙林 1164700321@qq.com
+ * @Date: 2024-09-09 09:50:07
+ * @LastEditors: 孙林
+ * @LastEditTime: 2024-10-08 17:35:28
+ * @Description: 
+ */
 import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro';
 import { View, Text, Image, Button, Picker } from '@tarojs/components'
@@ -10,6 +17,20 @@ const Index = observer(({ store }) => {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
     userStore: { isLogin, authentication }
   } = store
+
+  const navigateFunc = (type, url) => {
+    if (type) {   // 需要校验用户是否登录
+      if (isLogin === 0) {
+        Taro.navigateTo({
+          url: '/pages/login/index'
+        })
+        return
+      }
+    }
+    Taro.navigateTo({
+      url
+    })
+  }
 
   return (
     <View className='container'>
@@ -31,14 +52,14 @@ const Index = observer(({ store }) => {
       </View>
 
       <View className='section_group'>
-        <View className='section_item'>
+        <View className='section_item' onClick={() => navigateFunc(1, '/pages/minePackage/employeeManage/index')}>
           <View className='section_item_left'>
             <Image src={`${Taro.$cdnUrl}/mine/mine_icon1.webp`}></Image>
             <Text>员工管理</Text>
           </View>
           <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
         </View>
-        <View className='section_item'>
+        <View className='section_item' onClick={() => navigateFunc(1, '/pages/minePackage/componyManage/index')}>
           <View className='section_item_left'>
             <Image src={`${Taro.$cdnUrl}/mine/mine_icon2.webp`}></Image>
             <Text>企业设置</Text>
@@ -62,7 +83,7 @@ const Index = observer(({ store }) => {
           </View>
           <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
         </View>
-        <View className='section_item'>
+        <View className='section_item' onClick={() => navigateFunc(1, '/pages/minePackage/feedback/index')}>
           <View className='section_item_left'>
             <Image src={`${Taro.$cdnUrl}/mine/mine_icon5.webp`}></Image>
             <Text>意见反馈</Text>

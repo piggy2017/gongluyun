@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-25 14:28:02
+ * @LastEditTime: 2024-10-08 17:55:24
  * @Description: 
  */
 /*
@@ -54,13 +54,13 @@ const Index = observer(({ store }) => {
     const [sourceIndex, setSourceIndex] = useState(0);
     const [showSourceModel, setShowSourceModel] = useState(false);              //  是否显示切换状态的弹窗
 
-    const [tabList, setTabList] = useState(['待到面', '已到面', '面试通过', '已入职', '已离职']);
-    const [currentTab, setCurrentTab] = useState('待到面');
+    const [tabList, setTabList] = useState(['已约面', '已到面', '面试通过', '已入职', '已离职']);
+    const [currentTab, setCurrentTab] = useState('已约面');
 
     const [currentCliskstatus, setCurrentCliskstatus] = useState('');
     const [batchOperations, setBatchOperations] = useState(false);       // 是否进行批量操作
     const [chooseAll, setChooseAll] = useState(false);                   // 全选反选
-    const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示地步的操作选项
+    const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示底部的操作选项
 
     useEffect(() => {
         setTimeout(async () => {
@@ -193,12 +193,12 @@ const Index = observer(({ store }) => {
                         value={searchValue}></Input>
                 </View>
                 <View className='filter_wrapper'>
-                    <View className='filter_wrap_item' onClick={() => setShowSourceModel(true)}>
-                        <View>{sourceList[sourceIndex]}</View>
+                    <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/talentsPackage/filterJob/index` }) }}>
+                        <View>全部岗位</View>
                         <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
                     </View>
-                    <View className='filter_wrap_item'>
-                        <View>全部岗位</View>
+                    <View className='filter_wrap_item' onClick={() => setShowSourceModel(true)}>
+                        <View>{sourceList[sourceIndex]}</View>
                         <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
                     </View>
                     <View className='filter_wrap_item'>
@@ -264,7 +264,7 @@ const Index = observer(({ store }) => {
                                         item.status === 1 &&
                                         <>
                                             <View className='item_status_item item_waitInterview' onClick={() => showOptionFunc(item, index)}>
-                                                <View>待到面</View>
+                                                <View>已约面</View>
                                                 <Image src={`${Taro.$cdnUrl}/index/index_icon35.webp`}></Image>
                                             </View>
                                             {
@@ -386,10 +386,8 @@ const Index = observer(({ store }) => {
                                     currentStatus={currentCliskstatus}
                                     bottomHeight={bottomHeight}
                                     onChange={changeStatus}>
-
                                 </UpdateStatus>
                             </View>
-
                         </View>
                         <View className='footer_wrapper_content'>
                             <View className='footer_wrapper_left' onClick={() => chooeAllFunc()}>

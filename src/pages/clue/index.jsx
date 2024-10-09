@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-14 14:06:21
+ * @LastEditTime: 2024-10-08 17:22:52
  * @Description: 
  */
 
@@ -25,7 +25,7 @@ const Index = observer(({ store }) => {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
     userStore: { isLogin, authentication }
   } = store
-  const [type, setType] = useState('我的客户');
+  const [type, setType] = useState('客户池');
 
   const [searchValue, setSearchValue] = useState('');
   const [searchHeight, setSearchHeight] = useState(127);
@@ -145,14 +145,14 @@ const Index = observer(({ store }) => {
                 <View>{sourceList[sourceIndex]}</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
-              <View className='filter_wrap_item'>
+              <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/talentsPackage/filterJob/index` }) }}>
                 <View>全部岗位</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
             </> ||
             type === '我的客户' &&
             <>
-              <View className='filter_wrap_item'>
+              <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/talentsPackage/filterJob/index` }) }}>
                 <View>全部岗位</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
@@ -168,7 +168,6 @@ const Index = observer(({ store }) => {
             <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
           </View>
         </View>
-
       </View>
 
       {
@@ -244,7 +243,7 @@ const Index = observer(({ store }) => {
               {
                 mylist.length > 0 && mylist.map((item, index) => {
                   return (
-                    <View className='roster_item' key={index}>
+                    <View className='roster_item' key={index} onClick={() => { Taro.navigateTo({ url: `/pages/talentsPackage/clientDetail/index?id=${item.id}` }) }}>
                       <View className='roster_item_title'>
                         <View className='item_title_index'>{index + 1}</View>
                         <View className='item_title_left'>
@@ -293,7 +292,9 @@ const Index = observer(({ store }) => {
 
       }
 
-      <Image style={{ bottom: getBottom() }} className='add_clue_btn' src={`${Taro.$cdnUrl}/index/add_clue.webp`}></Image>
+      <Image onClick={()=>{
+        Taro.navigateTo({ url: `/pages/newPackage/newWorker/index` })
+      }} style={{ bottom: getBottom() }} className='add_clue_btn' src={`${Taro.$cdnUrl}/index/add_clue.webp`}></Image>
 
       {/* 线索来源 */}
       <AtFloatLayout catchMove className='source_init_layout' isOpened={showSourceModel} onClose={() => setShowSourceModel(false)}>

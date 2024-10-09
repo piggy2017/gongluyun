@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-12 14:41:47
+ * @LastEditTime: 2024-10-08 17:51:22
  * @Description: 
  */
 
@@ -30,11 +30,11 @@ const Index = observer(({ store }) => {
 
     const [openAction, setOpenAction] = useState(false);           // 是否打开选择照片弹窗
     const [images, setImages] = useState([
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/add_clue.webp',
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon1.webp',
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon2.webp',
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon3.webp',
-        'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon4.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/add_clue.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon1.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon2.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon3.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon4.webp',
     ]);                      // 选择的照片
 
     const [feedbackValue, setFeedbackValue] = useState('')
@@ -154,7 +154,7 @@ const Index = observer(({ store }) => {
                 <View className='compony_imgs'>
                     <View className='compony_img_title'>企业图片 <Text>({images.length}/5）</Text></View>
                     <View className='compony_imgs_box'>
-                        <View className='add_img'>
+                        <View className='add_img' onClick={() => setOpenAction(true)}>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon14.webp`}></Image>
                         </View>
                         {

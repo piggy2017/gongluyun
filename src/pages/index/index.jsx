@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-25 14:31:31
+ * @LastEditTime: 2024-10-08 17:34:26
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -156,15 +156,15 @@ const Index = observer(({ store }) => {
               {
                 showAddType &&
                 <View className='add_types_wrapper'>
-                  <View className='add_types_item'>
+                  <View className='add_types_item' onClick={() => navigateFunc(1, '/pages/newPackage/newWorker/index')}>
                     <Image src={`${Taro.$cdnUrl}/index/index_icon11.webp`}></Image>
                     <View>新增求职者线索</View>
                   </View>
-                  <View className='add_types_item'>
+                  <View className='add_types_item' onClick={() => navigateFunc(1, '/pages/newPackage/newProject/index')}>
                     <Image src={`${Taro.$cdnUrl}/index/index_icon10.webp`}></Image>
                     <View>新增招聘项目</View>
                   </View>
-                  <View className='add_types_item'>
+                  <View className='add_types_item' onClick={() => navigateFunc(1, '/pages/newPackage/newEmployee/index')}>
                     <Image src={`${Taro.$cdnUrl}/index/index_icon9.webp`}></Image>
                     <View>新增员工账号</View>
                   </View>
@@ -177,11 +177,11 @@ const Index = observer(({ store }) => {
         {
           role === "admin" &&
           <View className='btn_wrapper'>
-            <View className='btn_wrap_item'>
+            <View className='btn_wrap_item' onClick={() => navigateFunc(1, '/pages/talentsPackage/talents/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon4.webp`}></Image>
               <View>人才库</View>
             </View>
-            <View className='btn_wrap_item'>
+            <View className='btn_wrap_item' onClick={() => navigateFunc(1, '/pages/minePackage/employeeManage/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon5.webp`}></Image>
               <View>员工数据</View>
             </View>
@@ -191,11 +191,11 @@ const Index = observer(({ store }) => {
         {
           (role === "admin" || role === "service") &&
           <View className='enter_wrapper'>
-            <View className='enter_wrap_item'>
+            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/newPackage/newWorker/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon6.webp`}></Image>
               <View>录入求职线索</View>
             </View>
-            <View className='enter_wrap_item' style={`margin-left:230rpx;`}>
+            <View className='enter_wrap_item' style={`margin-left:230rpx;`} onClick={() => navigateFunc(1, '/pages/projectPackage/listFeedback/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
               <View>反馈名单</View>
             </View>
@@ -205,7 +205,7 @@ const Index = observer(({ store }) => {
         {
           role === 'onSite' &&
           <View className='enter_wrapper'>
-            <View className='enter_wrap_item'>
+            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/projectPackage/signinCode/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
               <View>签到码</View>
             </View>
@@ -314,7 +314,11 @@ const Index = observer(({ store }) => {
               <View className='clue_sea_today'>今日已领 <Text>1</Text> 名</View>
               <View className='clue_sea_total'>线索池共 <Text>32</Text> 名求职者等待领取并跟进</View>
             </View>
-            <View className='clue_sea_right'>前往领取</View>
+            <View className='clue_sea_right' onClick={()=>{
+              Taro.switchTab({
+                url: '/pages/clue/index'
+              })
+            }}>前往领取</View>
           </View>
         }
 
@@ -370,7 +374,7 @@ const Index = observer(({ store }) => {
           </View>
         }
 
-
+        <View className='component_hr'>---下面是公共组件---</View>
         <View onClick={() => { setShowTimePicker(true) }}>时间选择器:{timeText}</View>
         <View onClick={() => { setShowDatePicker(true) }}>日期选择器:{dateText}</View>
         <View onClick={() => { setShowAgePicker(true) }}>年龄范围选择:{ageText}</View>
