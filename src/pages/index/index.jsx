@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-08 17:34:26
+ * @LastEditTime: 2024-10-10 16:32:10
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -39,6 +39,7 @@ const Index = observer(({ store }) => {
 
   const [showFilterDate, setShowFilterDate] = useState(false);
   const [customFilterData, setCustomFilterData] = useState('');
+  const [customFilterEndData, setCustomFilterEndData] = useState('');
   const [filterTime, setFilterTime] = useState('');
 
   const filterList = [                 // 时间筛选列表
@@ -92,6 +93,12 @@ const Index = observer(({ store }) => {
     console.log("onCustomDateChange", e);
     setFilterTime('');
     setCustomFilterData(e.detail.value);
+  }
+
+  const onCustomDateEndChange = (e) => {
+    console.log("onCustomDateEndChange", e);
+    setFilterTime('');
+    setCustomFilterEndData(e.detail.value);
   }
 
   const clickFilterDate = (obj, index) => {
@@ -314,7 +321,7 @@ const Index = observer(({ store }) => {
               <View className='clue_sea_today'>今日已领 <Text>1</Text> 名</View>
               <View className='clue_sea_total'>线索池共 <Text>32</Text> 名求职者等待领取并跟进</View>
             </View>
-            <View className='clue_sea_right' onClick={()=>{
+            <View className='clue_sea_right' onClick={() => {
               Taro.switchTab({
                 url: '/pages/clue/index'
               })
@@ -396,7 +403,7 @@ const Index = observer(({ store }) => {
           <View className='filter_wrapper_bg'>
             <View className='filter_title'>
               <View>按时间筛选</View>
-              <AtIcon value='close' size='14' color='#222222' onClose={() => setShowFilterDate(false)}></AtIcon>
+              <AtIcon value='close' size='14' color='#222222' onClick={() => setShowFilterDate(false)}></AtIcon>
             </View>
             <View className='filter_wrapper_content'>
               {
@@ -411,13 +418,23 @@ const Index = observer(({ store }) => {
                 })
               }
             </View>
-            <View className={`custom_filter_date ${customFilterData ? 'custom_filter_date_active' : ''}`}>
+            <View className={`custom_filter_date`}>
               <Picker mode='date' onChange={onCustomDateChange}>
-                <View className='picker'>
-                  指定日期{customFilterData ? ':' + customFilterData : ''}
+                <View className={`picker ${customFilterData ? 'picker_active' : ''}}`}>
+                  {customFilterData ? customFilterData + '开始' : '开始日期'}
+                </View>
+              </Picker>
+
+              <View>-</View>
+
+              <Picker mode='date' onChange={onCustomDateEndChange}>
+                <View className={`picker ${customFilterEndData ? 'picker_active' : ''}}`}>
+                  {customFilterEndData ? customFilterEndData + '结束' : '结束日期'}
                 </View>
               </Picker>
             </View>
+            <View className='filter_wrapper_btn'>确定</View>
+            {/* <View style={`height:${bottomSafeAreaHeight}px;`}></View> */}
           </View>
         </View>
       </AtFloatLayout>

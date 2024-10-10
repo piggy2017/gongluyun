@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-08 17:11:11
+ * @LastEditTime: 2024-10-10 14:25:40
  * @Description: 用于存放用户的相关信息
  */
 
@@ -11,7 +11,7 @@ import {
 } from 'mobx'
 import Taro from '@tarojs/taro';
 const userStore = observable({
-    role: 'admin',      // 管理员:admin  客服:service  驻场:onSite
+    role: 'onSite',      // 管理员:admin  客服:service  驻场:onSite
     token: '',
     isLogin: 1,         // 1 已登陆   0 未登陆
     authentication: 1,  // 1 已实名认证  0 未实名认证

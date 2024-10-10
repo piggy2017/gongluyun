@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-25 14:53:10
+ * @LastEditTime: 2024-10-10 16:37:55
  * @Description: 
  */
 
@@ -103,10 +103,12 @@ const Index = observer(({ store }) => {
             {
                 step === 1 &&
                 <>
-                    <View className='logo_wrap'>
+                    {/* <View className='logo_wrap'>
                         <View className='logo'></View>
                         <View className='title'>人力资源供应链智能帮手</View>
-                    </View>
+                    </View> */}
+
+                    <Image className='logo1' src={`${Taro.$cdnUrl}/index/index_icon55.webp`}></Image>
 
                     <View className='login_bottom'>
                         <Button className='logn_btn' openType='getPhoneNumber' onGetPhoneNumber={handleGetPhoneNumber}>一键登录</Button>
@@ -114,7 +116,7 @@ const Index = observer(({ store }) => {
                         <View className='logn_policy'>
                             <Image onClick={() => setChecked(!checked)} src={`${Taro.$cdnUrl}/index/index_icon2${checked ? 7 : 8}.webp`}></Image>
                             <View onClick={() => setChecked(!checked)} >已阅读并同意</View>
-                            <View className='webview_link'>《招小帮服务协议》</View>
+                            <View className='webview_link'>《公路云服务协议》</View>
                             <View className='webview_link'>《隐私政策》</View>
                         </View>
                         <View style={`height:${bottomSafeAreaHeight * 2}px`}></View>
@@ -122,10 +124,11 @@ const Index = observer(({ store }) => {
                 </> ||
                 step === 2 &&
                 <>
-                    <View className='logo_wrap' style={`margin-top:80rpx;`}>
+                    {/* <View className='logo_wrap' style={`margin-top:80rpx;`}>
                         <View className='logo'></View>
                         <View className='title'>人力资源供应链智能帮手</View>
-                    </View>
+                    </View> */}
+                    <Image className='logo2' src={`${Taro.$cdnUrl}/index/index_icon56.webp`}></Image>
                     <View className='input_wrap'>
                         <Image className='input_icon' src={`${Taro.$cdnUrl}/index/index_icon45.webp`}></Image>
                         <Input
@@ -152,11 +155,11 @@ const Index = observer(({ store }) => {
                     <View className='logn_policy_2'>
                         <Image onClick={() => setChecked(!checked)} src={`${Taro.$cdnUrl}/index/index_icon2${checked ? 7 : 8}.webp`}></Image>
                         <View onClick={() => setChecked(!checked)} >已阅读并同意</View>
-                        <View className='webview_link'>《招小帮服务协议》</View>
+                        <View className='webview_link'>《公路云服务协议》</View>
                         <View className='webview_link'>《隐私政策》</View>
                     </View>
 
-                    <Button className='account_login_btn'>登录</Button>
+                    <Button className={`account_login_btn ${account && password && checked ? 'account_login_btn_active' : ''}`}>登录</Button>
                 </>
             }
 

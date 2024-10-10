@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:02:33
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-08 15:27:09
+ * @LastEditTime: 2024-10-10 14:26:35
  * @Description: 
  */
 
@@ -67,7 +67,6 @@ const Index = observer(({ store, actCurrent }) => {
         if (role === 'admin' || role === 'service') {
             switch (e) {
                 case 0:
-                    setRole('admin')
                     Taro.switchTab({
                         url: '/pages/index/index'
                     });
@@ -91,7 +90,6 @@ const Index = observer(({ store, actCurrent }) => {
         }else if(role === 'onSite'){
             switch (e) {
                 case 0:
-                    setRole('admin')
                     Taro.switchTab({
                         url: '/pages/index/index'
                     });

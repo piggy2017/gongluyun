@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-08 17:55:24
+ * @LastEditTime: 2024-10-09 11:39:51
  * @Description: 
  */
 /*
@@ -43,11 +43,11 @@ const Index = observer(({ store }) => {
     const [title, setTitle] = useState('龙泉驿区招物流分拣全职月结');
 
     const [list, setList] = useState([
-        { userName: "高小光", isChoosed: false, showOptions: false, status: 1, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", isChoosed: false, showOptions: false, status: 2, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", isChoosed: false, showOptions: false, status: 3, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", isChoosed: false, showOptions: false, status: 4, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", isChoosed: false, showOptions: false, status: 5, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        {id:1, userName: "高小光", isChoosed: false, showOptions: false, status: 1, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        {id:2, userName: "高小光", isChoosed: false, showOptions: false, status: 2, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        {id:3, userName: "高小光", isChoosed: false, showOptions: false, status: 3, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        {id:4, userName: "高小光", isChoosed: false, showOptions: false, status: 4, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        {id:5, userName: "高小光", isChoosed: false, showOptions: false, status: 5, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
     ])
 
     const [sourceList, setSourceList] = useState(['全部来源', '抖音直播', '小红书', 'BOSS直聘', '微信私域', '58同城', 'BOSS直聘', '微信私域', '58同城']);
@@ -61,6 +61,7 @@ const Index = observer(({ store }) => {
     const [batchOperations, setBatchOperations] = useState(false);       // 是否进行批量操作
     const [chooseAll, setChooseAll] = useState(false);                   // 全选反选
     const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示底部的操作选项
+    const [chooseList, setChooseList] = useState([]);                    // 选中的列表
 
     useEffect(() => {
         setTimeout(async () => {
@@ -78,6 +79,13 @@ const Index = observer(({ store }) => {
         }, 0);
     }, [batchOperations])
 
+    useEffect(() => {
+        console.log("chooseList", chooseList);
+        if (chooseList.length === 0) {
+            setShowbottomOptions(false);
+        }
+    }, [chooseList])
+
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
     }, 500);
@@ -90,7 +98,9 @@ const Index = observer(({ store }) => {
         return `calc(100vh - ${statusTitleHeight + contenTitleHeight + searchHeight}px - ${batchOperations ? bottomHeight : 0}px)`;
     }
 
-    const showOptionFunc = (obj, index) => {
+    const showOptionFunc = (e, obj, index) => {
+        if (batchOperations) return;
+        e.stopPropagation();
         setList(list => {
             let _list = list.map((item, i) => {
                 item.showOptions = i === index ? !item.showOptions : false
@@ -160,7 +170,30 @@ const Index = observer(({ store }) => {
         )
     }
 
+    const swtitchCurrentTab = (item) => {    // 切换分类tab
+        if (item === currentTab) return;
+        setCurrentTab(item);
+        setBatchOperations(false);
+        setChooseList([]);
+        setChooseAll(false);
+        setShowbottomOptions(false);
+        setCurrentCliskstatus('');
+    }
+
+    const callUser = (e, obj) => {
+        if (batchOperations) return;
+        e.stopPropagation();
+        Taro.makePhoneCall({
+            phoneNumber: obj.phone
+        })
+    }
+
     const chooeAllFunc = () => {
+        if (chooseAll) {
+            setChooseList([])
+        } else {
+            setChooseList(list.map(item => item.id))
+        }
         setChooseAll(!chooseAll);
         setList(list => {
             let _list = list.map(item => {
@@ -174,6 +207,32 @@ const Index = observer(({ store }) => {
     const changeStatus = (e) => {
         console.log("changeStatus", e);
         setCurrentCliskstatus(e);
+    }
+
+    const chooseItemFunc = (obj, index) => {
+        if (batchOperations) {
+            setList(list => {
+                let _list = list.map((item, i) => {
+                    if (i === index) {
+                        item.isChoosed = !item.isChoosed
+                    }
+                    return item
+                })
+                setChooseList(_list.filter(item => item.isChoosed).map(item => item.id))
+                return _list
+            })
+        }
+    }
+
+    const doneBtn = () => {    // 点击完成按钮
+        setShowbottomOptions(false);
+        setBatchOperations(false);
+    }
+
+    const editBtnFunc = () => {   // 点击下方的修改状态按钮
+        if (chooseList.length > 0) {
+            setShowbottomOptions(!showbottomOptions);
+        }
     }
 
     return (
@@ -218,7 +277,7 @@ const Index = observer(({ store }) => {
                     {
                         tabList.map((item, index) => {
                             return (
-                                <View onClick={() => setCurrentTab(item)} className={`tab_item ${currentTab === item ? 'tab_item_active' : ''} `} key={index}>{item}</View>
+                                <View onClick={() => swtitchCurrentTab(item)} className={`tab_item ${currentTab === item ? 'tab_item_active' : ''} `} key={index}>{item}</View>
                             )
                         })
                     }
@@ -228,7 +287,7 @@ const Index = observer(({ store }) => {
                     <View className='search_total_left'>共计 <Text>172</Text> 人</View>
                     {
                         batchOperations ?
-                            <View className='search_total_right_t' onClick={() => setBatchOperations(false)}>完成</View> :
+                            <View className='search_total_right_t' onClick={() => doneBtn()}>完成</View> :
                             <View className='search_total_right' onClick={() => setBatchOperations(true)}>
                                 <View>批量操作</View>
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon33.webp`}></Image>
@@ -253,7 +312,7 @@ const Index = observer(({ store }) => {
                 {
                     list.length > 0 && list.map((item, index) => {
                         return (
-                            <View className='roster_item' key={index} style={`padding-left:${batchOperations ? '120rpx' : '56rpx'}`}>
+                            <View onClick={() => chooseItemFunc(item, index)} className='roster_item' key={index} style={`padding-left:${batchOperations ? '120rpx' : '56rpx'}`}>
                                 <View className='roster_item_title'>
                                     <View className='item_title_index'>{index + 1}</View>
                                     <View className='item_title_left'>
@@ -263,7 +322,7 @@ const Index = observer(({ store }) => {
                                     {
                                         item.status === 1 &&
                                         <>
-                                            <View className='item_status_item item_waitInterview' onClick={() => showOptionFunc(item, index)}>
+                                            <View className='item_status_item item_waitInterview' onClick={(e) => showOptionFunc(e, item, index)}>
                                                 <View>已约面</View>
                                                 <Image src={`${Taro.$cdnUrl}/index/index_icon35.webp`}></Image>
                                             </View>
@@ -287,7 +346,7 @@ const Index = observer(({ store }) => {
                                         </> ||
                                         item.status === 2 &&
                                         <>
-                                            <View className='item_status_item item_hasInterview' onClick={() => showOptionFunc(item, index)}>
+                                            <View className='item_status_item item_hasInterview' onClick={(e) => showOptionFunc(e, item, index)}>
                                                 <View>已到面</View>
                                                 <Image src={`${Taro.$cdnUrl}/index/index_icon35.webp`}></Image>
                                             </View>
@@ -307,7 +366,7 @@ const Index = observer(({ store }) => {
                                         </> ||
                                         item.status === 3 &&
                                         <>
-                                            <View className='item_status_item item_passInterview' onClick={() => showOptionFunc(item, index)}>
+                                            <View className='item_status_item item_passInterview' onClick={(e) => showOptionFunc(e, item, index)}>
                                                 <View>面试通过</View>
                                                 <Image src={`${Taro.$cdnUrl}/index/index_icon35.webp`}></Image>
                                             </View>
@@ -327,7 +386,7 @@ const Index = observer(({ store }) => {
                                         </> ||
                                         item.status === 4 &&
                                         <>
-                                            <View className='item_status_item item_signup' onClick={() => showOptionFunc(item, index)}>
+                                            <View className='item_status_item item_signup' onClick={(e) => showOptionFunc(e, item, index)}>
                                                 <View>已入职</View>
                                                 <Image src={`${Taro.$cdnUrl}/index/index_icon35.webp`}></Image>
                                             </View>
@@ -348,14 +407,26 @@ const Index = observer(({ store }) => {
                                         </> ||
                                         item.status === 5 &&
                                         <>
-                                            <View className='item_status_item item_dimission' onClick={() => showOptionFunc(item, index)}>
+                                            <View className='item_status_item item_dimission' onClick={(e) => showOptionFunc(e, item, index)}>
                                                 <View>已离职</View>
+                                                <Image src={`${Taro.$cdnUrl}/index/index_icon35.webp`}></Image>
                                             </View>
+                                            {
+                                                item.showOptions &&
+                                                <View className='item_status_options'>
+                                                    <UpdateStatus
+                                                        onClose={() => setShowbottomOptions(false)}
+                                                        showPicker={true}
+                                                        currentStatus={currentCliskstatus}
+                                                        onChange={changeStatus}>
+                                                    </UpdateStatus>
+                                                </View>
+                                            }
                                         </>
                                     }
                                 </View>
 
-                                <View className='roster_item_phone'>
+                                <View className='roster_item_phone' onClick={(e) => callUser(e, item)}>
                                     <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
                                     <View>{item.phone}</View>
                                 </View>
@@ -379,35 +450,29 @@ const Index = observer(({ store }) => {
                     batchOperations &&
                     <View className='footer_wrapper'>
                         <View className='footer_wrapper_top' style={`height:16rpx;`}>
-                            <View className='footer_wrapper_top_position'>
-                                <UpdateStatus
-                                    onClose={() => setShowbottomOptions(false)}
-                                    showPicker={showbottomOptions}
-                                    currentStatus={currentCliskstatus}
-                                    bottomHeight={bottomHeight}
-                                    onChange={changeStatus}>
-                                </UpdateStatus>
-                            </View>
+                            {
+                                showbottomOptions &&
+                                <View className='footer_wrapper_top_position'>
+                                    <UpdateStatus
+                                        onClose={() => setShowbottomOptions(false)}
+                                        showPicker={showbottomOptions}
+                                        currentStatus={currentCliskstatus}
+                                        bottomHeight={bottomHeight}
+                                        onChange={changeStatus}>
+                                    </UpdateStatus>
+                                </View>
+                            }
                         </View>
                         <View className='footer_wrapper_content'>
                             <View className='footer_wrapper_left' onClick={() => chooeAllFunc()}>
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon2${chooseAll ? 7 : 8}.webp`}></Image>
                                 <View>全选</View>
                             </View>
-                            <View className='footer_btn' onClick={() => setShowbottomOptions(!showbottomOptions)}>修改状态</View>
+                            <View className={`footer_btn ${chooseList.length > 0 ? 'footer_btn_active' : ''}`} onClick={() => editBtnFunc()}>修改状态</View>
                         </View>
                         <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                     </View>
                 }
-                {/* {
-                    batchOperations && showbottomOptions &&
-                    <View className='footer_wrapper_options' style={`bottom:${bottomHeight + 9}px;`}>
-                        <OptionItem1></OptionItem1>
-                        <OptionItem2></OptionItem2>
-                        <OptionItem3></OptionItem3>
-                        <OptionItem4></OptionItem4>
-                    </View>
-                } */}
             </Block>
 
             {/* 线索来源 */}

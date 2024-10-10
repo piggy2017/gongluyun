@@ -1,0 +1,397 @@
+@import '@/app.scss';
+
+.container {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(180deg, #F4F4F4 0%, #edf3fc00 100%) #F4F4F4;
+    background-size: 100% 1158rpx;
+    background-repeat: no-repeat;
+
+    .export_infos{
+        padding: 22rpx 34rpx;
+        .export_infos_name{
+            align-self: stretch;
+            color: #222222;
+            text-align: left;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            margin-bottom: 10rpx;
+        }
+        .export_infos_time{
+            color: #666666;
+            text-align: left;
+            font-family: "PingFang SC";
+            font-size: 28rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+        }
+    }
+
+    .scrollWrapper {
+        width: 100%;
+        border: 1rpx solid red;
+        background-color: #ffffff;
+
+        .roster_item {
+            flex-shrink: 0;
+            height: 200rpx;
+            box-sizing: border-box;
+            padding: 30rpx 40rpx 30rpx 68rpx;
+            border-bottom: 1rpx solid #0000000a;
+            position: relative;
+
+            .roster_item_choose {
+                position: absolute;
+                width: 40rpx;
+                height: 40rpx;
+                left: 24rpx;
+                top: 80rpx;
+                z-index: 9;
+            }
+
+            .roster_item_title {
+                @include flex-center(space-between);
+                position: relative;
+
+                .item_title_index {
+                    color: #222222;
+                    font-family: "D-DIN-PRO";
+                    font-size: 32rpx;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: normal;
+                    position: absolute;
+                    width: 38rpx;
+                    left: -34rpx;
+                    top: 6rpx;
+                }
+
+                .item_title_left {
+                    @include flex-center(flex-start);
+                    color: #1678ff;
+                    font-family: "D-DIN-PRO";
+                    font-size: 32rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+
+                    .item_title_name {
+                        color: #222222;
+                        font-size: 32rpx;
+                        font-style: normal;
+                        font-weight: 500;
+                        margin-right: 12rpx;
+                    }
+
+                    image {
+                        width: 40rpx;
+                        height: 40rpx;
+                    }
+                }
+
+                .item_title_right {
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+            }
+
+            .roster_item_detail {
+                margin: 10rpx 0 8rpx 0;
+                position: relative;
+                @include flex-center(space-between);
+
+                .roster_item_detail_content {
+                    color: #666666;
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+
+                .roster_item_detail_status {
+                    @include flex-center(flex-end);
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                }
+
+                .item_status_options {
+                    position: absolute;
+                    content: '';
+                    flex-shrink: 0;
+                    border-radius: 12rpx;
+                    background: #FFF;
+                    right: -20rpx;
+                    top: 56rpx;
+                    box-sizing: border-box;
+                    z-index: 9;
+                }
+            }
+
+            .roster_item_phone {
+                // padding: 16rpx 0 0 56rpx;
+                @include flex-center(flex-start);
+                color: #1678ff;
+                font-family: "D-DIN-PRO";
+                font-size: 34rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                    flex-shrink: 0;
+                    margin-right: 4rpx;
+                }
+            }
+
+
+            .roster_item_hr {
+                width: 642rpx;
+                height: 2rpx;
+                flex-shrink: 0;
+                background-color: #0000000a;
+                margin: 12rpx auto 0 auto;
+            }
+
+            .roster_item_time {
+                // padding: 12rpx 0 0 56rpx;
+                color: #999999;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+            }
+        }
+    }
+
+    .source_init_layout {
+        .at-float-layout__container {
+            height: auto !important;
+            min-height: auto !important;
+            overflow: hidden;
+            border-radius: 20rpx 20rpx 0 0 !important;
+
+            .layout-body {
+                min-height: auto !important;
+            }
+        }
+
+        .layout-body__content {
+            min-height: auto !important;
+        }
+
+        .filter_wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-color: #ffffff;
+
+            .filter_wrapper_bg {
+                width: 100%;
+                height: 100%;
+
+                .filter_title {
+                    @include flex-center(space-between);
+                    padding: 24rpx 0 40rpx 38rpx;
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 34rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                }
+
+                .filter_wrapper_content {
+                    display: flex;
+                    flex-flow: row wrap;
+
+                    .filter_wrapper_item {
+                        width: 204rpx;
+                        height: 76rpx;
+                        line-height: 76rpx;
+                        text-align: center;
+                        flex-shrink: 0;
+                        border-radius: 8rpx;
+                        background: #F2F2F2;
+                        color: #222222;
+                        font-family: "PingFang SC";
+                        font-size: 28rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        margin-bottom: 26rpx;
+
+                        &:nth-child(3n+1) {
+                            margin-left: 32rpx;
+                        }
+
+                        &:nth-child(3n+2) {
+                            margin-left: 24rpx;
+                        }
+
+                        &:nth-child(3n+3) {
+                            margin-left: 24rpx;
+                        }
+                    }
+
+                    .filter_wrapper_item_active {
+                        background: #0483FF;
+                        color: #ffffff;
+                    }
+                }
+
+                .custom_filter_date {
+                    width: 662rpx;
+                    height: 76rpx;
+                    flex-shrink: 0;
+                    border-radius: 10rpx;
+                    margin: 0 auto;
+                    text-align: center;
+                    line-height: 76rpx;
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    background: #F2F2F2;
+                    color: #222222;
+                }
+
+                .custom_filter_date_active {
+                    background: #0483FF;
+                    color: #ffffff;
+                }
+            }
+        }
+    }
+
+    .footer_wrapper {
+        position: fixed;
+        background: #FFF;
+        z-index: 9;
+        width: 100%;
+        left: 0;
+        bottom: 0;
+
+        .footer_wrapper_top {
+            position: relative;
+
+            .footer_wrapper_top_position {
+                position: absolute;
+                z-index: 11;
+                top: -340rpx;
+                left: 20rpx;
+            }
+        }
+
+        .footer_wrapper_content {
+            padding: 0 28rpx 0 46rpx;
+            @include flex-center(space-between);
+            position: relative;
+
+            .footer_wrapper_left {
+                color: #666666;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                @include flex-center(flex-start);
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                    margin-right: 12rpx;
+                }
+            }
+
+            .footer_btn {
+                width: 338rpx;
+                height: 96rpx;
+                border-radius: 8rpx;
+                background: #CDE1FF;
+                color: #ffffff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 96rpx;
+            }
+
+            .footer_btn_active {
+                background-color: #1678FF;
+            }
+        }
+    }
+
+    .export_model {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        background-color: rgba(0, 0, 0, 0.5);
+        @include flex-center;
+
+        .export_model_content {
+            width: 600rpx;
+            height: 540rpx;
+            flex-shrink: 0;
+            border-radius: 24rpx;
+            position: relative;
+            background-image: url($cdnUrl + '/index/index_icon52.webp');
+            background-repeat: no-repeat;
+            background-size: 100% 282rpx;
+            background-color: #FFF;
+            .export_model_close{
+                position: absolute;
+                top: 20rpx;
+                z-index: 1000;
+                right: 20rpx;
+                width: 48rpx;
+                height: 48rpx;
+                @include flex-center;
+            }
+            .export_model_title{
+                color: #000000;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 34rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                padding-top: 216rpx;
+            }
+            .export_model_img{
+                width: 526rpx;
+                height: 90rpx;
+                display: block;
+                margin: 44rpx auto 0 auto;
+            }
+            .export_model_btn{
+                color: #0483ff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                margin-top: 34rpx;
+            }
+        }
+    }
+}

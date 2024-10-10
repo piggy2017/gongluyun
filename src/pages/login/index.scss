@@ -18,13 +18,15 @@
             width: 100%;
             height: var(--statusBarHeight);
         }
+
         .my_header_content {
             height: var(--navContentHeight);
             display: flex;
             flex-flow: row nowrap;
             align-items: center;
             padding-left: 30rpx;
-            image{
+
+            image {
                 width: 48rpx;
                 height: 48rpx;
             }
@@ -50,6 +52,22 @@
             line-height: normal;
             margin-top: 14rpx;
         }
+    }
+
+    .logo1 {
+        display: block;
+        width: 326rpx;
+        height: 256rpx;
+        flex-shrink: 0;
+        margin: 350rpx auto 0 auto;
+    }
+
+    .logo2 {
+        display: block;
+        width: 146rpx;
+        height: 160rpx;
+        flex-shrink: 0;
+        margin: 90rpx auto 0 auto;
     }
 
     .login_bottom {
@@ -194,7 +212,7 @@
         width: 638rpx;
         height: 100rpx;
         border-radius: 12rpx;
-        background: #0483FF;
+        background: #CDE1FF;
         color: #ffffff;
         text-align: center;
         font-family: "PingFang SC";
@@ -203,5 +221,9 @@
         font-weight: 500;
         line-height: 100rpx;
         margin: 148rpx auto 0 auto;
+    }
+
+    .account_login_btn_active{
+        background: #0483FF;
     }
 }

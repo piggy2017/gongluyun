@@ -27,7 +27,7 @@
         }
     }
 
-    .component_hr{
+    .component_hr {
         margin: 20rpx 0;
         text-align: center;
         color: red;
@@ -127,6 +127,7 @@
                     font-weight: 400;
                     line-height: normal;
                     margin-top: 32rpx;
+
                     image {
                         width: 48rpx;
                         height: 48rpx;
@@ -134,7 +135,8 @@
                         margin-right: 10rpx
                     }
                 }
-                .add_types_item:first-child{
+
+                .add_types_item:first-child {
                     margin-top: 0;
                 }
             }
@@ -445,9 +447,9 @@
 
 .data_init_layout {
     .at-float-layout__container {
-        height: 480rpx !important;
-        max-height: 480rpx !important;
-        min-height: 480rpx !important;
+        height: 630rpx !important;
+        max-height: 630rpx !important;
+        min-height: 630rpx !important;
         border-radius: 20rpx 20rpx 0 0 !important;
         overflow: hidden;
     }
@@ -530,11 +532,32 @@
                 font-weight: 400;
                 background: #F2F2F2;
                 color: #222222;
+                @include flex-center(space-between);
             }
 
-            .custom_filter_date_active {
-                background: #0483FF;
+            .filter_wrapper_btn {
+                width: 610rpx;
+                height: 96rpx;
+                flex-shrink: 0;
+                border-radius: 10rpx;
+                background: #1678FF;
+                margin: 56rpx auto 0 auto;
                 color: #ffffff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 96rpx;
+            }
+
+            .picker {
+                width: 284rpx;
+                text-align: center;
+            }
+
+            .picker_active {
+                color: #1678ff;
             }
         }
     }

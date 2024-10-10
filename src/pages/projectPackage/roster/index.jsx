@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-08 17:00:54
+ * @LastEditTime: 2024-10-10 15:50:30
  * @Description: 
  */
 /*
@@ -14,7 +14,7 @@
  */
 import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro';
-import { View, Image, Input, ScrollView, Text, Button, Picker } from '@tarojs/components'
+import { View, Image, Input, ScrollView, Text, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 
@@ -43,12 +43,12 @@ const Index = observer(({ store }) => {
     const [title, setTitle] = useState('龙泉驿区招物流分拣全职月结');
 
     const [list, setList] = useState([
-        { userName: "高小光", status: 1, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", status: 2, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", status: 3, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", status: 4, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", status: 5, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { userName: "高小光", status: 6, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        { id: 1, userName: "高小光", status: 1, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        { id: 2, userName: "高小光", status: 2, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        { id: 3, userName: "高小光", status: 3, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        { id: 4, userName: "高小光", status: 4, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        { id: 5, userName: "高小光", status: 5, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
+        { id: 6, userName: "高小光", status: 6, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
     ])
 
     const [sourceList, setSourceList] = useState(['全部来源', '抖音直播', '小红书', 'BOSS直聘', '微信私域', '58同城', 'BOSS直聘', '微信私域', '58同城']);
@@ -61,6 +61,8 @@ const Index = observer(({ store }) => {
     const [batchOperations, setBatchOperations] = useState(false);       // 是否进行批量操作
     const [chooseAll, setChooseAll] = useState(false);                   // 全选反选
     const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示底部的操作选项
+    const [chooseList, setChooseList] = useState([]);                    // 选中的列表
+    const [showExportModel, setShowExportModel] = useState(false);       // 是否显示导出弹窗
 
     useEffect(() => {
         setTimeout(async () => {
@@ -69,8 +71,20 @@ const Index = observer(({ store }) => {
                 console.log("_query_query_query", _query.height);
                 setSearchHeight(_query.height)
             }
+            const _bot = await selectorQueryDomInfo('.footer_wrapper');
+            if (_bot?.height) {
+                console.log("_bot_bot_bot", _bot.height);
+                setBottomHeight(_bot.height)
+            }
         }, 0);
-    }, [isLogin, authentication])
+    }, [batchOperations])
+
+    useEffect(() => {
+        console.log("chooseList", chooseList);
+        if (chooseList.length === 0) {
+            setShowbottomOptions(false);
+        }
+    }, [chooseList])
 
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
@@ -122,7 +136,19 @@ const Index = observer(({ store }) => {
         }
     }
 
-    const showOptionFunc = (obj, index) => {
+    const swtitchCurrentTab = (item) => {    // 切换分类tab
+        if (item === currentTab) return;
+        setCurrentTab(item);
+        setBatchOperations(false);
+        setChooseList([]);
+        setChooseAll(false);
+        setShowbottomOptions(false);
+        setCurrentCliskstatus('');
+    }
+
+    const showOptionFunc = (e, obj, index) => {
+        if (batchOperations) return;
+        e.stopPropagation();
         setList(list => {
             let _list = list.map((item, i) => {
                 item.showOptions = i === index ? !item.showOptions : false
@@ -132,7 +158,20 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const chooeAllFunc = () => {
+    const callUser = (e, obj) => {
+        if (batchOperations) return;
+        e.stopPropagation();
+        Taro.makePhoneCall({
+            phoneNumber: obj.phone
+        })
+    }
+
+    const chooeAllFunc = () => {      // 全选、反选
+        if (chooseAll) {
+            setChooseList([])
+        } else {
+            setChooseList(list.map(item => item.id))
+        }
         setChooseAll(!chooseAll);
         setList(list => {
             let _list = list.map(item => {
@@ -146,6 +185,32 @@ const Index = observer(({ store }) => {
     const changeStatus = (e) => {
         console.log("changeStatus", e);
         setCurrentCliskstatus(e);
+    }
+
+    const editBtnFunc = () => {   // 点击下方的修改状态按钮
+        if (chooseList.length > 0) {
+            setShowbottomOptions(!showbottomOptions);
+        }
+    }
+
+    const chooseItemFunc = (obj, index) => {
+        if (batchOperations) {
+            setList(list => {
+                let _list = list.map((item, i) => {
+                    if (i === index) {
+                        item.isChoosed = !item.isChoosed
+                    }
+                    return item
+                })
+                setChooseList(_list.filter(item => item.isChoosed).map(item => item.id))
+                return _list
+            })
+        }
+    }
+
+    const doneBtn = () => {    // 点击完成按钮
+        setShowbottomOptions(false);
+        setBatchOperations(false);
     }
 
     return (
@@ -197,7 +262,7 @@ const Index = observer(({ store }) => {
                     {
                         tabList.map((item, index) => {
                             return (
-                                <View onClick={() => setCurrentTab(item)} className={`tab_item ${currentTab === item ? 'tab_item_active' : ''} `} key={index}>{item}</View>
+                                <View onClick={() => swtitchCurrentTab(item)} className={`tab_item ${currentTab === item ? 'tab_item_active' : ''} `} key={index}>{item}</View>
                             )
                         })
                     }
@@ -206,17 +271,17 @@ const Index = observer(({ store }) => {
                 <View className='search_total'>
                     <View className='search_total_left'>共计 <Text>172</Text> 人</View>
                     <View className='search_total_right_wrap'>
-                        <View className='search_total_right_item'>
+                        <View className='search_total_right_item' onClick={() => Taro.navigateTo({ url: '/pages/newPackage/newWorker/index' })}>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon48.webp`}></Image>
                             <View>新增</View>
                         </View>
-                        <View className='search_total_right_item'>
+                        <View className='search_total_right_item' onClick={() => setShowExportModel(true)}>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon49.webp`}></Image>
                             <View>导出</View>
                         </View>
                         {
                             batchOperations ?
-                                <View className='search_total_right_t' onClick={() => setBatchOperations(false)}>完成</View> :
+                                <View className='search_total_right_t' onClick={() => doneBtn()}>完成</View> :
                                 <View className='search_total_right' onClick={() => setBatchOperations(true)}>
                                     <Image src={`${Taro.$cdnUrl}/index/index_icon33.webp`}></Image>
                                     <View>多选</View>
@@ -242,20 +307,20 @@ const Index = observer(({ store }) => {
                 {
                     list.length > 0 && list.map((item, index) => {
                         return (
-                            <View className='roster_item' key={index} style={`padding:${batchOperations ? '30rpx 28rpx 30rpx 126rpx' : '30rpx 40rpx 30rpx 68rpx'}`}>
+                            <View onClick={() => chooseItemFunc(item, index)} className='roster_item' key={index} style={`padding:${batchOperations ? '30rpx 28rpx 30rpx 126rpx' : '30rpx 40rpx 30rpx 68rpx'}`}>
                                 <View className='roster_item_title'>
                                     <View className='item_title_index'>{index + 1}</View>
                                     <View className='item_title_left'>
                                         <View className='item_title_name'>{item.userName}</View>
                                         <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
-                                        <View className='item_title_phone'>{item.phone}</View>
+                                        <View className='item_title_phone' onClick={(e) => callUser(e, item)}>{item.phone}</View>
                                     </View>
                                 </View>
                                 <View className='roster_item_detail'>
                                     <View className='roster_item_detail_content'>{item.detail}</View>
-                                    <View className='roster_item_detail_status' style={{ color: getColor(item.status) }} onClick={() => showOptionFunc(item, index)}>
+                                    <View className='roster_item_detail_status' style={{ color: getColor(item.status) }} onClick={(e) => showOptionFunc(e, item, index)}>
                                         <View>{getStatus(item.status)}</View>
-                                        <AtIcon value='chevron-down' size='14' color={getColor(item.status)} onClick={() => setShowSourceModel(false)}></AtIcon>
+                                        <AtIcon value='chevron-down' size='14' color={getColor(item.status)}></AtIcon>
                                     </View>
                                     {
                                         item.showOptions &&
@@ -263,11 +328,8 @@ const Index = observer(({ store }) => {
                                             <UpdateStatus
                                                 type={2}
                                                 onClose={() => setShowbottomOptions(false)}
-                                                showPicker={true}
                                                 currentStatus={currentCliskstatus}
-                                                // bottomHeight={bottomHeight}
                                                 onChange={changeStatus}>
-
                                             </UpdateStatus>
                                         </View>
                                     }
@@ -283,31 +345,80 @@ const Index = observer(({ store }) => {
                 }
             </ScrollView>
 
-            {/* 线索来源 */}
-            <AtFloatLayout catchMove className='source_init_layout' isOpened={showSourceModel} onClose={() => setShowSourceModel(false)}>
-                <View className='filter_wrapper'>
-                    <View className='filter_wrapper_bg'>
-                        <View className='filter_title'>
-                            <View>按性别筛选</View>
-                            <AtIcon value='close' size='14' color='#222222' onClick={() => setShowSourceModel(false)}></AtIcon>
+            <Block>
+                {
+                    showExportModel &&
+                    <View className='export_model'>
+                        <View className='export_model_content'>
+                            <Image onClick={() => setShowExportModel(false)} className='export_model_close' src={`${Taro.$cdnUrl}/index/index_icon54.webp`}></Image>
+                            <View className='export_model_title'>导出全部名单</View>
+                            <Image className='export_model_img' src={`${Taro.$cdnUrl}/index/index_icon53.webp`}></Image>
+                            <View className='export_model_btn'>导出为小程序页面</View>
                         </View>
-                        <View className='filter_wrapper_content'>
+                    </View>
+                }
+            </Block>
+
+            {/* 底部操作栏 */}
+            <Block>
+                {
+                    batchOperations &&
+                    <View className='footer_wrapper'>
+                        <View className='footer_wrapper_top' style={`height:16rpx;`}>
                             {
-                                sourceList.map((item, index) => {
-                                    return (
-                                        <View
-                                            key={index}
-                                            className={`filter_wrapper_item ${index === sourceIndex ? 'filter_wrapper_item_active' : ''}`}
-                                            onClick={() => setSourceIndex(index)}
-                                        >{item}</View>
-                                    )
-                                })
+                                showbottomOptions &&
+                                <View className='footer_wrapper_top_position'>
+                                    <UpdateStatus
+                                        type={2}
+                                        onClose={() => setShowbottomOptions(false)}
+                                        currentStatus={currentCliskstatus}
+                                        onChange={changeStatus}>
+                                    </UpdateStatus>
+                                </View>
                             }
+                        </View>
+                        <View className='footer_wrapper_content'>
+                            <View className='footer_wrapper_left' onClick={() => chooeAllFunc()}>
+                                <Image src={`${Taro.$cdnUrl}/index/index_icon2${chooseAll ? 7 : 8}.webp`}></Image>
+                                <View>全选</View>
+                            </View>
+                            <View
+                                className={`footer_btn ${chooseList.length > 0 ? 'footer_btn_active' : ''}`}
+                                onClick={() => editBtnFunc()}>修改状态 {chooseList.length > 0 ? chooseList.length : ''}</View>
                         </View>
                         <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                     </View>
-                </View>
-            </AtFloatLayout>
+                }
+            </Block>
+
+            {/* 线索来源 */}
+            <Block>
+                <AtFloatLayout catchMove className='source_init_layout' isOpened={showSourceModel} onClose={() => setShowSourceModel(false)}>
+                    <View className='filter_wrapper'>
+                        <View className='filter_wrapper_bg'>
+                            <View className='filter_title'>
+                                <View>按性别筛选</View>
+                                <AtIcon value='close' size='14' color='#222222' onClick={() => setShowSourceModel(false)}></AtIcon>
+                            </View>
+                            <View className='filter_wrapper_content'>
+                                {
+                                    sourceList.map((item, index) => {
+                                        return (
+                                            <View
+                                                key={index}
+                                                className={`filter_wrapper_item ${index === sourceIndex ? 'filter_wrapper_item_active' : ''}`}
+                                                onClick={() => setSourceIndex(index)}
+                                            >{item}</View>
+                                        )
+                                    })
+                                }
+                            </View>
+                            <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+                        </View>
+                    </View>
+                </AtFloatLayout>
+            </Block>
+
         </View>
     )
 })
