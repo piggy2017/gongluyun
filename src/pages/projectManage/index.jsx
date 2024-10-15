@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-08 17:44:04
+ * @LastEditTime: 2024-10-14 14:55:05
  * @Description: 
  */
 
@@ -20,7 +20,7 @@ import './index.scss'
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
-    userStore: { isLogin, authentication }
+    userStore: { role, isLogin, authentication }
   } = store
   const [searchValue, setSearchValue] = useState('');
   const [searchHeight, setSearchHeight] = useState(34);
@@ -62,19 +62,31 @@ const Index = observer(({ store }) => {
     return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight + searchHeight}px)`;
   }
 
-  const navigateFunc = (e, url) => {
-    // if (type) {   // 需要校验用户是否登录
-    //   if (isLogin === 0) {
-    //     Taro.navigateTo({
-    //       url: '/pages/login/index'
-    //     })
-    //     return
-    //   }
-    // }
+  const navigateFunc = (e, type, url) => {
+    if (type) {   // 需要校验用户是否登录
+      if (isLogin === 0) {
+        Taro.navigateTo({
+          url: '/pages/login/index'
+        })
+        return
+      }
+    }
     e.stopPropagation();
     Taro.navigateTo({
       url
     })
+  }
+
+  const loginOrAuth = () => {
+    if (isLogin === 0) {
+      Taro.navigateTo({
+        url: '/pages/login/index'
+      })
+    } else {
+      Taro.navigateTo({
+        url: '/pages/minePackage/companyAuth/index'
+      })
+    }
   }
 
   return (
@@ -98,20 +110,16 @@ const Index = observer(({ store }) => {
             }}
             value={searchValue}></Input>
         </View>
-        <Image className='add_icon' src={`${Taro.$cdnUrl}/index/index_icon3.webp`} onClick={(e) => navigateFunc(e, '/pages/newPackage/newProject/index')}></Image>
-        {/* <View className='search_type_wrap' onClick={() => setShowChangeType(true)}>
-          <View>{typeList[typeIndex]}</View>
-          <AtIcon value='chevron-down' size='14' color='#222222'></AtIcon>
-        </View> */}
+        <Image className='add_icon' src={`${Taro.$cdnUrl}/index/index_icon3.webp`} onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newProject/index')}></Image>
       </View>
       {
-        (!isLogin || !authentication) &&
+        (!isLogin || (role === 'SEEK' && !authentication)) &&
         <View className='no_login'>
           <Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image>
-          <View className='no_login_tip'>认证后立即体验项目管理功能</View>
-          <View className='login_btn' onClick={() => { Taro.navigateTo({ url: '/pages/login/index' }) }}>立即登录</View>
+          <View className='no_login_tip'>{!isLogin ? '登录后体验多项专属功能' : '认证后立即体验项目管理功能'}</View>
+          <View className='login_btn' onClick={() => loginOrAuth()}>{!isLogin ? '立即登录' : '立即认证'}</View>
         </View> ||
-        isLogin && authentication &&
+        isLogin && role != 'SEEK' &&
         <ScrollView
           scrollY
           className='scrollWrapper'

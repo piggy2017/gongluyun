@@ -48,7 +48,8 @@
             padding: 0 24rpx;
             box-sizing: border-box;
             @include flex-center(space-between);
-            .project_count_item{
+
+            .project_count_item {
                 display: flex;
                 flex-flow: column nowrap;
                 align-items: center;
@@ -60,7 +61,8 @@
                 font-style: normal;
                 font-weight: 600;
                 line-height: normal;
-                .project_count_item_label{
+
+                .project_count_item_label {
                     color: #666666;
                     text-align: center;
                     font-family: "PingFang SC";
@@ -188,7 +190,7 @@
                 width: 36rpx;
                 height: 36rpx;
                 flex-shrink: 0;
-                margin-top: 8rpx;
+                margin-top: 14rpx;
             }
 
             .interview_item_content {
@@ -202,6 +204,50 @@
 
                 text {
                     color: #222222;
+                }
+            }
+        }
+
+        .interview_item_set {
+            padding: 0 24rpx;
+            margin-bottom: 32rpx;
+            @include flex-center(space-between);
+
+            .interview_item_set_left {
+                @include flex-center(flex-start);
+                width: 320rpx;
+
+                image {
+                    width: 36rpx;
+                    height: 36rpx;
+                    flex-shrink: 0;
+                    margin-right: 14rpx;
+                }
+
+                .interview_item_content {
+                    width: 614rpx;
+                    color: #666666;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 51rpx;
+                }
+            }
+
+            .interview_item_set_right {
+                @include flex-center(flex-end);
+                color: #1678ff;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                    flex-shrink: 0;
                 }
             }
         }

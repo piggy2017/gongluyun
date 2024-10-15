@@ -64,7 +64,7 @@ const Index = observer(({ store, actCurrent }) => {
     const changeTab = (e) => {
         console.log("点击自定义tabbar触发——changeTab", e, role)
         // setActCurrent(e)
-        if (role === 'admin' || role === 'service') {
+        if (role === 'ADMIN' || role === 'CUSTOMER' || role === 'SEEK') {
             switch (e) {
                 case 0:
                     Taro.switchTab({
@@ -87,7 +87,7 @@ const Index = observer(({ store, actCurrent }) => {
                     });
                     break;
             }
-        }else if(role === 'onSite'){
+        }else if(role === 'ON_SITE'){
             switch (e) {
                 case 0:
                     Taro.switchTab({
@@ -114,14 +114,14 @@ const Index = observer(({ store, actCurrent }) => {
     }
     const getTabList = () => {
 
-        if (role === 'admin' || role === 'service') {
+        if (role === 'ADMIN' || role === 'CUSTOMER' || role === 'SEEK') {
             return [
                 { title: '工作台', image: getdefalutIcon(1), selectedImage: getSelectIcon(1) },
                 { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
                 { title: '线索', image: getdefalutIcon(3), selectedImage: getSelectIcon(3) },
                 { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
             ]
-        } else if (role === 'onSite') {
+        } else if (role === 'ON_SITE') {
             return [
                 { title: '工作台', image: getdefalutIcon(1), selectedImage: getSelectIcon(1) },
                 { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },

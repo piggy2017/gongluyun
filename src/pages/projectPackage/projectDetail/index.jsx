@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-19 14:25:22
+ * @LastEditTime: 2024-10-12 15:12:11
  * @Description: 
  */
 
@@ -22,6 +22,10 @@ const Index = observer(({ store }) => {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
     userStore: { isLogin, authentication }
   } = store
+
+  const [contactInfo, setContactInfo] = useState('');
+  const [address, setAddress] = useState('');
+  const [time, setTime] = useState('');
 
   const navigateFunc = (e, url) => {
     e.stopPropagation();
@@ -88,24 +92,68 @@ const Index = observer(({ store }) => {
       <View className='interview_info'>
         <View className='project_title'>
           <View>面试信息</View>
-          <View className='project_more'>
-            <View>修改</View>
-            <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
-          </View>
+          {
+            (contactInfo || address || time) &&
+            <View className='project_more'>
+              <View>修改</View>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
+            </View>
+          }
         </View>
 
-        <View className='interview_item'>
-          <Image src={`${Taro.$cdnUrl}/index/index_icon22.webp`}></Image>
-          <View className='interview_item_content'><Text>驻场联系人：</Text>王老师 17780662488</View>
-        </View>
-        <View className='interview_item'>
-          <Image src={`${Taro.$cdnUrl}/index/index_icon23.webp`}></Image>
-          <View className='interview_item_content'><Text>面试地点：</Text>成都市郫都区国宁西路88号（距犀浦地铁站250米）</View>
-        </View>
-        <View className='interview_item'>
-          <Image src={`${Taro.$cdnUrl}/index/index_icon24.webp`}></Image>
-          <View className='interview_item_content'><Text>面试时间：</Text>每周工作日早上10点-12点，下午2点-5点</View>
-        </View>
+        {
+          contactInfo &&
+          <View className='interview_item'>
+            <Image src={`${Taro.$cdnUrl}/index/index_icon22.webp`}></Image>
+            <View className='interview_item_content'><Text>驻场联系人：</Text>王老师 17780662488</View>
+          </View> ||
+          <View className='interview_item_set'>
+            <View className='interview_item_set_left'>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon22.webp`}></Image>
+              <View className='interview_item_content'>驻场联系人:</View>
+            </View>
+            <View className='interview_item_set_right'>
+              <View>设置驻场联系人</View>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon57.webp`}></Image>
+            </View>
+          </View>
+        }
+
+        {
+          address &&
+          <View className='interview_item'>
+            <Image src={`${Taro.$cdnUrl}/index/index_icon23.webp`}></Image>
+            <View className='interview_item_content'><Text>面试地点：</Text>成都市郫都区国宁西路88号（距犀浦地铁站250米）</View>
+          </View> ||
+          <View className='interview_item_set'>
+            <View className='interview_item_set_left'>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon23.webp`}></Image>
+              <View className='interview_item_content'>面试地点：</View>
+            </View>
+            <View className='interview_item_set_right'>
+              <View>设置面试地点</View>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon57.webp`}></Image>
+            </View>
+          </View>
+        }
+
+        {
+          time &&
+          <View className='interview_item'>
+            <Image src={`${Taro.$cdnUrl}/index/index_icon24.webp`}></Image>
+            <View className='interview_item_content'><Text>面试时间：</Text>每周工作日早上10点-12点，下午2点-5点</View>
+          </View> ||
+          <View className='interview_item_set'>
+            <View className='interview_item_set_left'>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon24.webp`}></Image>
+              <View className='interview_item_content'>面试时间：</View>
+            </View>
+            <View className='interview_item_set_right'>
+              <View>设置面试时间</View>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon57.webp`}></Image>
+            </View>
+          </View>
+        }
       </View>
 
       <View className='interview_info'>

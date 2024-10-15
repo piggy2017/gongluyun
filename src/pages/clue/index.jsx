@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-08 17:22:52
+ * @LastEditTime: 2024-10-14 15:00:11
  * @Description: 
  */
 
@@ -23,7 +23,7 @@ import ClueItem from '@/components/items/clueItem'
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-    userStore: { isLogin, authentication }
+    userStore: { isLogin, role, authentication }
   } = store
   const [type, setType] = useState('客户池');
 
@@ -113,6 +113,33 @@ const Index = observer(({ store }) => {
     }
   }
 
+  const navigateFunc = (e, type, url) => {
+    if (type) {   // 需要校验用户是否登录
+      if (isLogin === 0) {
+        Taro.navigateTo({
+          url: '/pages/login/index'
+        })
+        return
+      }
+    }
+    e.stopPropagation();
+    Taro.navigateTo({
+      url
+    })
+  }
+
+  const loginOrAuth = () => {
+    if (isLogin === 0) {
+      Taro.navigateTo({
+        url: '/pages/login/index'
+      })
+    } else {
+      Taro.navigateTo({
+        url: '/pages/minePackage/companyAuth/index'
+      })
+    }
+  }
+
   return (
     <View className='container'>
       <View className='my_header'>
@@ -145,14 +172,14 @@ const Index = observer(({ store }) => {
                 <View>{sourceList[sourceIndex]}</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
-              <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/talentsPackage/filterJob/index` }) }}>
+              <View className='filter_wrap_item' onClick={(e) => navigateFunc(e, 1, '/pages/talentsPackage/filterJob/index')}>
                 <View>全部岗位</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
             </> ||
             type === '我的客户' &&
             <>
-              <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/talentsPackage/filterJob/index` }) }}>
+              <View className='filter_wrap_item' onClick={(e) => navigateFunc(e, 1, '/pages/talentsPackage/filterJob/index')}>
                 <View>全部岗位</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
@@ -171,13 +198,13 @@ const Index = observer(({ store }) => {
       </View>
 
       {
-        (!isLogin || !authentication) &&
+        (!isLogin || (role === 'SEEK' && !authentication)) &&
         <View className='no_login'>
           <Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image>
-          <View className='no_login_tip'>认证后立即体验项目管理功能</View>
-          <View className='login_btn' onClick={() => { Taro.navigateTo({ url: '/pages/login/index' }) }}>立即登录</View>
+          <View className='no_login_tip'>{!isLogin ? '登录后体验多项专属功能' : '认证后立即体验项目管理功能'}</View>
+          <View className='login_btn' onClick={() => loginOrAuth()}>{!isLogin ? '立即登录' : '立即认证'}</View>
         </View> ||
-        (isLogin && authentication) &&
+        (isLogin && role != 'SEEK') &&
         <>
           {
             type === '客户池' &&
@@ -243,7 +270,7 @@ const Index = observer(({ store }) => {
               {
                 mylist.length > 0 && mylist.map((item, index) => {
                   return (
-                    <View className='roster_item' key={index} onClick={() => { Taro.navigateTo({ url: `/pages/talentsPackage/clientDetail/index?id=${item.id}` }) }}>
+                    <View className='roster_item' key={index} onClick={(e) => navigateFunc(e, 1, `/pages/talentsPackage/clientDetail/index?id=${item.id}`)}>
                       <View className='roster_item_title'>
                         <View className='item_title_index'>{index + 1}</View>
                         <View className='item_title_left'>
@@ -292,9 +319,8 @@ const Index = observer(({ store }) => {
 
       }
 
-      <Image onClick={()=>{
-        Taro.navigateTo({ url: `/pages/newPackage/newWorker/index` })
-      }} style={{ bottom: getBottom() }} className='add_clue_btn' src={`${Taro.$cdnUrl}/index/add_clue.webp`}></Image>
+      <Image onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newWorker/index')}
+        style={{ bottom: getBottom() }} className='add_clue_btn' src={`${Taro.$cdnUrl}/index/add_clue.webp`}></Image>
 
       {/* 线索来源 */}
       <AtFloatLayout catchMove className='source_init_layout' isOpened={showSourceModel} onClose={() => setShowSourceModel(false)}>

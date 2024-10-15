@@ -8,8 +8,7 @@ import crypto from 'crypto-js';
 import { decryptData, encryptData } from '@/util/crypto'
 import 'taro-ui/dist/style/components/icon.scss';
 import {
-//   companyLicense, fetchOssConfig, verifyToken, searchWords, applySubmit,
-//   postIdcard, settled, newAuthInfo, createAuthUrl, createSign
+  authLicense, fetchOssConfig, companySettled
 } from '@/util/api'
 import { debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
@@ -33,31 +32,6 @@ const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
   } = store
-
-  useDidShow(() => {
-    // newAuthInfo({}).then(res => {
-    //   console.log("newAuthInfo", res);
-    //   const { code, data } = res;
-    //   if (code === 200) {
-    //     setAuthInfomation(data);
-    //     if (data) {
-    //       const { psnName, psnIdCardNum, authType } = data;
-    //       setCompanyInfo({
-    //         name: psnName,
-    //         idCard: decryptData(psnIdCardNum)
-    //       })
-    //     }
-    //   }
-    // })
-    // getUserAuthInfo();
-  })
-
-  useEffect(() => {
-    // componentDidMount
-    return () => {
-    //   getUserAuthInfo();
-    }
-  }, [])
 
   const getHeight = () => {
     return `calc(100vh - ${statusTitleHeight + contenTitleHeight}PX)`
@@ -101,7 +75,7 @@ const Index = observer(({ store }) => {
       mask: true
     })
     try {
-      const result = await fetchOssConfig({ type: 'COMPLAINT', bucket: 'apu-mini' });
+      const result = await fetchOssConfig({ type: 'COMPLAINT', bucket: 'apu-saas' });
       if (result.code === 200) {
         let { ossServiceDomain, accessKeyId, urlPath, accessKeySecret, securityToken } = result.data;
         const date = new Date();
@@ -134,44 +108,23 @@ const Index = observer(({ store }) => {
           formData: params,
           success(res) {
             // let info = { ...res, url: params.key }
+            console.log("图片上传成功", res);
             let imgUrl = ossServiceDomain + '/' + params.key
-            checkImage(imgUrl, field, type)
+            checkImage(imgUrl, field, type)  // 解析图片中的信息
           },
           fail(err) {
             console.log(err)
           }
         });
       }
-
-
     } catch (e) { }
-
   };
 
   const checkImage = async (url, field, type) => {
-    if (type === 'idcard') {
-      let params = {
-        url,
-        "idcardSide": field
-      }
-      let res = await postIdcard(params)
-      if (res.code === 200) {
-        console.log(res)
-        setPostInfo({
-          ...postInfo,
-          [field]: { ...res.data, url }
-        })
-      }
-    } else {
-      let params = { url }
-      let res = await companyLicense(params)
-      if (res.code === 200) {
-        console.log(res)
-        setPostInfo({
-          ...postInfo,
-          [field]: { ...res.data, url }
-        })
-      }
+    let params = { url }
+    let res = await authLicense(params)
+    if (res.code === 200) {
+      console.log("checkImage----", res)
     }
     Taro.hideLoading()
   }
@@ -188,83 +141,33 @@ const Index = observer(({ store }) => {
     }
 
     Taro.showLoading({ title: '加载中...', })
-    if (!authInfomation || (authInfomation && !authInfomation.orgName)) {
-      let params = {
-        signType: 'ORG',
-        psnName: companyInfo?.name ? companyInfo.name : postInfo.companyUrl.legalPerson,
-        psnIDCardNum: companyInfo.idCard,
-        orgName: postInfo.companyUrl.companyName,
-        orgIDCardNum: postInfo.companyUrl.socialCreditCode,
-        loginChannel: "WECHAT_APP",
-      }
-      createAuthUrl(params).then(res => {
-        Taro.hideLoading();
-        console.log("createAuthUrl——ORG", res);
-        const { code, data, data: { authShortUrl, authType, authUrl } } = res;
-        if (code === 200) {
-          Taro.navigateTo({
-            url: `/pages/webView/index?url=${encodeURIComponent(authUrl)}`
-          })
-        }
-      })
-    } else {
-      createSign({ signType: 'ORG', loginChannel: "WECHAT_APP", }).then(res => {
-        console.log("createSign", res);
-        Taro.hideLoading();
-        const { code } = res;
-        if (code === 200) {
-          const { data: { url } } = res;
-          Taro.navigateTo({
-            url: `/pages/webView/index?url=${encodeURIComponent(url)}`
-          })
-        } else if (code === 8120) {
-          Taro.showToast({ title: '已完成企业签署', icon: 'none', duration: 2000 });
-          setTimeout(() => {
-            Taro.navigateBack({
-              delta: 1
-            })
-          }, 1500);
-        }
-      })
+    let params = {
+      signType: 'ORG',
+      psnName: companyInfo?.name ? companyInfo.name : postInfo.companyUrl.legalPerson,
+      psnIDCardNum: companyInfo.idCard,
+      orgName: postInfo.companyUrl.companyName,
+      orgIDCardNum: postInfo.companyUrl.socialCreditCode,
+      loginChannel: "WECHAT_APP",
     }
+    companySettled(params).then(res => {
+      Taro.hideLoading();
+      console.log("createAuthUrl——ORG", res);
+      const { code, data, data: { authShortUrl, authType, authUrl } } = res;
+      if (code === 200) {
+        Taro.navigateTo({
+          url: `/pages/webView/index?url=${encodeURIComponent(authUrl)}`
+        })
+      }
+    })
   }
 
 
   const handleScrollToLower = () => {
     console.log("我是底部")
-    if (goonLoad) {
-      setPageNo(pageNo + 1)
-    }
+    // if (goonLoad) {
+    //   setPageNo(pageNo + 1)
+    // }
   }
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!keywords) return;
-      let params = {
-        "keyword": keywords,
-        "esType": "COMPANY",
-        "pageNo": pageNo,
-        "pageSize": pageSize
-      }
-      let list = await searchWords(params)
-      if (list.code === 200 && list.data.companyList && list.data.companyList.length) {
-        if (pageNo === 0) {
-          setCompanyList([...list.data.companyList])
-        } else {
-          setCompanyList([...companyList, ...list.data.companyList])
-        }
-        setgoonLoad(true);
-      } else {
-        if (pageNo === 0) {
-          setCompanyList([])
-        }
-        setgoonLoad(false)
-      }
-      Taro.hideLoading()
-    }
-    fetchData()
-  }, [pageNo, keywords])
 
   return (
     <>

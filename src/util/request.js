@@ -2,23 +2,20 @@
  * @Author: yinzhengchao yinzhengchao@apujiyu.com
  * @Date: 2024-01-24 18:11:08
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-11 14:34:12
+ * @LastEditTime: 2024-10-14 15:06:26
  * @FilePath: /apu_mini/src/util/request.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import Taro from '@tarojs/taro';
-// import user from '../store/token'
-// import TokenStore from '../store/token'
-// import userStore from '../store/userInfo'
+import userStore from '@/store/user'
 import { API_BASE_URL } from './api'
 
 export default function request(url, data, method, header) {
-  // let { token, setToken, setIsLogin, } = TokenStore
-  // let { setRole } = userStore
+  let { token, setToken, setRole, setIsLogin, } = userStore
   let { brand } = Taro.getSystemInfoSync();//手机厂商
   //获取小程序终端信息
   header = {
-    accessToken: '',//token,
+    accessToken: token,//token,
     channel: brand,
   }
   return new Promise((resolve, reject) => {
@@ -40,18 +37,17 @@ export default function request(url, data, method, header) {
             }
           }
           if (res.data.code == 7001 || res.data.code == 7002) {
-            return
+            console.log("==========================请求失效===========================")
             setIsLogin(0)
             setToken('')
-            setRole({ userRole: 'SEEK' })
+            setRole('ADMIN')
             Taro.showToast({
               title: '请登录~',
               icon: 'none'
             })
             const pages = Taro.getCurrentPages();
             console.log("当前页面", pages[0].route)
-            //'pages/worker/index' pages/match/index  pages[0].route !== "pages/match/index" &&
-            if (pages[0].route !== "pages/match/index" && pages[0].route !== "pages/worker/index" && pages[0].route !== "pages/tabbarPage/bossAndEnTrust/index" && pages[0].route !== "pages/tabbarPage/msgAndmine/index") {
+            if (pages[0].route !== "pages/index/index" && pages[0].route !== "pages/clue/index" && pages[0].route !== "pages/mine/index" && pages[0].route !== "pages/projectManage/index" && pages[0].route !== "pages/onSiteList/index") {
               Taro.redirectTo({
                 url: '/pages/index/index',
               })

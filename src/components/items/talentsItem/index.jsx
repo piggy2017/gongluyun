@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-13 10:36:13
+ * @LastEditTime: 2024-10-14 17:44:55
  * @Description: 人才库列表结果的item,需要传入 index，item
  */
 import React, { useState, useEffect } from 'react';
@@ -21,10 +21,10 @@ const TalentsItem = observer(({ store, index, item }) => {
             <View className='talents_item' key={index}>
                 <View className='talents_item_title'>
                     <View className='talents_item_title_left'>
-                        <View className='talents_item_title_name'>{item.userName}</View>
-                        <View className='talents_item_title_detail'>{item.detail}</View>
+                        <View className='talents_item_title_name'>{item.name}</View>
+                        <View className='talents_item_title_detail'>{item.age}岁·{item.sex === 0 ? '男' : item.sex === 1 ? '女' : '未知'}</View>
                     </View>
-                    <View className='talents_item_title_right'>
+                    <View className='talents_item_title_right' onClick={() => Taro.makePhoneCall({ phoneNumber: item.phone })}>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon7.webp`}></Image>
                         <View>{item.phone}</View>
                     </View>
@@ -43,7 +43,16 @@ const TalentsItem = observer(({ store, index, item }) => {
                     //     }
                     // </View>
                 }
-                <View className='talents_item_jobIntention row-show-1'>求职意向：{item.jobIntention}</View>
+                <View className='talents_item_jobIntention row-show-1'>求职意向：
+                    {
+                        item.jobNames && item.jobNames.length > 0 &&
+                        item.jobNames.map((jobName, idx) => {
+                            return (
+                                <Text key={idx}>{jobName}</Text>
+                            )
+                        })
+                    }
+                </View>
                 {/* <View className='talents_item_line'></View>
                 <View className='talents_item_bottom'>
                     <View>求职历史</View>

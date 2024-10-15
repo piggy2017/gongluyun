@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-10 16:37:55
+ * @LastEditTime: 2024-10-14 14:50:57
  * @Description: 
  */
 
@@ -13,15 +13,14 @@ import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import {
-    loginPhone
+    loginPhone, loginEmployeePhone, getRoleAndPermissionByUserId
 } from '@/util/api'
 import './index.scss'
-
 
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { setToken, setIsLogin, setUserInfo }
+        userStore: { setToken, setIsLogin, setRole, setUserInfo }
     } = store
 
     const [step, setStep] = useState(1);
@@ -43,11 +42,14 @@ const Index = observer(({ store }) => {
         }
     }, [step])
 
+    const hintBtn = () => {
+        if (!checked) {
+            return Taro.showToast({ title: "请阅读并同意隐私协议", icon: "none", duration: 2000 })
+        }
+    }
+
     const handleGetPhoneNumber = async (e) => {
         console.log("eeee", e);
-        if (!checked) {
-            return Taro.showToast({ title: "请阅读并同意用户协议", icon: "none", duration: 2000 })
-        }
         try {
             const info = await Taro.login();
             console.log(1, info);
@@ -68,18 +70,64 @@ const Index = observer(({ store }) => {
                 if (result.code === 200) {
                     Taro.showToast({ title: "登录成功", icon: "none", duration: 2000 })
                     setToken(result.data.token);
-                    Taro.setStorageSync('token', result.data.token)
+                    Taro.setStorageSync('token', result.data.token);
+                    Taro.setStorageSync('isLogin', 1);
+                    Taro.setStorageSync('role', result.data.user.userRole);
+                    Taro.setStorageSync('userInfo', result.data.user);
                     setIsLogin(1);
                     setUserInfo(result.data.user);
-                    Taro.navigateBack({
-                        delta: 1
-                    })
+                    setRole(result.data.user.userRole);
+                    setTimeout(() => {
+                        getUserRole();
+                    }, 50);
                 }
                 Taro.hideLoading();
             }
         } catch (error) {
             console.error('获取用户手机号失败:', error);
         }
+    }
+
+    const btnLogin = () => {
+        if (!checked) {
+            return Taro.showToast({ title: "请阅读并同意隐私协议", icon: "none", duration: 2000 })
+        }
+        let params = {
+            phone: account,
+            password: password
+        }
+        Taro.showLoading({
+            title: "请求中",
+            mask: true
+        })
+        loginEmployeePhone(params).then((res) => {
+            console.log("登录结果", res);
+            const { code, data } = res
+            if (code === 200) {
+                Taro.showToast({ title: "登录成功", icon: "none", duration: 2000 })
+                setToken(data.token);
+                Taro.setStorageSync('token', data.token);
+                Taro.setStorageSync('isLogin', 1);
+                Taro.setStorageSync('role', data.user.userRole);
+                Taro.setStorageSync('userInfo', data.user);
+                setIsLogin(1);
+                setUserInfo(data.user);
+                setRole(data.user.userRole);
+                setTimeout(() => {
+                    getUserRole();
+                }, 50);
+            }
+            Taro.hideLoading();
+        })
+    }
+
+    const getUserRole = async () => {
+        const result = await getRoleAndPermissionByUserId();
+        console.log("获取角色和权限", result);
+        // return;
+        Taro.navigateBack({
+            delta: 1
+        })
     }
 
     const changeStep = () => {
@@ -103,15 +151,13 @@ const Index = observer(({ store }) => {
             {
                 step === 1 &&
                 <>
-                    {/* <View className='logo_wrap'>
-                        <View className='logo'></View>
-                        <View className='title'>人力资源供应链智能帮手</View>
-                    </View> */}
-
                     <Image className='logo1' src={`${Taro.$cdnUrl}/index/index_icon55.webp`}></Image>
 
                     <View className='login_bottom'>
-                        <Button className='logn_btn' openType='getPhoneNumber' onGetPhoneNumber={handleGetPhoneNumber}>一键登录</Button>
+                        {
+                            checked && <Button className='logn_btn' openType='getPhoneNumber' onGetPhoneNumber={handleGetPhoneNumber}>一键登录</Button> ||
+                            <Button className='logn_btn' onClick={hintBtn}>一键登录</Button>
+                        }
                         <Button className='employee_road' onClick={() => changeStep()}>员工通道</Button>
                         <View className='logn_policy'>
                             <Image onClick={() => setChecked(!checked)} src={`${Taro.$cdnUrl}/index/index_icon2${checked ? 7 : 8}.webp`}></Image>
@@ -124,10 +170,6 @@ const Index = observer(({ store }) => {
                 </> ||
                 step === 2 &&
                 <>
-                    {/* <View className='logo_wrap' style={`margin-top:80rpx;`}>
-                        <View className='logo'></View>
-                        <View className='title'>人力资源供应链智能帮手</View>
-                    </View> */}
                     <Image className='logo2' src={`${Taro.$cdnUrl}/index/index_icon56.webp`}></Image>
                     <View className='input_wrap'>
                         <Image className='input_icon' src={`${Taro.$cdnUrl}/index/index_icon45.webp`}></Image>
@@ -159,7 +201,7 @@ const Index = observer(({ store }) => {
                         <View className='webview_link'>《隐私政策》</View>
                     </View>
 
-                    <Button className={`account_login_btn ${account && password && checked ? 'account_login_btn_active' : ''}`}>登录</Button>
+                    <Button onClick={() => btnLogin()} className={`account_login_btn ${account && password && checked ? 'account_login_btn_active' : ''}`}>登录</Button>
                 </>
             }
 

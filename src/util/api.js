@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-25 15:39:32
+ * @LastEditTime: 2024-10-14 17:38:09
  * @Description: 
  */
 
@@ -53,6 +53,9 @@ export const workbenchclueList = params => {            // 人才库
 export const workbenchtodayData = params => {            // 今日数据
     return http(API_BASE_URL + '/workbench/todayData', params, "POST", {"Content-Type": "application/json"});
 }
+export const todo = params => {                         // 客服、驻场待办
+    return http(API_BASE_URL + '/workbench/todo', params, "POST", {"Content-Type": "application/json"});
+}
 export const workbenchcluePool = params => {            // 线索公海
     return http(API_BASE_URL + '/workbench/cluePool', params, "POST", {"Content-Type": "application/json"});
 }
@@ -77,31 +80,31 @@ export const getUserSignUpList = params => {            // 通过手机号查询
 
 
 // 公司管理
-export const companySettled = params => {            // 公司入驻
+export const companySettled = params => {                  // 公司入驻
     return http(API_BASE_URL + '/company/settled', params, "POST", {"Content-Type": "application/json"});
 }
-export const companyUpdate = params => {            // 更新公司信息
+export const companyUpdate = params => {                   // 更新公司信息
     return http(API_BASE_URL + '/company/update', params, "POST", {"Content-Type": "application/json"});
 }
 export const getRoleAndPermission = params => {            // 获取所有角色以及角色下的所有权限
     return http(API_BASE_URL + '/company/getRoleAndPermission', params, "POST", {"Content-Type": "application/json"});
 }
-export const getRoleAndPermissionByUserId = params => {            // 获取用户拥有角色以及角色下的所有权限
+export const getRoleAndPermissionByUserId = params => {    // 获取用户拥有角色以及角色下的所有权限
     return http(API_BASE_URL + '/company/getRoleAndPermissionByUserId', params, "POST", {"Content-Type": "application/json"});
 }
-export const companyMemberList = params => {            // 企业成员列表
+export const companyMemberList = params => {               // 企业成员列表
     return http(API_BASE_URL + '/company/memberList', params, "POST", {"Content-Type": "application/json"});
 }
-export const companyAddAccount = params => {            // 添加企业账号
+export const companyAddAccount = params => {               // 添加企业账号
     return http(API_BASE_URL + '/company/addAccount', params, "POST", {"Content-Type": "application/json"});
 }
-export const companyDisableAccount = params => {            // 停用企业账号
+export const companyDisableAccount = params => {           // 停用企业账号
     return http(API_BASE_URL + '/company/disableAccount', params, "POST", {"Content-Type": "application/json"});
 }
-export const companyUpdateMember = params => {            // 修改企业成员信息
+export const companyUpdateMember = params => {             // 修改企业成员信息
     return http(API_BASE_URL + '/company/updateMember', params, "POST", {"Content-Type": "application/json"});
 }
-export const companygetInfo = params => {            // 获取公司详情
+export const companygetInfo = params => {                  // 获取公司详情
     return http(API_BASE_URL + '/company/getInfo', params, "POST", {"Content-Type": "application/json"});
 }
 
@@ -171,25 +174,6 @@ export const updateInterviewer = params => {       //  更新面试信息
 
 
 
-
-
-export const jobTypeAllList = params => { //所有工种
-    return http(API_BASE_URL + '/job/jobTypeAllList', params, "POST", {
-        "Content-Type": "application/json"
-    });
-};
-export const jobAssoc = params => { //岗位联想
-    return http(API_BASE_URL + '/job/jobAssoc', params, "POST", {
-        "Content-Type": "application/json"
-    });
-};
-export const filterJobTypeList = params => { // 获取任务大厅对应的工种
-    return http(API_BASE_URL + '/order/contracts/jobTypeList', params, "POST", {
-        "Content-Type": "application/json"
-    });
-};
-export const fetchOssConfig = params => { //获取oss校验
-    return http(API_BASE_URL + '/upload/stsToken', params, "POST", {
-        "Content-Type": "application/json"
-    });
+export const fetchOssConfig = params => {   //  获取oss校验
+    return http(API_BASE_URL + '/upload/stsToken', params, "POST", {"Content-Type": "application/json"});
 };

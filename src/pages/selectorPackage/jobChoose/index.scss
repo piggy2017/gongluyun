@@ -8,7 +8,7 @@
         width: 670rpx;
         height: 80rpx;
         margin: 16rpx auto 20rpx;
-        border-radius: 10rpx;
+        border-radius: 40rpx;
         background-color: #F6F6F7;
         @include flex-center(space-between);
 
@@ -210,16 +210,16 @@
                     margin-top: 10rpx;
 
                     >view {
-                        padding: 0 10rpx;
+                        padding: 0 20rpx;
                         height: 60rpx;
-                        background: rgba(33, 65, 124, 0.1);
-                        border-radius: 14rpx;
+                        background: rgba(22, 120, 255, 0.1);
+                        border-radius: 4rpx;
                         @include flex-center();
                         font-family: PingFangSC-Medium;
                         font-weight: 500;
                         font-size: 24rpx;
-                        color: #21417C;
-                        margin-right: 14rpx;
+                        color: #1678FF;
+                        margin-right: 12rpx;
                         margin-bottom: 14rpx;
 
                         .at-icon {
@@ -238,7 +238,7 @@
                     width: 418rpx;
                     height: 100rpx;
                     flex-shrink: 0;
-                    border-radius: 18rpx;
+                    border-radius: 10rpx;
                     background: #0483FF;
                     @include flex-center;
                     color: #ffffff;
@@ -250,7 +250,7 @@
                     width: 248rpx;
                     height: 100rpx;
                     flex-shrink: 0;
-                    border-radius: 18rpx;
+                    border-radius: 10rpx;
                     border: 2rpx solid $boss-color;
                     @include flex-center;
                     color: $boss-color;

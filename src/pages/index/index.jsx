@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-10 16:32:10
+ * @LastEditTime: 2024-10-15 14:01:29
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -20,11 +20,15 @@ import "taro-ui/dist/style/components/button.scss";
 import "taro-ui/dist/style/components/icon.scss";
 import './index.scss'
 
+import {
+  workbenchtodayData, workbenchcluePool, workbenchdrainageData, workbenchconvertData, userCenter, todo
+} from '@/util/api'
+
 
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
-    userStore: { isLogin, role }
+    userStore: { isLogin, role, userInfo }
   } = store
   const [i, seti] = useState(0);
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -51,20 +55,82 @@ const Index = observer(({ store }) => {
     { text: "上月", code: "LAST_MONTH" },
   ];
 
-
-  const [searchValue, setSearchValue] = useState('');
-  const [drainageData, setDrainageData] = useState('昨日');
-  const [transformData, setTransformData] = useState('昨日');
+  const [drainageDate, setDrainageDate] = useState('YESTERDAY');
+  const [drainageInfo, setDrainageInfo] = useState('');      // 迎流数据
+  const [transformDate, setTransformDate] = useState('YESTERDAY');
+  const [convertInfo, setConvertInfo] = useState('');        // 转化数据
   const [showAddType, setShowAddType] = useState(false);
 
+  const [todayData, setTodayData] = useState('');        //  今日数据
+  const [poorData, setPoorData] = useState('');          //  线索公海
 
-  const clickFunc = (type) => {
-    if (type === "add") {
-      counterStore();
-    } else if (type === "addparams") {
-      counterParams(25);
-    } else {
-      decrement();
+  const [todoData, setTodoData] = useState('');          //  待办
+
+  useEffect(() => {
+    console.log("首页 监听 是否登录isLogin:", isLogin);
+    console.log("首页 监听 当前角色role:", role);
+    console.log("首页 监听 当前用户信息userInfo:", userInfo);
+    userCenter({}).then(res => {
+      console.log("首页 监听 当前用户信息res:", res);
+    })
+  }, [isLogin, role, userInfo]);
+
+
+  useEffect(() => {
+    if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
+      getTodayData();
+      getPoorData();
+    }
+    if (role === 'CUSTOMER' || role === 'ON_SITE') {   // 客服、驻场待办
+      todo({companySerialCode:''}).then(res => {
+        console.log("首页 监听 待办res:", res);
+        if (res?.code === 200) {
+          setTodoData(res?.data);
+        }
+      })
+    }
+  }, [isLogin, role]);
+
+  useEffect(() => {
+    if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
+      getdrainageData();
+    }
+  }, [drainageDate])
+
+  useEffect(() => {
+    if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
+      getconvertData();
+    }
+  }, [transformDate])
+
+  const getTodayData = async () => {   // 获取今日数据
+    const { code, data } = await workbenchtodayData({ companySerialCode: '', dateRange: '' });
+    console.log("获取今日数据", data);
+    if (code === 200) {
+      setTodayData(data);
+    }
+  }
+
+  const getPoorData = async () => {    // 线索公海
+    const { code, data } = await workbenchcluePool({ companySerialCode: '', dateRange: '' });
+    console.log("获取今日线索公海", data);
+    if (code === 200) {
+      setPoorData(data);
+    }
+  }
+
+  const getdrainageData = async () => {    // 获取引流数据
+    const { code, data } = await workbenchdrainageData({ companySerialCode: '', dateRange: drainageDate });
+    console.log("获取引流数据", data);
+    if (code === 200) {
+      setDrainageInfo(data);
+    }
+  }
+  const getconvertData = async () => {    // 获取转化数据
+    const { code, data } = await workbenchconvertData({ companySerialCode: '', dateRange: transformDate });
+    console.log("获取转化数据", data);
+    if (code === 200) {
+      setConvertInfo(data);
     }
   }
 
@@ -132,9 +198,11 @@ const Index = observer(({ store }) => {
         <View className='my_header_hr' style={`--statusBarHeight:${statusTitleHeight}px;`}></View>
         <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
           {
-            isLogin === 0 ?
-              <View>未登录</View> :
-              <View>已登录</View>
+            (!isLogin || role === 'SEEK') &&
+            <View className='default_logo'>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon60.webp`}></Image>
+            </View>
+
           }
         </View>
       </View>
@@ -149,16 +217,16 @@ const Index = observer(({ store }) => {
       >
 
         <View className='search_wrapper'>
-          <View className='search_con' onClick={() => navigateFunc(1, '/pages/talentsPackage/search/index')} style={`width:${role === 'service' ? '608rpx' : '508rpx'}`}>
+          <View className='search_con' onClick={() => navigateFunc(1, '/pages/talentsPackage/search/index')} style={`width:${role === 'CUSTOMER' ? '608rpx' : '508rpx'}`}>
             <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
-            <View className='search_input' style={`width:${role === 'service' ? '500rpx' : '400rpx'}`}>输入关键词搜索项目、求职者</View>
+            <View className='search_input' style={`width:${role === 'CUSTOMER' ? '500rpx' : '400rpx'}`}>输入关键词搜索项目、求职者</View>
           </View>
 
           <View className='message_notice'>
             <View className='message_notice_dot'></View>
           </View>
           {
-            (role === 'admin' || role === 'onSite') &&
+            (role === 'ADMIN' || role === 'ON_SITE' || role === 'SEEK') &&
             <View className='add_user_icon' onClick={() => { setShowAddType(!showAddType) }}>
               {
                 showAddType &&
@@ -182,7 +250,7 @@ const Index = observer(({ store }) => {
         </View>
 
         {
-          role === "admin" &&
+          (role === "ADMIN" || role === 'SEEK') &&
           <View className='btn_wrapper'>
             <View className='btn_wrap_item' onClick={() => navigateFunc(1, '/pages/talentsPackage/talents/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon4.webp`}></Image>
@@ -196,7 +264,7 @@ const Index = observer(({ store }) => {
         }
 
         {
-          (role === "admin" || role === "service") &&
+          (role === "ADMIN" || role === "CUSTOMER" || role === 'SEEK') &&
           <View className='enter_wrapper'>
             <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/newPackage/newWorker/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon6.webp`}></Image>
@@ -210,7 +278,7 @@ const Index = observer(({ store }) => {
         }
 
         {
-          role === 'onSite' &&
+          role === 'ON_SITE' &&
           <View className='enter_wrapper'>
             <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/projectPackage/signinCode/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
@@ -224,24 +292,24 @@ const Index = observer(({ store }) => {
         }
 
         {
-          role === "admin" &&
+          (role === "ADMIN" || role === 'SEEK') &&
           <View className='today_data_wrapper'>
             <View className='today_data_title'>今日数据</View>
             <View className='today_data_content'>
               <View className='today_data_item'>
-                <View className='today_data_number'>333</View>
+                <View className='today_data_number'>{todayData ? todayData.newRecruit : '467'}</View>
                 <View className='today_data_laber'>在招岗位</View>
               </View>
               <View className='today_data_item'>
-                <View className='today_data_number'>333</View>
+                <View className='today_data_number'>{todayData ? todayData.newEntry : '562'}</View>
                 <View className='today_data_laber'>新增入职</View>
               </View>
               <View className='today_data_item'>
-                <View className='today_data_number'>333</View>
+                <View className='today_data_number'>{todayData ? todayData.newExit : '234'}</View>
                 <View className='today_data_laber'>今日离职</View>
               </View>
               <View className='today_data_item'>
-                <View className='today_data_number'>333</View>
+                <View className='today_data_number'>{todayData ? todayData.newClue : '417'}</View>
                 <View className='today_data_laber'>新增线索</View>
               </View>
             </View>
@@ -249,7 +317,7 @@ const Index = observer(({ store }) => {
         }
 
         {
-          role === "service" &&
+          role === "CUSTOMER" &&
           <View className='today_data_wrapper'>
             <View className='today_data_title'>客服待办</View>
             <View className='today_data_content'>
@@ -269,7 +337,7 @@ const Index = observer(({ store }) => {
           </View>
         }
         {
-          role === 'onSite' &&
+          role === 'ON_SITE' &&
           <>
             <View className='today_data_wrapper'>
               <View className='today_data_title'>驻场待办</View>
@@ -314,12 +382,12 @@ const Index = observer(({ store }) => {
         }
 
         {
-          (role === "admin" || role === "service") &&
+          (role === "ADMIN" || role === "CUSTOMER" || role === 'SEEK') &&
           <View className='clue_sea_wrapper'>
             <View className='clue_sea_left'>
               <View className='clue_sea_title'>线索公海</View>
-              <View className='clue_sea_today'>今日已领 <Text>1</Text> 名</View>
-              <View className='clue_sea_total'>线索池共 <Text>32</Text> 名求职者等待领取并跟进</View>
+              <View className='clue_sea_today'>今日已领 <Text>{poorData ? poorData.todayReceived : 1}</Text> 名</View>
+              <View className='clue_sea_total'>线索池共 <Text>{poorData ? poorData.totalSeeker : 32}</Text> 名求职者等待领取并跟进</View>
             </View>
             <View className='clue_sea_right' onClick={() => {
               Taro.switchTab({
@@ -330,52 +398,52 @@ const Index = observer(({ store }) => {
         }
 
         {
-          (role === "admin" || role === "service") &&
+          (role === "ADMIN" || role === "CUSTOMER" || role === 'SEEK') &&
           <View className='drainage_data_wrapper'>
             <View className='drainage_data_title'>
               <View className='drainage_data_title_left'>引流数据</View>
               <View className='drainage_data_title_right'>
-                <View onClick={() => { setDrainageData('昨日') }} className={`title_right_item ${drainageData === '昨日' ? 'title_right_item_active' : ''}`}>昨日</View>
-                <View onClick={() => { setDrainageData('本周') }} className={`title_right_item ${drainageData === '本周' ? 'title_right_item_active' : ''}`}>本周</View>
-                <View onClick={() => { setDrainageData('本月') }} className={`title_right_item ${drainageData === '本月' ? 'title_right_item_active' : ''}`}>本月</View>
+                <View onClick={() => { setDrainageDate('YESTERDAY') }} className={`title_right_item ${drainageDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
+                <View onClick={() => { setDrainageDate('THIS_WEEK') }} className={`title_right_item ${drainageDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
+                <View onClick={() => { setDrainageDate('THIS_MONTH') }} className={`title_right_item ${drainageDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
               </View>
             </View>
             <View className='drainage_data_content'>
               <View className='drainage_data_content_left'>
-                <View className='drainage_data_content_left_data'>74.2%</View>
+                <View className='drainage_data_content_left_data'>{drainageInfo ? drainageInfo.interviewRate : '0'}</View>
                 <View className='drainage_data_content_left_laber'>约面率</View>
               </View>
               <Image className='drainage_data_content_img' src={`${Taro.$cdnUrl}/index/index_icon8.webp`}></Image>
               <View className='drainage_data_content_right'>
-                <View className='drainage_right_item'>新增报名 <Text>52</Text> 人</View>
-                <View className='drainage_right_item'>跟进联系 <Text>52</Text> 人</View>
-                <View className='drainage_right_item'>约定面试 <Text>52</Text> 人</View>
+                <View className='drainage_right_item'>新增报名 <Text>{drainageInfo ? drainageInfo.newSignup : '0'}</Text> 人</View>
+                <View className='drainage_right_item'>跟进联系 <Text>{drainageInfo ? drainageInfo.followupContact : '0'}</Text> 人</View>
+                <View className='drainage_right_item'>约定面试 <Text>{drainageInfo ? drainageInfo.newInterview : '0'}</Text> 人</View>
               </View>
             </View>
           </View>
         }
 
         {
-          role === "admin" &&
+          (role === "ADMIN" || role === 'SEEK') &&
           <View className='drainage_data_wrapper'>
             <View className='drainage_data_title'>
               <View className='drainage_data_title_left'>转化数据</View>
               <View className='drainage_data_title_right'>
-                <View onClick={() => { setTransformData('昨日') }} className={`title_right_item ${transformData === '昨日' ? 'title_right_item_active' : ''}`}>昨日</View>
-                <View onClick={() => { setTransformData('本周') }} className={`title_right_item ${transformData === '本周' ? 'title_right_item_active' : ''}`}>本周</View>
-                <View onClick={() => { setTransformData('本月') }} className={`title_right_item ${transformData === '本月' ? 'title_right_item_active' : ''}`}>本月</View>
+                <View onClick={() => { setTransformDate('YESTERDAY') }} className={`title_right_item ${transformDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
+                <View onClick={() => { setTransformDate('THIS_WEEK') }} className={`title_right_item ${transformDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
+                <View onClick={() => { setTransformDate('THIS_MONTH') }} className={`title_right_item ${transformDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
               </View>
             </View>
             <View className='drainage_data_content'>
               <View className='drainage_data_content_left'>
-                <View className='drainage_data_content_left_data'>74.2%</View>
-                <View className='drainage_data_content_left_laber'>约面率</View>
+                <View className='drainage_data_content_left_data'>{convertInfo ? convertInfo.arrivalRate : '0'}</View>
+                <View className='drainage_data_content_left_laber'>到面率</View>
               </View>
               <Image className='drainage_data_content_img' src={`${Taro.$cdnUrl}/index/index_icon8.webp`}></Image>
               <View className='drainage_data_content_right'>
-                <View className='drainage_right_item'>新增报名 <Text>52</Text> 人</View>
-                <View className='drainage_right_item'>跟进联系 <Text>52</Text> 人</View>
-                <View className='drainage_right_item'>约定面试 <Text>52</Text> 人</View>
+                <View className='drainage_right_item'>实际到面 <Text>{convertInfo ? convertInfo.actualArrival : '0'}</Text> 人</View>
+                <View className='drainage_right_item'>面试通过 <Text>{convertInfo ? convertInfo.interviewPass : '0'}</Text> 人</View>
+                <View className='drainage_right_item'>最终入职 <Text>{convertInfo ? convertInfo.finalEntry : '0'}</Text> 人</View>
               </View>
             </View>
           </View>

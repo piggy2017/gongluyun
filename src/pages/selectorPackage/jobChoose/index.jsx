@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:41:55
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-10 14:07:34
+ * @LastEditTime: 2024-10-15 11:15:50
  * @Description: 
  */
 /* eslint-disable react/jsx-key */
@@ -13,13 +13,14 @@ import { AtIcon } from 'taro-ui'
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 // import NavBar from '../../../components/nav/nav';
 import { throttle, selectorQueryDomInfo } from '@/util/utils'
-import { jobTypeAllList, jobAssoc, filterJobTypeList } from '@/util/api'
+import { jobTypeList } from '@/util/api'
 import './index.scss';
 
 const ChooseJob = observer(({ store }) => {
     const router = useRouter();
     const {
         // JobStore: { agentChooseJob, setAgentChooseJob, examine, feedsExamine },
+        baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
         userStore: { filterJobTypes, setFilterJobTypes }
     } = store
     const [system, setSystem] = useState('')
@@ -37,12 +38,11 @@ const ChooseJob = observer(({ store }) => {
 
     useEffect(() => {
         const { type } = router.params;
-        console.log("type", type)
         const fetchData = async () => {
             let params = {
                 feedsType: ''   // examine == 1 ? feedsExamine : ''
             };
-            let data = await filterJobTypeList(params);
+            let data = await jobTypeList(params);
             console.log("查询岗位 jobchoose   data", data)
             if (data.code === 200) {
                 // 默认聚焦
@@ -66,6 +66,7 @@ const ChooseJob = observer(({ store }) => {
             // componentWillUnmount
         }
     }, [chooseJobItem])
+    
     const setInit = (data) => {
         if (filterJobTypes.length) {
             let currentIndnx = []
@@ -134,9 +135,9 @@ const ChooseJob = observer(({ store }) => {
     const cleanChoose = () => {
         setChooseJob([])
         setFilterJobTypes([])
-        Taro.navigateBack({
-            delta: 1
-        })
+        // Taro.navigateBack({
+        //     delta: 1
+        // })
     }
     return (
         <>
@@ -154,7 +155,7 @@ const ChooseJob = observer(({ store }) => {
                 </View>
                 <View className='type_content'
                     style={{
-                        height: `calc(100vh - ${system.navBarHeight + system.navBarExtendHeight + 58}PX)`,
+                        height: `calc(100vh - ${statusTitleHeight + contenTitleHeight + 58}PX)`,
                         paddingBottom: `${topDis}PX`
                     }}
 
@@ -288,7 +289,7 @@ const ChooseJob = observer(({ store }) => {
                                                     setFullJobTypeList([...fullJobTypeList])
                                                     setChooseJob([...jobItem])
                                                 }}
-                                                >{item.name} <AtIcon value='close' size='10' color='#222222'></AtIcon></View>
+                                                >{item.name} <AtIcon value='close' size='10' color='#1678FF'></AtIcon></View>
                                             })
                                         }
                                     </View>
@@ -298,7 +299,7 @@ const ChooseJob = observer(({ store }) => {
                         }
                         <View className='btn_box'>
                             <View onClick={() => cleanChoose()} className='cancel_choose'>清除</View>
-                            <View onClick={() => submit()} className='save_choose'>保存</View>
+                            <View onClick={() => submit()} className='save_choose'>确定</View>
                         </View>
 
                         {/* <Image src={`${Taro.$cdnUrl}/index/close_popup.webp`} ></Image> */}

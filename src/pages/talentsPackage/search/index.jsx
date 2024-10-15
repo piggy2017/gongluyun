@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-08 17:15:56
+ * @LastEditTime: 2024-10-14 16:28:38
  * @Description: 
  */
 
@@ -18,6 +18,10 @@ import './index.scss'
 
 import TalentsItem from '@/components/items/talentsItem'
 import ClueItem from '@/components/items/clueItem'
+
+import {
+    workbenchSearch
+} from '@/util/api'
 
 
 const Index = observer(({ store }) => {
@@ -45,6 +49,11 @@ const Index = observer(({ store }) => {
         '龙泉驿区招物流分拣全职月结普工'
     ])
 
+    const getData = async (value) => {
+        const { code, data } = await workbenchSearch({ searchInfo: value });
+        console.log("搜索结果", code, data);
+    }
+
     return (
         <View className='container'>
             <View className='my_header'>
@@ -59,6 +68,7 @@ const Index = observer(({ store }) => {
                             placeholderStyle='color: #777777;'
                             onInput={(e) => { setSearchValue(e.detail.value) }}
                             onConfirm={(e) => {
+                                getData(e.detail.value);
                             }}
                             value={searchValue}></Input>
                     </View>
