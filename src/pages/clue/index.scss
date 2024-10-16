@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:52
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-08 15:28:20
+ * @LastEditTime: 2024-10-16 11:25:13
  * @Description: 
  */
 @import '@/app.scss';
@@ -102,16 +102,43 @@
 
                 view {
                     margin-right: 4rpx;
+                    max-width: 240rpx;
+                    @include ellipsis;
                 }
+            }
+        }
+
+        .search_total {
+            color: #222222;
+            text-align: left;
+            font-family: "PingFang SC";
+            font-size: 28rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            padding: 38rpx 0 20rpx 28rpx;
+
+            text {
+                color: #1678ff;
+                text-align: left;
+                font-family: "D-DIN-PRO";
+                font-size: 36rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
             }
         }
     }
 
-    .myScrollWrapper {
+    .scrollWrapper {
         width: 100%;
+        // background: #ffffff;
+        border-radius: 20rpx 20rpx 0 0;
         border: 1rpx solid red;
-        background: none !important;
-        border-radius: 0 !important;
+
+        .clue_item:last-child {
+            border-bottom: none;
+        }
 
         .roster_item {
             border-radius: 20rpx;
@@ -218,39 +245,6 @@
                 line-height: normal;
             }
         }
-    }
-
-    .scrollWrapper {
-        width: 100%;
-        background: #ffffff;
-        border-radius: 20rpx 20rpx 0 0;
-        border: 1rpx solid red;
-
-        .search_total {
-            color: #222222;
-            text-align: left;
-            font-family: "PingFang SC";
-            font-size: 28rpx;
-            font-style: normal;
-            font-weight: 400;
-            line-height: normal;
-            padding: 38rpx 0 20rpx 28rpx;
-
-            text {
-                color: #1678ff;
-                text-align: left;
-                font-family: "D-DIN-PRO";
-                font-size: 36rpx;
-                font-style: normal;
-                font-weight: 600;
-                line-height: normal;
-            }
-        }
-
-        .clue_item:last-child {
-            border-bottom: none;
-        }
-
 
     }
 

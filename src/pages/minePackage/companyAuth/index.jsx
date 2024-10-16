@@ -17,20 +17,14 @@ import './index.scss';
 
 const Index = observer(({ store }) => {
   const router = useRouter();
-  const [companyInfo, setCompanyInfo] = useState({})
   const [postInfo, setPostInfo] = useState({})
-  const [companyList, setCompanyList] = useState([])
-  const [step, setStep] = useState(1)
-  const pageSize = 20
-  const [goonLoad, setgoonLoad] = useState(true)
-  const [pageNo, setPageNo] = useState(0)
-  const [keywords, setKeywords] = useState('')
-
-
+  const [step, setStep] = useState(1);
+  const [companyUrl, setCompanyUrl] = useState('');
   const [authInfomation, setAuthInfomation] = useState(null);
 
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
+    userStore: { setCompanyVerified, refreshUserInfo }
   } = store
 
   const getHeight = () => {
@@ -38,20 +32,7 @@ const Index = observer(({ store }) => {
   }
 
   const handleInputChange = debounce((e, type) => {
-    setCompanyInfo({
-      ...companyInfo,
-      [type]: e || ""
-    });
-    if (type != 'name' && type != 'idCard') {
-    }
-    if (postInfo.companyUrl) {
-      setPostInfo(postInfo => {
-        let _postInfo = postInfo;
-        _postInfo.companyUrl[type] = e;
-        return _postInfo;
-      })
-    }
-
+    setPostInfo({ ...postInfo, [type]: e })
   }, 0);
 
   const chooseImageFn = async (type, field) => {
@@ -111,6 +92,7 @@ const Index = observer(({ store }) => {
             console.log("图片上传成功", res);
             let imgUrl = ossServiceDomain + '/' + params.key
             checkImage(imgUrl, field, type)  // 解析图片中的信息
+            setCompanyUrl(imgUrl);
           },
           fail(err) {
             console.log(err)
@@ -125,38 +107,54 @@ const Index = observer(({ store }) => {
     let res = await authLicense(params)
     if (res.code === 200) {
       console.log("checkImage----", res)
+      setPostInfo({ ...res.data });
     }
     Taro.hideLoading()
   }
 
   const startAuth = async () => {    // 企业认证和签署合同
-    console.log("企业认证-companyInfo", companyInfo);
     console.log("企业认证-postInfo", postInfo);  // createAuthUrl
 
-    // if (!companyInfo.phone) {
-    //   return Taro.showToast({ title: '请输入手机号码', icon: 'none', duration: 2000 })
-    // }
-    if (companyInfo.idCard.length !== 18) {
-      return Taro.showToast({ title: '请输入18位身份证号', icon: 'none', duration: 2000 })
+    if (!postInfo?.companyName) {
+      return Taro.showToast({ title: '请输入企业名称', icon: 'none', duration: 2000 })
+    }
+
+    if (!postInfo?.legalPerson) {
+      return Taro.showToast({ title: '请输入法人姓名', icon: 'none', duration: 2000 })
+    }
+
+    if (!postInfo?.socialCreditCode) {
+      return Taro.showToast({ title: '请输入营业执照统一代码', icon: 'none', duration: 2000 })
+    }
+
+    if (!postInfo?.address) {
+      return Taro.showToast({ title: '请输入地址', icon: 'none', duration: 2000 })
     }
 
     Taro.showLoading({ title: '加载中...', })
     let params = {
-      signType: 'ORG',
-      psnName: companyInfo?.name ? companyInfo.name : postInfo.companyUrl.legalPerson,
-      psnIDCardNum: companyInfo.idCard,
-      orgName: postInfo.companyUrl.companyName,
-      orgIDCardNum: postInfo.companyUrl.socialCreditCode,
-      loginChannel: "WECHAT_APP",
+      name: postInfo?.companyName ? postInfo.companyName : '',
+      legalRe: postInfo?.legalPerson ? postInfo.legalPerson : '',
+      expiryDate: postInfo?.approvalDate ? postInfo.approvalDate : '',
+      unifiedCode: postInfo?.socialCreditCode ? postInfo.socialCreditCode : '',
+      addressDetail: postInfo?.address ? postInfo.address : '',
+      type: 'EMPLOYING_UNIT'
     }
+    console.log(params, "params")
+
     companySettled(params).then(res => {
       Taro.hideLoading();
-      console.log("createAuthUrl——ORG", res);
-      const { code, data, data: { authShortUrl, authType, authUrl } } = res;
-      if (code === 200) {
-        Taro.navigateTo({
-          url: `/pages/webView/index?url=${encodeURIComponent(authUrl)}`
-        })
+      console.log("companySettled 企业认证结果", res);
+      if (res.code === 200) {
+        setCompanyVerified(true);
+        refreshUserInfo();
+        Taro.showToast({ title: '认证成功', icon: 'none', duration: 2000 });
+        setTimeout(() => {
+          Taro.navigateBack({ delta: 1 })
+        }, 1500);
+      }else{
+        Taro.showToast({ title: res.msg, icon: 'none', duration: 2000 });
+        refreshUserInfo();
       }
     })
   }
@@ -189,9 +187,9 @@ const Index = observer(({ store }) => {
                     <View className='demo_image'>
                       <View onClick={() => chooseImageFn('COMPANY', 'companyUrl')}>
                         {
-                          postInfo.companyUrl && postInfo.companyUrl.url
+                          companyUrl
                             ?
-                            <Image src={postInfo.companyUrl.url}></Image>
+                            <Image src={companyUrl}></Image>
                             :
                             <Image src={`${Taro.$baseCdnUrl}/auth/company_back3.webp`}></Image>
                         }
@@ -200,7 +198,7 @@ const Index = observer(({ store }) => {
                     </View>
                   </View>
                   {
-                    (postInfo.companyUrl || authInfomation && authInfomation.authType === 'ORG') &&
+                    companyUrl &&
                     <View className='company_info'>
                       <View className='every_info'>
                         <View>企业名称</View>
@@ -208,7 +206,7 @@ const Index = observer(({ store }) => {
                           className='info_input'
                           adjustPosition
                           placeholder='XXXXXXXX有限公司'
-                          value={postInfo.companyUrl.companyName}
+                          value={postInfo.companyName}
                           onInput={(e) => handleInputChange(e.target.value, 'companyName')}
                         />
                       </View>
@@ -218,20 +216,19 @@ const Index = observer(({ store }) => {
                           className='info_input'
                           adjustPosition
                           placeholder='XXXXXXXXXXXXXXXXXXXXX'
-                          value={postInfo.companyUrl.socialCreditCode}
+                          value={postInfo.socialCreditCode}
                           onInput={(e) => handleInputChange(e.target.value, 'socialCreditCode')}
                         />
                       </View>
 
                       <View className='every_info'>
-                        <View>身份证号码</View>
+                        <View>企业地址</View>
                         <Input
-                          type='idcard'
                           className='info_input'
                           adjustPosition
-                          placeholder='请输入身份证号码'
-                          value={companyInfo.idCard}
-                          onInput={(e) => handleInputChange(e.target.value, 'idCard')}
+                          placeholder='请输入企业地址'
+                          value={postInfo.address}
+                          onInput={(e) => handleInputChange(e.target.value, 'address')}
                         />
                       </View>
 
@@ -241,8 +238,19 @@ const Index = observer(({ store }) => {
                           className='info_input'
                           adjustPosition
                           placeholder='XXXXXXXXXXXXXXXXXXXXX'
-                          value={postInfo.companyUrl.legalPerson}
+                          value={postInfo.legalPerson}
                           onInput={(e) => handleInputChange(e.target.value, 'legalPerson')}
+                        />
+                      </View>
+
+                      <View className='every_info'>
+                        <View>有效期至</View>
+                        <Input
+                          className='info_input'
+                          adjustPosition
+                          placeholder='XXXX-XX-XX'
+                          value={postInfo.approvalDate}
+                          onInput={(e) => handleInputChange(e.target.value, 'approvalDate')}
                         />
                       </View>
                     </View>
@@ -251,8 +259,7 @@ const Index = observer(({ store }) => {
               }
 
               {
-                // 第一步必须上传证件照后才出现按钮
-                ((step == 1 && Object.keys(postInfo).length) || step == 2) && <View className='post_btn' onClick={() => startAuth()}>{(!authInfomation || (authInfomation && !authInfomation.orgName)) ? '提交' : '确认并签署'}</View>
+                companyUrl && <View className={`post_btn ${(postInfo.companyName && postInfo.legalPerson && postInfo.socialCreditCode && postInfo.address) ? 'post_btn_active' : ''}`} onClick={() => startAuth()}>提交</View>
               }
 
             </>

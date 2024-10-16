@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-15 14:01:29
+ * @LastEditTime: 2024-10-16 11:13:36
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -14,6 +14,7 @@ import TimePicker from '@/components/timePicker'
 import DatePicker from '@/components/datePicker'
 import AgePicker from '@/components/agePicker';
 import SexPicker from '@/components/sexPicker';
+import CustomDate from '@/components/customDate';
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/float-layout.scss";
 import "taro-ui/dist/style/components/button.scss";
@@ -28,9 +29,8 @@ import {
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
-    userStore: { isLogin, role, userInfo }
+    userStore: { isLogin, role, userInfo, refreshUserInfo }
   } = store
-  const [i, seti] = useState(0);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [timeText, setTimeText] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -42,9 +42,6 @@ const Index = observer(({ store }) => {
   const [sexText, setSexText] = useState("");
 
   const [showFilterDate, setShowFilterDate] = useState(false);
-  const [customFilterData, setCustomFilterData] = useState('');
-  const [customFilterEndData, setCustomFilterEndData] = useState('');
-  const [filterTime, setFilterTime] = useState('');
 
   const filterList = [                 // 时间筛选列表
     { text: "今日", code: "TODAY" },
@@ -70,11 +67,13 @@ const Index = observer(({ store }) => {
     console.log("首页 监听 是否登录isLogin:", isLogin);
     console.log("首页 监听 当前角色role:", role);
     console.log("首页 监听 当前用户信息userInfo:", userInfo);
-    userCenter({}).then(res => {
-      console.log("首页 监听 当前用户信息res:", res);
-    })
   }, [isLogin, role, userInfo]);
 
+  useEffect(() => {
+    if (isLogin) {
+      refreshUserInfo();
+    }
+  }, [isLogin])
 
   useEffect(() => {
     if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
@@ -82,7 +81,7 @@ const Index = observer(({ store }) => {
       getPoorData();
     }
     if (role === 'CUSTOMER' || role === 'ON_SITE') {   // 客服、驻场待办
-      todo({companySerialCode:''}).then(res => {
+      todo({ companySerialCode: '' }).then(res => {
         console.log("首页 监听 待办res:", res);
         if (res?.code === 200) {
           setTodoData(res?.data);
@@ -155,23 +154,6 @@ const Index = observer(({ store }) => {
     setSexText(e === "" ? "不限性别" : (e === 0 ? "男" : "女"));
   }
 
-  const onCustomDateChange = (e) => {
-    console.log("onCustomDateChange", e);
-    setFilterTime('');
-    setCustomFilterData(e.detail.value);
-  }
-
-  const onCustomDateEndChange = (e) => {
-    console.log("onCustomDateEndChange", e);
-    setFilterTime('');
-    setCustomFilterEndData(e.detail.value);
-  }
-
-  const clickFilterDate = (obj, index) => {
-    setFilterTime(obj.text);
-    setCustomFilterData('');
-  }
-
   const getHeight = () => {              // 获取scrollview的高度  statusTitleHeight, contenTitleHeight
     // return `calc(100vh - ${system.navBarHeight + system.navBarExtendHeight + tabHeight + topDis + 15}px)`;
     return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px)`;
@@ -189,6 +171,10 @@ const Index = observer(({ store }) => {
     Taro.navigateTo({
       url
     })
+  }
+
+  const customDateSelect=(e)=>{
+    console.log("自定义选择日期组件 customDateSelect",e);
   }
 
 
@@ -466,46 +452,8 @@ const Index = observer(({ store }) => {
 
       <SexPicker showPicker={showSexPicker} onClose={() => { setShowSexPicker(false) }} onChange={sexPickerSelect}></SexPicker>
 
-      <AtFloatLayout catchMove className='data_init_layout' isOpened={showFilterDate} onClose={() => setShowFilterDate(false)}>
-        <View className='filter_wrapper'>
-          <View className='filter_wrapper_bg'>
-            <View className='filter_title'>
-              <View>按时间筛选</View>
-              <AtIcon value='close' size='14' color='#222222' onClick={() => setShowFilterDate(false)}></AtIcon>
-            </View>
-            <View className='filter_wrapper_content'>
-              {
-                filterList.map((item, index) => {
-                  return (
-                    <View
-                      key={index}
-                      className={`filter_wrapper_item ${filterTime === item.text ? 'filter_wrapper_item_active' : ''}`}
-                      onClick={() => clickFilterDate(item, index)}
-                    >{item.text}</View>
-                  )
-                })
-              }
-            </View>
-            <View className={`custom_filter_date`}>
-              <Picker mode='date' onChange={onCustomDateChange}>
-                <View className={`picker ${customFilterData ? 'picker_active' : ''}}`}>
-                  {customFilterData ? customFilterData + '开始' : '开始日期'}
-                </View>
-              </Picker>
+      <CustomDate showPicker={showFilterDate} onClose={()=>{setShowFilterDate(false)}} onChange={customDateSelect}></CustomDate>
 
-              <View>-</View>
-
-              <Picker mode='date' onChange={onCustomDateEndChange}>
-                <View className={`picker ${customFilterEndData ? 'picker_active' : ''}}`}>
-                  {customFilterEndData ? customFilterEndData + '结束' : '结束日期'}
-                </View>
-              </Picker>
-            </View>
-            <View className='filter_wrapper_btn'>确定</View>
-            {/* <View style={`height:${bottomSafeAreaHeight}px;`}></View> */}
-          </View>
-        </View>
-      </AtFloatLayout>
 
       <TabBar actCurrent={0} />
 

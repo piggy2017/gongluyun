@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-23 14:09:52
+ * @LastEditTime: 2024-10-16 14:54:51
  * @Description: 
  */
 import { useEffect } from 'react';
@@ -10,9 +10,10 @@ import Taro, { useLaunch } from '@tarojs/taro'
 import { Provider } from 'mobx-react'
 import baseStore from '@/store/base'
 import userStore from '@/store/user'
+import businessStore from '@/store/business'
 import './app.scss'
 const store = {
-  baseStore,userStore
+  baseStore,userStore,businessStore
 }
 function App({ children }) {
 

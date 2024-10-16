@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-10 15:09:16
+ * @LastEditTime: 2024-10-15 18:01:54
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro';
+import Taro,{useRouter} from '@tarojs/taro';
 import { View, Image, Text, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import Navbar from '@/components/navbar';
@@ -18,6 +18,12 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
     } = store
+    const router = useRouter();
+
+    useEffect(()=>{
+        const { serialCode } = router.params;
+        console.log("serialCode", serialCode);
+    },[])
 
     const goLink = (type, id) => {
         Taro.redirectTo({

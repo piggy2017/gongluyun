@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-15 11:35:27
+ * @LastEditTime: 2024-10-16 14:01:53
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ import {
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { isLogin, authentication, filterJobTypes, setFilterJobTypes },
+        userStore: { isLogin, companyVerified, filterJobTypes, setFilterJobTypes },
     } = store
 
     const [searchValue, setSearchValue] = useState('');
@@ -57,7 +57,7 @@ const Index = observer(({ store }) => {
                 setSearchHeight(_query.height)
             }
         }, 0);
-    }, [isLogin, authentication])
+    }, [isLogin, companyVerified])
 
     useEffect(() => {
         console.log("filterJobTypes", filterJobTypes, filterJobTypes.length);
@@ -65,7 +65,7 @@ const Index = observer(({ store }) => {
 
     useEffect(() => {
         getList(1);
-    }, [sex, startAge, endAge,filterJobTypes])
+    }, [sex, startAge, endAge, filterJobTypes])
 
     const getList = async (_pageNo) => {
         setRequestState(1);
@@ -141,9 +141,8 @@ const Index = observer(({ store }) => {
                             placeholderStyle='color: #777777;'
                             onInput={(e) => { setSearchValue(e.detail.value) }}
                             onConfirm={(e) => {
-                                setTimeout(() => {
-                                    getList(1);
-                                }, 50);
+                                getList(1);
+                                setgoonLoad(true);
                             }}
                             value={searchValue}></Input>
                     </View>

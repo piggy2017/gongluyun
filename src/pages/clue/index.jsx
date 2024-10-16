@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-14 15:00:11
+ * @LastEditTime: 2024-10-16 15:46:06
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro';
-import { View, Image, Input, ScrollView, Text, Button, Picker } from '@tarojs/components'
+import { View, Image, Input, ScrollView, Text, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 
@@ -19,11 +19,15 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
 
 import ClueItem from '@/components/items/clueItem'
+import CustomDate from '@/components/customDate';
+import SourcePicker from '@/components/sourcePcker';
+import { cluePool, cluemyClients } from '@/util/api'
 
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-    userStore: { isLogin, role, authentication }
+    userStore: { isLogin, role, companyVerified },
+    businessStore: { poorJobId, myClientJobId }
   } = store
   const [type, setType] = useState('客户池');
 
@@ -32,6 +36,9 @@ const Index = observer(({ store }) => {
 
   const [isRefresh, setIsRefresh] = useState(false);
   const [goonLoad, setgoonLoad] = useState(true);
+  const [pageNo, setPageNo] = useState(1)
+  const pageSize = 10
+  const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
 
   const [list, setList] = useState([
     { id: 1, userName: "客户0974", time: "今天", source: "小红书" },
@@ -40,9 +47,24 @@ const Index = observer(({ store }) => {
     { id: 4, userName: "客户0974", time: "今天", source: "微信岗位链接报名-小李", signUpJob: "成都龙泉驿京西仓库分拣" }
   ])
 
-  const [sourceList, setSourceList] = useState(['全部来源', '抖音直播', '小红书', 'BOSS直聘', '微信私域', '58同城', 'BOSS直聘', '微信私域', '58同城']);
-  const [sourceIndex, setSourceIndex] = useState(0);
-  const [showSourceModel, setShowSourceModel] = useState(false);              //  是否显示切换状态的弹窗
+  const [showSourcePicker, setShowSourcePicker] = useState(false);              //  是否显示切换状态的弹窗
+  const [showFilterDate, setShowFilterDate] = useState(false);                  //  客户池是否显示切换日期的弹窗
+  const [clientshowFilterDate, setClientshowFilterDate] = useState(false);      //  我的客户是否显示切换日期的弹窗
+  const [dateObj, setDateObj] = useState({
+    dateRange: "TODAY",
+    endDate: "",
+    filterTime: "今日",
+    startDate: ""
+  });
+  const [dateClientObj, setDateClientObj] = useState({
+    dateRange: "TODAY",
+    endDate: "",
+    filterTime: "今日",
+    startDate: ""
+  })
+  const [sourceObj, setSourceObj] = useState({    // 筛选来源
+    source: "", name: '全部来源'
+  })
 
   const [mylist, setmyList] = useState([
     { userName: "高小光", status: 1, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
@@ -61,14 +83,51 @@ const Index = observer(({ store }) => {
         setSearchHeight(_query.height)
       }
     }, 0);
-  }, [isLogin, authentication])
+  }, [isLogin, companyVerified, type]);
+
+  useEffect(() => {
+    if (type === '客户池') {
+      getClueList(1);
+    }
+  }, [sourceObj, dateObj, poorJobId]);
+
+  useEffect(() => {
+    if (type === '我的客户') {
+      getClientList(1);
+    }
+  }, [dateClientObj, myClientJobId,])   // 还需添加筛选状态
+
+  const setTypeFunc = (_type) => {
+    if (type != _type) {
+      setType(_type);
+      setgoonLoad(true);
+      setPageNo(1);
+      setSearchValue('');
+      if (_type === '客户池') {
+        getClueList(1);
+      } else {
+        getClientList(1);
+      }
+    }
+  }
 
   const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
     console.log('滑动到了最底部');
+    if (goonLoad && type === '客户池') {
+      getClueList(pageNo + 1);
+    } else if (goonLoad && type === '我的客户') {
+      getClientList(pageNo + 1);
+    }
   }, 500);
 
   const handleScrollToUpper = debounce(() => {  // 滑动到最顶部,触发下拉刷新
     console.log('下拉刷新');
+    setIsRefresh(true);
+    if (type === '客户池') {
+      getClueList(1);
+    } else {
+      getClientList(1);
+    }
   }, 200);
 
   const getHeight = () => {
@@ -140,13 +199,91 @@ const Index = observer(({ store }) => {
     }
   }
 
+  const getClueList = async (_pageNo) => {   // 获取客户池列表
+    setRequestState(1);
+    Taro.showLoading({ title: '加载中...' });
+    let params = {
+      pageNo: _pageNo,
+      pageSize,
+      searchInfo: searchValue,
+      recruitSerialCode: poorJobId ? poorJobId.recruitSerialCode : '',
+      source: sourceObj.source,
+      dateRange: dateObj.dateRange,
+      startDate: dateObj.startDate,
+      endDate: dateObj.endDate
+    }
+    const { code, data } = await cluePool(params);
+    console.log("getClueList", code, data);
+    Taro.hideLoading();
+    setIsRefresh(false);
+    if (code === 200 && data.responses?.length > 0) {
+      setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
+      setgoonLoad(true);
+      setPageNo(data.pageNo);
+      setRequestState(2);
+    } else {
+      setgoonLoad(false);
+      setRequestState(3);
+      if (_pageNo === 1) {
+        setList([]);
+      }
+    }
+  }
+
+  const getClientList = async (_pageNo) => {  // 获取我的客户列表
+    setRequestState(1);
+    Taro.showLoading({ title: '加载中...' });
+    let params = {
+      pageNo: _pageNo,
+      pageSize,
+      searchInfo: searchValue,
+      recruitSerialCode: myClientJobId ? myClientJobId.recruitSerialCode : '',
+      // source: sourceObj.source,
+      seekState: "",
+      dateRange: dateClientObj.dateRange,
+      startDate: dateClientObj.startDate,
+      endDate: dateClientObj.endDate,
+    }
+    const { code, data } = await cluemyClients(params);
+    console.log("getClientList", code, data);
+    Taro.hideLoading();
+    setIsRefresh(false);
+    if (code === 200 && data.responses?.length > 0) {
+      setmyList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
+      setgoonLoad(true);
+      setPageNo(data.pageNo);
+      setRequestState(2);
+    } else {
+      setgoonLoad(false);
+      setRequestState(3);
+      if (_pageNo === 1) {
+        setmyList([]);
+      }
+    }
+  }
+
+  const customDateSelect = (e) => {      // 选择日期的回调
+    console.log("自定义选择日期组件 customDateSelect", e);
+    setDateObj(e);
+  }
+
+  const customClientDateSelect = (e) => {
+    console.log("我的客户 自定义选择日期组件", e);
+    setDateClientObj(e);
+  }
+
+  const sourcePickerSelect = (e) => {    // 选择来源的回调
+    console.log("source", e);
+    setSourceObj(e);
+  }
+
   return (
     <View className='container'>
       <View className='my_header'>
         <View className='my_header_hr' style={`--statusBarHeight:${statusTitleHeight}px;`}></View>
         <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
-          <View onClick={() => { setType('客户池') }} className={`type_item ${type === '客户池' ? 'type_item_active' : ''}`}>客户池</View>
-          <View onClick={() => { setType('我的客户') }} className={`type_item ${type === '我的客户' ? 'type_item_active' : ''}`}>我的客户</View>
+          <View onClick={() => { setTypeFunc('客户池') }} className={`type_item ${type === '客户池' ? 'type_item_active' : ''}`}>客户池</View>
+          <View onClick={() => { setTypeFunc('我的客户') }} className={`type_item ${type === '我的客户' ? 'type_item_active' : ''}`}>我的客户</View>
         </View>
       </View>
 
@@ -161,6 +298,10 @@ const Index = observer(({ store }) => {
             placeholderStyle='color: #777777;'
             onInput={(e) => { setSearchValue(e.detail.value) }}
             onConfirm={(e) => {
+              setgoonLoad(true);
+              if (type === '客户池') {
+                getClueList(1);
+              }
             }}
             value={searchValue}></Input>
         </View>
@@ -168,69 +309,74 @@ const Index = observer(({ store }) => {
           {
             type === '客户池' &&
             <>
-              <View className='filter_wrap_item' onClick={() => setShowSourceModel(true)}>
-                <View>{sourceList[sourceIndex]}</View>
+              <View className='filter_wrap_item' onClick={() => setShowSourcePicker(true)}>
+                <View>{sourceObj.name}</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
-              <View className='filter_wrap_item' onClick={(e) => navigateFunc(e, 1, '/pages/talentsPackage/filterJob/index')}>
-                <View>全部岗位</View>
+              <View className='filter_wrap_item' onClick={(e) => navigateFunc(e, 1, '/pages/talentsPackage/filterJob/index?type=1&title=选择岗位')}>
+                <View>{poorJobId.title}</View>
+                <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
+              </View>
+              <View className='filter_wrap_item' onClick={() => setShowFilterDate(true)}>
+                <View>{dateObj.filterTime ? dateObj.filterTime : dateObj.startDate + '-' + dateObj.endDate}</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
             </> ||
             type === '我的客户' &&
             <>
-              <View className='filter_wrap_item' onClick={(e) => navigateFunc(e, 1, '/pages/talentsPackage/filterJob/index')}>
-                <View>全部岗位</View>
+              <View className='filter_wrap_item' onClick={(e) => navigateFunc(e, 1, '/pages/talentsPackage/filterJob/index?type=2&title=选择岗位')}>
+                <View>{myClientJobId.title}</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
               <View className='filter_wrap_item'>
                 <View>全部状态</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
+              <View className='filter_wrap_item' onClick={() => setClientshowFilterDate(true)}>
+                <View>{dateClientObj.filterTime ? dateClientObj.filterTime : dateClientObj.startDate + '-' + dateClientObj.endDate}</View>
+                <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
+              </View>
             </>
           }
 
-          <View className='filter_wrap_item'>
-            <View>今日</View>
-            <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
-          </View>
+
         </View>
+        {
+          (type === '客户池' && isLogin && role != 'SEEK') &&
+          <View className='search_total'>客户池共 <Text>172</Text> 名求职者等待领取并跟进</View>
+        }
       </View>
 
       {
-        (!isLogin || (role === 'SEEK' && !authentication)) &&
+        (!isLogin || (role === 'SEEK' && !companyVerified)) &&
         <View className='no_login'>
           <Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image>
           <View className='no_login_tip'>{!isLogin ? '登录后体验多项专属功能' : '认证后立即体验项目管理功能'}</View>
           <View className='login_btn' onClick={() => loginOrAuth()}>{!isLogin ? '立即登录' : '立即认证'}</View>
         </View> ||
         (isLogin && role != 'SEEK') &&
-        <>
+        <ScrollView
+          scrollY
+
+          className='scrollWrapper'
+          style={{ height: getHeight(), background: type === '客户池' ? 'transparent' : '#ffffff' }}
+          scrollWithAnimation
+          showScrollbar={false}
+          enablePassive
+          refresherEnabled
+          refresherTriggered={isRefresh}
+          onScrollToLower={handleScrollToLower}
+          onRefresherRefresh={handleScrollToUpper}
+          lowerThreshold={300}
+        >
           {
             type === '客户池' &&
-            <ScrollView
-              scrollY
-              className='scrollWrapper'
-              style={{ height: getHeight() }}
-              scrollWithAnimation
-              showScrollbar={false}
-              enablePassive
-              refresherEnabled
-              refresherTriggered={isRefresh}
-              onScrollToLower={handleScrollToLower}
-              onRefresherRefresh={handleScrollToUpper}
-              lowerThreshold={300}
-            >
-              {
-                (isLogin === 1 && authentication === 1 && list.length > 0) &&
-                <View className='search_total'>客户池共 <Text>172</Text> 名求职者等待领取并跟进</View>
-              }
+            <>
               {
                 list.length > 0 && list.map((item, index) => {
                   return <ClueItem index={index} item={item}></ClueItem>
                 })
               }
-
               {
                 list.length >= 4 &&
                 <View className='loading_text'>
@@ -245,28 +391,15 @@ const Index = observer(({ store }) => {
                 </View>
               }
               {
-                list.length === 0 &&
+                list.length === 0 && requestState === 3 &&
                 <View className='no_data'>
                   <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
                   <View>暂无相关数据~</View>
                 </View>
               }
-            </ScrollView> ||
+            </> ||
             type === '我的客户' &&
-            <ScrollView
-              scrollY
-              className='myScrollWrapper'
-              style={{ height: getHeight() }}
-              scrollWithAnimation
-              showScrollbar={false}
-              enablePassive
-              refresherEnabled
-              refresherTriggered={isRefresh}
-              onScrollToLower={handleScrollToLower}
-              onRefresherRefresh={handleScrollToUpper}
-              lowerThreshold={300}
-            >
-
+            <>
               {
                 mylist.length > 0 && mylist.map((item, index) => {
                   return (
@@ -307,46 +440,34 @@ const Index = observer(({ store }) => {
                 </View>
               }
               {
-                mylist.length === 0 &&
+                mylist.length === 0 && requestState === 3 &&
                 <View className='no_data'>
                   <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
                   <View>暂无相关数据~</View>
                 </View>
               }
-            </ScrollView>
+            </>
           }
-        </>
-
+        </ScrollView>
       }
 
       <Image onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newWorker/index')}
         style={{ bottom: getBottom() }} className='add_clue_btn' src={`${Taro.$cdnUrl}/index/add_clue.webp`}></Image>
 
-      {/* 线索来源 */}
-      <AtFloatLayout catchMove className='source_init_layout' isOpened={showSourceModel} onClose={() => setShowSourceModel(false)}>
-        <View className='filter_wrapper'>
-          <View className='filter_wrapper_bg'>
-            <View className='filter_title'>
-              <View>按性别筛选</View>
-              <AtIcon value='close' size='14' color='#222222' onClick={() => setShowSourceModel(false)}></AtIcon>
-            </View>
-            <View className='filter_wrapper_content'>
-              {
-                sourceList.map((item, index) => {
-                  return (
-                    <View
-                      key={index}
-                      className={`filter_wrapper_item ${index === sourceIndex ? 'filter_wrapper_item_active' : ''}`}
-                      onClick={() => setSourceIndex(index)}
-                    >{item}</View>
-                  )
-                })
-              }
-            </View>
-            <View style={`height:${bottomSafeAreaHeight}px;`}></View>
-          </View>
-        </View>
-      </AtFloatLayout>
+      {/* 客户池筛选日期组件 */}
+      <Block>
+        <CustomDate showPicker={showFilterDate} onClose={() => { setShowFilterDate(false) }} onChange={customDateSelect}></CustomDate>
+      </Block>
+
+      {/* 客户池筛选线索来源 */}
+      <Block>
+        <SourcePicker showPicker={showSourcePicker} onClose={() => { setShowSourcePicker(false) }} onChange={sourcePickerSelect}></SourcePicker>
+      </Block>
+
+      {/* 我的客户筛选日期组件 */}
+      <Block>
+        <CustomDate showPicker={clientshowFilterDate} onClose={() => { setClientshowFilterDate(false) }} onChange={customClientDateSelect}></CustomDate>
+      </Block>
 
       <TabBar actCurrent={2} />
     </View>

@@ -1,0 +1,115 @@
+/*
+ * @Author: 孙林 1164700321@qq.com
+ * @Date: 2024-09-05 15:39:11
+ * @LastEditors: 孙林
+ * @LastEditTime: 2024-10-16 11:51:56
+ * @Description: 自定义选择日期或者日期范围
+ */
+import React, { useState, useEffect, useReducer } from 'react';
+import Taro from '@tarojs/taro';
+import { observer, inject } from 'mobx-react';
+import { View, Picker } from '@tarojs/components';
+import { AtFloatLayout, AtIcon } from 'taro-ui'
+import "taro-ui/dist/style/components/icon.scss";
+import "taro-ui/dist/style/components/float-layout.scss";
+import './index.scss';
+
+const CustomDate = observer(({ showPicker, onClose, onChange, store }) => {
+    const filterList = [                 // 时间筛选列表
+        { text: "今日", code: "TODAY" },
+        { text: "昨日", code: "YESTERDAY" },
+        { text: "本周", code: "THIS_WEEK" },
+        { text: "上周", code: "LAST_WEEK" },
+        { text: "本月", code: "THIS_MONTH" },
+        { text: "上月", code: "LAST_MONTH" },
+    ];
+
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [filterTime, setFilterTime] = useState('今日');
+    const [dateRange, setDateRange] = useState('TODAY');
+
+    const clickFilterDate = (obj, index) => {
+        setFilterTime(obj.text);
+        setDateRange(obj.code);
+        setEndDate('');
+        setStartDate('');
+    }
+
+    const onCustomDateChange = (e) => {
+        console.log("onCustomDateChange", e);
+        setFilterTime('');
+        setDateRange('');
+        setStartDate(e.detail.value.replace(/-/g, '.'));
+    }
+
+    const onCustomDateEndChange = (e) => {
+        console.log("onCustomDateEndChange", e);
+        setFilterTime('');
+        setDateRange('');
+        setEndDate(e.detail.value.replace(/-/g, '.'));
+    }
+
+    const postData = () => {   // 点击确定按钮
+        if (!filterTime && (!startDate || !endDate)) {
+            return Taro.showToast({ title: `请选择${startDate ? '结束' : '开始'}时间`, icon: "none", duration: 2000 });
+        }
+        let params = {
+            dateRange,
+            filterTime,
+            startDate,
+            endDate
+        }
+        onClose();
+        onChange(params);
+    }
+
+    return (
+        <>
+            <AtFloatLayout catchMove className='data_init_layout' isOpened={showPicker} onClose={() => onClose()}>
+                <View className='filter_wrapper'>
+                    <View className='filter_wrapper_bg'>
+                        <View className='filter_title'>
+                            <View>按时间筛选</View>
+                            <AtIcon value='close' size='14' color='#222222' onClick={() => onClose()}></AtIcon>
+                        </View>
+                        <View className='filter_wrapper_content'>
+                            {
+                                filterList.map((item, index) => {
+                                    return (
+                                        <View
+                                            key={index}
+                                            className={`filter_wrapper_item ${filterTime === item.text ? 'filter_wrapper_item_active' : ''}`}
+                                            onClick={() => clickFilterDate(item, index)}
+                                        >{item.text}</View>
+                                    )
+                                })
+                            }
+                        </View>
+                        <View className={`custom_filter_date`}>
+                            <Picker mode='date' onChange={onCustomDateChange}>
+                                <View className={`picker ${startDate ? 'picker_active' : ''}}`}>
+                                    {startDate ? startDate + '开始' : '开始日期'}
+                                </View>
+                            </Picker>
+
+                            <View>-</View>
+
+                            <Picker mode='date' onChange={onCustomDateEndChange}>
+                                <View className={`picker ${endDate ? 'picker_active' : ''}}`}>
+                                    {endDate ? endDate + '结束' : '结束日期'}
+                                </View>
+                            </Picker>
+                        </View>
+                        <View className='filter_wrapper_btn' onClick={postData}>确定</View>
+                    </View>
+                </View>
+            </AtFloatLayout>
+        </>
+    );
+});
+
+export default inject('store')(React.memo(CustomDate, (prevProps, nextProps) => {
+    // 自定义比较函数，只有 props 发生变化时才重新渲染
+    return prevProps.showPicker === nextProps.showPicker && prevProps.store === nextProps.store;
+}));

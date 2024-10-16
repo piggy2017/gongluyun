@@ -1,14 +1,19 @@
 /* eslint-disable react/jsx-key */
-import React,{ useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import Taro from '@tarojs/taro';
 import { observer, inject } from 'mobx-react';
 import { AtFloatLayout, AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/float-layout.scss";
 import { View, Image, ScrollView } from '@tarojs/components';
-import { jobTypeAllList } from '@/util/api'
+import { jobTypeList } from '@/util/api'
 import './index.scss';
 
 const ChooseJob = observer(({ store, isShow, initData, onClose }) => {
+
+    useEffect(() => {
+        console.log('ChooseJob 组建中间听到 isShow', isShow)
+    }, [isShow])
+
     const {
     } = store
     const [fullJobTypeList, setFullJobTypeList] = useState([])
@@ -20,7 +25,7 @@ const ChooseJob = observer(({ store, isShow, initData, onClose }) => {
             let params = {
                 feedsType: ''
             };
-            let data = await jobTypeAllList(params)
+            let data = await jobTypeList(params)
             if (data.code === 200) {
                 // 默认聚焦
                 setInit(data.data)
@@ -117,23 +122,6 @@ const ChooseJob = observer(({ store, isShow, initData, onClose }) => {
                                                     if (idx > -1) {
                                                         jobItem.splice(idx, 1)
                                                     }
-                                                    // if (jobItem.length >= 1) {
-                                                    //     return Taro.showToast({
-                                                    //         title: '最多选择1个',
-                                                    //         icon: 'none'
-                                                    //     })
-                                                    // }
-                                                    // fullJobTypeList.forEach((parent) => {
-                                                    //     parent.children.forEach(child => {
-                                                    //         child.children.forEach(h => {
-                                                    //             if (h.id === l.id) {
-                                                    //                 parent.chooseNum = (parent.chooseNum || 0) + (idx > -1 ? -1 : 1);
-                                                    //             }
-                                                    //         })
-
-                                                    //     });
-                                                    // });
-                                                    // chooseCurrent.chooseNum = (chooseCurrent.chooseNum || 0) + 1
                                                     setFullJobTypeList([...fullJobTypeList])
                                                     if (idx > -1) {
                                                         setChooseJob([...jobItem])
@@ -144,9 +132,6 @@ const ChooseJob = observer(({ store, isShow, initData, onClose }) => {
                                                 }}
                                                 >
                                                     {l.name}
-                                                    {
-                                                        getActive(l) && <Image src={`${Taro.$cdnUrl}/index/select_icon_new.webp`}></Image>
-                                                    }
                                                 </View>
                                             })
                                         }
@@ -172,21 +157,10 @@ const ChooseJob = observer(({ store, isShow, initData, onClose }) => {
 
                                                 let jobItem = JSON.parse(JSON.stringify(chooseJobItem))
                                                 jobItem.splice(index, 1)
-                                                // fullJobTypeList.forEach((parent) => {
-                                                //     parent.children.forEach(child => {
-                                                //         child.children.forEach(l => {
-                                                //             if (l.id === item.id) {
-                                                //                 console.log(item, l)
-                                                //                 parent.chooseNum = parent.chooseNum - 1;
-                                                //             }
-                                                //         })
-
-                                                //     });
-                                                // });
                                                 setFullJobTypeList([...fullJobTypeList])
                                                 setChooseJob([...jobItem])
                                             }}
-                                            >{item.name} <AtIcon value='close' size='10' color='#222222'></AtIcon></View>
+                                            >{item.name} <AtIcon value='close' size='10' color='#1678FF'></AtIcon></View>
                                         })
                                     }
                                 </View>
@@ -201,11 +175,10 @@ const ChooseJob = observer(({ store, isShow, initData, onClose }) => {
 
                 </View>
             </View>
-
         </View>
     </AtFloatLayout>
 });
 
 export default inject('store')(React.memo(ChooseJob, (prevProps, nextProps) => {
-    return prevProps.store === nextProps.store;
-  }));
+    return prevProps.isShow === nextProps.isShow;
+}));

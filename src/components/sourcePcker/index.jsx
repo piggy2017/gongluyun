@@ -2,17 +2,18 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 16:34:59
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-12 09:55:06
+ * @LastEditTime: 2024-10-16 15:44:12
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { observer, inject } from 'mobx-react';
 import { View, PickerView, PickerViewColumn, Button } from '@tarojs/components';
-import { AtFloatLayout,AtIcon } from 'taro-ui'
+import { AtFloatLayout, AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/float-layout.scss";
 import "taro-ui/dist/style/components/icon.scss";
 import './index.scss';
+import { clueSource } from '@/util/api'
 
 const SourcePicker = observer(({ onChange, showPicker, onClose, store }) => {
     const {
@@ -20,14 +21,30 @@ const SourcePicker = observer(({ onChange, showPicker, onClose, store }) => {
             bottomSafeAreaHeight
         }
     } = store
-    const [sourceList, setSourceList] = useState([ '抖音直播', '小红书', 'BOSS直聘', '微信私域', '58同城', '微信群', '钉钉', '飞书']);
-    const [sourceIndex, setSourceIndex] = useState('全部来源');
+    const [sourceList, setSourceList] = useState([]);
+    const [sourceItem, setSourceItem] = useState('全部来源');
     const [showSourceModel, setShowSourceModel] = useState(false);              //  是否显示切换状态的弹窗
 
-    const setSource=(item)=>{
-        setSourceIndex(item);
-        onChange(item);
-        onClose();
+    useEffect(() => {
+        clueSource({}).then(res => {
+            console.log("获取线索来源枚举-clueSource", res);
+            if (res.code !== 200) return
+            // let lastElement = res.data.pop();
+            // res.data.unshift(lastElement);
+            setSourceList(res.data);
+        })
+    }, [])
+
+    const setSourceFunc = (item) => {
+        setSourceItem(item);
+        let obj = {
+            name: item.name,
+            source: item.value
+        }
+        setTimeout(() => {
+            onChange(obj);
+            onClose();
+        }, 300);
     }
     return (
         <>
@@ -35,7 +52,7 @@ const SourcePicker = observer(({ onChange, showPicker, onClose, store }) => {
                 <View className='filter_wrapper'>
                     <View className='filter_wrapper_bg'>
                         <View className='filter_title'>
-                            <View>按性别筛选</View>
+                            <View>线索来源</View>
                             <AtIcon value='close' size='14' color='#222222' onClick={onClose}></AtIcon>
                         </View>
                         <View className='filter_wrapper_content'>
@@ -44,9 +61,9 @@ const SourcePicker = observer(({ onChange, showPicker, onClose, store }) => {
                                     return (
                                         <View
                                             key={index}
-                                            className={`filter_wrapper_item ${item === sourceIndex ? 'filter_wrapper_item_active' : ''}`}
-                                            onClick={() => setSource(item)}
-                                        >{item}</View>
+                                            className={`filter_wrapper_item ${item.name === sourceItem.name ? 'filter_wrapper_item_active' : ''}`}
+                                            onClick={() => setSourceFunc(item)}
+                                        >{item.name}</View>
                                     )
                                 })
                             }

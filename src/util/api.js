@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-14 17:38:09
+ * @LastEditTime: 2024-10-16 14:24:01
  * @Description: 
  */
 
@@ -133,6 +133,12 @@ export const openContracts = params => {            // 打开项目
 }
 export const updateContracts = params => {            // 编辑项目
     return http(API_BASE_URL + '/contracts/updateContracts', params, "POST", {"Content-Type": "application/json"});
+}
+export const contractsJobSelector = params => {            // 项目筛选列表
+    return http(API_BASE_URL + '/contracts/jobSelector', params, "POST", {"Content-Type": "application/json"});
+}
+export const contractsSign = params => {                // 签到  已约面-已到面
+    return http(API_BASE_URL + '/contracts/sign', params, "POST", {"Content-Type": "application/json"});
 }
 
 

@@ -30,7 +30,7 @@ import UpdateStatus from '@/components/updateStatus';
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { isLogin, authentication }
+        userStore: { isLogin, companyVerified }
     } = store
     const [type, setType] = useState('客户池');
 
@@ -397,7 +397,7 @@ const Index = observer(({ store }) => {
                     <View className='filter_wrapper'>
                         <View className='filter_wrapper_bg'>
                             <View className='filter_title'>
-                                <View>按性别筛选</View>
+                                <View>线索来源</View>
                                 <AtIcon value='close' size='14' color='#222222' onClick={() => setShowSourceModel(false)}></AtIcon>
                             </View>
                             <View className='filter_wrapper_content'>

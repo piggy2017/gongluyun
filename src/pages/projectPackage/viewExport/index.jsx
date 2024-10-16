@@ -28,7 +28,7 @@ import Navbar from '@/components/navbar';
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { isLogin, authentication }
+        userStore: { isLogin, companyVerified }
     } = store
     const [infoHeight, setInfoHeight] = useState(94);
 

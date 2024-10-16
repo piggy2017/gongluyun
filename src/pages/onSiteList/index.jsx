@@ -22,7 +22,7 @@ import UpdateStatus from '@/components/updateStatus';
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-    userStore: { isLogin, authentication }
+    userStore: { isLogin, companyVerified }
   } = store
 
   const [searchValue, setSearchValue] = useState('');
