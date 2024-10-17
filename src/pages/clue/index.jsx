@@ -2,26 +2,26 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-16 15:46:06
+ * @LastEditTime: 2024-10-17 14:05:10
  * @Description: 
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import Taro from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 
 import TabBar from '@/components/tabBar';
-import { AtIcon, AtFloatLayout } from 'taro-ui'
+import { AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
 
 import ClueItem from '@/components/items/clueItem'
 import CustomDate from '@/components/customDate';
 import SourcePicker from '@/components/sourcePcker';
-import { cluePool, cluemyClients } from '@/util/api'
+import StatusPicker from '@/components/statusPicker';
+import { cluePool, cluemyClients, clueReceive } from '@/util/api'
 
 const Index = observer(({ store }) => {
   const {
@@ -29,6 +29,7 @@ const Index = observer(({ store }) => {
     userStore: { isLogin, role, companyVerified },
     businessStore: { poorJobId, myClientJobId }
   } = store
+  const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
   const [type, setType] = useState('客户池');
 
   const [searchValue, setSearchValue] = useState('');
@@ -36,16 +37,12 @@ const Index = observer(({ store }) => {
 
   const [isRefresh, setIsRefresh] = useState(false);
   const [goonLoad, setgoonLoad] = useState(true);
-  const [pageNo, setPageNo] = useState(1)
+  const [pageNo, setPageNo] = useState(1);
   const pageSize = 10
   const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
+  const [totalCount, setTotalCount] = useState(0);
 
-  const [list, setList] = useState([
-    { id: 1, userName: "客户0974", time: "今天", source: "小红书" },
-    { id: 2, userName: "客户0974", time: "今天", source: "微信岗位链接报名-小李", signUpJob: "成都龙泉驿京西仓库分拣" },
-    { id: 3, userName: "客户0974", time: "今天", source: "小红书" },
-    { id: 4, userName: "客户0974", time: "今天", source: "微信岗位链接报名-小李", signUpJob: "成都龙泉驿京西仓库分拣" }
-  ])
+  const [list, setList] = useState([]);   // 客户池列表
 
   const [showSourcePicker, setShowSourcePicker] = useState(false);              //  是否显示切换状态的弹窗
   const [showFilterDate, setShowFilterDate] = useState(false);                  //  客户池是否显示切换日期的弹窗
@@ -65,6 +62,9 @@ const Index = observer(({ store }) => {
   const [sourceObj, setSourceObj] = useState({    // 筛选来源
     source: "", name: '全部来源'
   })
+  const [filterState, setFilterState] = useState({    // 筛选状态
+    state: "", name: '全部状态'
+  })
 
   const [mylist, setmyList] = useState([
     { userName: "高小光", status: 1, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
@@ -74,6 +74,8 @@ const Index = observer(({ store }) => {
     { userName: "高小光", status: 5, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
     { userName: "高小光", status: 6, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
   ])
+
+  const [showPickerStatus, setShowPickerStatus] = useState(false);
 
   useEffect(() => {
     setTimeout(async () => {
@@ -85,6 +87,10 @@ const Index = observer(({ store }) => {
     }, 0);
   }, [isLogin, companyVerified, type]);
 
+
+  useEffect(() => {
+    console.log("list发生了改变", list);
+  }, [list])
   useEffect(() => {
     if (type === '客户池') {
       getClueList(1);
@@ -95,7 +101,7 @@ const Index = observer(({ store }) => {
     if (type === '我的客户') {
       getClientList(1);
     }
-  }, [dateClientObj, myClientJobId,])   // 还需添加筛选状态
+  }, [dateClientObj, myClientJobId, filterState])   // 还需添加筛选状态
 
   const setTypeFunc = (_type) => {
     if (type != _type) {
@@ -220,6 +226,7 @@ const Index = observer(({ store }) => {
       setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
       setgoonLoad(true);
       setPageNo(data.pageNo);
+      setTotalCount(data.totalCount);
       setRequestState(2);
     } else {
       setgoonLoad(false);
@@ -239,7 +246,7 @@ const Index = observer(({ store }) => {
       searchInfo: searchValue,
       recruitSerialCode: myClientJobId ? myClientJobId.recruitSerialCode : '',
       // source: sourceObj.source,
-      seekState: "",
+      state: "",
       dateRange: dateClientObj.dateRange,
       startDate: dateClientObj.startDate,
       endDate: dateClientObj.endDate,
@@ -277,6 +284,36 @@ const Index = observer(({ store }) => {
     setSourceObj(e);
   }
 
+  const getPickerStatusFunc = (e) => {   // 筛选状态的回调
+    console.log("getPickerStatusFunc", e);
+    setFilterState(e);
+  }
+
+  const getClient = async (obj, idx) => {   // 领取客户
+    console.log("getClient obj, idx", obj, idx);
+
+    Taro.showLoading({ title: '领取中...' });
+    const { code, data, msg } = await clueReceive({ uuid: obj.uuid });
+    console.log("getClient", code, data);
+    if (code === 200) {
+      Taro.showToast({ title: '领取成功', icon: 'none', duration: 2000 });
+      setList(list => {
+        let _list = list.map((item, i) => {
+          if (i === idx) {
+            item.isGet = true;
+          }
+          return item
+        })
+        return _list
+      })
+      setTotalCount(totalCount - 1);
+      forceUpdate();
+    } else {
+      Taro.showToast({ title: msg, icon: 'none', duration: 2000 });
+    }
+    Taro.hideLoading();
+  }
+
   return (
     <View className='container'>
       <View className='my_header'>
@@ -286,7 +323,6 @@ const Index = observer(({ store }) => {
           <View onClick={() => { setTypeFunc('我的客户') }} className={`type_item ${type === '我的客户' ? 'type_item_active' : ''}`}>我的客户</View>
         </View>
       </View>
-
 
       <View className='search_wrapper'>
         <View style={`height: 12rpx;`}></View>
@@ -318,7 +354,7 @@ const Index = observer(({ store }) => {
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
               <View className='filter_wrap_item' onClick={() => setShowFilterDate(true)}>
-                <View>{dateObj.filterTime ? dateObj.filterTime : dateObj.startDate + '-' + dateObj.endDate}</View>
+                <View>{dateObj.filterTime ? dateObj.filterTime : dateObj.startDate.replace(/-/g, '.') + '-' + dateObj.endDate.replace(/-/g, '.')}</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
             </> ||
@@ -328,22 +364,21 @@ const Index = observer(({ store }) => {
                 <View>{myClientJobId.title}</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
-              <View className='filter_wrap_item'>
-                <View>全部状态</View>
+              <View className='filter_wrap_item' onClick={() => setShowPickerStatus(true)}>
+                <View>{filterState.name}</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
               <View className='filter_wrap_item' onClick={() => setClientshowFilterDate(true)}>
-                <View>{dateClientObj.filterTime ? dateClientObj.filterTime : dateClientObj.startDate + '-' + dateClientObj.endDate}</View>
+                <View>{dateClientObj.filterTime ? dateClientObj.filterTime : dateClientObj.startDate.replace(/-/g, '.') + '-' + dateClientObj.endDate.replace(/-/g, '.')}</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
             </>
           }
 
-
         </View>
         {
           (type === '客户池' && isLogin && role != 'SEEK') &&
-          <View className='search_total'>客户池共 <Text>172</Text> 名求职者等待领取并跟进</View>
+          <View className='search_total'>客户池共 <Text>{totalCount}</Text> 名求职者等待领取并跟进</View>
         }
       </View>
 
@@ -357,7 +392,6 @@ const Index = observer(({ store }) => {
         (isLogin && role != 'SEEK') &&
         <ScrollView
           scrollY
-
           className='scrollWrapper'
           style={{ height: getHeight(), background: type === '客户池' ? 'transparent' : '#ffffff' }}
           scrollWithAnimation
@@ -374,7 +408,30 @@ const Index = observer(({ store }) => {
             <>
               {
                 list.length > 0 && list.map((item, index) => {
-                  return <ClueItem index={index} item={item}></ClueItem>
+                  // return <ClueItem index={index} item={item} onGetClient={(obj, idx) => getClient(obj, idx)}></ClueItem>
+                  return (
+                    <View key={index} className='clue_item'>
+                      <View className='clue_item_wrap'>
+                        <View className='clue_item_wrap_left'>
+                          <View className='clue_item_title'>
+                            <View className='clue_item_title_left'>
+                              <View className='clue_item_title_sort'>{index + 1}</View>
+                              <View className='clue_item_title_name'>{item.name}{item.source}</View>
+                            </View>
+                          </View>
+                          {
+                            item.recruitTitle ? <View className='clue_item_info'>{item.recruitTitle}</View> : ''
+                          }
+                          <View className='clue_item_info'>{item.createTime}录入</View>
+                        </View>
+                        {
+                          item.isGet &&
+                          <View className='clue_item_wrap_right_done'>已领取</View> ||
+                          <View className='clue_item_wrap_right' onClick={() => getClient(item, index)}>立即领取</View>
+                        }
+                      </View>
+                    </View>
+                  )
                 })
               }
               {
@@ -467,6 +524,11 @@ const Index = observer(({ store }) => {
       {/* 我的客户筛选日期组件 */}
       <Block>
         <CustomDate showPicker={clientshowFilterDate} onClose={() => { setClientshowFilterDate(false) }} onChange={customClientDateSelect}></CustomDate>
+      </Block>
+
+      {/* 筛选状态 showPickerStatus, setShowPickerStatus */}
+      <Block>
+        <StatusPicker showPicker={showPickerStatus} onClose={() => { setShowPickerStatus(false) }} onChange={getPickerStatusFunc}></StatusPicker>
       </Block>
 
       <TabBar actCurrent={2} />

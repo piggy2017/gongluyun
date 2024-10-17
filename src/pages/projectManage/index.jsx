@@ -8,13 +8,12 @@
 
 import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro';
-import { View, Image, Input, ScrollView, Text, Button, Picker } from '@tarojs/components'
+import { View, Image, Input, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import TabBar from '@/components/tabBar';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
-import { AtIcon, AtFloatLayout } from 'taro-ui'
+import { AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss';
 
 import { contractsList } from '@/util/api';
@@ -33,12 +32,7 @@ const Index = observer(({ store }) => {
   const pageSize = 10
   const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
 
-  const [list, setList] = useState([
-    // { id: 1, type: 1, name: "龙泉驿区招物流分拣全职月结", status: "招聘中", port: 311, interview: 79, pass: 13, signUp: 5, },
-    // { id: 2, type: 2, name: "龙泉驿区招物流分拣全职月结", status: "招聘中", port: 311, interview: 79, pass: 13, signUp: 5, compony: '成都翔科食品有限公司' },
-    // { id: 3, type: 1, name: "龙泉驿区招物流分拣全职月结", status: "招聘中", port: 311, interview: 79, pass: 13, signUp: 5, },
-    // { id: 4, type: 1, name: "龙泉驿区招物流分拣全职月结", status: "招聘中", port: 311, interview: 79, pass: 13, signUp: 5, },
-  ])
+  const [list, setList] = useState([])
 
   const [type, setType] = useState('PROCESSING');
 

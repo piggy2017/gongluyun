@@ -2,36 +2,39 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 16:34:59
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-16 15:44:12
+ * @LastEditTime: 2024-10-17 11:44:48
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { observer, inject } from 'mobx-react';
-import { View, PickerView, PickerViewColumn, Button } from '@tarojs/components';
+import { View } from '@tarojs/components';
 import { AtFloatLayout, AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/float-layout.scss";
 import "taro-ui/dist/style/components/icon.scss";
 import './index.scss';
 import { clueSource } from '@/util/api'
 
-const SourcePicker = observer(({ onChange, showPicker, onClose, store }) => {
+const SourcePicker = observer(({ type, onChange, showPicker, onClose, store }) => {
     const {
         baseStore: {
             bottomSafeAreaHeight
         }
     } = store
     const [sourceList, setSourceList] = useState([]);
-    const [sourceItem, setSourceItem] = useState('全部来源');
-    const [showSourceModel, setShowSourceModel] = useState(false);              //  是否显示切换状态的弹窗
+    const [sourceItem, setSourceItem] = useState({ name: '全部来源' });
 
     useEffect(() => {
         clueSource({}).then(res => {
             console.log("获取线索来源枚举-clueSource", res);
             if (res.code !== 200) return
-            // let lastElement = res.data.pop();
-            // res.data.unshift(lastElement);
-            setSourceList(res.data);
+            // setSourceList(type ? res.data.shift() : res.data);
+            if(type){
+                res.data.shift();
+                setSourceList(res.data);
+            }else{
+                setSourceItem(res.data);
+            }
         })
     }, [])
 

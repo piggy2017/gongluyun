@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-23 11:05:02
+ * @LastEditTime: 2024-10-16 17:00:59
  * @Description: 
  */
 /*
@@ -14,18 +14,12 @@
  */
 import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro';
-import { View, Image, Input, ScrollView, Text, Block, Picker } from '@tarojs/components'
+import { View, Image, Input, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 
-import TabBar from '@/components/tabBar';
 import Navbar from '@/components/navbar';
-import { AtIcon, AtFloatLayout } from 'taro-ui'
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
-
-import ClueItem from '@/components/items/clueItem'
 
 const Index = observer(({ store }) => {
     const {

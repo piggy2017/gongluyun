@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-12 10:00:35
+ * @LastEditTime: 2024-10-17 11:58:39
  * @Description: 
  */
 /*
@@ -42,34 +42,9 @@ const Index = observer(({ store }) => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showSourcePicker, setShowSourcePicker] = useState(false);
 
-    const getMyAddress = async () => {
-        try {
-            const res = await Taro.chooseLocation();
-            // 获取到用户选择的位置信息
-            const { latitude, longitude, name, address } = res;
-            console.log('选择的位置：', latitude, longitude, name, address);
-            let addr = await reverseGeocoder(latitude, longitude)
-            setChooseAddr({ ...addr, latitude, longitude })
-            setFormData({ ...formData, areaName: addr.city + addr.district })
-            // onPost()
-        } catch (error) {
-            console.log('选择位置失败：', error);
-            if (error.errMsg == "getLocation:fail auth deny") {
-                Taro.openSetting({
-                    success: (res) => {
-                        // 授权弹窗点击确定
-                        if (res.authSetting['scope.userLocation']) {
-                            // 用户同意了位置授权
-                            // 执行相关逻辑
-                        } else {
-                            // 用户仍然拒绝了位置授权
-                            // 可以提示用户或执行其他操作
-                        }
-                    }
-                });
-            }
-        }
-    }
+    const [sourceObj, setSourceObj] = useState({    // 筛选来源
+        name: '', source: ''
+    })
 
     const datePickerSelect = (e) => {
         console.log("seleceDate", e);
@@ -77,9 +52,10 @@ const Index = observer(({ store }) => {
         setFormData({ ...formData, interviewDate: e })
     }
 
-    const sourcePickerSelect=(e)=>{
+    const sourcePickerSelect = (e) => {
         console.log("source", e);
-        setFormData({ ...formData, source: e })
+        setSourceObj(e);
+        setFormData({ ...formData, source: e.name });
     }
 
     return (
@@ -96,12 +72,15 @@ const Index = observer(({ store }) => {
                 </View>
                 <View className='project_item project_item_border'>
                     <View className='project_item_label project_item_label_required'>客服</View>
-                    <View className='project_item_right' >
+                    <View className='project_item_right' onClick={() => {
+                        Taro.navigateTo({
+                            url: `/pages/newPackage/setCustom/index?title=选择跟进的客服&code=service`
+                        })
+                    }}>
                         <Text className={`${formData.service ? 'project_item_text_active' : 'project_item_text'}`}>{formData.service ? formData.service : '选择跟进的客服(必填)'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
-
             </View>
 
             <View className='project_group'>
@@ -136,6 +115,15 @@ const Index = observer(({ store }) => {
                         <View onClick={() => setFormData({ ...formData, sex: 1 })} className={`option_item ${formData.sex === 1 ? 'option_item_active' : ''}`}>女</View>
                     </View>
                 </View>
+            </View>
+            <View className='project_group'>
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>报名岗位</View>
+                    <View className='project_item_right' >
+                        <Text className={`${formData.recruitSerialCode ? 'project_item_text_active' : 'project_item_text'}`}>{formData.recruitSerialCode ? formData.recruitSerialCode : '选择求职者报名的岗位(必填)'}</Text>
+                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                    </View>
+                </View>
                 <View className='project_item project_item_border'>
                     <View className='project_item_label'>身份证号</View>
                     <View className='project_item_right'>
@@ -149,20 +137,14 @@ const Index = observer(({ store }) => {
                         ></Input>
                     </View>
                 </View>
-                <View className='project_item project_item_border'>
-                    <View className='project_item_label'>报名岗位</View>
-                    <View className='project_item_right' >
-                        <Text className={`${formData.jobName ? 'project_item_text_active' : 'project_item_text'}`}>{formData.jobName ? formData.jobName : '选择求职者报名的岗位(必填)'}</Text>
-                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
-                    </View>
-                </View>
-                <View className='project_item project_item_border'>
+
+                {/* <View className='project_item project_item_border'>
                     <View className='project_item_label'>已安排面试</View>
                     <View className='project_item_right'>
-                        <View onClick={() => setFormData({ ...formData, isInterview: 1 })} className={`option_item ${formData.isInterview === 1 ? 'option_item_active' : ''}`}>是</View>
-                        <View onClick={() => setFormData({ ...formData, isInterview: 0 })} className={`option_item ${formData.isInterview === 0 ? 'option_item_active' : ''}`}>否</View>
+                        <View onClick={() => setFormData({ ...formData, interviewArranged: true })} className={`option_item ${formData.interviewArranged === true ? 'option_item_active' : ''}`}>是</View>
+                        <View onClick={() => setFormData({ ...formData, interviewArranged: false })} className={`option_item ${formData.interviewArranged === false ? 'option_item_active' : ''}`}>否</View>
                     </View>
-                </View>
+                </View> */}
                 <View className='project_item project_item_border'>
                     <View className='project_item_label project_item_label_required'>面试日期</View>
                     <View className='project_item_right' onClick={() => setShowDatePicker(true)}>
@@ -226,7 +208,7 @@ const Index = observer(({ store }) => {
             </Block>
 
             <Block>
-                <SourcePicker showPicker={showSourcePicker} onClose={() => { setShowSourcePicker(false) }} onChange={sourcePickerSelect}></SourcePicker>
+                <SourcePicker type='1' showPicker={showSourcePicker} onClose={() => { setShowSourcePicker(false) }} onChange={sourcePickerSelect}></SourcePicker>
             </Block>
 
         </View>

@@ -40,14 +40,14 @@ const CustomDate = observer(({ showPicker, onClose, onChange, store }) => {
         console.log("onCustomDateChange", e);
         setFilterTime('');
         setDateRange('');
-        setStartDate(e.detail.value.replace(/-/g, '.'));
+        setStartDate(e.detail.value);  // .replace(/-/g, '.')
     }
 
     const onCustomDateEndChange = (e) => {
         console.log("onCustomDateEndChange", e);
         setFilterTime('');
         setDateRange('');
-        setEndDate(e.detail.value.replace(/-/g, '.'));
+        setEndDate(e.detail.value);
     }
 
     const postData = () => {   // 点击确定按钮

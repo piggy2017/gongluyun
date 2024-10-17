@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-10 15:50:30
+ * @LastEditTime: 2024-10-16 17:01:15
  * @Description: 
  */
 /*
@@ -24,7 +24,6 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
 
-import ClueItem from '@/components/items/clueItem'
 import UpdateStatus from '@/components/updateStatus';
 
 const Index = observer(({ store }) => {

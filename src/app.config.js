@@ -83,6 +83,7 @@ export default defineAppConfig({
                 "newEmployee/index",             // 新增员工
                 "setOnsite/index",               // 设置驻场
                 "newProjectSuccess/index",       // 新增项目成功
+                "setCustom/index",               // 新增求职者选择跟进的客服
             ]
         },
         {
