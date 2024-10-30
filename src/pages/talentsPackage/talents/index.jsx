@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-16 14:01:53
+ * @LastEditTime: 2024-10-30 11:29:29
  * @Description: 
  */
 
@@ -146,7 +146,7 @@ const Index = observer(({ store }) => {
                             }}
                             value={searchValue}></Input>
                     </View>
-                    <Image className='add_icon' onClick={() => Taro.navigateTo({ url: '/pages/newPackage/newWorker/index' })} src={`${Taro.$cdnUrl}/index/index_icon3.webp`}></Image>
+                    <Image className='add_icon' onClick={() => Taro.navigateTo({ url: '/pages/newPackage/newWorker/index?entryChannel=TALENT_POOL' })} src={`${Taro.$cdnUrl}/index/index_icon3.webp`}></Image>
                 </View>
             </View>
 

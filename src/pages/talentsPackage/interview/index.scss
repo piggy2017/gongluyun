@@ -110,7 +110,7 @@
             width: 694rpx;
             height: 96rpx;
             border-radius: 8rpx;
-            background: #1678FF;
+            background: #CDE1FF;
             color: #ffffff;
             text-align: center;
             font-family: "PingFang SC";
@@ -119,6 +119,9 @@
             font-weight: 500;
             line-height: 96rpx;
             margin: 0 auto;
+        }
+        .interview_btn_active{
+            background: #1678FF;
         }
     }
 }

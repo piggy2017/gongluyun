@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-14 17:44:55
+ * @LastEditTime: 2024-10-30 11:37:02
  * @Description: 人才库列表结果的item,需要传入 index，item
  */
 import React, { useState, useEffect } from 'react';
@@ -22,7 +22,7 @@ const TalentsItem = observer(({ store, index, item }) => {
                 <View className='talents_item_title'>
                     <View className='talents_item_title_left'>
                         <View className='talents_item_title_name'>{item.name}</View>
-                        <View className='talents_item_title_detail'>{item.age}岁·{item.sex === 0 ? '男' : item.sex === 1 ? '女' : '未知'}</View>
+                        <View className='talents_item_title_detail'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : '未知'}</View>
                     </View>
                     <View className='talents_item_title_right' onClick={() => Taro.makePhoneCall({ phoneNumber: item.phone })}>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon7.webp`}></Image>

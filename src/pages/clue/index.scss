@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:52
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-17 10:29:53
+ * @LastEditTime: 2024-10-28 17:31:58
  * @Description: 
  */
 @import '@/app.scss';
@@ -133,24 +133,30 @@
     .scrollWrapper {
         width: 100%;
         // background: #ffffff;
-        border-radius: 20rpx 20rpx 0 0;
-        border: 1rpx solid red;
+        // border-radius: 20rpx 20rpx 0 0;
+        // border: 1rpx solid red;
 
         .clue_item:last-child {
             border-bottom: none;
         }
 
         .roster_item {
-            border-radius: 20rpx;
-            width: 710rpx;
-            height: 324rpx;
+            // border-radius: 20rpx;
+            width: 750rpx;
+            height: 236rpx;
             flex-shrink: 0;
             background-color: #FFF;
-            margin: 20rpx auto 0 auto;
+            // margin: 20rpx auto 0 auto;
+            border-bottom: 1rpx solid #0000000a;
+            @include flex-center(space-between);
+
+            .roster_item_right {
+                margin-right: 40rpx;
+            }
 
             .roster_item_title {
                 padding: 24rpx 24rpx 0 60rpx;
-                @include flex-center(space-between);
+                @include flex-center(flex-start);
                 position: relative;
 
                 .item_title_index {
@@ -175,12 +181,28 @@
                     font-weight: 400;
                     line-height: normal;
 
+                    image {
+                        width: 40rpx;
+                        height: 40rpx;
+                        flex-shrink: 0;
+                        margin-left: 12rpx;
+                    }
+
                     .item_title_name {
                         color: #222222;
                         font-size: 32rpx;
                         font-style: normal;
                         font-weight: 500;
                         margin-right: 10rpx;
+                    }
+
+                    .item_title_phone{
+                        color: #1678ff;
+                        font-family: "D-DIN-PRO";
+                        font-size: 32rpx;
+                        font-style: normal;
+                        font-weight: 500;
+                        line-height: normal;
                     }
                 }
 
@@ -193,22 +215,26 @@
                 }
             }
 
-            .roster_item_phone {
-                padding: 16rpx 0 0 56rpx;
-                @include flex-center(flex-start);
-                color: #1678ff;
-                font-family: "D-DIN-PRO";
-                font-size: 34rpx;
+            .roster_item_infos{
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
                 font-style: normal;
-                font-weight: 500;
+                font-weight: 400;
                 line-height: normal;
+                padding-left: 68rpx;
+                margin-top: 10rpx;
+            }
 
-                image {
-                    width: 40rpx;
-                    height: 40rpx;
-                    flex-shrink: 0;
-                    margin-right: 4rpx;
-                }
+            .roster_item_jobName{
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                padding-left: 68rpx;
+                margin-top: 8rpx;
             }
 
             .roster_item_source {
@@ -236,7 +262,7 @@
             }
 
             .roster_item_time {
-                padding: 12rpx 0 0 56rpx;
+                padding: 12rpx 0 0 68rpx;
                 color: #999999;
                 font-family: "PingFang SC";
                 font-size: 28rpx;
@@ -253,12 +279,12 @@
             margin: 0 auto 20rpx auto;
             padding: 24rpx 0;
             box-sizing: border-box;
-        
+
             .clue_item_wrap {
                 width: 710rpx;
                 margin: 0 auto;
                 @include flex-center(space-between);
-        
+
                 .clue_item_wrap_right {
                     width: 152rpx;
                     height: 60rpx;
@@ -274,7 +300,8 @@
                     line-height: 60rpx;
                     margin-right: 24rpx;
                 }
-                .clue_item_wrap_right_done{
+
+                .clue_item_wrap_right_done {
                     width: 152rpx;
                     height: 60rpx;
                     border-radius: 8rpx;
@@ -289,15 +316,15 @@
                     line-height: 60rpx;
                     margin-right: 24rpx;
                 }
-        
+
                 .clue_item_title {
                     padding: 0 24rpx 0 22rpx;
                     @include flex-center(space-between);
-        
+
                     .clue_item_title_left {
                         @include flex-center(flex-start);
                     }
-        
+
                     .clue_item_title_sort {
                         color: #222222;
                         font-family: "D-DIN-PRO";
@@ -306,7 +333,7 @@
                         font-weight: 600;
                         line-height: normal;
                     }
-        
+
                     .clue_item_title_name {
                         color: #222222;
                         font-family: "PingFang SC";
@@ -317,7 +344,7 @@
                         margin-left: 22rpx;
                     }
                 }
-        
+
                 .clue_item_info {
                     padding: 0 30rpx 0 58rpx;
                     color: #666666;
@@ -330,14 +357,14 @@
                     width: 400rpx;
                     @include ellipsis;
                 }
-        
+
                 .clue_item_info:first-child {
                     margin-top: 16rpx;
                 }
-        
+
             }
         }
-        
+
 
     }
 

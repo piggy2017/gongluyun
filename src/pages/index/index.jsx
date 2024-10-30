@@ -217,7 +217,7 @@ const Index = observer(({ store }) => {
               {
                 showAddType &&
                 <View className='add_types_wrapper'>
-                  <View className='add_types_item' onClick={() => navigateFunc(1, '/pages/newPackage/newWorker/index')}>
+                  <View className='add_types_item' onClick={() => navigateFunc(1, '/pages/newPackage/newWorker/index?entryChannel=SOURCE')}>
                     <Image src={`${Taro.$cdnUrl}/index/index_icon11.webp`}></Image>
                     <View>新增求职者线索</View>
                   </View>
@@ -252,7 +252,7 @@ const Index = observer(({ store }) => {
         {
           (role === "ADMIN" || role === "CUSTOMER" || role === 'SEEK') &&
           <View className='enter_wrapper'>
-            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/newPackage/newWorker/index')}>
+            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/newPackage/newWorker/index?entryChannel=SOURCE')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon6.webp`}></Image>
               <View>录入求职线索</View>
             </View>

@@ -2,16 +2,16 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-25 14:04:38
+ * @LastEditTime: 2024-10-29 16:36:13
  * @Description: 
  */
 
 
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Text, Input, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -21,31 +21,45 @@ import DatePicker from '@/components/datePicker'
 import UpdateStatus from '@/components/updateStatus';
 import './index.scss'
 
+import { cluegetUserInfo, updateInterviewer, clueStateFlow } from '@/util/api'
+
 
 const Index = observer(({ store }) => {
+    const route = useRouter();
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+        baseStore: { bottomSafeAreaHeight },
     } = store
 
     const [formData, setFormData] = useState({});
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [dateText, setDateText] = useState("选择面试日期");
     const [bottomHeight, setBottomHeight] = useState(90);
+    const [uuid, setUuid] = useState('');
 
-    const [trackList, setTrackList] = useState([
-        { label: "8月4日 16:30 内部客服-小李", content: "上报线索" },
-        { label: "8月5日 16:30 内部客服-小李", content: "为求职者安排了8月7日的面试" },
-        { label: "8月9日 16:30 内部客服-小李", content: "为求职者安排了8月7日的面试" },
-        { label: "8月11日 16:30 内部客服-小李", content: "为求职者安排了8月7日的面试" }
-    ]);
+    const [trackList, setTrackList] = useState([]);
 
     const [totalPerson, setTotalPerson] = useState(88);
     const [current, setCurrent] = useState(1);
     const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示地步的操作选项
     const [currentCliskstatus, setCurrentCliskstatus] = useState('面试失败');
+    const [clientInfos, setClientInfos] = useState(null);
 
+    useDidShow(() => {
+        if (uuid) {
+            getClientDetail();
+            getHistoryList();
+        }
+    })
 
     useEffect(() => {
+        if (uuid) {
+            getClientDetail();
+            getHistoryList();
+        }
+    }, [uuid])
+
+    useEffect(() => {
+        setUuid(route.params.uuid);
         setTimeout(async () => {
             const _query = await selectorQueryDomInfo('.bottom_wrapper');
             if (_query?.height) {
@@ -53,6 +67,26 @@ const Index = observer(({ store }) => {
             }
         }, 0);
     }, [])
+
+    const getClientDetail = async () => {
+        const { code, data, msg } = await cluegetUserInfo({ uuid: uuid ? uuid : route.params.uuid });
+        console.log("code", code, "data", data, "msg", msg);
+        if (code === 200) {
+            setClientInfos(data);
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
+        }
+    }
+
+    const getHistoryList = async () => {
+        const { code, data, msg } = await clueStateFlow({ uuid: uuid ? uuid : route.params.uuid });
+        console.log("getHistoryList_code", code, "data", data, "msg", msg);
+        if (code === 200 && data?.length > 0) {
+            setTrackList(data);
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
+        }
+    }
 
     const datePickerSelect = (e) => {
         console.log("seleceDate", e);
@@ -121,6 +155,7 @@ const Index = observer(({ store }) => {
     }
 
     const setCurrentIndex = (type) => {
+        setShowbottomOptions(false);
         if (type === "add") {
             if (current === totalPerson) return;
             setCurrent(current => current + 1);
@@ -133,25 +168,50 @@ const Index = observer(({ store }) => {
     const changeStatus = (e) => {
         console.log("changeStatus", e);
         setCurrentCliskstatus(e);
+        Taro.showLoading({ title: '提交中...' });
+        updateInterviewer({ uuid: clientInfos.uuid, seekState: e }).then(res => {
+            Taro.hideLoading();
+            if (res.code === 200) {
+                Taro.showToast({ title: '更新成功', icon: 'none' })
+                setClientInfos({ ...clientInfos, seekState: e });
+            } else {
+                Taro.showToast({ title: res.msg, icon: 'none' })
+            }
+        })
+    }
+
+    const goInterview = () => {
+        const { uuid } = route.params;
+        Taro.navigateTo({
+            url: `/pages/talentsPackage/interview/index?uuid=${uuid}`
+        })
     }
 
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='rgba(237,243,254)' title='客户详情'></Navbar>
-            <WorkerInfo></WorkerInfo>
+            <WorkerInfo info={clientInfos}></WorkerInfo>
 
             <View className='client_status'>
                 <View className='client_status_title'>
                     <View>当前状态</View>
-                    <View className='client_status_title_status'>已约面</View>
+                    {
+                        (clientInfos && clientInfos.seekState === 'PENDING') &&
+                        <View className='client_status_title_right'>
+                            <View>待安排面试</View>
+                            <AtIcon value='chevron-right' size='16' color='#1678FF'></AtIcon>
+                        </View> ||
+                        (clientInfos && clientInfos.seekState != 'PENDING') &&
+                        <View className='client_status_title_status' style={`color:${getColor(clientInfos.seekState)}`}>{getStatus(clientInfos.seekState)}</View>
+                    }
                 </View>
                 <View className='client_status_item'>
                     <View className='client_status_item_label'>报名岗位</View>
-                    <View className='client_status_item_con'>龙泉驿区招物流分拣招物流分拣全职月结</View>
+                    <View className='client_status_item_con'>{clientInfos && clientInfos.recruitTitle ? clientInfos.recruitTitle : '暂无'}</View>
                 </View>
                 <View className='client_status_item'>
                     <View className='client_status_item_label'>面试日期</View>
-                    <View className='client_status_item_con'>2024年8月5日下午7:30</View>
+                    <View className='client_status_item_con'>{clientInfos && clientInfos.interviewDate ? clientInfos.interviewDate : '暂无'}</View>
                 </View>
             </View>
 
@@ -161,17 +221,17 @@ const Index = observer(({ store }) => {
                     trackList.length === 1 &&
                     <View className='client_track_item'>
                         <View className='client_track_dot'></View>
-                        <View className='client_track_item_label'>{trackList[0].label}</View>
-                        <View className='client_track_item_con'>{trackList[0].content}</View>
+                        <View className='client_track_item_label'>{trackList[0].date} {trackList[0].source}</View>
+                        <View className='client_track_item_con'>{trackList[0].description}</View>
                     </View> ||
                     trackList.length > 1 && trackList.map((item, index) => {
                         return (
                             <View className='track_item' key={index}>
                                 <View className='track_item_label'>
                                     <Image src={`${Taro.$cdnUrl}/index/index_icon32.webp`}></Image>
-                                    <View>{item.label}</View>
+                                    <View>{item.date} {item.source}</View>
                                 </View>
-                                <View className='track_item_con'>{item.content}</View>
+                                <View className='track_item_con'>{item.description}</View>
                             </View>
                         )
                     })
@@ -257,34 +317,38 @@ const Index = observer(({ store }) => {
                         }
                     </View>
                 </View> */}
-
             </Block>
 
             <View className='bottom_wrapper'>
                 <View className='bottom_wrapper_con'>
                     <View className='' style={`height:16rpx`}></View>
-                    <View className='edit_wrap'>
-                        <View className='edit_wrap_btn' onClick={() => setShowbottomOptions(!showbottomOptions)}>修改状态</View>
-                        <View className='count_wrap'>
-                            <AtIcon onClick={() => setCurrentIndex('reduce')} value='chevron-left' size='20' color={`${current === 1 ? '#999999' : '#333333'}`}></AtIcon>
-                            <View className='count'>{current}/{totalPerson}</View>
-                            <AtIcon onClick={() => setCurrentIndex('add')} value='chevron-right' size='20' color={`${current === totalPerson ? '#999999' : '#333333'}`}></AtIcon>
+                    {
+                        (clientInfos && clientInfos.seekState === 'PENDING') &&
+                        <View className='create_interview_btn' onClick={() => goInterview()}>安排面试</View> ||
+                        <View className='edit_wrap'>
+                            <View className='edit_wrap_btn' onClick={() => setShowbottomOptions(!showbottomOptions)}>修改状态</View>
+                            <View className='count_wrap'>
+                                <AtIcon onClick={() => setCurrentIndex('reduce')} value='chevron-left' size='20' color={`${current === 1 ? '#999999' : '#333333'}`}></AtIcon>
+                                <View className='count'>{current}/{totalPerson}</View>
+                                <AtIcon onClick={() => setCurrentIndex('add')} value='chevron-right' size='20' color={`${current === totalPerson ? '#999999' : '#333333'}`}></AtIcon>
+                            </View>
                         </View>
-                    </View>
+                    }
                     <View style={`height:${bottomSafeAreaHeight}px`}></View>
 
                     <View className='options_x'>
-                        <UpdateStatus
-                            onClose={() => setShowbottomOptions(false)}
-                            showPicker={showbottomOptions}
-                            currentStatus={currentCliskstatus}
-                            bottomHeight={bottomHeight}
-                            onChange={changeStatus}>
-
-                        </UpdateStatus>
+                        {
+                            clientInfos &&
+                            <UpdateStatus
+                                onClose={() => setShowbottomOptions(false)}
+                                showPicker={showbottomOptions}
+                                currentStatus={clientInfos.seekState}
+                                bottomHeight={bottomHeight}
+                                onChange={changeStatus}>
+                            </UpdateStatus>
+                        }
                     </View>
                 </View>
-
             </View>
         </View>
     )

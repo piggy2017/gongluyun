@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-17 11:01:44
+ * @LastEditTime: 2024-10-28 14:42:37
  * @Description: 
  */
 
@@ -24,10 +24,10 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
         userStore: { companyInfo },
+        businessStore: { setWorkerSetCustomerInfo }
     } = store
     const router = useRouter();
     const [formData, setFormData] = useState({});
-    const [ispassword, setIsPassword] = useState(true);
 
     const [showRoleModel, setShowRoleModel] = useState(false);
     const [roleList, setRoleList] = useState(['客服', '驻场', '销售']);
@@ -39,12 +39,7 @@ const Index = observer(({ store }) => {
     const pageSize = 10
     const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
 
-    const [list, setList] = useState([
-        { id: 1, userName: "林菊华", phone: "12346789043", selected: false, role: '客服', avatar: "" },
-        { id: 2, userName: "王子文", phone: "12346789043", selected: false, role: '客服', avatar: "" },
-        { id: 3, userName: "李佳芯", phone: "12346789043", selected: false, role: '客服', avatar: "" },
-        { id: 4, userName: "甄晓晓", phone: "12346789043", selected: false, role: '客服', avatar: "" },
-    ])
+    const [list, setList] = useState([])
 
     useEffect(() => {
         const { title, code } = router.params; // 从路由中获取选中的客服code
@@ -67,10 +62,14 @@ const Index = observer(({ store }) => {
         Taro.hideLoading();
         setIsRefresh(false);
         if (code === 200 && data.responses?.length > 0) {
+            for (let i = 0; i < data.responses.length; i++) {
+                if (data.responses[i].userSerialCode === router.params.code) {
+                    data.responses[i].selected = true;
+                }
+            }
             setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
             setgoonLoad(true);
             setPageNo(data.pageNo);
-            setTotalCount(data.totalCount);
             setRequestState(2);
         } else {
             setgoonLoad(false);
@@ -85,7 +84,7 @@ const Index = observer(({ store }) => {
         return `calc(100vh - ${statusTitleHeight + contenTitleHeight + bottomSafeAreaHeight}px - 40rpx)`;
     }
 
-    const setOnSite = (index) => {
+    const setOnSite = (obj, index) => {
         setList(list => {
             let _list = list.map(item => {
                 item.selected = false;
@@ -94,6 +93,10 @@ const Index = observer(({ store }) => {
             _list[index].selected = true;
             return _list;
         })
+        setWorkerSetCustomerInfo({ name: obj.name, userSerialCode: obj.userSerialCode });
+        setTimeout(() => {
+            Taro.navigateBack({ delta: 1 });
+        }, 500);
     }
 
     useEffect(() => {
@@ -133,13 +136,13 @@ const Index = observer(({ store }) => {
                 {
                     list.length > 0 && list.map((item, index) => {
                         return (
-                            <View className='list_item' key={index} onClick={() => setOnSite(index)}>
+                            <View className='list_item' key={index} onClick={() => setOnSite(item, index)}>
                                 <View className='list_item_left'>
-                                    <View className='avatar'></View>
+                                    <Image src={item.avatar} className='avatar'></Image>
                                     <View className='item_infos'>
                                         <View className='item_name'>
-                                            <View>{item.userName}</View>
-                                            <View className='item_role'>{item.role}</View>
+                                            <View>{item.name}</View>
+                                            <View className='item_role'>{item.roleName}</View>
                                         </View>
                                         <View className='item_phone'>{item.phone}</View>
                                     </View>

@@ -24,11 +24,20 @@
             @include flex-center(space-between);
 
             .client_status_title_status {
-                color: #02b0b0;
                 font-family: "PingFang SC";
                 font-size: 28rpx;
                 font-style: normal;
                 font-weight: 400;
+                line-height: normal;
+            }
+
+            .client_status_title_right {
+                @include flex-center(flex-end);
+                color: #1678ff;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 500;
                 line-height: normal;
             }
         }
@@ -176,14 +185,31 @@
         left: 0;
         background-color: #FFFFFF;
 
-        .bottom_wrapper_con{
+        .bottom_wrapper_con {
             position: relative;
-            .options_x{
+
+            .options_x {
                 position: absolute;
                 z-index: 11;
                 top: -340rpx;
                 left: 20rpx;
             }
+        }
+
+        .create_interview_btn {
+            width: 694rpx;
+            height: 96rpx;
+            border-radius: 8rpx;
+            background: #1678FF;
+            color: #ffffff;
+            text-align: center;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            line-height: 96rpx;
+            margin: 0 auto;
         }
 
         .edit_wrap {

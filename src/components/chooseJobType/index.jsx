@@ -1,3 +1,10 @@
+/*
+ * @Author: 孙林 1164700321@qq.com
+ * @Date: 2024-09-11 14:26:28
+ * @LastEditors: 孙林
+ * @LastEditTime: 2024-10-30 10:55:49
+ * @Description: 创建项目的时候选择岗位类型
+ */
 /* eslint-disable react/jsx-key */
 import React, { useState, useEffect, memo } from 'react';
 import Taro from '@tarojs/taro';

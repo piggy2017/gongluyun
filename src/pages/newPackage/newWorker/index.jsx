@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-17 11:58:39
+ * @LastEditTime: 2024-10-30 11:30:41
  * @Description: 
  */
 /*
@@ -14,7 +14,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, Textarea, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
@@ -25,14 +25,19 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import ChooseJobType from '@/components/chooseJobType';
+import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import SourcePicker from '@/components/sourcePcker';
 
+import { clueInsert } from '@/util/api'
+
 
 const Index = observer(({ store }) => {
+    const route = useRouter();
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+        baseStore: { bottomSafeAreaHeight },
+        businessStore: { workerSetCustomerInfo, addWorkerJobInfo },
+        userStore: { userInfo: { userSerialCode } },
     } = store
     const [formData, setFormData] = useState({});
 
@@ -46,6 +51,28 @@ const Index = observer(({ store }) => {
         name: '', source: ''
     })
 
+    const [jobTypeNames, setJobTypeNames] = useState('');
+    const [jobTypes, setJobTypes] = useState([]);
+
+    useEffect(() => {
+        const { entryChannel } = route.params;
+    }, [])
+
+    useEffect(() => {
+        if (workerSetCustomerInfo.name) {
+            setFormData({ ...formData, service: workerSetCustomerInfo.name });
+        }
+        if (addWorkerJobInfo.title) {
+            setFormData({ ...formData, recruitSerialCode: addWorkerJobInfo.recruitSerialCode });
+        }
+    }, [workerSetCustomerInfo, addWorkerJobInfo])
+
+    useEffect(() => {
+        if (jobTypes.length > 0) {
+            // setFormData({ ...formData, jobTypeIds: jobTypes.map(item => item.id) });
+        }
+    }, [jobTypes])
+
     const datePickerSelect = (e) => {
         console.log("seleceDate", e);
         // setDateText(e);
@@ -55,7 +82,38 @@ const Index = observer(({ store }) => {
     const sourcePickerSelect = (e) => {
         console.log("source", e);
         setSourceObj(e);
-        setFormData({ ...formData, source: e.name });
+        setFormData({ ...formData, source: e.source });
+    }
+
+    const saveWorker = async () => {
+        let params = {
+            ...formData,
+            entryChannel: route.params.entryChannel,
+            interviewArranged: route.params.entryChannel === 'TALENT_POOL' ? true : formData.interviewDate ? true : false
+        }
+        console.log("params", params);
+        const errorMessages = [
+            !params.source && '请选择求职者来源',
+            !(params.agentSerialCode || params.agentSerialCode === '') && '请为求职者分配跟进人',
+            (!params.phone || (params.phone && params.phone.length != 11)) && '请输入求职者手机号码',
+        ].filter(Boolean);
+
+        if (errorMessages.length > 0) {
+            return Taro.showToast({
+                title: errorMessages[0],
+                icon: 'none',
+            })
+        }
+
+        const { code, data, msg } = await clueInsert(params);
+        if (code === 200) {
+            Taro.showToast({ title: '录入成功', icon: 'none', });
+            setTimeout(() => {
+                Taro.navigateBack({ delta: 1 });
+            }, 1500);
+        } else {
+            Taro.showToast({ title: msg, icon: 'none', });
+        }
     }
 
     return (
@@ -64,20 +122,16 @@ const Index = observer(({ store }) => {
 
             <View className='project_group'>
                 <View className='project_item'>
-                    <View className='project_item_label project_item_label_required'>来源</View>
-                    <View className='project_item_right' onClick={() => setShowSourcePicker(true)}>
-                        <Text className={`${formData.source ? 'project_item_text_active' : 'project_item_text'}`}>{formData.source ? formData.source : '选择求职者来源(必填)'}</Text>
-                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                    <View className='project_item_label project_item_label_required'>客服</View>
+                    <View className='project_item_right'>
+                        <View onClick={() => setFormData({ ...formData, agentSerialCode: userSerialCode })} className={`option_item ${formData.agentSerialCode === userSerialCode ? 'option_item_active' : ''}`}>我</View>
+                        <View onClick={() => setFormData({ ...formData, agentSerialCode: '' })} className={`option_item ${formData.agentSerialCode === '' ? 'option_item_active' : ''}`}>公海</View>
                     </View>
                 </View>
                 <View className='project_item project_item_border'>
-                    <View className='project_item_label project_item_label_required'>客服</View>
-                    <View className='project_item_right' onClick={() => {
-                        Taro.navigateTo({
-                            url: `/pages/newPackage/setCustom/index?title=选择跟进的客服&code=service`
-                        })
-                    }}>
-                        <Text className={`${formData.service ? 'project_item_text_active' : 'project_item_text'}`}>{formData.service ? formData.service : '选择跟进的客服(必填)'}</Text>
+                    <View className='project_item_label project_item_label_required'>来源</View>
+                    <View className='project_item_right' onClick={() => setShowSourcePicker(true)}>
+                        <Text className={`${formData.source ? 'project_item_text_active' : 'project_item_text'}`}>{formData.source ? sourceObj.name : '选择求职者来源(必填)'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
@@ -88,6 +142,7 @@ const Index = observer(({ store }) => {
                     <View className='project_item_label project_item_label_required'>手机号码</View>
                     <View className='project_item_right'>
                         <Input
+                            type='number'
                             className='new_input'
                             placeholder='输入求职者的手机号'
                             placeholderStyle='color: #777777;'
@@ -117,20 +172,33 @@ const Index = observer(({ store }) => {
                 </View>
             </View>
             <View className='project_group'>
-                <View className='project_item project_item_border'>
+                <View className='project_item project_item_border' onClick={() => {
+                    Taro.navigateTo({
+                        url: `/pages/talentsPackage/filterJob/index?type=3&title=选择报名岗位`
+                    })
+                }}>
                     <View className='project_item_label'>报名岗位</View>
                     <View className='project_item_right' >
-                        <Text className={`${formData.recruitSerialCode ? 'project_item_text_active' : 'project_item_text'}`}>{formData.recruitSerialCode ? formData.recruitSerialCode : '选择求职者报名的岗位(必填)'}</Text>
+                        <Text className={`${formData.recruitSerialCode ? 'project_item_text_active' : 'project_item_text'}`}>{formData.recruitSerialCode ? addWorkerJobInfo.title : '选择求职者报名的岗位'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
+
+                <View className='project_item project_item_border' onClick={() => setChooseJob(true)}>
+                    <View className='project_item_label'>岗位偏好</View>
+                    <View className='project_item_right' >
+                        <Text className={`${jobTypes.length > 0 ? 'project_item_text_active' : 'project_item_text'}`}>{jobTypes.length > 0 ? jobTypeNames : '选择求职意向'}</Text>
+                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                    </View>
+                </View>
+
                 <View className='project_item project_item_border'>
                     <View className='project_item_label'>身份证号</View>
                     <View className='project_item_right'>
                         <Input
                             type='idcard'
                             className='new_input'
-                            placeholder='输入真实身份证号(选填)'
+                            placeholder='输入真实身份证号'
                             placeholderStyle='color: #777777;'
                             value={formData.idCardNo}
                             onInput={(e) => setFormData({ ...formData, idCardNo: e.detail.value })}
@@ -146,7 +214,7 @@ const Index = observer(({ store }) => {
                     </View>
                 </View> */}
                 <View className='project_item project_item_border'>
-                    <View className='project_item_label project_item_label_required'>面试日期</View>
+                    <View className='project_item_label'>面试日期</View>
                     <View className='project_item_right' onClick={() => setShowDatePicker(true)}>
                         <Text className={`${formData.interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewDate ? formData.interviewDate : '请选择面试日期'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
@@ -182,25 +250,30 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View className='post_btn'>保存</View>
+                <View onClick={saveWorker} className={`post_btn ${(formData.source && (formData.agentSerialCode || formData.agentSerialCode === '') && formData.phone) ? 'post_btn_active' : ''}`}>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 
             <Block>
-                <ChooseJobType isShow={chooseJob}
-                    initData={formData.jobTypeId ? [{ id: formData.jobTypeId, name: formData.jobTypeName }] : []}
+                <WorkerJobType isShow={chooseJob}
+                    initData={(jobTypes && jobTypes.length > 0) ? jobTypes : []}
+                    multiple={true}
                     onClose={(e) => {
                         if (e && e.length) {
                             console.log(e);
+                            setJobTypes(e);
+                            const ids = e.map(item => item.id);
+                            const names = e.map(item => item.name);
+                            setJobTypeNames(names.join('/'))
                             setFormData({
                                 ...formData,
-                                jobTypeId: e[0].id,
-                                jobTypeName: e[0].name
+                                jobTypeIds: ids,
+                                // jobTypeName: e[0].name
                             })
                         }
                         setChooseJob(false);
                     }}
-                ></ChooseJobType>
+                ></WorkerJobType>
             </Block>
 
             <Block>

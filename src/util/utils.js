@@ -335,3 +335,45 @@ export default {
 
   }
 }
+
+export const getStatus = (status) => {
+  switch (status) {
+    case 'PENDING':
+      return '待处理';
+    case 'SCHEDULED_INTERVIEW':
+      return '已约面';
+    case 'NOT_INTERVIEW':
+      return '未到面';
+    case 'ARRIVE_INTERVIEW':
+      return '已到面';
+    case 'INTERVIEW_PASSED':
+      return '面试通过';
+    case 'INTERVIEW_FAILED':
+      return '面试失败';
+    case 'EMPLOYED':
+      return '已入职';
+    case 'RESIGN':
+      return '已离职';
+  }
+}
+
+export const getColor = (status) => {
+  switch (status) {
+    case 'PENDING':
+      return '#1678FF';
+    case 'SCHEDULED_INTERVIEW':
+      return '#32C2FF';
+    case 'NOT_INTERVIEW':
+      return '#666666';
+    case 'ARRIVE_INTERVIEW':
+      return '#1678FF';
+    case 'INTERVIEW_PASSED':
+      return '#FF6B17';
+    case 'INTERVIEW_FAILED':
+      return '#F00000';
+    case 'EMPLOYED':
+      return '#666666';
+    case 'RESIGN':
+      return '#04B400';
+  }
+}

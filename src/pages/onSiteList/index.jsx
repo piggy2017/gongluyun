@@ -235,7 +235,7 @@ const Index = observer(({ store }) => {
         <View className='search_total'>
           <View className='search_total_left'>共计 <Text>172</Text> 人</View>
           <View className='search_total_right_wrap'>
-            <View className='search_total_right_item' onClick={() => Taro.navigateTo({ url: '/pages/newPackage/newWorker/index' })}>
+            <View className='search_total_right_item' onClick={() => Taro.navigateTo({ url: '/pages/newPackage/newWorker/index?entryChannel=SOURCE' })}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon48.webp`}></Image>
               <View>新增</View>
             </View>

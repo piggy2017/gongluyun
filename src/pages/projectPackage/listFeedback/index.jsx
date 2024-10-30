@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-16 17:01:06
+ * @LastEditTime: 2024-10-29 14:21:14
  * @Description: 
  */
 /*
@@ -334,7 +334,7 @@ const Index = observer(({ store }) => {
                                                     <OptionItem4></OptionItem4> */}
                                                     <UpdateStatus
                                                         onClose={() => setShowbottomOptions(false)}
-                                                        showPicker={true}
+                                                        showPicker={item.showOptions}
                                                         currentStatus={currentCliskstatus}
                                                         // bottomHeight={bottomHeight}
                                                         onChange={changeStatus}>
@@ -354,7 +354,7 @@ const Index = observer(({ store }) => {
                                                 <View className='item_status_options'>
                                                     <UpdateStatus
                                                         onClose={() => setShowbottomOptions(false)}
-                                                        showPicker={true}
+                                                        showPicker={item.showOptions}
                                                         currentStatus={currentCliskstatus}
                                                         // bottomHeight={bottomHeight}
                                                         onChange={changeStatus}>
@@ -374,7 +374,7 @@ const Index = observer(({ store }) => {
                                                 <View className='item_status_options'>
                                                     <UpdateStatus
                                                         onClose={() => setShowbottomOptions(false)}
-                                                        showPicker={true}
+                                                        showPicker={item.showOptions}
                                                         currentStatus={currentCliskstatus}
                                                         // bottomHeight={bottomHeight}
                                                         onChange={changeStatus}>
@@ -395,7 +395,7 @@ const Index = observer(({ store }) => {
                                                     {/* <OptionItem4></OptionItem4> */}
                                                     <UpdateStatus
                                                         onClose={() => setShowbottomOptions(false)}
-                                                        showPicker={true}
+                                                        showPicker={item.showOptions}
                                                         currentStatus={currentCliskstatus}
                                                         // bottomHeight={bottomHeight}
                                                         onChange={changeStatus}>
@@ -415,7 +415,7 @@ const Index = observer(({ store }) => {
                                                 <View className='item_status_options'>
                                                     <UpdateStatus
                                                         onClose={() => setShowbottomOptions(false)}
-                                                        showPicker={true}
+                                                        showPicker={item.showOptions}
                                                         currentStatus={currentCliskstatus}
                                                         onChange={changeStatus}>
                                                     </UpdateStatus>

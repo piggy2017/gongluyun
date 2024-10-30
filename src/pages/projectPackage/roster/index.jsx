@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-16 17:01:15
+ * @LastEditTime: 2024-10-28 17:33:50
  * @Description: 
  */
 /*
@@ -95,10 +95,6 @@ const Index = observer(({ store }) => {
 
     const getHeight = () => {
         return `calc(100vh - ${statusTitleHeight + contenTitleHeight + searchHeight}px - ${batchOperations ? bottomHeight : 0}px)`;
-    }
-
-    const getBottom = () => {
-        return `${tabbarHeight + 30}px`;
     }
 
     const getStatus = (status) => {
@@ -326,6 +322,7 @@ const Index = observer(({ store }) => {
                                         <View className='item_status_options'>
                                             <UpdateStatus
                                                 type={2}
+                                                showPicker={item.showOptions}
                                                 onClose={() => setShowbottomOptions(false)}
                                                 currentStatus={currentCliskstatus}
                                                 onChange={changeStatus}>
@@ -369,6 +366,7 @@ const Index = observer(({ store }) => {
                                 <View className='footer_wrapper_top_position'>
                                     <UpdateStatus
                                         type={2}
+                                        showPicker={showbottomOptions}
                                         onClose={() => setShowbottomOptions(false)}
                                         currentStatus={currentCliskstatus}
                                         onChange={changeStatus}>

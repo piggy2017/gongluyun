@@ -2,22 +2,21 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-17 14:05:10
+ * @LastEditTime: 2024-10-30 11:27:50
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
 
 import TabBar from '@/components/tabBar';
 import { AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import './index.scss'
 
-import ClueItem from '@/components/items/clueItem'
 import CustomDate from '@/components/customDate';
 import SourcePicker from '@/components/sourcePcker';
 import StatusPicker from '@/components/statusPicker';
@@ -66,14 +65,7 @@ const Index = observer(({ store }) => {
     state: "", name: '全部状态'
   })
 
-  const [mylist, setmyList] = useState([
-    { userName: "高小光", status: 1, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-    { userName: "高小光", status: 2, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-    { userName: "高小光", status: 3, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-    { userName: "高小光", status: 4, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-    { userName: "高小光", status: 5, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-    { userName: "高小光", status: 6, phone: '177 6548 0923', detail: "45岁·男", jobName: "成都龙泉驿京西仓库分拣", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-  ])
+  const [mylist, setmyList] = useState([])
 
   const [showPickerStatus, setShowPickerStatus] = useState(false);
 
@@ -87,10 +79,16 @@ const Index = observer(({ store }) => {
     }, 0);
   }, [isLogin, companyVerified, type]);
 
-
   useEffect(() => {
     console.log("list发生了改变", list);
   }, [list])
+
+  useDidShow(()=>{
+    if(type==='我的客户'){
+      getClientList(1);
+    }
+  })
+
   useEffect(() => {
     if (type === '客户池') {
       getClueList(1);
@@ -142,40 +140,6 @@ const Index = observer(({ store }) => {
 
   const getBottom = () => {
     return `${tabbarHeight + 30}px`;
-  }
-
-  const getStatus = (status) => {
-    switch (status) {
-      case 1:
-        return '已约面';
-      case 2:
-        return '已到面';
-      case 3:
-        return '面试通过';
-      case 4:
-        return '面试失败';
-      case 5:
-        return '已入职';
-      case 6:
-        return '已离职';
-    }
-  }
-
-  const getColor = (status) => {
-    switch (status) {
-      case 1:
-        return '#999999;';
-      case 2:
-        return '#F00000';
-      case 3:
-        return '#FF6B17';
-      case 4:
-        return '#04B400';
-      case 5:
-        return '#666666';
-      case 6:
-        return '#FF6B00';
-    }
   }
 
   const navigateFunc = (e, type, url) => {
@@ -246,7 +210,7 @@ const Index = observer(({ store }) => {
       searchInfo: searchValue,
       recruitSerialCode: myClientJobId ? myClientJobId.recruitSerialCode : '',
       // source: sourceObj.source,
-      state: "",
+      seekState: filterState.state,
       dateRange: dateClientObj.dateRange,
       startDate: dateClientObj.startDate,
       endDate: dateClientObj.endDate,
@@ -312,6 +276,19 @@ const Index = observer(({ store }) => {
       Taro.showToast({ title: msg, icon: 'none', duration: 2000 });
     }
     Taro.hideLoading();
+  }
+
+  const callFunc = (e, obj) => {
+    e.stopPropagation();
+    Taro.makePhoneCall({
+      phoneNumber: obj.phone
+    })
+  }
+
+  const goClientDetail = (obj) => {
+    Taro.navigateTo({
+      url: `/pages/talentsPackage/clientDetail/index?uuid=${obj.uuid}`
+    })
   }
 
   return (
@@ -460,24 +437,26 @@ const Index = observer(({ store }) => {
               {
                 mylist.length > 0 && mylist.map((item, index) => {
                   return (
-                    <View className='roster_item' key={index} onClick={(e) => navigateFunc(e, 1, `/pages/talentsPackage/clientDetail/index?id=${item.id}`)}>
-                      <View className='roster_item_title'>
-                        <View className='item_title_index'>{index + 1}</View>
-                        <View className='item_title_left'>
-                          <View className='item_title_name'>{item.userName}</View>
-                          <View>{item.detail}</View>
+                    <View className='roster_item' key={index} onClick={() => goClientDetail(item)}>
+                      <View className='roster_item_left'>
+                        <View className='roster_item_title'>
+                          <View className='item_title_index'>{index + 1}</View>
+                          <View className='item_title_left'>
+                            <View className='item_title_name'>{item.name}</View>
+                            <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                            <View className='item_title_phone' onClick={(e) => callFunc(e, item)}>{item.phone}</View>
+                          </View>
                         </View>
-                        <View style={{ color: getColor(item.status) }} className='item_title_right'>{getStatus(item.status)}</View>
+                        <View className='roster_item_infos'>{item.age ? item.age + '岁.' : ''}{item.sex === 0 ? '男' : '女'}{item.idCardNo ? item.idCardNo + '.' : ''}</View>
+
+                        {
+                          item.recruitTitle &&
+                          <View className='roster_item_jobName'>{item.recruitTitle}</View>
+                        }
+                        <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
                       </View>
 
-                      <View className='roster_item_phone'>
-                        <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
-                        <View>{item.phone}</View>
-                      </View>
-                      <View className='roster_item_source'><Text>来源：</Text>{item.source}</View>
-                      <View className='roster_item_source'><Text>报名岗位：</Text>{item.jobName}</View>
-                      <View className='roster_item_hr'></View>
-                      <View className='roster_item_time'>面试时间：{item.interviewTime}</View>
+                      <View className='roster_item_right' style={{ color: getColor(item.seekState) }}>{getStatus(item.seekState)}</View>
                     </View>
                   )
                 })
@@ -508,7 +487,7 @@ const Index = observer(({ store }) => {
         </ScrollView>
       }
 
-      <Image onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newWorker/index')}
+      <Image onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newWorker/index?entryChannel=SOURCE')}
         style={{ bottom: getBottom() }} className='add_clue_btn' src={`${Taro.$cdnUrl}/index/add_clue.webp`}></Image>
 
       {/* 客户池筛选日期组件 */}

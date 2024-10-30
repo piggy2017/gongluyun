@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-12 16:00:56
+ * @LastEditTime: 2024-10-29 16:14:20
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
@@ -19,15 +19,20 @@ import WorkerInfo from '@/components/workerInfo';
 import DatePicker from '@/components/datePicker'
 import './index.scss'
 
+import { cluegetUserInfo, arrangeInterview } from '@/util/api'
+
 
 const Index = observer(({ store }) => {
+    const route = useRouter();
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+        baseStore: { bottomSafeAreaHeight },
+        businessStore: { interviewJobInfo }
     } = store
 
     const [formData, setFormData] = useState({});
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [dateText, setDateText] = useState("选择面试日期");
+    const [clientInfos, setClientInfos] = useState(null);
 
 
     useEffect(() => {
@@ -37,18 +42,69 @@ const Index = observer(({ store }) => {
                 console.log("_query_query_query", _query.height);
             }
         }, 0);
+
+        getClientDetail();
     }, [])
+
+    useEffect(() => {
+        if (interviewJobInfo && interviewJobInfo.title) {
+            setFormData({ ...formData, recruitSerialCode: interviewJobInfo.recruitSerialCode })
+        }
+    }, [interviewJobInfo])
+
+    const getClientDetail = async () => {
+        const { uuid, phone, recruitSerialCode } = route.params;
+        const { code, data, msg } = await cluegetUserInfo({ uuid, phone, recruitSerialCode });
+        console.log("code", code, "data", data, "msg", msg);
+        if (code === 200) {
+            setClientInfos(data);
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
+        }
+    }
 
     const datePickerSelect = (e) => {
         console.log("seleceDate", e);
         setDateText(e);
-        setFormData({ ...formData, date: e });
+        setFormData({ ...formData, interviewDate: e });
+    }
+
+    const submitFunc = async () => {
+        let params = {
+            ...formData,
+            uuid: route.params.uuid
+        }
+        console.log("params", params);
+        const errorMessages = [
+            !params.name && '请输入求职者真实姓名',
+            !(params.sex === 0 || params.sex === 1) && '请选择求职者性别',
+            !params.recruitSerialCode && '请选择岗位',
+            !params.interviewDate && '请选择面试日期',
+        ].filter(Boolean);
+
+        if (errorMessages.length > 0) {
+            return Taro.showToast({
+                title: errorMessages[0],
+                icon: 'none',
+            })
+        }
+        Taro.showLoading({ title: '提交中...' });
+        const { code, data, msg } = await arrangeInterview(params);
+        Taro.hideLoading();
+        if (code === 200) {
+            Taro.showToast({ title: '提交成功', icon: 'none' });
+            setTimeout(() => {
+                Taro.navigateBack({ delta: 1 })
+            }, 1500);
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
+        }
     }
 
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='rgba(237,243,254)' title='安排面试'></Navbar>
-            <WorkerInfo></WorkerInfo>
+            <WorkerInfo info={clientInfos} interview={true}></WorkerInfo>
 
             <View className='choose_wrapper'>
                 <View className='choose_item flex-col-between'>
@@ -80,8 +136,12 @@ const Index = observer(({ store }) => {
                         <View className='choose_item_left_dot'></View>
                         <View>报名岗位</View>
                     </View>
-                    <View className='choose_item_right flex-row-items'>
-                        <View className={`${!formData.jobName ? 'choose_item_right_text_gray' : 'choose_item_right_text'} row-show-1`}>{formData.jobName ? formData.jobName : '选择求职者报名的岗位(必填)'}</View>
+                    <View className='choose_item_right flex-row-items' onClick={() => {
+                        Taro.navigateTo({
+                            url: `/pages/talentsPackage/filterJob/index?type=4&title=报名岗位`
+                        })
+                    }}>
+                        <View className={`${!interviewJobInfo.title ? 'choose_item_right_text_gray' : 'choose_item_right_text'} row-show-1`}>{interviewJobInfo.title ? interviewJobInfo.title : '选择岗位(必填)'}</View>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
@@ -91,7 +151,7 @@ const Index = observer(({ store }) => {
                         <View>面试日期</View>
                     </View>
                     <View className='choose_item_right flex-row-items' onClick={() => { setShowDatePicker(true) }}>
-                        <View className={`${!formData.dateText ? 'choose_item_right_text_gray' : 'choose_item_right_text'} row-show-1`}>{formData.dateText ? formData.dateText : '选择面试日期'}</View>
+                        <View className={`${!formData.interviewDate ? 'choose_item_right_text_gray' : 'choose_item_right_text'} row-show-1`}>{formData.interviewDate ? formData.interviewDate : '请选择面试日期'}</View>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
@@ -119,7 +179,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:16rpx`}></View>
-                <View className='interview_btn'>保存</View>
+                <View onClick={() => { submitFunc() }} className={`interview_btn ${formData.name && (formData.sex === 0 || formData.sex === 1) && formData.interviewDate && formData.recruitSerialCode ? 'interview_btn_active' : ''}`}>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px`}></View>
             </View>
         </View>

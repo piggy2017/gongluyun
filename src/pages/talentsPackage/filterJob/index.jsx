@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-16 15:44:28
+ * @LastEditTime: 2024-10-29 15:22:24
  * @Description: 
  */
 
@@ -13,13 +13,13 @@ import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
-import { contractsJobSelector } from '@/util/api'
+import { contractsJobSelector, getArrangeableRecruitList } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        businessStore: { poorJobId, myClientJobId, setPoorJobId, setMyClientJobId }
+        baseStore: { statusTitleHeight, contenTitleHeight },
+        businessStore: { poorJobId, myClientJobId, setPoorJobId, setMyClientJobId, addWorkerJobInfo, setAddWorkerJobInfo, interviewJobInfo, setInterviewJobInfo }
     } = store
     const router = useRouter();
 
@@ -32,18 +32,18 @@ const Index = observer(({ store }) => {
     const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
 
     const [list, setList] = useState([
-        { name: "龙泉驿区招物流分拣全职月结", id: 1, selected: false },
-        { name: "龙泉驿区招物流分拣全职月结", id: 2, selected: false },
-        { name: "龙泉驿区招物流分拣全职月结", id: 3, selected: false },
-        { name: "龙泉驿区招物流分拣全职月结", id: 4, selected: false },
-        { name: "龙泉驿区招物流分拣全职月结", id: 5, selected: false },
-        { name: "龙泉驿区招物流分拣全职月结", id: 6, selected: false },
+        // { name: "龙泉驿区招物流分拣全职月结", id: 1, selected: false },
+        // { name: "龙泉驿区招物流分拣全职月结", id: 2, selected: false },
+        // { name: "龙泉驿区招物流分拣全职月结", id: 3, selected: false },
+        // { name: "龙泉驿区招物流分拣全职月结", id: 4, selected: false },
+        // { name: "龙泉驿区招物流分拣全职月结", id: 5, selected: false },
+        // { name: "龙泉驿区招物流分拣全职月结", id: 6, selected: false },
     ]);
     const [type, setType] = useState('');
     const [title, setTitle] = useState('');
 
     useEffect(() => {
-        // type=1 客户池筛选岗位 type=2 我的客户筛选岗位
+        // type=1 线索-客户池筛选岗位    type=2 线索-我的客户筛选岗位     type=3 录入求职者信息-选择报名岗位    type=4 安排面试-选择招聘岗位
         const { type, title } = router.params;
         console.log('type, title', type, title);
         setType(type);
@@ -71,7 +71,10 @@ const Index = observer(({ store }) => {
             pageSize,
             searchInfo: searchValue
         }
-        const { code, data } = await contractsJobSelector(params);
+        // if (type == 4) {   // 安排面试
+        //     params.uuid = router.params.uuid
+        // }
+        const { code, data } = type == 4 ? await getArrangeableRecruitList(params) : await contractsJobSelector(params);
         console.log("getClueList", code, data);
         Taro.hideLoading();
         setIsRefresh(false);
@@ -96,8 +99,16 @@ const Index = observer(({ store }) => {
                     if (data.responses[i].recruitSerialCode == poorJobId.recruitSerialCode) {
                         data.responses[i].selected = true;
                     }
-                }else if (router.params.type == 2) {
+                } else if (router.params.type == 2) {
                     if (data.responses[i].recruitSerialCode == myClientJobId.recruitSerialCode) {
+                        data.responses[i].selected = true;
+                    }
+                } else if (router.params.type == 3) {
+                    if (data.responses[i].recruitSerialCode == addWorkerJobInfo.recruitSerialCode) {
+                        data.responses[i].selected = true;
+                    }
+                }else if (router.params.type == 3) {
+                    if (data.responses[i].recruitSerialCode == interviewJobInfo.recruitSerialCode) {
                         data.responses[i].selected = true;
                     }
                 }
@@ -147,6 +158,10 @@ const Index = observer(({ store }) => {
             setPoorJobId(obj);
         } else if (type == 2) {
             setMyClientJobId(obj);
+        } else if (type == 3) {
+            setAddWorkerJobInfo(obj);
+        }else if (type == 4) {
+            setInterviewJobInfo(obj);
         }
         setTimeout(() => {
             Taro.navigateBack({ delta: 1 });

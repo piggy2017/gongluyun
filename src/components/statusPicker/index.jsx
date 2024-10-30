@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-16 16:37:03
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-16 16:49:52
+ * @LastEditTime: 2024-10-28 17:44:00
  * @Description: 
  */
 
@@ -27,6 +27,7 @@ const SourcePicker = observer(({ onChange, showPicker, onClose, store }) => {
 
     const [statusList, setStatusList] = useState([
         { name: '全部状态', state: '' },
+        { name: '待处理', state: 'PENDING' },
         { name: '未到面', state: 'NOT_INTERVIEW' },
         { name: '已到面', state: 'ARRIVE_INTERVIEW' },
         { name: '面试失败', state: 'INTERVIEW_FAILED' },
