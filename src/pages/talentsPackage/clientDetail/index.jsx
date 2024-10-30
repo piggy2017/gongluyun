@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-29 16:36:13
+ * @LastEditTime: 2024-10-30 13:58:35
  * @Description: 
  */
 
@@ -21,13 +21,14 @@ import DatePicker from '@/components/datePicker'
 import UpdateStatus from '@/components/updateStatus';
 import './index.scss'
 
-import { cluegetUserInfo, updateInterviewer, clueStateFlow } from '@/util/api'
+import { cluegetUserInfo, updateInterviewer, clueStateFlow, cluemyClients } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
+        businessStore: { myClientParams }
     } = store
 
     const [formData, setFormData] = useState({});
@@ -38,28 +39,30 @@ const Index = observer(({ store }) => {
 
     const [trackList, setTrackList] = useState([]);
 
-    const [totalPerson, setTotalPerson] = useState(88);
+    const [totalPerson, setTotalPerson] = useState(1);
     const [current, setCurrent] = useState(1);
     const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示地步的操作选项
     const [currentCliskstatus, setCurrentCliskstatus] = useState('面试失败');
     const [clientInfos, setClientInfos] = useState(null);
 
     useDidShow(() => {
-        if (uuid) {
-            getClientDetail();
-            getHistoryList();
+        if (clientInfos && clientInfos.uuid) {
+            getClientDetail(clientInfos.uuid);
+            getHistoryList(clientInfos.uuid);
         }
     })
 
     useEffect(() => {
-        if (uuid) {
-            getClientDetail();
-            getHistoryList();
-        }
-    }, [uuid])
+        console.log("myClientParams_myClientParams", myClientParams);
+    }, [myClientParams])
 
     useEffect(() => {
-        setUuid(route.params.uuid);
+        const { uid, myClientCount, index } = route.params;
+        getClientDetail(uid);
+        getHistoryList(uid);
+        setUuid(uid);
+        setCurrent(index);
+        setTotalPerson(myClientCount);
         setTimeout(async () => {
             const _query = await selectorQueryDomInfo('.bottom_wrapper');
             if (_query?.height) {
@@ -68,8 +71,8 @@ const Index = observer(({ store }) => {
         }, 0);
     }, [])
 
-    const getClientDetail = async () => {
-        const { code, data, msg } = await cluegetUserInfo({ uuid: uuid ? uuid : route.params.uuid });
+    const getClientDetail = async (_uuid) => {
+        const { code, data, msg } = await cluegetUserInfo({ uuid: _uuid });
         console.log("code", code, "data", data, "msg", msg);
         if (code === 200) {
             setClientInfos(data);
@@ -78,8 +81,8 @@ const Index = observer(({ store }) => {
         }
     }
 
-    const getHistoryList = async () => {
-        const { code, data, msg } = await clueStateFlow({ uuid: uuid ? uuid : route.params.uuid });
+    const getHistoryList = async (_uuid) => {
+        const { code, data, msg } = await clueStateFlow({ uuid: _uuid });
         console.log("getHistoryList_code", code, "data", data, "msg", msg);
         if (code === 200 && data?.length > 0) {
             setTrackList(data);
@@ -158,10 +161,30 @@ const Index = observer(({ store }) => {
         setShowbottomOptions(false);
         if (type === "add") {
             if (current === totalPerson) return;
-            setCurrent(current => current + 1);
+            // setCurrent(current => current + 1);
+            getOherClient(current * 1 + 1);
         } else {
             if (current === 1) return;
-            setCurrent(current => current - 1);
+            // setCurrent(current => current - 1);
+            getOherClient(current * 1 - 1);
+        }
+    }
+
+    const getOherClient = async (_current) => {
+        let _params = {
+            ...myClientParams,
+            pageNo: _current,
+            pageSize: 1
+        }
+        const { code, data, msg } = await cluemyClients(_params);
+        console.log("code_getOherClient", code, "data", data, "msg", msg);
+        if (code === 200 && data?.responses?.length > 0) {
+            setCurrent(_current);
+            setClientInfos(data.responses[0]);
+            getHistoryList(data.responses[0].uuid);
+            setUuid(data.responses[0].uuid);
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
         }
     }
 
@@ -181,9 +204,8 @@ const Index = observer(({ store }) => {
     }
 
     const goInterview = () => {
-        const { uuid } = route.params;
         Taro.navigateTo({
-            url: `/pages/talentsPackage/interview/index?uuid=${uuid}`
+            url: `/pages/talentsPackage/interview/index?uuid=${clientInfos.uuid}`
         })
     }
 

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-29 14:48:36
+ * @LastEditTime: 2024-10-30 15:51:24
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -13,7 +13,13 @@ import './index.scss';
 
 const WorkerInfo = observer(({ store, info, interview }) => {
     const {
+        businessStore: { setEditClientInfos }
     } = store
+
+    const goEdit = () => {
+        setEditClientInfos(info);
+        Taro.navigateTo({ url: '/pages/newPackage/newWorker/index' });
+    }
 
     return (
         <>
@@ -27,7 +33,7 @@ const WorkerInfo = observer(({ store, info, interview }) => {
                         </View>
                         {
                             info.seekState === 'PENDING' && !interview &&
-                            <View className='userInfo_title_right'>
+                            <View className='userInfo_title_right' onClick={goEdit}>
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon41.webp`}></Image>
                                 <View>编辑</View>
                             </View>
@@ -40,7 +46,7 @@ const WorkerInfo = observer(({ store, info, interview }) => {
 
                     <View className='userInfo_item'>
                         <Image className='userInfo_item_img' src={`${Taro.$cdnUrl}/index/mine_icon8.webp`}></Image>
-                        <View className='userInfo_item_content'><Text>来源：</Text>{info.source}</View>
+                        <View className='userInfo_item_content'><Text>来源：</Text>{info.sourceDesc}</View>
                     </View>
                     {/* <View className='userInfo_item'>
                         <Image className='userInfo_item_img' src={`${Taro.$cdnUrl}/index/mine_icon9.webp`}></Image>

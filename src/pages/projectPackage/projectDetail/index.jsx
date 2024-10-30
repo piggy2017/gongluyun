@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-12 15:12:11
+ * @LastEditTime: 2024-10-30 17:37:19
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Button, Picker } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
@@ -17,15 +17,46 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
 
+import { getContractsInfo, getContractsInfoStatistics } from '@/util/api';
+
 const Index = observer(({ store }) => {
+  const route = useRouter();
   const {
-    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-    userStore: { isLogin, companyVerified }
+    baseStore: { bottomSafeAreaHeight },
   } = store
 
+  const [detail, setDetail] = useState('');
   const [contactInfo, setContactInfo] = useState('');
   const [address, setAddress] = useState('');
   const [time, setTime] = useState('');
+
+  useEffect(() => {
+    getProjectDetail();
+    getProjectStatistics();
+  }, [])
+
+  const getProjectDetail = async () => {
+    const { contractsSerialCode, numberRecruits, numberOnJob, leaveRate, supplierCount } = route.params;
+    Taro.showLoading({ title: '加载中...' });
+    const { code, data, msg } = await getContractsInfo({ contractsSerialCode });
+    Taro.hideLoading();
+    console.log("getProjectDetail_data", data);
+    if (code === 200 && data) {
+      data.numberRecruits = numberRecruits;
+      data.numberOnJob = numberOnJob;
+      data.leaveRate = leaveRate;
+      data.supplierCount = supplierCount;
+      setDetail(data);
+    } else {
+      Taro.showToast({ title: msg, icon: 'none' });
+    }
+  }
+
+  const getProjectStatistics = async () => {
+    const { contractsSerialCode } = route.params;
+    const { code, data, msg } = await getContractsInfoStatistics({ contractsSerialCode });
+    console.log("getProjectStatistics_data", code, data);
+  }
 
   const navigateFunc = (e, url) => {
     e.stopPropagation();
@@ -39,23 +70,23 @@ const Index = observer(({ store }) => {
       <Navbar fixed placeholder bgColor='transparent' title='项目详情'></Navbar>
 
       <View className='project_baseInfo'>
-        <View className='project_name'>龙泉驿区招物流分拣全职月结</View>
-        <View className='project_addr'>龙泉驿·普工.5月6日发布</View>
+        <View className='project_name'>{detail.title}</View>
+        <View className='project_addr'>{detail.areaName}·{detail.jobTypeName}·{detail.createDate}发布</View>
         <View className='project_count'>
           <View className='project_count_item'>
-            <View >311</View>
+            <View >{detail.numberRecruits}</View>
             <View className='project_count_item_label'>总需求</View>
           </View>
           <View className='project_count_item'>
-            <View >311</View>
+            <View >{detail.numberOnJob}</View>
             <View className='project_count_item_label'>在职人数</View>
           </View>
           <View className='project_count_item'>
-            <View >311</View>
+            <View >{detail.leaveRate}</View>
             <View className='project_count_item_label'>离职率</View>
           </View>
           <View className='project_count_item'>
-            <View >311</View>
+            <View >{detail.supplierCount}</View>
             <View className='project_count_item_label'>供应商</View>
           </View>
         </View>

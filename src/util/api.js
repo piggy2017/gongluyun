@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-16 14:24:01
+ * @LastEditTime: 2024-10-30 16:32:19
  * @Description: 
  */
 
@@ -163,6 +163,9 @@ export const cluegetUserInfo = params => {       //  获取客户信息
 };
 export const clueStateFlow = params => {       //  求职状态流转
     return http(API_BASE_URL + '/clue/stateFlow', params, "POST", { "Content-Type": "application/json" });
+};
+export const clueUpdate = params => {       //  编辑求职者信息
+    return http(API_BASE_URL + '/clue/update', params, "POST", { "Content-Type": "application/json" });
 };
 
 

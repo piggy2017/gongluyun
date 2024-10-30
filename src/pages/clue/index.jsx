@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 11:27:50
+ * @LastEditTime: 2024-10-30 16:22:15
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
     userStore: { isLogin, role, companyVerified },
-    businessStore: { poorJobId, myClientJobId }
+    businessStore: { poorJobId, myClientJobId, setMyClientParams }
   } = store
   const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
   const [type, setType] = useState('客户池');
@@ -68,6 +68,7 @@ const Index = observer(({ store }) => {
   const [mylist, setmyList] = useState([])
 
   const [showPickerStatus, setShowPickerStatus] = useState(false);
+  const [myClientCount, setMyClientCount] = useState(0);
 
   useEffect(() => {
     setTimeout(async () => {
@@ -83,8 +84,8 @@ const Index = observer(({ store }) => {
     console.log("list发生了改变", list);
   }, [list])
 
-  useDidShow(()=>{
-    if(type==='我的客户'){
+  useDidShow(() => {
+    if (type === '我的客户') {
       getClientList(1);
     }
   })
@@ -215,15 +216,17 @@ const Index = observer(({ store }) => {
       startDate: dateClientObj.startDate,
       endDate: dateClientObj.endDate,
     }
+    setMyClientParams({...params});
     const { code, data } = await cluemyClients(params);
     console.log("getClientList", code, data);
     Taro.hideLoading();
     setIsRefresh(false);
     if (code === 200 && data.responses?.length > 0) {
-      setmyList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
+      setmyList(_pageNo === 1 ? data.responses : [...mylist, ...data.responses]);
       setgoonLoad(true);
       setPageNo(data.pageNo);
       setRequestState(2);
+      setMyClientCount(data.totalCount);
     } else {
       setgoonLoad(false);
       setRequestState(3);
@@ -285,9 +288,9 @@ const Index = observer(({ store }) => {
     })
   }
 
-  const goClientDetail = (obj) => {
+  const goClientDetail = (obj, index) => {
     Taro.navigateTo({
-      url: `/pages/talentsPackage/clientDetail/index?uuid=${obj.uuid}`
+      url: `/pages/talentsPackage/clientDetail/index?uid=${obj.uuid}&myClientCount=${myClientCount}&index=${index * 1 + 1}`
     })
   }
 
@@ -437,7 +440,7 @@ const Index = observer(({ store }) => {
               {
                 mylist.length > 0 && mylist.map((item, index) => {
                   return (
-                    <View className='roster_item' key={index} onClick={() => goClientDetail(item)}>
+                    <View className='roster_item' key={index} onClick={() => goClientDetail(item, index)}>
                       <View className='roster_item_left'>
                         <View className='roster_item_title'>
                           <View className='item_title_index'>{index + 1}</View>

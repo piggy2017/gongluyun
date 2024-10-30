@@ -2,60 +2,78 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-29 15:07:09
+ * @LastEditTime: 2024-10-30 16:13:20
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
 import {
     observable
 } from 'mobx'
-import { userCenter } from '@/util/api'
+import {
+    userCenter
+} from '@/util/api'
 import Taro from '@tarojs/taro';
 const businessStore = observable({
-    poorJobId:{       // 客户池的岗位筛选结果
+    poorJobId: { // 客户池的岗位筛选结果
         title: '全部岗位',
         recruitSerialCode: '',
         selected: false
-    },   
-    setPoorJobId(value){
+    },
+    setPoorJobId(value) {
         businessStore.poorJobId = value;
     },
 
-    myClientJobId:{  // 我的客户的岗位筛选结果
+    myClientJobId: { // 我的客户的岗位筛选结果
         title: '全部岗位',
         recruitSerialCode: '',
         selected: false
-    },   
-    setMyClientJobId(value){
+    },
+    setMyClientJobId(value) {
         businessStore.myClientJobId = value;
     },
 
 
-    workerSetCustomerInfo:{ // 新增求职线索-选择跟进的客服
-        name:'',
-        userSerialCode:''
-    },     
-    setWorkerSetCustomerInfo(value){
+    workerSetCustomerInfo: { // 新增求职线索-选择跟进的客服
+        name: '',
+        userSerialCode: ''
+    },
+    setWorkerSetCustomerInfo(value) {
         businessStore.workerSetCustomerInfo = value;
     },
 
 
-    addWorkerJobInfo:{ // 新增求职线索-选择报名岗位
+    addWorkerJobInfo: { // 新增求职线索-选择报名岗位
         title: '',
         recruitSerialCode: '',
         selected: false
-    },     
-    setAddWorkerJobInfo(value){
+    },
+    setAddWorkerJobInfo(value) {
         businessStore.addWorkerJobInfo = value;
     },
 
-    interviewJobInfo:{    // 安排面试-选择报名岗位
+    interviewJobInfo: { // 安排面试-选择报名岗位
         title: '',
         recruitSerialCode: '',
         selected: false
     },
-    setInterviewJobInfo(value){
+    setInterviewJobInfo(value) {
         businessStore.interviewJobInfo = value;
+    },
+
+    myClientParams: {}, // 我的客户筛选条件
+    setMyClientParams(value) {
+        businessStore.myClientParams = value;
+    },
+
+
+    editClientInfos: null, // 编辑客户信息
+    setEditClientInfos(value) {
+        businessStore.editClientInfos = value;
+    },
+
+    sourceGroup:[],     // 来源分组
+    setSourceGroup(value) {
+        businessStore.sourceGroup = value;
     }
 });
 

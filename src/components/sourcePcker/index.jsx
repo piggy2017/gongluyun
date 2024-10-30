@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 16:34:59
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-17 11:44:48
+ * @LastEditTime: 2024-10-30 16:43:56
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -15,12 +15,11 @@ import "taro-ui/dist/style/components/icon.scss";
 import './index.scss';
 import { clueSource } from '@/util/api'
 
-const SourcePicker = observer(({ type, onChange, showPicker, onClose, store }) => {
+const SourcePicker = observer(({ type, initData, onChange, showPicker, onClose, store }) => {
     const {
-        baseStore: {
-            bottomSafeAreaHeight
-        }
-    } = store
+        baseStore: { bottomSafeAreaHeight },
+        businessStore: { setSourceGroup },
+    } = store;
     const [sourceList, setSourceList] = useState([]);
     const [sourceItem, setSourceItem] = useState({ name: '全部来源' });
 
@@ -29,14 +28,18 @@ const SourcePicker = observer(({ type, onChange, showPicker, onClose, store }) =
             console.log("获取线索来源枚举-clueSource", res);
             if (res.code !== 200) return
             // setSourceList(type ? res.data.shift() : res.data);
-            if(type){
+            setSourceGroup(res.data);
+            if (type) {
                 res.data.shift();
                 setSourceList(res.data);
-            }else{
+            } else {
                 setSourceItem(res.data);
             }
         })
-    }, [])
+        if(initData) {
+            setSourceItem(initData);
+        }
+    }, [initData]);
 
     const setSourceFunc = (item) => {
         setSourceItem(item);

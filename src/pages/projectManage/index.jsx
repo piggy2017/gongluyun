@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-16 15:47:31
+ * @LastEditTime: 2024-10-30 17:14:29
  * @Description: 
  */
 
@@ -178,14 +178,14 @@ const Index = observer(({ store }) => {
           {
             list.length > 0 && list.map((item, index) => {
               return (
-                <View className='project_item' key={index} onClick={(e) => navigateFunc(e, '/pages/projectPackage/projectDetail/index')}>
+                <View className='project_item' key={index} onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/projectDetail/index?contractsSerialCode=${item.serialCode}&numberRecruits=${item.numberRecruits}&numberOnJob=${item.numberOnJob}&leaveRate=${item.leaveRate}&supplierCount=${item.supplierCount}`)}>
                   <View className='project_item_title'>
                     <View className='project_item_title_left'>
                       <View className='project_item_title_left_name'>{item.title}</View>
                     </View>
                     {
                       type === 'PROCESSING' &&
-                      <View className='project_item_title_right' onClick={(e) => navigateFunc(e, '/pages/projectPackage/signinCode/index')}>
+                      <View className='project_item_title_right' onClick={(e) => navigateFunc(e, 1, '/pages/projectPackage/signinCode/index')}>
                         <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
                         <View>签到码</View>
                       </View> ||
@@ -213,8 +213,8 @@ const Index = observer(({ store }) => {
                   </View>
 
                   <View className='project_item_bottom'>
-                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, '/pages/projectPackage/roster/index')}>花名册</View>
-                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, '/pages/newPackage/newWorker/index')}>录入求职者</View>
+                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, 1, '/pages/projectPackage/roster/index')}>花名册</View>
+                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newWorker/index')}>录入求职者</View>
                   </View>
                 </View>
               )

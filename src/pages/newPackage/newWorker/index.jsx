@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 11:30:41
+ * @LastEditTime: 2024-10-30 16:55:56
  * @Description: 
  */
 /*
@@ -29,14 +29,14 @@ import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import SourcePicker from '@/components/sourcePcker';
 
-import { clueInsert } from '@/util/api'
+import { clueInsert, clueUpdate } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
-        businessStore: { workerSetCustomerInfo, addWorkerJobInfo },
+        businessStore: { workerSetCustomerInfo, addWorkerJobInfo, editClientInfos, setEditClientInfos, sourceGroup },
         userStore: { userInfo: { userSerialCode } },
     } = store
     const [formData, setFormData] = useState({});
@@ -48,15 +48,43 @@ const Index = observer(({ store }) => {
     const [showSourcePicker, setShowSourcePicker] = useState(false);
 
     const [sourceObj, setSourceObj] = useState({    // 筛选来源
-        name: '', source: ''
+        name: '', source: '', value: ''
     })
 
     const [jobTypeNames, setJobTypeNames] = useState('');
     const [jobTypes, setJobTypes] = useState([]);
+    const [isUpdate, setIsUpdate] = useState(false);
 
     useEffect(() => {
-        const { entryChannel } = route.params;
-    }, [])
+        if (editClientInfos) {
+            setIsUpdate(true);
+            setFormData({ ...editClientInfos });
+            console.log("修改客户信息---", editClientInfos);
+            if (sourceGroup.length > 0) {
+                let _obj = sourceGroup.find(item => item.value === editClientInfos.source);
+                console.log("_obj", _obj);
+                _obj.source = _obj.value;
+                setSourceObj(_obj);
+            }
+
+            if (editClientInfos.jobTypes.length > 0) {
+                setJobTypes(editClientInfos.jobTypes);
+
+                let _ids = editClientInfos.jobTypes.map(item => item.id);
+                let _names = editClientInfos.jobTypes.map(item => item.name);
+                setJobTypeNames(_names.join('/'))
+                setFormData({
+                    ...editClientInfos,
+                    jobTypeIds: _ids,
+                    // jobTypeName: e[0].name
+                })
+            }
+        }
+        console.log("sourceGroup", sourceGroup)
+        return () => {
+            setEditClientInfos(null);
+        }
+    }, [editClientInfos, sourceGroup]);
 
     useEffect(() => {
         if (workerSetCustomerInfo.name) {
@@ -86,10 +114,12 @@ const Index = observer(({ store }) => {
     }
 
     const saveWorker = async () => {
+        console.log("isUpdateisUpdateisUpdate",isUpdate);
+
         let params = {
             ...formData,
             entryChannel: route.params.entryChannel,
-            interviewArranged: route.params.entryChannel === 'TALENT_POOL' ? true : formData.interviewDate ? true : false
+            interviewArranged: formData.interviewDate ? true : false  // route.params.entryChannel === 'TALENT_POOL' ? true : formData.interviewDate ? true : false
         }
         console.log("params", params);
         const errorMessages = [
@@ -105,9 +135,9 @@ const Index = observer(({ store }) => {
             })
         }
 
-        const { code, data, msg } = await clueInsert(params);
+        const { code, data, msg } = await (isUpdate ? clueUpdate(params) : clueInsert(params));
         if (code === 200) {
-            Taro.showToast({ title: '录入成功', icon: 'none', });
+            Taro.showToast({ title: `${isUpdate ? '修改成功' : '录入成功'}`, icon: 'none', });
             setTimeout(() => {
                 Taro.navigateBack({ delta: 1 });
             }, 1500);
@@ -215,7 +245,10 @@ const Index = observer(({ store }) => {
                 </View> */}
                 <View className='project_item project_item_border'>
                     <View className='project_item_label'>面试日期</View>
-                    <View className='project_item_right' onClick={() => setShowDatePicker(true)}>
+                    <View className='project_item_right' onClick={() => {
+                        if (isUpdate) return;
+                        setShowDatePicker(true)
+                    }}>
                         <Text className={`${formData.interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewDate ? formData.interviewDate : '请选择面试日期'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
@@ -281,7 +314,7 @@ const Index = observer(({ store }) => {
             </Block>
 
             <Block>
-                <SourcePicker type='1' showPicker={showSourcePicker} onClose={() => { setShowSourcePicker(false) }} onChange={sourcePickerSelect}></SourcePicker>
+                <SourcePicker initData={sourceObj} type='1' showPicker={showSourcePicker} onClose={() => { setShowSourcePicker(false) }} onChange={sourcePickerSelect}></SourcePicker>
             </Block>
 
         </View>
