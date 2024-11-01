@@ -49,7 +49,6 @@
                     width: 72rpx;
                     height: 72rpx;
                     border-radius: 50%;
-                    background-color: #CDE1FF;
                 }
 
                 .employee_item_info {
@@ -141,15 +140,21 @@
             width: 694rpx;
             height: 96rpx;
             border-radius: 8rpx;
-            background: #CDE1FF;
+            background: #1678FF;
             color: #ffffff;
-            text-align: center;
             font-family: "PingFang SC";
             font-size: 30rpx;
             font-style: normal;
             font-weight: 500;
-            line-height: 96rpx;
             margin: 0 auto;
+            @include flex-center;
+
+            image {
+                width: 48rpx;
+                height: 48rpx;
+                flex-shrink: 0;
+                margin-right: 12rpx;
+            }
         }
     }
 

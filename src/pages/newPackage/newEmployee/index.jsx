@@ -2,34 +2,121 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-24 14:40:25
+ * @LastEditTime: 2024-11-01 09:42:08
  * @Description: 
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import Taro from '@tarojs/taro';
 import { View, Image, Text, Input, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
-import { reverseGeocoder } from '@/util/getLocation';
+import { decryptData, encryptData } from '@/util/crypto'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import './index.scss'
 
+import { companyAddAccount } from '@/util/api'
+
 
 const Index = observer(({ store }) => {
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+        baseStore: { bottomSafeAreaHeight },
+        userStore: { companyInfo, roles, permissions },
     } = store
+    const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const [formData, setFormData] = useState({});
     const [ispassword, setIsPassword] = useState(true);
 
     const [showRoleModel, setShowRoleModel] = useState(false);
-    const [roleList, setRoleList] = useState(['客服', '驻场', '销售']);
+    const [roleList, setRoleList] = useState([
+        { roleId: '2', roleName: '客服' },
+        { roleId: '3', roleName: '驻场' }
+    ]);
+
+    const [permissionList, setPermissionList] = useState([]);
 
     const [showLimitModel, setShowLimitModel] = useState(false);
+
+    useEffect(() => {
+        if (permissions.length > 0) {
+            const _list = permissions.map(item => {
+                return { ...item, selected: false }
+            })
+            setPermissionList(_list);
+        }
+    }, [permissions])
+
+    const choosePerssion = (obj, index) => {
+        console.log("choosePerssion obj, index", obj, index);
+        setPermissionList(permissionList => {
+            if (obj.selected) {
+                permissionList[index].selected = false;
+            } else {
+                permissionList[index].selected = true;
+            }
+            console.log("permissionList", permissionList);
+            let _list = permissionList.filter(item => item.selected === true)//.map(item => item.permName);
+            console.log("_list1", _list);
+            if (_list.length > 0) {
+                let _list2 = _list.map(item => item.permName);
+                console.log("_list2", _list2);
+                let _permIds = _list.map(item => item.permId);
+                // let _authority = _list2.join('·');
+                setFormData({ ...formData, authority: _list2, permIds: _permIds });
+            }
+            return permissionList;
+        })
+        forceUpdate();
+    }
+
+    const validatePassword = password => {
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        return regex.test(password);
+    }
+
+    const submitFunc = async () => {
+        let params = {
+            ...formData,
+            companySerialCode: companyInfo.companySerialCode
+        }
+        console.log("params", params);
+        const errorMessages = [
+            !params.name && '员工姓名不能为空',
+            !params.phone && '手机号码不能为空',
+            !params.password && '密码不能为空',
+            !params.subPassword && '请再次输入密码',
+            !params.roleId && '请分配角色',
+        ].filter(Boolean);
+
+        if (errorMessages.length > 0) {
+            return Taro.showToast({
+                title: errorMessages[0],
+                icon: 'none',
+            })
+        }
+        if (!validatePassword(params.password)) {
+            return Taro.showToast({ title: '密码无效，需至少8位且包含字母和数字', icon: 'none', })
+        }
+        if (params.password !== params.subPassword) {
+            return Taro.showToast({ title: '两次密码输入不一致', icon: 'none', })
+        }
+        Taro.showLoading({ title: '提交中...', mask: true });
+        params.password = encryptData(params.password);
+        params.permissionNames = formData.authority.join(',');
+        const { code, data, msg } = await companyAddAccount(params);
+        console.log("companyAddAccount", code, data);
+        if (code === 200) {
+            Taro.showToast({ title: '提交成功', icon: 'none' });
+            setTimeout(() => {
+                Taro.navigateBack({ delta: 1 });
+            }, 1500)
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
+        }
+    }
 
     return (
         <View className='container'>
@@ -84,14 +171,14 @@ const Index = observer(({ store }) => {
                 <View className='employee_item'>
                     <View className='employee_item_label'>角色</View>
                     <View className='employee_item_right' onClick={() => { setShowRoleModel(true) }}>
-                        <View className={`${formData.role ? 'option_item_active' : 'option_item_text'}`}>{formData.role ? formData.role : '请选择'}</View>
+                        <View className={`${formData.roleId ? 'option_item_active' : 'option_item_text'}`}>{formData.roleId ? formData.roleName : '请选择'}</View>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
                 <View className='employee_item'>
                     <View className='employee_item_label'>权限</View>
                     <View className='employee_item_right' onClick={() => { setShowLimitModel(true) }}>
-                        <View className={`${formData.authority ? 'option_item_active' : 'option_item_text'}`}>{formData.authority ? formData.authority : '请选择'}</View>
+                        <View className={`${(formData.authority && formData.authority.length > 0) ? 'option_item_active' : 'option_item_text'}`}>{(formData.authority && formData.authority.length > 0) ? formData.authority.join('·') : '请选择'}</View>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
@@ -99,7 +186,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View className='post_btn'>保存</View>
+                <View onClick={() => submitFunc()} className={`post_btn ${(formData.name && formData.phone && formData.password && formData.subPassword && formData.roleId) ? 'post_btn_active' : ''}`}>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 
@@ -117,9 +204,14 @@ const Index = observer(({ store }) => {
                                         return (
                                             <View
                                                 key={index}
-                                                className={`filter_wrapper_item ${item === formData.role ? 'filter_wrapper_item_active' : ''}`}
-                                                onClick={() => setFormData({ ...formData, role: item })}
-                                            >{item}</View>
+                                                className={`filter_wrapper_item ${item.roleId === formData.roleId ? 'filter_wrapper_item_active' : ''}`}
+                                                onClick={() => {
+                                                    setFormData({ ...formData, roleId: item.roleId, roleName: item.roleName });
+                                                    setTimeout(() => {
+                                                        setShowRoleModel(false)
+                                                    }, 300);
+                                                }}
+                                            >{item.roleName}</View>
                                         )
                                     })
                                 }
@@ -135,18 +227,18 @@ const Index = observer(({ store }) => {
                     <View className='filter_wrapper'>
                         <View className='filter_wrapper_bg'>
                             <View className='filter_title'>
-                                <View>选择角色</View>
+                                <View>选择权限</View>
                                 <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowLimitModel(false) }}></AtIcon>
                             </View>
                             <View className='filter_wrapper_content'>
                                 {
-                                    roleList.map((item, index) => {
+                                    permissionList.map((item, index) => {
                                         return (
                                             <View
                                                 key={index}
-                                                className={`filter_wrapper_item ${item === formData.role ? 'filter_wrapper_item_active' : ''}`}
-                                                onClick={() => setFormData({ ...formData, role: item })}
-                                            >{item}</View>
+                                                className={`filter_wrapper_item ${item.selected ? 'filter_wrapper_item_active' : ''}`}
+                                                onClick={() => choosePerssion(item, index)}
+                                            >{item.permName}</View>
                                         )
                                     })
                                 }

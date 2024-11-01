@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-16 11:13:36
+ * @LastEditTime: 2024-10-31 10:45:57
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -29,7 +29,7 @@ import {
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
-    userStore: { isLogin, role, userInfo, refreshUserInfo }
+    userStore: { isLogin, role, userInfo, refreshUserInfo, getRoleAndPermissionFunc }
   } = store
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [timeText, setTimeText] = useState("");
@@ -67,6 +67,7 @@ const Index = observer(({ store }) => {
     console.log("首页 监听 是否登录isLogin:", isLogin);
     console.log("首页 监听 当前角色role:", role);
     console.log("首页 监听 当前用户信息userInfo:", userInfo);
+    getRoleAndPermissionFunc();
   }, [isLogin, role, userInfo]);
 
   useEffect(() => {
@@ -173,8 +174,8 @@ const Index = observer(({ store }) => {
     })
   }
 
-  const customDateSelect=(e)=>{
-    console.log("自定义选择日期组件 customDateSelect",e);
+  const customDateSelect = (e) => {
+    console.log("自定义选择日期组件 customDateSelect", e);
   }
 
 
@@ -452,7 +453,7 @@ const Index = observer(({ store }) => {
 
       <SexPicker showPicker={showSexPicker} onClose={() => { setShowSexPicker(false) }} onChange={sexPickerSelect}></SexPicker>
 
-      <CustomDate showPicker={showFilterDate} onClose={()=>{setShowFilterDate(false)}} onChange={customDateSelect}></CustomDate>
+      <CustomDate showPicker={showFilterDate} onClose={() => { setShowFilterDate(false) }} onChange={customDateSelect}></CustomDate>
 
 
       <TabBar actCurrent={0} />

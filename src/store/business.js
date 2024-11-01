@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 16:13:20
+ * @LastEditTime: 2024-10-31 17:02:47
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -74,7 +74,12 @@ const businessStore = observable({
     sourceGroup:[],     // 来源分组
     setSourceGroup(value) {
         businessStore.sourceGroup = value;
-    }
+    },
+
+    employeeInfo: null, // 员工详情
+    setEmployeeInfo(value) {
+        businessStore.employeeInfo = value;
+    },
 });
 
 export default businessStore

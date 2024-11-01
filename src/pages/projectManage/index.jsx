@@ -2,11 +2,11 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 17:14:29
+ * @LastEditTime: 2024-10-31 16:36:12
  * @Description: 
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import Taro from '@tarojs/taro';
 import { View, Image, Input, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
@@ -19,6 +19,7 @@ import './index.scss';
 import { contractsList } from '@/util/api';
 
 const Index = observer(({ store }) => {
+  const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
     userStore: { role, isLogin, companyVerified }

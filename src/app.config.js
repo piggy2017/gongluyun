@@ -94,6 +94,7 @@ export default defineAppConfig({
                 "componyManage/index",            // 公司管理
                 "feedback/index",                 // 意见反馈
                 "companyAuth/index",              // 企业认证
+                "editEmployee/index",             // 修改员工
             ]
         },
         {

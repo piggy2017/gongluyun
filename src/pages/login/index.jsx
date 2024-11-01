@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-14 14:50:57
+ * @LastEditTime: 2024-10-31 10:45:05
  * @Description: 
  */
 
@@ -20,7 +20,7 @@ import './index.scss'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { setToken, setIsLogin, setRole, setUserInfo }
+        userStore: { setToken, setIsLogin, setRole, setUserInfo, getRoleAndPermissionFunc }
     } = store
 
     const [step, setStep] = useState(1);
@@ -77,6 +77,7 @@ const Index = observer(({ store }) => {
                     setIsLogin(1);
                     setUserInfo(result.data.user);
                     setRole(result.data.user.userRole);
+                    getRoleAndPermissionFunc();
                     setTimeout(() => {
                         getUserRole();
                     }, 50);
@@ -113,6 +114,7 @@ const Index = observer(({ store }) => {
                 setIsLogin(1);
                 setUserInfo(data.user);
                 setRole(data.user.userRole);
+                getRoleAndPermissionFunc();
                 setTimeout(() => {
                     getUserRole();
                 }, 50);

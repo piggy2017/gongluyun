@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 10:39:08
+ * @LastEditTime: 2024-10-31 10:13:46
  * @Description: 
  */
 
@@ -73,7 +73,8 @@ const Index = observer(({ store }) => {
 
     const postProject = async () => {
         let params = {
-            ...formData
+            ...formData,
+            addressDetail: formData.areaName + formData.addressDetail,
         }
         console.log("params", params);
         const errorMessages = [
@@ -219,14 +220,14 @@ const Index = observer(({ store }) => {
                     <View className='project_item_label '>驻场人员</View>
                     {/* 姓名+手机号 */}
                     <View className='project_item_right'>
-                        <Text className={`${formData.interviewContactInfo ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewContactInfo ? formData.interviewContactInfo : '驻场人员或者面试联系人(必填)'}</Text>
+                        <Text className={`${formData.interviewContactInfo ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewContactInfo ? formData.interviewContactInfo : '驻场人员或者面试联系人'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
                 <View className='project_item project_item_border'>
                     <View className='project_item_label '>面试地点</View>
                     <View className='project_item_right' onClick={() => getMyAddress()}>
-                        <Text className={`${formData.areaName ? 'project_item_text_active' : 'project_item_text'}`}>{formData.areaName ? formData.areaName : '选择面试地点(必填)'}</Text>
+                        <Text className={`${formData.areaName ? 'project_item_text_active' : 'project_item_text'}`}>{formData.areaName ? formData.areaName : '选择面试地点'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
@@ -236,7 +237,7 @@ const Index = observer(({ store }) => {
                         <Textarea
                             className='new_input_2'
                             count={false}
-                            placeholder='请输入详细地址(必填)'
+                            placeholder='请输入详细地址'
                             placeholderStyle='color: #777777;'
                             value={formData.addressDetail}
                             auto-height

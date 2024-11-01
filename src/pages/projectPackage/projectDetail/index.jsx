@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 17:37:19
+ * @LastEditTime: 2024-10-30 18:00:13
  * @Description: 
  */
 
@@ -26,6 +26,7 @@ const Index = observer(({ store }) => {
   } = store
 
   const [detail, setDetail] = useState('');
+  const [statistics, setStatistics] = useState({});
   const [contactInfo, setContactInfo] = useState('');
   const [address, setAddress] = useState('');
   const [time, setTime] = useState('');
@@ -56,6 +57,11 @@ const Index = observer(({ store }) => {
     const { contractsSerialCode } = route.params;
     const { code, data, msg } = await getContractsInfoStatistics({ contractsSerialCode });
     console.log("getProjectStatistics_data", code, data);
+    if(code === 200 && data) {
+      setStatistics(data);
+    }else{
+      Taro.showToast({ title: msg, icon: 'none' });
+    }
   }
 
   const navigateFunc = (e, url) => {
@@ -102,19 +108,19 @@ const Index = observer(({ store }) => {
         </View>
         <View className='project_datas_content'>
           <View className='project_datas_item'>
-            <View>311</View>
+            <View>{statistics.sinterviewCounts}</View>
             <View className='project_datas_item_label'>已约面</View>
           </View>
           <View className='project_datas_item'>
-            <View>311</View>
+            <View>{statistics.alreadyArrivedCounts}</View>
             <View className='project_datas_item_label'>已到面</View>
           </View>
           <View className='project_datas_item'>
-            <View>311</View>
+            <View>{statistics.interviewPassCounts}</View>
             <View className='project_datas_item_label'>面试通过</View>
           </View>
           <View className='project_datas_item'>
-            <View>311</View>
+            <View>{statistics.deliveredCounts}</View>
             <View className='project_datas_item_label'>已入职</View>
           </View>
         </View>

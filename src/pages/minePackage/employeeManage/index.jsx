@@ -2,29 +2,30 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-08 17:45:13
+ * @LastEditTime: 2024-10-31 17:01:39
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro';
+import Taro,{useDidShow} from '@tarojs/taro';
 import { View, Image, Text, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
-import { reverseGeocoder } from '@/util/getLocation';
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import './index.scss'
 
+import { companyMemberList } from '@/util/api'
+
 
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+        userStore: { companyInfo },
+        businessStore: { setEmployeeInfo }
     } = store
-    const [formData, setFormData] = useState({});
-    const [ispassword, setIsPassword] = useState(true);
 
     const [showRoleModel, setShowRoleModel] = useState(false);
     const [roleList, setRoleList] = useState(['客服', '驻场', '销售']);
@@ -34,13 +35,13 @@ const Index = observer(({ store }) => {
     const [bottomHeight, setBottomHeight] = useState(92);
     const [isRefresh, setIsRefresh] = useState(false);
     const [goonLoad, setgoonLoad] = useState(true);
+    const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
+    const [pageNo, setPageNo] = useState(1)
+    const pageSize = 10;
+    const [type, setType] = useState(null);       // 状态 null 全部 0 启用 1停用
+    const [roleId, setRoleId] = useState('');     // 角色 2-客服 3-驻场
 
-    const [list, setList] = useState([
-        { id: 1, userName: "林菊华", phone: "12346789043", status: 1, role: '客服', avatar: "" },
-        { id: 2, userName: "王子文", phone: "12346789043", status: 1, role: '驻场', avatar: "" },
-        { id: 3, userName: "李佳芯", phone: "12346789043", status: 1, role: '管理员', avatar: "" },
-        { id: 4, userName: "甄晓晓", phone: "12346789043", status: 0, role: '客服', avatar: "" },
-    ])
+    const [list, setList] = useState([]);
 
     useEffect(() => {
         setTimeout(async () => {
@@ -58,17 +59,79 @@ const Index = observer(({ store }) => {
         }, 0);
     }, [])
 
+    useDidShow(() => {
+        getList(1);
+    })
+
+    useEffect(() => {
+        getList(1);
+    }, [roleId, type]);
+
+    const getList = async (_pageNo) => {
+        setRequestState(1);
+        Taro.showLoading({ title: '加载中...' });
+        let params = {
+            pageNo: _pageNo,
+            pageSize,
+            companySerialCode: companyInfo.companySerialCode,
+            roleId: roleId,
+            status: type
+        }
+        const { code, data } = await companyMemberList(params);
+        Taro.hideLoading();
+        console.log("getList", code, data);
+
+        setIsRefresh(false);
+        if (code === 200 && data.responses?.length > 0) {
+            setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
+            setgoonLoad(true);
+            setPageNo(data.pageNo);
+            setRequestState(2);
+        } else {
+            setgoonLoad(false);
+            setRequestState(3);
+            if (_pageNo === 1) {
+                setList([]);
+            }
+        }
+    }
+
 
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
+        if (goonLoad) {
+            getList(pageNo + 1);
+        }
     }, 500);
 
     const handleScrollToUpper = debounce(() => {  // 滑动到最顶部,触发下拉刷新
         console.log('下拉刷新');
+        setIsRefresh(true);
+        getList(1);
     }, 200);
 
     const getHeight = () => {
         return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabHeight + bottomHeight + 15}px)`;
+    }
+
+    const setTypeFunc = (_type) => {
+        if (_type != type) {
+            setgoonLoad(true);
+            setType(_type);
+            setTimeout(() => {
+                setShowRoleModel(false);
+            }, 300);
+        }
+    }
+
+    const setRoleIdFunc = (_roleId) => {
+        if (_roleId != roleId) {
+            setgoonLoad(true);
+            setRoleId(_roleId);
+            setTimeout(() => {
+                setShowLimitModel(false);
+            }, 300);
+        }
     }
 
     return (
@@ -77,11 +140,11 @@ const Index = observer(({ store }) => {
 
             <View className='tab_wrapper'>
                 <View className='tab_item' onClick={() => { setShowRoleModel(true) }}>
-                    <View>全部状态</View>
+                    <View>{type === null ? '全部状态' : type == '0' ? '启用' : '停用'}</View>
                     <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
                 </View>
                 <View className='tab_item' onClick={() => { setShowLimitModel(true) }}>
-                    <View>全部角色</View>
+                    <View>{roleId === '' ? '全部角色' : roleId == '2' ? '客服' : roleId == '3' ? '驻场' : roleId == '1' ? "超级管理员" : ''}</View>
                     <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
                 </View>
             </View>
@@ -100,36 +163,62 @@ const Index = observer(({ store }) => {
                 lowerThreshold={300}
             >
                 {
-                    list.length>0 && list.map((item, index) => {
+                    list.length > 0 && list.map((item, index) => {
                         return (
-                            <View className='employee_item' key={item.id} onClick={()=>{
+                            <View className='employee_item' key={item.userSerialCode} onClick={() => {
+                                setEmployeeInfo(item);
                                 Taro.navigateTo({
-                                    url: `/pages/minePackage/employeeDetail/index?id=${item.id}`
+                                    url: `/pages/minePackage/employeeDetail/index`
                                 })
                             }}>
                                 <View className='employee_item_left'>
-                                    <View className='employee_item_avatar'></View>
+                                    <Image src={item.avatar} className='employee_item_avatar'></Image>
                                     <View className='employee_item_info'>
                                         <View className='employee_item_name'>
-                                            <View>{item.userName}</View>
-                                            <View className='employee_item_role'>{item.role}</View>
+                                            <View>{item.name}</View>
+                                            <View className='employee_item_role'>{item.roleName}</View>
                                         </View>
                                         <View className='employee_item_phone'>{item.phone}</View>
                                     </View>
                                 </View>
                                 <View className='employee_item_right'>
-                                    <View style={`color:${item.status === 1 ? '#04B400':'#F00000'}`}>{item.status === 1 ? '启用' : '停用'}</View>
+                                    <View style={`color:${item.status == '0' ? '#04B400' : '#F00000'}`}>{item.status == '0' ? '启用' : '停用'}</View>
                                     <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                                 </View>
                             </View>
                         )
                     })
                 }
+
+                {
+                    list.length >= 4 &&
+                    <View className='loading_text'>
+                        {
+                            goonLoad ?
+                                <>
+                                    <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
+                                    加载中
+                                </> :
+                                "数据已经到底了"
+                        }
+                    </View>
+                }
+
+                {
+                    list.length === 0 && requestState === 3 &&
+                    <View className='no_data'>
+                        <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
+                        <View>暂无相关数据~</View>
+                    </View>
+                }
             </ScrollView>
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View className='post_btn'>新增账号</View>
+                <View className='post_btn' onClick={() => { Taro.navigateTo({ url: '/pages/newPackage/newEmployee/index' }) }}>
+                    <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_1.webp`}></Image>
+                    <View>新增账号</View>
+                </View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 
@@ -138,21 +227,13 @@ const Index = observer(({ store }) => {
                     <View className='filter_wrapper'>
                         <View className='filter_wrapper_bg'>
                             <View className='filter_title'>
-                                <View>选择角色</View>
+                                <View>选择状态</View>
                                 <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowRoleModel(false) }}></AtIcon>
                             </View>
                             <View className='filter_wrapper_content'>
-                                {
-                                    roleList.map((item, index) => {
-                                        return (
-                                            <View
-                                                key={index}
-                                                className={`filter_wrapper_item ${item === formData.role ? 'filter_wrapper_item_active' : ''}`}
-                                                onClick={() => setFormData({ ...formData, role: item })}
-                                            >{item}</View>
-                                        )
-                                    })
-                                }
+                                <View className={`filter_wrapper_item ${type === null ? 'filter_wrapper_item_active' : ''}`} onClick={() => setTypeFunc(null)}>全部</View>
+                                <View className={`filter_wrapper_item ${type == '0' ? 'filter_wrapper_item_active' : ''}`} onClick={() => setTypeFunc('0')}>启用</View>
+                                <View className={`filter_wrapper_item ${type == '1' ? 'filter_wrapper_item_active' : ''}`} onClick={() => setTypeFunc('1')}>停用</View>
                             </View>
                             <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                         </View>
@@ -169,17 +250,12 @@ const Index = observer(({ store }) => {
                                 <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowLimitModel(false) }}></AtIcon>
                             </View>
                             <View className='filter_wrapper_content'>
-                                {
-                                    roleList.map((item, index) => {
-                                        return (
-                                            <View
-                                                key={index}
-                                                className={`filter_wrapper_item ${item === formData.role ? 'filter_wrapper_item_active' : ''}`}
-                                                onClick={() => setFormData({ ...formData, role: item })}
-                                            >{item}</View>
-                                        )
-                                    })
-                                }
+                                <View className={`filter_wrapper_item ${roleId === '' ? 'filter_wrapper_item_active' : ''}`}
+                                    onClick={() => setRoleIdFunc('')}>全部角色</View>
+                                <View className={`filter_wrapper_item ${roleId == '2' ? 'filter_wrapper_item_active' : ''}`}
+                                    onClick={() => setRoleIdFunc('2')}>客服</View>
+                                <View className={`filter_wrapper_item ${roleId == '3' ? 'filter_wrapper_item_active' : ''}`}
+                                    onClick={() => setRoleIdFunc('3')}>驻场</View>
                             </View>
                             <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                         </View>
