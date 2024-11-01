@@ -2,36 +2,31 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-28 17:33:50
+ * @LastEditTime: 2024-11-01 17:19:32
  * @Description: 
  */
-/*
- * @Author: 孙林 1164700321@qq.com
- * @Date: 2024-09-09 09:48:48
- * @LastEditors: 孙林
- * @LastEditTime: 2024-09-12 10:53:33
- * @Description: 
- */
+
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
-
-import TabBar from '@/components/tabBar';
-import { AtIcon, AtFloatLayout } from 'taro-ui'
+import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
+import { AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
 
 import UpdateStatus from '@/components/updateStatus';
+import CustomDate from '@/components/customDate';
+import SourcePicker from '@/components/sourcePcker';
+
+import { contractsgetRoster } from '@/util/api';
 
 const Index = observer(({ store }) => {
+    const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
         userStore: { isLogin, companyVerified }
     } = store
-    const [type, setType] = useState('客户池');
 
     const [searchValue, setSearchValue] = useState('');
     const [searchHeight, setSearchHeight] = useState(175);
@@ -39,7 +34,11 @@ const Index = observer(({ store }) => {
 
     const [isRefresh, setIsRefresh] = useState(false);
     const [goonLoad, setgoonLoad] = useState(true);
-    const [title, setTitle] = useState('龙泉驿区招物流分拣全职月结');
+    const [pageNo, setPageNo] = useState(1);
+    const pageSize = 10
+    const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
+    const [totalCount, setTotalCount] = useState(0);
+    const [title, setTitle] = useState('');
 
     const [list, setList] = useState([
         { id: 1, userName: "高小光", status: 1, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
@@ -50,18 +49,40 @@ const Index = observer(({ store }) => {
         { id: 6, userName: "高小光", status: 6, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
     ])
 
-    const [sourceList, setSourceList] = useState(['全部来源', '抖音直播', '小红书', 'BOSS直聘', '微信私域', '58同城', 'BOSS直聘', '微信私域', '58同城']);
-    const [sourceIndex, setSourceIndex] = useState(0);
-    const [showSourceModel, setShowSourceModel] = useState(false);              //  是否显示切换状态的弹窗
-
-    const [tabList, setTabList] = useState(['全部', '已约面', '已到面', '面试通过', '面试失败', '已入职', '已离职']);
-    const [currentTab, setCurrentTab] = useState('全部');
+    const [tabList, setTabList] = useState([
+        { state: '', name: "全部" }, { state: 'SCHEDULED_INTERVIEW', name: "已约面" },
+        { state: 'ARRIVE_INTERVIEW', name: "已到面" },{ state: 'INTERVIEW_PASSED', name: "面试通过" },
+        { state: 'INTERVIEW_FAILED', name: "面试失败" },{ state: 'EMPLOYED', name: "已入职" },
+        { state: 'RESIGN', name: "已离职" }]);
+    const [currentTabIndex, setCurrentTabIndex] = useState(0);           // 当前选中的tab
     const [currentCliskstatus, setCurrentCliskstatus] = useState('');
     const [batchOperations, setBatchOperations] = useState(false);       // 是否进行批量操作
     const [chooseAll, setChooseAll] = useState(false);                   // 全选反选
     const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示底部的操作选项
     const [chooseList, setChooseList] = useState([]);                    // 选中的列表
     const [showExportModel, setShowExportModel] = useState(false);       // 是否显示导出弹窗
+
+    const [showSourcePicker, setShowSourcePicker] = useState(false);              //  是否显示切换状态的弹窗
+    const [showFilterDate, setShowFilterDate] = useState(false);                  //  客户池是否显示切换日期的弹窗
+    const [sourceObj, setSourceObj] = useState({    // 筛选来源
+        source: "", name: '全部来源'
+    })
+    const [dateObj, setDateObj] = useState({
+        dateRange: "TODAY",
+        endDate: "",
+        filterTime: "今日",
+        startDate: ""
+    });
+
+    useEffect(() => {
+        const { title, recruitSerialCode } = route.params;
+        setTitle(title);
+        getList(1);
+    }, [])
+
+    useEffect(()=>{
+
+    },[currentTabIndex, sourceObj, dateObj])
 
     useEffect(() => {
         setTimeout(async () => {
@@ -85,12 +106,51 @@ const Index = observer(({ store }) => {
         }
     }, [chooseList])
 
+    const getList = async (_pageNo) => {    // 获取花名册列表
+        const { recruitSerialCode } = route.params;
+        setRequestState(1);
+        Taro.showLoading({ title: '加载中...' });
+        let params = {
+            pageNo: _pageNo,
+            pageSize,
+            state: tabList[currentTabIndex].state,
+            searchInfo: searchValue,
+            recruitSerialCode,
+            source: sourceObj.source,
+            dateRange: dateObj.dateRange,
+            startDate: dateObj.startDate,
+            endDate: dateObj.endDate
+        }
+        const { code, data } = await contractsgetRoster(params);
+        console.log("获取花名册列表", code, data);
+        Taro.hideLoading();
+        setIsRefresh(false);
+        if (code === 200 && data.responses?.length > 0) {
+            setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
+            setgoonLoad(true);
+            setPageNo(data.pageNo);
+            setTotalCount(data.totalCount);
+            setRequestState(2);
+        } else {
+            setgoonLoad(false);
+            setRequestState(3);
+            if (_pageNo === 1) {
+                setList([]);
+            }
+        }
+    }
+
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
+        if (goonLoad) {
+            getList(pageNo + 1);
+        }
     }, 500);
 
     const handleScrollToUpper = debounce(() => {  // 滑动到最顶部,触发下拉刷新
         console.log('下拉刷新');
+        setIsRefresh(true);
+        getList(1);
     }, 200);
 
     const getHeight = () => {
@@ -208,6 +268,16 @@ const Index = observer(({ store }) => {
         setBatchOperations(false);
     }
 
+    const customDateSelect = (e) => {      // 选择日期的回调
+        console.log("自定义选择日期组件 customDateSelect", e);
+        setDateObj(e);
+    }
+
+    const sourcePickerSelect = (e) => {    // 选择来源的回调
+        console.log("source", e);
+        setSourceObj(e);
+    }
+
     return (
         <View className='container'>
             <View className='my_header'>
@@ -232,16 +302,16 @@ const Index = observer(({ store }) => {
                         value={searchValue}></Input>
                 </View>
                 <View className='filter_wrapper'>
-                    <View className='filter_wrap_item' onClick={() => setShowSourceModel(true)}>
-                        <View>{sourceList[sourceIndex]}</View>
+                    <View className='filter_wrap_item' onClick={() => setShowSourcePicker(true)}>
+                        <View>{sourceObj.name}</View>
                         <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
                     </View>
                     {/* <View className='filter_wrap_item'>
                         <View>全部岗位</View>
                         <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
                     </View> */}
-                    <View className='filter_wrap_item'>
-                        <View>今日</View>
+                    <View className='filter_wrap_item' onClick={() => setShowFilterDate(true)}>
+                        <View>{dateObj.filterTime ? dateObj.filterTime : dateObj.startDate.replace(/-/g, '.') + '-' + dateObj.endDate.replace(/-/g, '.')}</View>
                         <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
                     </View>
                 </View>
@@ -257,7 +327,7 @@ const Index = observer(({ store }) => {
                     {
                         tabList.map((item, index) => {
                             return (
-                                <View onClick={() => swtitchCurrentTab(item)} className={`tab_item ${currentTab === item ? 'tab_item_active' : ''} `} key={index}>{item}</View>
+                                <View onClick={() => setCurrentTabIndex(index)} className={`tab_item ${currentTabIndex === index ? 'tab_item_active' : ''} `} key={index}>{item.name}</View>
                             )
                         })
                     }
@@ -390,7 +460,7 @@ const Index = observer(({ store }) => {
 
             {/* 线索来源 */}
             <Block>
-                <AtFloatLayout catchMove className='source_init_layout' isOpened={showSourceModel} onClose={() => setShowSourceModel(false)}>
+                {/* <AtFloatLayout catchMove className='source_init_layout' isOpened={showSourceModel} onClose={() => setShowSourceModel(false)}>
                     <View className='filter_wrapper'>
                         <View className='filter_wrapper_bg'>
                             <View className='filter_title'>
@@ -413,7 +483,17 @@ const Index = observer(({ store }) => {
                             <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                         </View>
                     </View>
-                </AtFloatLayout>
+                </AtFloatLayout> */}
+            </Block>
+
+            {/* 客户池筛选日期组件 */}
+            <Block>
+                <CustomDate showPicker={showFilterDate} onClose={() => { setShowFilterDate(false) }} onChange={customDateSelect}></CustomDate>
+            </Block>
+
+            {/* 客户池筛选线索来源 */}
+            <Block>
+                <SourcePicker showPicker={showSourcePicker} onClose={() => { setShowSourcePicker(false) }} onChange={sourcePickerSelect}></SourcePicker>
             </Block>
 
         </View>

@@ -10,7 +10,6 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro from '@tarojs/taro';
 import { View, Image, Text, Input, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import { decryptData, encryptData } from '@/util/crypto'
 import "taro-ui/dist/style/components/icon.scss";

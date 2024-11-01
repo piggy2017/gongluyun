@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-08 17:51:42
+ * @LastEditTime: 2024-11-01 16:41:17
  * @Description: 
  */
 
@@ -21,12 +21,15 @@ import Base64 from '@/util/base64'
 import { fetchOssConfig } from "@/util/api";
 import './index.scss'
 
+import { companygetInfo, companyUpdate } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+        userStore: { companyInfo },
     } = store
     const [formData, setFormData] = useState({});
+    const [upType, setUpType] = useState(0);   // 0 = logo 1 = images
 
     const [openAction, setOpenAction] = useState(false);           // 是否打开选择照片弹窗
     const [images, setImages] = useState([
@@ -41,6 +44,23 @@ const Index = observer(({ store }) => {
         // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon8.webp'
     ]);                      // 选择的照片
 
+    useEffect(() => {
+        getInfo();
+    }, []);
+
+    const getInfo = async () => {
+        const { code, data } = await companygetInfo({ companySerialCode: companyInfo.companySerialCode });
+        console.log("getInfo", code, data);
+        if (code === 200) {
+            if (!data.imageUrls){
+                data.imageUrls = [];
+                setImages([]);
+            }else{
+                setImages([...data.imageUrls]);
+            }
+            setFormData({ ...data });
+        }
+    }
 
 
     const handlePhotoClick = async (type) => {
@@ -112,6 +132,11 @@ const Index = observer(({ store }) => {
                         // setImgSrc(imgUrl);
                         console.log('上传成功 --  oss地址为', imgUrl);
                         // setAvatar(ossServiceDomain + '/' + params.key)
+                        if (upType === 0) {
+                            setFormData({ ...formData, logo: imgUrl });
+                        } else if (upType === 1) {
+                            setImages([...images, imgUrl])
+                        }
                     },
                     fail(err) {
                         console.log(err)
@@ -132,6 +157,24 @@ const Index = observer(({ store }) => {
         setImages([...images.slice(0, index), ...images.slice(index + 1)])
     }
 
+    const handleSubmit = async () => {
+        let params = {
+            ...formData,
+            imageUrls: images
+        }
+        Taro.showLoading({ title: '提交中...' });
+        const { code, data, msg } = await companyUpdate(params);
+        Taro.hideLoading();
+        if (code === 200) {
+            Taro.showToast({ title: '提交成功', icon: 'none' });
+            setTimeout(() => {
+                Taro.navigateBack({ delta: 1 });
+            }, 1500);
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
+        }
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#FFFFFF' title='企业管理'></Navbar>
@@ -139,35 +182,41 @@ const Index = observer(({ store }) => {
             <View className='compony_info'>
                 <View className='info_item'>
                     <View className='info_item_label'>企业Logo</View>
-                    <View className='info_item_logo' onClick={() => setOpenAction(true)}></View>
+                    <Image src={formData.logo} className='info_item_logo' onClick={() => {
+                        setOpenAction(true);
+                        setUpType(0);
+                    }}></Image>
                 </View>
                 <View className='info_item'>
                     <View className='info_item_label'>企业名称</View>
                     <Input
+                        disabled={true}
                         className='info_item_input'
                         placeholder='请输入企业名称'
-                        value={formData.componyName}
-                        placeholderStyle='color: #777777;'
-                        onInput={(e) => setFormData({ ...formData, componyName: e.target.value })}></Input>
-                </View>
-                <View className='info_item'>
-                    <View className='info_item_label'>联系人姓名</View>
-                    <Input
-                        className='info_item_input'
-                        placeholder='请输入联系人姓名'
                         value={formData.name}
                         placeholderStyle='color: #777777;'
                         onInput={(e) => setFormData({ ...formData, name: e.target.value })}></Input>
                 </View>
                 <View className='info_item'>
+                    <View className='info_item_label'>联系人姓名</View>
+                    <Input
+                        className='info_item_input'
+                        disabled={true}
+                        placeholder='请输入联系人姓名'
+                        value={formData.contactName}
+                        placeholderStyle='color: #777777;'
+                        onInput={(e) => setFormData({ ...formData, contactName: e.target.value })}></Input>
+                </View>
+                <View className='info_item'>
                     <View className='info_item_label'>联系手机号码</View>
                     <Input
                         type='number'
+                        disabled={true}
                         className='info_item_input'
                         placeholder='请输入联系手机号码'
-                        value={formData.phone}
+                        value={formData.contactMobile}
                         placeholderStyle='color: #777777;'
-                        onInput={(e) => setFormData({ ...formData, phone: e.target.value })}></Input>
+                        onInput={(e) => setFormData({ ...formData, contactMobile: e.target.value })}></Input>
                 </View>
                 <View className='info_item_2'>
                     <View className='info_item_label'>详细地址</View>
@@ -181,9 +230,9 @@ const Index = observer(({ store }) => {
                         autoHeight
                         className='info_item_textarea'
                         placeholder='请输入详细地址'
-                        value={formData.address}
+                        value={formData.addressDetail}
                         placeholderStyle='color: #777777;'
-                        onInput={(e) => setFormData({ ...formData, address: e.target.value })}></Textarea>
+                        onInput={(e) => setFormData({ ...formData, addressDetail: e.target.value })}></Textarea>
                 </View>
 
                 <View className='compony_imgs'>
@@ -192,7 +241,10 @@ const Index = observer(({ store }) => {
 
                         {
                             images.length < 9 &&
-                            <View className='add_img' onClick={() => { setOpenAction(true) }}>
+                            <View className='add_img' onClick={() => {
+                                setOpenAction(true);
+                                setUpType(1);
+                            }}>
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon14.webp`}></Image>
                             </View>
                         }
@@ -210,9 +262,8 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View className='post_btn'>
+                <View className='post_btn' onClick={handleSubmit}>
                     <View>保存</View>
-                    <Image src={`${Taro.$cdnUrl}/index/index_icon20.webp`}></Image>
                 </View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>

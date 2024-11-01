@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 16:34:59
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 16:43:56
+ * @LastEditTime: 2024-11-01 17:09:44
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -23,6 +23,10 @@ const SourcePicker = observer(({ type, initData, onChange, showPicker, onClose, 
     const [sourceList, setSourceList] = useState([]);
     const [sourceItem, setSourceItem] = useState({ name: '全部来源' });
 
+    useEffect(()=>{
+        console.log("sourceList 发生了改变", sourceList);
+    },[sourceList])
+
     useEffect(() => {
         clueSource({}).then(res => {
             console.log("获取线索来源枚举-clueSource", res);
@@ -31,12 +35,12 @@ const SourcePicker = observer(({ type, initData, onChange, showPicker, onClose, 
             setSourceGroup(res.data);
             if (type) {
                 res.data.shift();
-                setSourceList(res.data);
+                setSourceList([...res.data]);
             } else {
-                setSourceItem(res.data);
+                setSourceList([...res.data]);
             }
         })
-        if(initData) {
+        if (initData) {
             setSourceItem(initData);
         }
     }, [initData]);
@@ -63,7 +67,7 @@ const SourcePicker = observer(({ type, initData, onChange, showPicker, onClose, 
                         </View>
                         <View className='filter_wrapper_content'>
                             {
-                                sourceList.map((item, index) => {
+                                sourceList.length > 0 && sourceList.map((item, index) => {
                                     return (
                                         <View
                                             key={index}
@@ -84,5 +88,5 @@ const SourcePicker = observer(({ type, initData, onChange, showPicker, onClose, 
 
 
 export default inject('store')(React.memo(SourcePicker, (prevProps, nextProps) => {
-    return prevProps.showPicker === nextProps.showPicker && prevProps.store === nextProps.store;
+    return prevProps.showPicker === nextProps.showPicker  && prevProps.store === nextProps.store;
 }));

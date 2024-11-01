@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-31 16:36:12
+ * @LastEditTime: 2024-11-01 16:38:47
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import { View, Image, Input, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import TabBar from '@/components/tabBar';
@@ -36,6 +36,10 @@ const Index = observer(({ store }) => {
   const [list, setList] = useState([])
 
   const [type, setType] = useState('PROCESSING');
+
+  useDidShow(()=>{
+    getList(1);
+  })
 
   useEffect(() => {
     setTimeout(async () => {
@@ -214,7 +218,7 @@ const Index = observer(({ store }) => {
                   </View>
 
                   <View className='project_item_bottom'>
-                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, 1, '/pages/projectPackage/roster/index')}>花名册</View>
+                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>花名册</View>
                     <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newWorker/index')}>录入求职者</View>
                   </View>
                 </View>
