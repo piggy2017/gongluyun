@@ -83,6 +83,10 @@
             margin-top: 8rpx;
             width: 400rpx;
             @include ellipsis;
+            text{
+                color: #222222;
+                font-size: 30rpx;
+            }
         }
 
         .clue_item_info:first-child {

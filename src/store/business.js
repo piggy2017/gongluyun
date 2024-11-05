@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-31 17:02:47
+ * @LastEditTime: 2024-11-05 15:23:01
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -10,7 +10,7 @@ import {
     observable
 } from 'mobx'
 import {
-    userCenter
+    userCenter,clueSource
 } from '@/util/api'
 import Taro from '@tarojs/taro';
 const businessStore = observable({
@@ -79,6 +79,15 @@ const businessStore = observable({
     employeeInfo: null, // 员工详情
     setEmployeeInfo(value) {
         businessStore.employeeInfo = value;
+    },
+
+    sourceList: [],     // 来源列表
+    setSourceList() {
+        clueSource({}).then(res => {
+            console.log("获取线索来源枚举-clueSource", res);
+            if (res.code !== 200) return
+            businessStore.sourceList= res.data;
+        })
     },
 });
 

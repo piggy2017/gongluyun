@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 11:37:02
+ * @LastEditTime: 2024-11-05 15:07:19
  * @Description: 人才库列表结果的item,需要传入 index，item
  */
 import React, { useState, useEffect } from 'react';
@@ -51,6 +51,9 @@ const TalentsItem = observer(({ store, index, item }) => {
                                 <Text key={idx}>{jobName}</Text>
                             )
                         })
+                    }
+                    {
+                        !item.jobNames && <Text>暂无</Text>
                     }
                 </View>
                 {/* <View className='talents_item_line'></View>

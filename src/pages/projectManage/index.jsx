@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-01 16:38:47
+ * @LastEditTime: 2024-11-04 15:34:07
  * @Description: 
  */
 
@@ -219,7 +219,7 @@ const Index = observer(({ store }) => {
 
                   <View className='project_item_bottom'>
                     <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>花名册</View>
-                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newWorker/index')}>录入求职者</View>
+                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, 1, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>录入求职者</View>
                   </View>
                 </View>
               )

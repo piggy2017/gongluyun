@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-31 10:36:08
+ * @LastEditTime: 2024-11-05 16:06:15
  * @Description: 
  */
 
@@ -140,6 +140,9 @@ export const contractsJobSelector = params => {            // 项目筛选列表
 export const contractsSign = params => {                // 签到  已约面-已到面
     return http(API_BASE_URL + '/contracts/sign', params, "POST", {"Content-Type": "application/json"});
 }
+export const downloadRoster = params => {                // 导出交互花名册
+    return http(API_BASE_URL + '/contracts/downloadRoster', params, "POST", {"Content-Type": "application/json"});
+}
 
 
 // 线索相关
@@ -151,6 +154,9 @@ export const clueSource = params => {       //  获取线索来源枚举
 };
 export const clueInsert = params => {       //  录入求职者信息
     return http(API_BASE_URL + '/clue/insert', params, "POST", { "Content-Type": "application/json" });
+};
+export const batchInsert = params => {       //  批量录入求职者信息
+    return http(API_BASE_URL + '/clue/batchInsert', params, "POST", { "Content-Type": "application/json" });
 };
 export const clueReceive = params => {       //  立即领取客户
     return http(API_BASE_URL + '/clue/receive', params, "POST", { "Content-Type": "application/json" });
@@ -173,11 +179,14 @@ export const clueUpdate = params => {       //  编辑求职者信息
 export const getArrangeableRecruitList = params => {       //  获取我可安排的岗位
     return http(API_BASE_URL + '/interview/getArrangeableRecruitList', params, "POST", { "Content-Type": "application/json" });
 };
-export const arrangeInterview = params => {       //  安排面试
+export const arrangeInterview = params => {                //  安排面试
     return http(API_BASE_URL + '/interview/arrangeInterview', params, "POST", { "Content-Type": "application/json" });
 };
-export const updateInterviewer = params => {       //  更新面试信息
+export const updateInterviewer = params => {               //  更新面试信息
     return http(API_BASE_URL + '/interview/updateInterviewer', params, "POST", { "Content-Type": "application/json" });
+};
+export const batchUpdateInterviewer = params => {          //  批量更新面试信息
+    return http(API_BASE_URL + '/interview/batchUpdateInterviewer', params, "POST", { "Content-Type": "application/json" });
 };
 
 

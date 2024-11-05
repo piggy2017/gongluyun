@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 18:00:13
+ * @LastEditTime: 2024-11-05 09:53:01
  * @Description: 
  */
 
@@ -12,12 +12,9 @@ import { View, Image, Input, ScrollView, Text, Button, Picker } from '@tarojs/co
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
-import { AtIcon, AtFloatLayout } from 'taro-ui'
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
 
-import { getContractsInfo, getContractsInfoStatistics } from '@/util/api';
+import { getContractsInfo, getContractsInfoStatistics, stopContracts } from '@/util/api';
 
 const Index = observer(({ store }) => {
   const route = useRouter();
@@ -57,9 +54,9 @@ const Index = observer(({ store }) => {
     const { contractsSerialCode } = route.params;
     const { code, data, msg } = await getContractsInfoStatistics({ contractsSerialCode });
     console.log("getProjectStatistics_data", code, data);
-    if(code === 200 && data) {
+    if (code === 200 && data) {
       setStatistics(data);
-    }else{
+    } else {
       Taro.showToast({ title: msg, icon: 'none' });
     }
   }
@@ -69,6 +66,19 @@ const Index = observer(({ store }) => {
     Taro.navigateTo({
       url
     })
+  }
+
+  const stopJob = async () => {
+    const { contractsSerialCode } = route.params;
+    Taro.showLoading({ title: '加载中...' });
+    const { code, data, msg } = await stopContracts({ contractsSerialCode });
+    Taro.hideLoading();
+    console.log("stopJob_data", code, data);
+    if (code === 200) {
+      Taro.showToast({ title: '操作成功', icon: 'none' });
+    } else {
+      Taro.showToast({ title: msg, icon: 'none' });
+    }
   }
 
   return (
@@ -213,7 +223,7 @@ const Index = observer(({ store }) => {
       <View className='project_btns'>
         <View style={`height:20rpx;`}></View>
         <View className='btn_wrap'>
-          <View className='btn_item'>
+          <View className='btn_item' onClick={stopJob}>
             <Image src={`${Taro.$cdnUrl}/index/index_icon25.webp`}></Image>
             <View>停招</View>
           </View>
@@ -221,7 +231,7 @@ const Index = observer(({ store }) => {
             <Image src={`${Taro.$cdnUrl}/index/index_icon26.webp`}></Image>
             <View>编辑</View>
           </View>
-          <View className='add_worker' onClick={(e) => navigateFunc(e, '/pages/newPackage/newWorker/index')}>录入求职者</View>
+          <View className='add_worker' onClick={(e) => navigateFunc(e, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>录入求职者</View>
         </View>
         <View style={`height:${bottomSafeAreaHeight}px;`}></View>
       </View>

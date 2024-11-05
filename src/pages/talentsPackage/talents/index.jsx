@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 11:29:29
+ * @LastEditTime: 2024-11-05 15:14:26
  * @Description: 
  */
 
@@ -79,7 +79,7 @@ const Index = observer(({ store }) => {
             endAge,
             jobTypeIds: filterJobTypes.length === 0 ? [] : filterJobTypes.map(item => item.id)
         }
-        const { code, data } = await workbenchclueList({ params });
+        const { code, data } = await workbenchclueList(params);
         console.log("getList", code, data);
         Taro.hideLoading();
         setIsRefresh(false);

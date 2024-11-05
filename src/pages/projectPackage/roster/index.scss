@@ -526,7 +526,8 @@
             background-repeat: no-repeat;
             background-size: 100% 282rpx;
             background-color: #FFF;
-            .export_model_close{
+
+            .export_model_close {
                 position: absolute;
                 top: 20rpx;
                 z-index: 1000;
@@ -535,7 +536,8 @@
                 height: 48rpx;
                 @include flex-center;
             }
-            .export_model_title{
+
+            .export_model_title {
                 color: #000000;
                 text-align: center;
                 font-family: "PingFang SC";
@@ -545,13 +547,15 @@
                 line-height: normal;
                 padding-top: 216rpx;
             }
-            .export_model_img{
+
+            .export_model_img {
                 width: 526rpx;
                 height: 90rpx;
                 display: block;
                 margin: 44rpx auto 0 auto;
             }
-            .export_model_btn{
+
+            .export_model_btn {
                 color: #0483ff;
                 text-align: center;
                 font-family: "PingFang SC";
@@ -560,6 +564,12 @@
                 font-weight: 500;
                 line-height: normal;
                 margin-top: 34rpx;
+                padding: 0;
+                background-color: transparent;
+
+                &::after {
+                    border: none;
+                }
             }
         }
     }

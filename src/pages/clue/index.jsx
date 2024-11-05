@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-01 16:48:46
+ * @LastEditTime: 2024-11-05 14:58:20
  * @Description: 
  */
 
@@ -216,7 +216,7 @@ const Index = observer(({ store }) => {
       startDate: dateClientObj.startDate,
       endDate: dateClientObj.endDate,
     }
-    setMyClientParams({...params});
+    setMyClientParams({ ...params });
     const { code, data } = await cluemyClients(params);
     console.log("getClientList", code, data);
     Taro.hideLoading();
@@ -400,9 +400,13 @@ const Index = observer(({ store }) => {
                             </View>
                           </View>
                           {
+                            (item.age || (item.sex === 0 || item.sex === 1)) &&
+                            <View className='clue_item_info'>{item.age ? item.age + '岁' : ''}{((item.sex === 0 || item.sex === 1) && item.age) ? '·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}</View>
+                          }
+                          {
                             item.recruitTitle ? <View className='clue_item_info'>{item.recruitTitle}</View> : ''
                           }
-                          <View className='clue_item_info'>{item.createTime}录入</View>
+                          <View className='clue_item_info'>{item.createDate}录入</View>
                         </View>
                         {
                           item.isGet &&
