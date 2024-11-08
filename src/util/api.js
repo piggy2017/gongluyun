@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-05 16:06:15
+ * @LastEditTime: 2024-11-07 16:44:58
  * @Description: 
  */
 
@@ -145,6 +145,7 @@ export const downloadRoster = params => {                // 导出交互花名�
 }
 
 
+
 // 线索相关
 export const cluePool = params => {            // 客户池
     return http(API_BASE_URL + '/clue/pool', params, "POST", {"Content-Type": "application/json"});
@@ -194,4 +195,11 @@ export const batchUpdateInterviewer = params => {          //  批量更新面�
 
 export const fetchOssConfig = params => {   //  获取oss校验
     return http(API_BASE_URL + '/upload/stsToken', params, "POST", {"Content-Type": "application/json"});
+};
+
+
+
+// 反馈名单
+export const getFeedbackObjectsByCustomer = params => {   //  客服获取反馈对象
+    return http(API_BASE_URL + '/fb/getFeedbackObjectsByCustomer', params, "POST", {"Content-Type": "application/json"});
 };

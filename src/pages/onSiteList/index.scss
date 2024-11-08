@@ -645,4 +645,72 @@
             }
         }
     }
+
+    .export_model {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        background-color: rgba(0, 0, 0, 0.5);
+        @include flex-center;
+
+        .export_model_content {
+            width: 600rpx;
+            height: 540rpx;
+            flex-shrink: 0;
+            border-radius: 24rpx;
+            position: relative;
+            background-image: url($cdnUrl + '/index/index_icon52.webp');
+            background-repeat: no-repeat;
+            background-size: 100% 282rpx;
+            background-color: #FFF;
+
+            .export_model_close {
+                position: absolute;
+                top: 20rpx;
+                z-index: 1000;
+                right: 20rpx;
+                width: 48rpx;
+                height: 48rpx;
+                @include flex-center;
+            }
+
+            .export_model_title {
+                color: #000000;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 34rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                padding-top: 216rpx;
+            }
+
+            .export_model_img {
+                width: 526rpx;
+                height: 90rpx;
+                display: block;
+                margin: 44rpx auto 0 auto;
+            }
+
+            .export_model_btn {
+                color: #0483ff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                margin-top: 34rpx;
+                padding: 0;
+                background-color: transparent;
+
+                &::after {
+                    border: none;
+                }
+            }
+        }
+    }
 }

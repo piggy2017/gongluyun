@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-05 15:23:01
+ * @LastEditTime: 2024-11-07 17:36:04
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -10,7 +10,8 @@ import {
     observable
 } from 'mobx'
 import {
-    userCenter,clueSource
+    userCenter,
+    clueSource
 } from '@/util/api'
 import Taro from '@tarojs/taro';
 const businessStore = observable({
@@ -71,7 +72,7 @@ const businessStore = observable({
         businessStore.editClientInfos = value;
     },
 
-    sourceGroup:[],     // 来源分组
+    sourceGroup: [], // 来源分组
     setSourceGroup(value) {
         businessStore.sourceGroup = value;
     },
@@ -81,13 +82,32 @@ const businessStore = observable({
         businessStore.employeeInfo = value;
     },
 
-    sourceList: [],     // 来源列表
+    sourceList: [], // 来源列表
     setSourceList() {
         clueSource({}).then(res => {
             console.log("获取线索来源枚举-clueSource", res);
             if (res.code !== 200) return
-            businessStore.sourceList= res.data;
+            businessStore.sourceList = res.data;
         })
+    },
+
+
+    onSiteFilterJob: { // 驻场名单-筛选岗位
+        title: '全部岗位',
+        recruitSerialCode: '',
+        selected: false
+    },
+    setOnSiteFilterJob(value) {
+        businessStore.onSiteFilterJob = value;
+    },
+
+    onSiteFilterSUPPLIER: {
+        name: '全部供应商',
+        userSerialCode: '',
+        selected: false
+    },
+    setOnSiteFilterSUPPLIER(value) {
+        businessStore.onSiteFilterSUPPLIER = value;
     },
 });
 

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-29 15:22:24
+ * @LastEditTime: 2024-11-07 16:52:06
  * @Description: 
  */
 
@@ -19,7 +19,7 @@ import { contractsJobSelector, getArrangeableRecruitList } from '@/util/api'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight },
-        businessStore: { poorJobId, myClientJobId, setPoorJobId, setMyClientJobId, addWorkerJobInfo, setAddWorkerJobInfo, interviewJobInfo, setInterviewJobInfo }
+        businessStore: { poorJobId, myClientJobId, setPoorJobId, setMyClientJobId, addWorkerJobInfo, setAddWorkerJobInfo, interviewJobInfo, setInterviewJobInfo, onSiteFilterJob, setOnSiteFilterJob }
     } = store
     const router = useRouter();
 
@@ -31,19 +31,12 @@ const Index = observer(({ store }) => {
     const pageSize = 20;
     const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
 
-    const [list, setList] = useState([
-        // { name: "龙泉驿区招物流分拣全职月结", id: 1, selected: false },
-        // { name: "龙泉驿区招物流分拣全职月结", id: 2, selected: false },
-        // { name: "龙泉驿区招物流分拣全职月结", id: 3, selected: false },
-        // { name: "龙泉驿区招物流分拣全职月结", id: 4, selected: false },
-        // { name: "龙泉驿区招物流分拣全职月结", id: 5, selected: false },
-        // { name: "龙泉驿区招物流分拣全职月结", id: 6, selected: false },
-    ]);
+    const [list, setList] = useState([]);
     const [type, setType] = useState('');
     const [title, setTitle] = useState('');
 
     useEffect(() => {
-        // type=1 线索-客户池筛选岗位    type=2 线索-我的客户筛选岗位     type=3 录入求职者信息-选择报名岗位    type=4 安排面试-选择招聘岗位
+        // type=1 线索-客户池筛选岗位    type=2 线索-我的客户筛选岗位     type=3 录入求职者信息-选择报名岗位    type=4 安排面试-选择招聘岗位    type=5 驻厂名单-选择岗位
         const { type, title } = router.params;
         console.log('type, title', type, title);
         setType(type);
@@ -83,7 +76,7 @@ const Index = observer(({ store }) => {
                 data.responses[i].selected = false;
             }
             console.log("type", type);
-            if (router.params.type == 1 || router.params.type == 2) {
+            if (router.params.type == 1 || router.params.type == 2 || router.params.type == 5) {
                 if (_pageNo === 1) {
                     let obj = {
                         title: '全部岗位',
@@ -107,8 +100,12 @@ const Index = observer(({ store }) => {
                     if (data.responses[i].recruitSerialCode == addWorkerJobInfo.recruitSerialCode) {
                         data.responses[i].selected = true;
                     }
-                }else if (router.params.type == 3) {
+                } else if (router.params.type == 4) {
                     if (data.responses[i].recruitSerialCode == interviewJobInfo.recruitSerialCode) {
+                        data.responses[i].selected = true;
+                    }
+                } else if (router.params.type == 5) {
+                    if (data.responses[i].recruitSerialCode == onSiteFilterJob.recruitSerialCode) {
                         data.responses[i].selected = true;
                     }
                 }
@@ -160,8 +157,10 @@ const Index = observer(({ store }) => {
             setMyClientJobId(obj);
         } else if (type == 3) {
             setAddWorkerJobInfo(obj);
-        }else if (type == 4) {
+        } else if (type == 4) {
             setInterviewJobInfo(obj);
+        } else if (type == 5) {
+            setOnSiteFilterJob(obj);
         }
         setTimeout(() => {
             Taro.navigateBack({ delta: 1 });
@@ -209,6 +208,26 @@ const Index = observer(({ store }) => {
                             }
                         </View>
                     })
+                }
+                {
+                    list.length >= 14 &&
+                    <View className='loading_text'>
+                        {
+                            goonLoad ?
+                                <>
+                                    <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
+                                    加载中
+                                </> :
+                                "数据已经到底了"
+                        }
+                    </View>
+                }
+                {
+                    list.length === 0 && requestState === 3 &&
+                    <View className='no_data'>
+                        <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
+                        <View>暂无相关数据~</View>
+                    </View>
                 }
             </ScrollView>
         </View>

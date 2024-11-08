@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-31 17:01:39
+ * @LastEditTime: 2024-11-07 09:35:25
  * @Description: 
  */
 
@@ -191,7 +191,7 @@ const Index = observer(({ store }) => {
                 }
 
                 {
-                    list.length >= 4 &&
+                    list.length >= 10 &&
                     <View className='loading_text'>
                         {
                             goonLoad ?

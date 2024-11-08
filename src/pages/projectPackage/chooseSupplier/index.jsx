@@ -2,38 +2,25 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-10 14:54:05
+ * @LastEditTime: 2024-11-08 10:55:50
  * @Description: 
  */
-/*
- * @Author: 孙林 1164700321@qq.com
- * @Date: 2024-09-09 09:48:48
- * @LastEditors: 孙林
- * @LastEditTime: 2024-09-23 11:05:02
- * @Description: 
- */
-/*
- * @Author: 孙林 1164700321@qq.com
- * @Date: 2024-09-09 09:48:48
- * @LastEditors: 孙林
- * @LastEditTime: 2024-09-12 10:53:33
- * @Description: 
- */
+
 import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Block, Picker } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
-
 import Navbar from '@/components/navbar';
-import { AtIcon, AtFloatLayout } from 'taro-ui'
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
+
+import { getFeedbackObjectsByCustomer } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
+        businessStore: { onSiteFilterSUPPLIER, setOnSiteFilterSUPPLIER },
+        userStore: { companyInfo },
     } = store
 
     const [searchValue, setSearchValue] = useState('');
@@ -41,16 +28,11 @@ const Index = observer(({ store }) => {
 
     const [isRefresh, setIsRefresh] = useState(false);
     const [goonLoad, setgoonLoad] = useState(true);
-    const [title, setTitle] = useState('龙泉驿区招物流分拣全职月结');
+    const [pageNo, setPageNo] = useState(1);
+    const pageSize = 20;
+    const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
 
-    const [list, setList] = useState([
-        { isChoosed: false, name: "全部" },
-        { isChoosed: false, name: "供应商-成都西红人力资源" },
-        { isChoosed: false, name: "供应商-张三" },
-        { isChoosed: false, name: "供应商-张三" },
-        { isChoosed: false, name: "供应商-张三" },
-        { isChoosed: false, name: "供应商-张三" },
-    ])
+    const [list, setList] = useState([]);
 
     useEffect(() => {
         setTimeout(async () => {
@@ -60,14 +42,63 @@ const Index = observer(({ store }) => {
                 setSearchHeight(_query.height)
             }
         }, 0);
+        getList(1);
     }, [])
+
+    const getList = async (_pageNo) => {
+        setRequestState(1);
+        Taro.showLoading({ title: '加载中...' });
+        let params = {
+            pageNo: _pageNo,
+            pageSize,
+            searchInfo: searchValue,
+            companySerialCode: companyInfo.companySerialCode
+        }
+        const { code, data } = await getFeedbackObjectsByCustomer(params);
+        console.log("getClueList", code, data);
+        Taro.hideLoading();
+        setIsRefresh(false);
+        if (code === 200 && data.responses?.length > 0) {
+            for (let i = 0; i < data.responses.length; i++) {
+                data.responses[i].selected = false;
+            }
+            if (_pageNo === 1) {
+                let obj = {
+                    name: '全部供应商',
+                    userSerialCode: '',
+                    selected: false
+                }
+                data.responses.unshift(obj);
+            }
+            for (let i = 0; i < data.responses.length; i++) {
+                if (data.responses[i].userSerialCode == onSiteFilterSUPPLIER.userSerialCode) {
+                    data.responses[i].selected = true;
+                }
+            }
+            setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
+            setgoonLoad(true);
+            setPageNo(data.pageNo);
+            setRequestState(2);
+        } else {
+            setgoonLoad(false);
+            setRequestState(3);
+            if (_pageNo === 1) {
+                setList([]);
+            }
+        }
+    }
 
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
+        if (goonLoad) {
+            getList(pageNo + 1);
+        }
     }, 500);
 
     const handleScrollToUpper = debounce(() => {  // 滑动到最顶部,触发下拉刷新
         console.log('下拉刷新');
+        setIsRefresh(true);
+        getList(1);
     }, 200);
 
     const getHeight = () => {
@@ -82,6 +113,10 @@ const Index = observer(({ store }) => {
             })
             return _list
         })
+        setOnSiteFilterSUPPLIER(obj);
+        setTimeout(() => {
+            Taro.navigateBack({ delta: 1 });
+        }, 300);
     }
 
     return (
@@ -126,6 +161,26 @@ const Index = observer(({ store }) => {
                             </View>
                         )
                     })
+                }
+                {
+                    list.length >= 14 &&
+                    <View className='loading_text'>
+                        {
+                            goonLoad ?
+                                <>
+                                    <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
+                                    加载中
+                                </> :
+                                "数据已经到底了"
+                        }
+                    </View>
+                }
+                {
+                    list.length === 0 && requestState === 3 &&
+                    <View className='no_data'>
+                        <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
+                        <View>暂无相关数据~</View>
+                    </View>
                 }
             </ScrollView>
         </View>

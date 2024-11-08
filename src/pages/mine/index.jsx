@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-08 17:35:28
+ * @LastEditTime: 2024-11-08 11:11:11
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -15,8 +15,25 @@ import './index.scss'
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-    userStore: { isLogin, companyVerified }
+    userStore: { isLogin, role, userInfo, companyInfo, companyVerified }
   } = store
+
+  useEffect(() => {
+    console.log("userInfo", userInfo);
+    console.log("companyVerified_companyInfo", companyVerified, companyInfo);
+  }, [])
+
+  const getRole = (type) => {
+    if (type === 'ADMIN') {
+      return '管理员'
+    } else if (type === 'CUSTOMER') {
+      return '客服'
+    } else if (type === 'ON_SITE') {
+      return '驻厂'
+    } else if (type === 'SUPPLIER') {
+      return '供应商'
+    }
+  }
 
   const navigateFunc = (type, url) => {
     if (type) {   // 需要校验用户是否登录
@@ -40,16 +57,29 @@ const Index = observer(({ store }) => {
         </View>
       </View>
 
-      <View className='user_info'>
-        <View className='user_info_avatar'></View>
-        <View className='user_info_right'>
-          <View className='user_info_name'>
-            <Text>{isLogin ? '已认证' : '未登录'}</Text>
-            {isLogin ? <Text className='user_info_role'>管理员</Text> : ''}
+
+      {
+        !isLogin &&
+        <View className='user_info'>
+          <View className='user_info_avatar'></View>
+          <View className='user_info_right'>
+            <View className='user_info_name'>
+              <Text>未登录</Text>
+            </View>
+            <View className='user_info_compony'>点击登录后使用工路云</View>
           </View>
-          <View className='user_info_compony'>{isLogin ? '成都xxxx科技有限公司' : '点击登录后使用招小帮'}</View>
+        </View> ||
+        <View className='user_info'>
+          <Image className='user_info_avatar' src={userInfo.avatar}></Image>
+          <View className='user_info_right'>
+            <View className='user_info_name'>
+              <Text>{userInfo.nickName}</Text>
+              <Text className='user_info_role'>{getRole(userInfo.userRole)}</Text>
+            </View>
+            <View className='user_info_compony'>{companyInfo.company}</View>
+          </View>
         </View>
-      </View>
+      }
 
       <View className='section_group'>
         <View className='section_item' onClick={() => navigateFunc(1, '/pages/minePackage/employeeManage/index')}>

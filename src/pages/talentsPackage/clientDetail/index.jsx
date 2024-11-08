@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-05 11:15:44
+ * @LastEditTime: 2024-11-08 10:20:44
  * @Description: 
  */
 
@@ -21,7 +21,7 @@ import DatePicker from '@/components/datePicker'
 import UpdateStatus from '@/components/updateStatus';
 import './index.scss'
 
-import { cluegetUserInfo, updateInterviewer, clueStateFlow, cluemyClients } from '@/util/api'
+import { cluegetUserInfo, updateInterviewer, clueStateFlow, cluemyClients, contractsgetRoster } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
@@ -171,12 +171,13 @@ const Index = observer(({ store }) => {
     }
 
     const getOherClient = async (_current) => {
+        const { type } = route.params;
         let _params = {
             ...myClientParams,
             pageNo: _current,
             pageSize: 1
         }
-        const { code, data, msg } = await cluemyClients(_params);
+        const { code, data, msg } = await (type ? contractsgetRoster(_params) : cluemyClients(_params));// cluemyClients(_params);
         console.log("code_getOherClient", code, "data", data, "msg", msg);
         if (code === 200 && data?.responses?.length > 0) {
             setCurrent(_current);
@@ -198,7 +199,7 @@ const Index = observer(({ store }) => {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
                 setClientInfos({ ...clientInfos, seekState: e });
             } else {
-                Taro.showToast({ title: res.msg, icon: 'none' })
+                Taro.showToast({ title: res.msg, icon: 'none' });
             }
         })
     }

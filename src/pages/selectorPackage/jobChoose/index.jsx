@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:41:55
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 11:14:48
+ * @LastEditTime: 2024-11-06 17:40:02
  * @Description: 
  */
 /* eslint-disable react/jsx-key */
@@ -59,7 +59,6 @@ const ChooseJob = observer(({ store }) => {
                 const query_tab = await selectorQueryDomInfo('.close_popup');
                 setTopDis(query_tab && query_tab.height || 0);
             });
-
         }
         fetchData();
         return () => {

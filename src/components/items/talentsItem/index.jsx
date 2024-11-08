@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-05 15:07:19
+ * @LastEditTime: 2024-11-06 14:09:29
  * @Description: 人才库列表结果的item,需要传入 index，item
  */
 import React, { useState, useEffect } from 'react';
@@ -18,7 +18,7 @@ const TalentsItem = observer(({ store, index, item }) => {
 
     return (
         <>
-            <View className='talents_item' key={index}>
+            <View className='talents_item' key={index} onClick={() => Taro.navigateTo({ url: `/pages/talentsPackage/signUpHistory/index?uuid=${item.uuid}&phone=${item.phone}` })}>
                 <View className='talents_item_title'>
                     <View className='talents_item_title_left'>
                         <View className='talents_item_title_name'>{item.name}</View>
@@ -48,7 +48,7 @@ const TalentsItem = observer(({ store, index, item }) => {
                         item.jobNames && item.jobNames.length > 0 &&
                         item.jobNames.map((jobName, idx) => {
                             return (
-                                <Text key={idx}>{jobName}</Text>
+                                <Text key={idx}>{jobName}{idx === item.jobNames.length - 1 ? '' : '、'}</Text>
                             )
                         })
                     }
@@ -67,5 +67,5 @@ const TalentsItem = observer(({ store, index, item }) => {
 });
 
 export default inject('store')(React.memo(TalentsItem, (prevProps, nextProps) => {
-    return prevProps.index === nextProps.index && prevProps.store === nextProps.store;
+    return prevProps.item === nextProps.item && prevProps.store === nextProps.store;
 }));

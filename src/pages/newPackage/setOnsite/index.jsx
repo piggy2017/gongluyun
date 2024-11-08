@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-31 10:40:10
+ * @LastEditTime: 2024-11-07 10:37:08
  * @Description: 
  */
 
@@ -65,7 +65,7 @@ const Index = observer(({ store }) => {
             pageSize,
             companySerialCode: companyInfo.companySerialCode,
             status: 0,
-            roleId: 'ON_SITE'
+            roleId: '3'
         }
         setRequestState(1);
         Taro.showLoading({ title: '加载中...' });

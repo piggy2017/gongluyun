@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-31 10:45:05
+ * @LastEditTime: 2024-11-07 10:47:56
  * @Description: 
  */
 
@@ -11,6 +11,7 @@ import Taro from '@tarojs/taro';
 import { View, Image, Text, Input, Button, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { decryptData, encryptData } from '@/util/crypto'
 import Navbar from '@/components/navbar';
 import {
     loginPhone, loginEmployeePhone, getRoleAndPermissionByUserId
@@ -94,8 +95,8 @@ const Index = observer(({ store }) => {
             return Taro.showToast({ title: "请阅读并同意隐私协议", icon: "none", duration: 2000 })
         }
         let params = {
-            phone: account,
-            password: password
+            phone: encryptData(account),
+            password: encryptData(password), //password
         }
         Taro.showLoading({
             title: "请求中",

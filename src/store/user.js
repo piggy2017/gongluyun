@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-31 10:53:19
+ * @LastEditTime: 2024-11-08 11:10:38
  * @Description: 用于存放用户的相关信息
  */
 
@@ -28,6 +28,7 @@ const userStore = observable({
                 userStore.userInfo = res?.data?.userInfo;
                 Taro.setStorageSync('userInfo', res?.data?.userInfo);
                 userStore.companyInfo = res?.data;
+                userStore.companyVerified= res?.data?.companyVerified;
                 userStore.role = res?.data?.userInfo.userRole;
                 Taro.setStorageSync('role', res?.data?.userInfo.userRole);
                 Taro.setStorageSync('companyInfo', res.data);

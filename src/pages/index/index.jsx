@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-31 10:45:57
+ * @LastEditTime: 2024-11-08 11:06:09
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -178,6 +178,18 @@ const Index = observer(({ store }) => {
     console.log("自定义选择日期组件 customDateSelect", e);
   }
 
+  const getRole = (type) => {
+    if (type === 'ADMIN') {
+      return '管理员'
+    } else if (type === 'CUSTOMER') {
+      return '客服'
+    } else if (type === 'ON_SITE') {
+      return '驻厂'
+    } else if (type === 'SUPPLIER') {
+      return '供应商'
+    }
+  }
+
 
   return (
     <View className='container'>
@@ -188,8 +200,12 @@ const Index = observer(({ store }) => {
             (!isLogin || role === 'SEEK') &&
             <View className='default_logo'>
               <Image src={`${Taro.$cdnUrl}/index/index_icon60.webp`}></Image>
+            </View> ||
+            <View className='user_infos'>
+              <Image src={userInfo?.avatar}></Image>
+              <View>{userInfo.nickName ? userInfo.nickName : ''}</View>
+              <View className='role_tag'>{getRole(userInfo.userRole)}</View>
             </View>
-
           }
         </View>
       </View>

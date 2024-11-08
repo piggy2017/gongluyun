@@ -24,13 +24,45 @@
             flex-flow: row nowrap;
             align-items: center;
             padding-left: 30rpx;
-            .default_logo{
+
+            .default_logo {
                 width: 80rpx;
                 height: 88rpx;
                 flex-shrink: 0;
-                image{
+
+                image {
                     width: 100%;
                     height: 100%;
+                }
+            }
+
+            .user_infos {
+                @include flex-center(flex-start);
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 34rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+
+                image {
+                    width: 68rpx;
+                    height: 68rpx;
+                    border-radius: 50%;
+                    margin-right: 6rpx;
+                }
+
+                .role_tag {
+                    color: #ffffff;
+                    font-family: "Alibaba PuHuiTi 2.0";
+                    font-size: 24rpx;
+                    font-style: normal;
+                    font-weight: 55 Regular;
+                    line-height: normal;
+                    padding: 2rpx 10rpx;
+                    background-color: #1678FF;
+                    border-radius: 4rpx;
+                    margin-left: 6rpx;
                 }
             }
         }
