@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-10 16:18:39
+ * @LastEditTime: 2024-11-08 14:40:42
  * @Description: 
  */
 /*
@@ -13,39 +13,47 @@
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
-
-import { AtIcon, AtFloatLayout } from 'taro-ui'
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
+import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
 import './index.scss'
-
+import { contractsgetRoster } from '@/util/api'
 import Navbar from '@/components/navbar';
 
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
         userStore: { isLogin, companyVerified }
-    } = store
+    } = store;
+    const filterList = [                 // 时间筛选列表
+        { text: "今日", code: "TODAY" },
+        { text: "昨日", code: "YESTERDAY" },
+        { text: "本周", code: "THIS_WEEK" },
+        { text: "上周", code: "LAST_WEEK" },
+        { text: "本月", code: "THIS_MONTH" },
+        { text: "上月", code: "LAST_MONTH" },
+    ];
+    const route = useRouter();
     const [infoHeight, setInfoHeight] = useState(94);
 
     const [isRefresh, setIsRefresh] = useState(false);
     const [goonLoad, setgoonLoad] = useState(true);
-    const [title, setTitle] = useState('龙泉驿区招物流分拣全职月结');
+    const [pageNo, setPageNo] = useState(1);
+    const pageSize = 10
+    const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
+    const [totalCount, setTotalCount] = useState(0);
+    const [title, setTitle] = useState('');
 
-    const [list, setList] = useState([
-        { id: 1, userName: "高小光", status: 1, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { id: 2, userName: "高小光", status: 2, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { id: 3, userName: "高小光", status: 3, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { id: 4, userName: "高小光", status: 4, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { id: 5, userName: "高小光", status: 5, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-        { id: 6, userName: "高小光", status: 6, isChoosed: false, showOptions: false, phone: '177 6548 0923', detail: "45岁·男", source: "供应商-成都西红人力资源", interviewTime: "7月25日" },
-    ])
+    const [list, setList] = useState([])
+    const [source, setSource] = useState('');
 
     useEffect(() => {
+        console.log("route", route);
+        const { title, sourceName, dateRange, startDate, endDate } = route.params;
+        setTitle(title);
+        setSource(sourceName);
+
         setTimeout(async () => {
             const _query = await selectorQueryDomInfo('.export_infos');
             if (_query?.height) {
@@ -53,53 +61,57 @@ const Index = observer(({ store }) => {
                 setInfoHeight(_query.height)
             }
         }, 0);
+
+        getList(1);
     }, [])
+
+    const getList = async (_pageNo) => {    // 获取花名册列表
+        setRequestState(1);
+        Taro.showLoading({ title: '加载中...' });
+        let params = {
+            ...route.params,
+            pageNo: _pageNo * 1,
+            pageSize
+        }
+        // delete params.title;
+        console.log('params', params);
+        const { code, data } = await contractsgetRoster(params);
+        console.log("获取花名册列表", code, data);
+        Taro.hideLoading();
+        setIsRefresh(false);
+        if (code === 200 && data.responses?.length > 0) {
+            setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
+            setgoonLoad(true);
+            setPageNo(data.pageNo);
+            setTotalCount(data.totalCount);
+            setRequestState(2);
+        } else {
+            setgoonLoad(false);
+            setRequestState(3);
+            setTotalCount(data.totalCount);
+            if (_pageNo === 1) {
+                setList([]);
+            }
+        }
+    }
 
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
+        if (goonLoad) {
+            getList(pageNo + 1);
+        }
     }, 500);
 
     const handleScrollToUpper = debounce(() => {  // 滑动到最顶部,触发下拉刷新
         console.log('下拉刷新');
+        setIsRefresh(true);
+        getList(1);
     }, 200);
 
     const getHeight = () => {
         return `calc(100vh - ${statusTitleHeight + contenTitleHeight + infoHeight}px)`;
     }
 
-    const getStatus = (status) => {
-        switch (status) {
-            case 1:
-                return '已约面';
-            case 2:
-                return '已到面';
-            case 3:
-                return '面试通过';
-            case 4:
-                return '面试失败';
-            case 5:
-                return '已入职';
-            case 6:
-                return '已离职';
-        }
-    }
-
-    const getColor = (status) => {
-        switch (status) {
-            case 1:
-                return '#08B5FF';
-            case 2:
-                return '#1678FF';
-            case 3:
-                return '#FF7C32';
-            case 4:
-                return '#F00000';
-            case 5:
-                return '#04B400';
-            case 6:
-                return '#666666';
-        }
-    }
     const callUser = (e, obj) => {
         e.stopPropagation();
         Taro.makePhoneCall({
@@ -107,14 +119,21 @@ const Index = observer(({ store }) => {
         })
     }
 
+    const getDate = (_code) => {
+        if (_code) {
+            let _item = filterList.filter(item => item.code === _code);
+            return _item[0].text;
+        }
+    }
+
     return (
         <View className='container'>
             <Navbar fixed back={false} placeholder bgColor='transparent' title='名单反馈'></Navbar>
 
             <View className='export_infos'>
-                <View className='export_infos_name'>岗位：龙泉驿区招物流分拣全职月结</View>
-                <View className='export_infos_name'>供应商-成都西红人力资源</View>
-                <View className='export_infos_time'>时间：7.6日-7.7日</View>
+                <View className='export_infos_name'>岗位：{title}</View>
+                <View className='export_infos_name'>来源：{source}</View>
+                <View className='export_infos_time'>时间：{route.params.dateRange ? getDate(route.params.dateRange) : route.params.startDate + '-' + route.params.endDate}</View>
             </View>
 
             <ScrollView
@@ -137,22 +156,43 @@ const Index = observer(({ store }) => {
                                 <View className='roster_item_title'>
                                     <View className='item_title_index'>{index + 1}</View>
                                     <View className='item_title_left'>
-                                        <View className='item_title_name'>{item.userName}</View>
+                                        <View className='item_title_name'>{item.name}</View>
                                         <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
                                         <View className='item_title_phone' onClick={(e) => callUser(e, item)}>{item.phone}</View>
                                     </View>
                                 </View>
                                 <View className='roster_item_detail'>
-                                    <View className='roster_item_detail_content'>{item.detail}</View>
-                                    <View className='roster_item_detail_status' style={{ color: getColor(item.status) }}>
-                                        <View>{getStatus(item.status)}</View>
-                                        <AtIcon value='chevron-down' size='14' color={getColor(item.status)}></AtIcon>
+                                    <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.idCardNo) ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
+                                    <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }}>
+                                        <View>{getStatus(item.seekState)}</View>
+                                        {/* <AtIcon value='chevron-down' size='14' color={getColor(item.status)}></AtIcon> */}
                                     </View>
                                 </View>
-                                <View className='roster_item_time'>面试时间：{item.interviewTime}</View>
+                                <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
                             </View>
                         )
                     })
+                }
+
+                {
+                    list.length >= 7 &&
+                    <View className='loading_text'>
+                        {
+                            goonLoad ?
+                                <>
+                                    <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
+                                    加载中
+                                </> :
+                                "数据已经到底了"
+                        }
+                    </View>
+                }
+                {
+                    list.length === 0 && requestState === 3 &&
+                    <View className='no_data'>
+                        <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
+                        <View>暂无相关数据~</View>
+                    </View>
                 }
             </ScrollView>
         </View>

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-07 17:36:04
+ * @LastEditTime: 2024-11-08 15:59:30
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -108,6 +108,21 @@ const businessStore = observable({
     },
     setOnSiteFilterSUPPLIER(value) {
         businessStore.onSiteFilterSUPPLIER = value;
+    },
+
+
+    onSiteInfo: {     // 添加项目设置驻场人员
+        name: '',
+        phone: '',
+        userSerialCode: '',
+    },
+    setOnSiteInfo(value) {
+        businessStore.onSiteInfo = value;
+    },
+
+    editProjectInfo: null, // 编辑项目信息
+    setEditProjectInfo(value) {
+        businessStore.editProjectInfo = value;
     },
 });
 

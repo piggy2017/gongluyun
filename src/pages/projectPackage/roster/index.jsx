@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 09:37:08
+ * @LastEditTime: 2024-11-08 11:34:26
  * @Description: 
  */
 
@@ -329,9 +329,9 @@ const Index = observer(({ store }) => {
             let _par = {
                 ...customRequestParams,
                 title: title,
-                source: sourceObj.name,
+                sourceName: sourceObj.name,
             }
-            const params = new URLSearchParams(customRequestParams);
+            const params = new URLSearchParams(_par);
             path = `${path}?${params.toString()}`
         } else {
             path = `/pages/index/index`

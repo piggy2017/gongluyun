@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-15 18:01:54
+ * @LastEditTime: 2024-11-08 15:25:52
  * @Description: 
  */
 
@@ -27,14 +27,13 @@ const Index = observer(({ store }) => {
 
     const goLink = (type, id) => {
         Taro.redirectTo({
-            url: type === 1 ? `/pages/projectPackage/projectDetail/index?id=${id}` : '/pages/newPackage/newProject/index'
+            url: type === 1 ? `/pages/projectPackage/projectDetail/index?contractsSerialCode=${router.params.serialCode}` : '/pages/newPackage/newProject/index'
         })
     }
 
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='transparent' title=''></Navbar>
-
             <View className='success_info'>
                 <Image src={`${Taro.$cdnUrl}/index/index_icon51.webp`}></Image>
                 <View>项目发布成功</View>

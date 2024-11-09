@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-05 09:53:01
+ * @LastEditTime: 2024-11-08 16:15:50
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
-import Taro, { useRouter } from '@tarojs/taro';
+import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Button, Picker } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
@@ -20,18 +20,20 @@ const Index = observer(({ store }) => {
   const route = useRouter();
   const {
     baseStore: { bottomSafeAreaHeight },
+    businessStore: { setEditProjectInfo },
   } = store
 
   const [detail, setDetail] = useState('');
   const [statistics, setStatistics] = useState({});
-  const [contactInfo, setContactInfo] = useState('');
-  const [address, setAddress] = useState('');
-  const [time, setTime] = useState('');
 
   useEffect(() => {
     getProjectDetail();
     getProjectStatistics();
   }, [])
+
+  useDidShow(()=>{
+    getProjectDetail();
+  })
 
   const getProjectDetail = async () => {
     const { contractsSerialCode, numberRecruits, numberOnJob, leaveRate, supplierCount } = route.params;
@@ -40,7 +42,7 @@ const Index = observer(({ store }) => {
     Taro.hideLoading();
     console.log("getProjectDetail_data", data);
     if (code === 200 && data) {
-      data.numberRecruits = numberRecruits;
+      // data.numberRecruits = numberRecruits;
       data.numberOnJob = numberOnJob;
       data.leaveRate = leaveRate;
       data.supplierCount = supplierCount;
@@ -81,6 +83,11 @@ const Index = observer(({ store }) => {
     }
   }
 
+  const goEditProject = () => {   // 编辑项目
+    setEditProjectInfo(detail);
+    Taro.navigateTo({ url: `/pages/newPackage/newProject/index` });
+  }
+
   return (
     <View className='container'>
       <Navbar fixed placeholder bgColor='transparent' title='项目详情'></Navbar>
@@ -111,7 +118,7 @@ const Index = observer(({ store }) => {
       <View className='project_datas'>
         <View className='project_title'>
           <View>交付数据</View>
-          <View className='project_more' onClick={(e) => navigateFunc(e, '/pages/projectPackage/roster/index')}>
+          <View className='project_more' onClick={(e) => navigateFunc(e, `/pages/projectPackage/roster/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>
             <View>查看花名册</View>
             <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
           </View>
@@ -140,8 +147,8 @@ const Index = observer(({ store }) => {
         <View className='project_title'>
           <View>面试信息</View>
           {
-            (contactInfo || address || time) &&
-            <View className='project_more'>
+            (detail.interviewContactId && detail.addressDetail && detail.interviewDate) &&
+            <View className='project_more' onClick={goEditProject}>
               <View>修改</View>
               <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
             </View>
@@ -149,17 +156,17 @@ const Index = observer(({ store }) => {
         </View>
 
         {
-          contactInfo &&
+          detail.interviewContactId &&
           <View className='interview_item'>
             <Image src={`${Taro.$cdnUrl}/index/index_icon22.webp`}></Image>
-            <View className='interview_item_content'><Text>驻场联系人：</Text>王老师 17780662488</View>
+            <View className='interview_item_content'><Text>驻场联系人：</Text>{detail.interviewContactName} {detail.interviewContactPhone}</View>
           </View> ||
           <View className='interview_item_set'>
             <View className='interview_item_set_left'>
               <Image src={`${Taro.$cdnUrl}/index/index_icon22.webp`}></Image>
               <View className='interview_item_content'>驻场联系人:</View>
             </View>
-            <View className='interview_item_set_right'>
+            <View className='interview_item_set_right' onClick={goEditProject}>
               <View>设置驻场联系人</View>
               <Image src={`${Taro.$cdnUrl}/index/index_icon57.webp`}></Image>
             </View>
@@ -167,17 +174,17 @@ const Index = observer(({ store }) => {
         }
 
         {
-          address &&
+          detail.addressDetail &&
           <View className='interview_item'>
             <Image src={`${Taro.$cdnUrl}/index/index_icon23.webp`}></Image>
-            <View className='interview_item_content'><Text>面试地点：</Text>成都市郫都区国宁西路88号（距犀浦地铁站250米）</View>
+            <View className='interview_item_content'><Text>面试地点：</Text>{detail.addressDetail}</View>
           </View> ||
           <View className='interview_item_set'>
             <View className='interview_item_set_left'>
               <Image src={`${Taro.$cdnUrl}/index/index_icon23.webp`}></Image>
               <View className='interview_item_content'>面试地点：</View>
             </View>
-            <View className='interview_item_set_right'>
+            <View className='interview_item_set_right' onClick={goEditProject}>
               <View>设置面试地点</View>
               <Image src={`${Taro.$cdnUrl}/index/index_icon57.webp`}></Image>
             </View>
@@ -185,17 +192,17 @@ const Index = observer(({ store }) => {
         }
 
         {
-          time &&
+          detail.interviewDate &&
           <View className='interview_item'>
             <Image src={`${Taro.$cdnUrl}/index/index_icon24.webp`}></Image>
-            <View className='interview_item_content'><Text>面试时间：</Text>每周工作日早上10点-12点，下午2点-5点</View>
+            <View className='interview_item_content'><Text>面试时间：</Text>{detail.interviewDate}</View>
           </View> ||
           <View className='interview_item_set'>
             <View className='interview_item_set_left'>
               <Image src={`${Taro.$cdnUrl}/index/index_icon24.webp`}></Image>
               <View className='interview_item_content'>面试时间：</View>
             </View>
-            <View className='interview_item_set_right'>
+            <View className='interview_item_set_right' onClick={goEditProject}>
               <View>设置面试时间</View>
               <Image src={`${Taro.$cdnUrl}/index/index_icon57.webp`}></Image>
             </View>
@@ -206,18 +213,13 @@ const Index = observer(({ store }) => {
       <View className='interview_info'>
         <View className='project_title'>
           <View>招聘简章</View>
-          <View className='project_more'>
+          <View className='project_more' onClick={goEditProject}>
             <View>修改</View>
             <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
           </View>
         </View>
 
-        <View className='job_introduce'>公司生产面包点心等，主要工作是包装、流水线操作等简单易上手的工作。
-          上班时间：
-          早班6-15
-          中班：8：30-17：30
-          晚班：10：00-19：00
-          薪资待遇5-6K，面试根据能力定薪，入职购买社保，一年后买公积金等。</View>
+        <View className='job_introduce'>{detail.introduction}</View>
       </View>
 
       <View className='project_btns'>
@@ -227,7 +229,7 @@ const Index = observer(({ store }) => {
             <Image src={`${Taro.$cdnUrl}/index/index_icon25.webp`}></Image>
             <View>停招</View>
           </View>
-          <View className='btn_item'>
+          <View className='btn_item' onClick={goEditProject}>
             <Image src={`${Taro.$cdnUrl}/index/index_icon26.webp`}></Image>
             <View>编辑</View>
           </View>

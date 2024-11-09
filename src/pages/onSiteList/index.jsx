@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 10:56:22
+ * @LastEditTime: 2024-11-08 14:34:17
  * @Description: 
  */
 
@@ -334,15 +334,14 @@ const Index = observer(({ store }) => {
   }
 
   Taro.useShareAppMessage(res => {
-    let path = `/pages/projectPackage/viewExport/index`
+    let path = `/pages/projectPackage/siteExport/index`
     if (res.from === 'button') {
       console.log("页面中的分享---customRequestParams", customRequestParams);
       let _par = {
         ...customRequestParams,
-        title: title,
-        source: sourceObj.name,
+        sourceName: onSiteFilterSUPPLIER.name,
       }
-      const params = new URLSearchParams(customRequestParams);
+      const params = new URLSearchParams(_par);
       path = `${path}?${params.toString()}`
     } else {
       path = `/pages/index/index`

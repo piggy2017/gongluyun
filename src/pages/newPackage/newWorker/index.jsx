@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 16:55:56
+ * @LastEditTime: 2024-11-08 16:06:57
  * @Description: 
  */
 /*
@@ -17,11 +17,7 @@ import React, { useState, useEffect } from 'react'
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, Textarea, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
-import { AtIcon, AtFloatLayout } from 'taro-ui'
 import { reverseGeocoder } from '@/util/getLocation';
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import './index.scss'
 

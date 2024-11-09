@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-04 11:10:56
+ * @LastEditTime: 2024-11-08 17:15:56
  * @Description: 
  */
 export default defineAppConfig({
@@ -108,7 +108,16 @@ export default defineAppConfig({
                 "feedbackObject/index",           // 选择反馈对象
                 "siteSearch/index",               // 驻场-名单 搜索结果页面
                 "chooseSupplier/index",           // 驻场-名单 选择供应商
-                "viewExport/index",               // 驻场-名单 查看导出
+                "viewExport/index",               // 花名册 查看导出
+                "siteExport/index",               // 驻场-名单 查看导出
+            ]
+        },
+        {
+            "root": "pages/signInPackage/",       // 求职者签到-相关页面
+            "pages": [
+                "signIn/index",                   // 签到页面
+                "signLogin/index",                // 求职者签到-登录页面
+                "signSuccess/index",              // 求职者签到-成功页面
             ]
         }
     ]

@@ -2,18 +2,15 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-05 15:43:09
+ * @LastEditTime: 2024-11-08 17:51:13
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
 import Taro from '@tarojs/taro';
-import { View, Image, Text, Input, ScrollView, Block } from '@tarojs/components'
+import { View, Image, Text, Input} from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
-import { AtIcon, AtFloatLayout } from 'taro-ui'
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
+import { debounce } from '@/util/utils'
 import './index.scss'
 
 import TalentsItem from '@/components/items/talentsItem'
@@ -27,25 +24,21 @@ import {
 const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { isLogin, companyVerified }
+        baseStore: { statusTitleHeight, contenTitleHeight},
     } = store
 
+    const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
     const [searchValue, setSearchValue] = useState('');
     const [list, setList] = useState([])
-
     const [clueList, setClueList] = useState([])
-
-    const [jobList, setJobList] = useState([
-        '龙泉驿区招物流分拣全职月结普工',
-        '龙泉驿区招物流分拣全职月结普工',
-        '龙泉驿区招物流分拣全职月结普工'
-    ])
+    const [jobList, setJobList] = useState([])
 
     const getData = async (value) => {
         const { code, data: { cluePools, contracts, talentPools } } = await workbenchSearch({ searchInfo: value });
         console.log("搜索结果", code);
+        setRequestState(1);
         if (code === 200) {
+            setRequestState(2);
             setClueList(cluePools);
             setList(talentPools);
             setJobList(contracts);
@@ -70,6 +63,7 @@ const Index = observer(({ store }) => {
             })
             forceUpdate();
         } else {
+
             Taro.showToast({ title: msg, icon: 'none', duration: 2000 });
         }
         Taro.hideLoading();
@@ -168,15 +162,23 @@ const Index = observer(({ store }) => {
                 <View className='jobs_wrapper'>
                     {
                         jobList.length > 0 && jobList.map((item, index) => {
-                            return <View onClick={()=>{
+                            return <View onClick={() => {
                                 Taro.navigateTo({
-                                    url:`/pages/projectPackage/projectDetail/index?contractsSerialCode=${item.serialCode}&numberRecruits=${item.numberRecruits}&numberOnJob=${item.numberOnJob}&leaveRate=${item.leaveRate}&supplierCount=${item.supplierCount}`
+                                    url: `/pages/projectPackage/projectDetail/index?contractsSerialCode=${item.serialCode}&numberRecruits=${item.numberRecruits}&numberOnJob=${item.numberOnJob}&leaveRate=${item.leaveRate}&supplierCount=${item.supplierCount}`
                                 })
                             }} index={index} className='jobs_item row-show-1'>{item.title}</View>
                         })
                     }
                 </View>
             </View>
+
+            {
+                requestState === 2 && list.length === 0 && clueList.length === 0 && jobList.length === 0 &&
+                <View className='no_data'>
+                    <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
+                    <View>暂无相关数据~</View>
+                </View>
+            }
         </View>
     )
 })

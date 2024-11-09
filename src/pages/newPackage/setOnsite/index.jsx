@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-07 10:37:08
+ * @LastEditTime: 2024-11-08 15:12:25
  * @Description: 
  */
 
@@ -25,6 +25,7 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
         userStore: { companyInfo },
+        businessStore: { onSiteInfo,setOnSiteInfo },
     } = store
     const [formData, setFormData] = useState({});
 
@@ -36,7 +37,7 @@ const Index = observer(({ store }) => {
     const [isRefresh, setIsRefresh] = useState(false);
     const [goonLoad, setgoonLoad] = useState(true);
     const [pageNo, setPageNo] = useState(1);
-    const pageSize = 10
+    const pageSize = 20;
     const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
 
     const [list, setList] = useState([]);
@@ -57,6 +58,12 @@ const Index = observer(({ store }) => {
             _list[index].selected = true;
             return _list;
         })
+        setOnSiteInfo(obj);
+        setTimeout(() => {
+            Taro.navigateBack({
+                delta: 1
+            });
+        }, 300);
     }
 
     const getList = async (_pageNo) => {
@@ -153,7 +160,7 @@ const Index = observer(({ store }) => {
                     })
                 }
                 {
-                    list.length >= 9 &&
+                    list.length >= 14 &&
                     <View className='loading_text'>
                         {
                             goonLoad ?

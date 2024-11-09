@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-31 10:13:46
+ * @LastEditTime: 2024-11-08 16:08:42
  * @Description: 
  */
 
@@ -21,12 +21,13 @@ import './index.scss'
 import ChooseJobType from '@/components/chooseJobType';
 import DatePicker from '@/components/datePicker'
 
-import { contractsCreate } from '@/util/api'
+import { contractsCreate, updateContracts } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+        baseStore: { bottomSafeAreaHeight },
+        businessStore: { onSiteInfo, setOnSiteInfo, editProjectInfo, setEditProjectInfo },
     } = store
     const [formData, setFormData] = useState({});
 
@@ -34,6 +35,32 @@ const Index = observer(({ store }) => {
     const [chooseAddr, setChooseAddr] = useState({})
 
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const [isUpdate, setIsUpdate] = useState(false);
+
+    useEffect(() => {
+        if (editProjectInfo) {
+            console.log("修改项目信息---editProjectInfo", editProjectInfo);
+            setIsUpdate(true);
+            setFormData({
+                ...editProjectInfo,
+                interviewContactInfo: editProjectInfo.interviewContactId
+            });
+            // setOnSiteInfo({
+            //     name: editProjectInfo.interviewContactName,
+            //     phone: editProjectInfo.interviewContactPhone,
+            //     userSerialCode: editProjectInfo.interviewContactId,
+            // });
+        }
+        return () => {
+            setEditProjectInfo(null);
+        }
+    }, [editProjectInfo])
+
+    useEffect(() => {
+        if (onSiteInfo.phone) {
+            setFormData({ ...formData, interviewContactInfo: onSiteInfo.userSerialCode, interviewContactName: onSiteInfo.name, interviewContactPhone: onSiteInfo.phone });
+        }
+    }, [onSiteInfo]);
 
     const getMyAddress = async () => {
         try {
@@ -76,6 +103,7 @@ const Index = observer(({ store }) => {
             ...formData,
             addressDetail: formData.areaName + formData.addressDetail,
         }
+        params.numberRecruits = Number(params.numberRecruits);
         console.log("params", params);
         const errorMessages = [
             !params.title && '岗位标题不能为空',
@@ -92,13 +120,16 @@ const Index = observer(({ store }) => {
             })
         }
         Taro.showLoading({ title: '提交中...', mask: true });
-        const { code, data, msg } = await contractsCreate(params);
+        const { code, data, msg } = await (isUpdate ? updateContracts(params) : contractsCreate(params));
         console.log("contractsCreate", code, data);
         if (code === 200) {
             Taro.showToast({ title: '提交成功', icon: 'none' });
             setTimeout(() => {
-                // Taro.navigateBack({ delta: 1 })
-                Taro.redirectTo({ url: `/pages/newPackage/newProjectSuccess/index?serialCode=${data.serialCode}` });
+                if(isUpdate){
+                    Taro.navigateBack({ delta: 1 })
+                }else{
+                    Taro.redirectTo({ url: `/pages/newPackage/newProjectSuccess/index?serialCode=${data.serialCode}` });
+                }
             }, 1500);
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
@@ -216,11 +247,11 @@ const Index = observer(({ store }) => {
             </View> */}
 
             <View className='project_group '>
-                <View className='project_item' onClick={() => { Taro.navigateTo({ url: `/pages/newPackage/setOnsite/index` }) }}>
+                <View className='project_item' onClick={() => { Taro.navigateTo({ url: `/pages/newPackage/setOnsite/index?code=${formData.interviewContactInfo ? formData.interviewContactInfo : ''}` }) }}>
                     <View className='project_item_label '>驻场人员</View>
                     {/* 姓名+手机号 */}
                     <View className='project_item_right'>
-                        <Text className={`${formData.interviewContactInfo ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewContactInfo ? formData.interviewContactInfo : '驻场人员或者面试联系人'}</Text>
+                        <Text className={`${formData.interviewContactInfo ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewContactInfo ? formData.interviewContactName : '驻场人员或者面试联系人'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
@@ -283,7 +314,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={postProject} className={`post_btn ${(formData.title && formData.jobTypeId && formData.company && formData.numberRecruits && formData.introduction) ? 'post_btn_active' : ''}`}>发布项目</View>
+                <View onClick={postProject} className={`post_btn ${(formData.title && formData.jobTypeId && formData.company && formData.numberRecruits && formData.introduction) ? 'post_btn_active' : ''}`}>{isUpdate ? '编辑' : '发布'}项目</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 

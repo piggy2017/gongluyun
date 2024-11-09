@@ -1,8 +1,8 @@
 /*
  * @Author: 孙林 1164700321@qq.com
- * @Date: 2024-09-10 16:43:35
+ * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-07 10:47:56
+ * @LastEditTime: 2024-11-08 17:02:23
  * @Description: 
  */
 
@@ -10,9 +10,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import Taro from '@tarojs/taro';
 import { View, Image, Text, Input, Button, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import { decryptData, encryptData } from '@/util/crypto'
-import Navbar from '@/components/navbar';
 import {
     loginPhone, loginEmployeePhone, getRoleAndPermissionByUserId
 } from '@/util/api'
