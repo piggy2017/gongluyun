@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-07 16:52:06
+ * @LastEditTime: 2024-11-11 18:34:02
  * @Description: 
  */
 
@@ -37,6 +37,7 @@ const Index = observer(({ store }) => {
 
     useEffect(() => {
         // type=1 线索-客户池筛选岗位    type=2 线索-我的客户筛选岗位     type=3 录入求职者信息-选择报名岗位    type=4 安排面试-选择招聘岗位    type=5 驻厂名单-选择岗位
+        // type=6 驻场-首页签到码-选择岗位
         const { type, title } = router.params;
         console.log('type, title', type, title);
         setType(type);
@@ -161,10 +162,16 @@ const Index = observer(({ store }) => {
             setInterviewJobInfo(obj);
         } else if (type == 5) {
             setOnSiteFilterJob(obj);
+        } else if (type == 6) {
+            Taro.redirectTo({
+                url: `/pages/projectPackage/signinCode/index?recruitSerialCode=${obj.recruitSerialCode}&title=${obj.title}&type=1`
+            })
         }
-        setTimeout(() => {
-            Taro.navigateBack({ delta: 1 });
-        }, 300);
+        if (type != 6) {
+            setTimeout(() => {
+                Taro.navigateBack({ delta: 1 });
+            }, 300);
+        }
     }
 
     return (

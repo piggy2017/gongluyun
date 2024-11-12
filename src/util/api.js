@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-07 16:44:58
+ * @LastEditTime: 2024-11-11 16:47:14
  * @Description: 
  */
 
@@ -116,11 +116,14 @@ export const contractsList = params => {            // 项目大厅
 export const contractsCreate = params => {            // 发布项目
     return http(API_BASE_URL + '/contracts/create', params, "POST", {"Content-Type": "application/json"});
 }
-export const contractsgetRoster = params => {            // 获取花名册
+export const contractsgetRoster = params => {            // 获取名单
     return http(API_BASE_URL + '/contracts/getRoster', params, "POST", {"Content-Type": "application/json"});
 }
 export const getContractsInfoStatistics = params => {            // 获取项目详情-统计
     return http(API_BASE_URL + '/contracts/getContractsInfoStatistics', params, "POST", {"Content-Type": "application/json"});
+}
+export const getContractsInfoHallStatistics = params => {        // 获取项目详情-基础信息统计
+    return http(API_BASE_URL + '/contracts/getContractsInfoHallStatistics', params, "POST", {"Content-Type": "application/json"});
 }
 export const getContractsInfo = params => {            // 获取项目详情
     return http(API_BASE_URL + '/contracts/getContractsInfo', params, "POST", {"Content-Type": "application/json"});
@@ -140,9 +143,13 @@ export const contractsJobSelector = params => {            // 项目筛选列表
 export const contractsSign = params => {                // 签到  已约面-已到面
     return http(API_BASE_URL + '/contracts/sign', params, "POST", {"Content-Type": "application/json"});
 }
-export const downloadRoster = params => {                // 导出交互花名册
+export const downloadRoster = params => {                // 导出交互名单
     return http(API_BASE_URL + '/contracts/downloadRoster', params, "POST", {"Content-Type": "application/json"});
 }
+export const qrSign = params => {                // 用户扫码签到
+    return http(API_BASE_URL + '/contracts/qrSign', params, "POST", {"Content-Type": "application/json"});
+}
+
 
 
 
@@ -173,6 +180,9 @@ export const clueStateFlow = params => {       //  求职状态流转
 };
 export const clueUpdate = params => {       //  编辑求职者信息
     return http(API_BASE_URL + '/clue/update', params, "POST", { "Content-Type": "application/json" });
+};
+export const getUserInfoByPhone = params => {       //  通过手机号获取客户信息
+    return http(API_BASE_URL + '/clue/getUserInfoByPhone', params, "POST", { "Content-Type": "application/json" });
 };
 
 

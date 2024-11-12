@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 16:08:42
+ * @LastEditTime: 2024-11-11 13:53:55
  * @Description: 
  */
 
@@ -11,17 +11,13 @@ import Taro from '@tarojs/taro';
 import { View, Image, Text, Input, Textarea, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
-import { AtIcon, AtFloatLayout } from 'taro-ui'
 import { reverseGeocoder } from '@/util/getLocation';
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
-import Navbar from '@/components/navbar';
-import './index.scss'
 
+import Navbar from '@/components/navbar';
 import ChooseJobType from '@/components/chooseJobType';
 import DatePicker from '@/components/datePicker'
-
 import { contractsCreate, updateContracts } from '@/util/api'
+import './index.scss'
 
 
 const Index = observer(({ store }) => {
@@ -45,11 +41,6 @@ const Index = observer(({ store }) => {
                 ...editProjectInfo,
                 interviewContactInfo: editProjectInfo.interviewContactId
             });
-            // setOnSiteInfo({
-            //     name: editProjectInfo.interviewContactName,
-            //     phone: editProjectInfo.interviewContactPhone,
-            //     userSerialCode: editProjectInfo.interviewContactId,
-            // });
         }
         return () => {
             setEditProjectInfo(null);
@@ -95,7 +86,7 @@ const Index = observer(({ store }) => {
     const datePickerSelect = (e) => {
         console.log("seleceDate", e);
         // setDateText(e);
-        setFormData({ ...formData, interviewDates: e })
+        setFormData({ ...formData, interviewDate: e })
     }
 
     const postProject = async () => {
@@ -282,7 +273,7 @@ const Index = observer(({ store }) => {
                 <View className='project_item project_item_border'>
                     <View className='project_item_label'>面试日期</View>
                     <View className='project_item_right' onClick={() => setShowDatePicker(true)}>
-                        <Text className={`${formData.interviewDates ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewDates ? formData.interviewDates : '请选择面试日期'}</Text>
+                        <Text className={`${formData.interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewDate ? formData.interviewDate : '请选择面试日期'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
@@ -314,7 +305,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={postProject} className={`post_btn ${(formData.title && formData.jobTypeId && formData.company && formData.numberRecruits && formData.introduction) ? 'post_btn_active' : ''}`}>{isUpdate ? '编辑' : '发布'}项目</View>
+                <View onClick={postProject} className={`post_btn ${(formData.title && formData.jobTypeId && formData.company && formData.numberRecruits && formData.introduction) ? 'post_btn_active' : ''}`}>{isUpdate ? '保存' : '发布'}项目</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 

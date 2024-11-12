@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 17:51:13
+ * @LastEditTime: 2024-11-11 11:21:26
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
 import Taro from '@tarojs/taro';
-import { View, Image, Text, Input} from '@tarojs/components'
+import { View, Image, Text, Input } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { debounce } from '@/util/utils'
 import './index.scss'
@@ -24,7 +24,7 @@ import {
 const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight},
+        baseStore: { statusTitleHeight, contenTitleHeight },
     } = store
 
     const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
@@ -69,6 +69,21 @@ const Index = observer(({ store }) => {
         Taro.hideLoading();
     }
 
+    const viewMore = (type) => {
+        let _url = '';
+        if (type === 1) {
+            _url = `/pages/talentsPackage/talents/index?searchValue=${searchValue}`;
+            return Taro.navigateTo({ url: _url })
+        } else if (type === 2) {
+            _url = `/pages/clue/index`;
+            Taro.setStorageSync('clueSearchValue', searchValue);
+        }else if(type === 3){
+            _url = `/pages/projectManage/index`;
+            Taro.setStorageSync('projectSearchValue', searchValue);
+        }
+        Taro.switchTab({ url: _url })
+    }
+
     return (
         <View className='container'>
             <View className='my_header'>
@@ -99,7 +114,7 @@ const Index = observer(({ store }) => {
                         <View>人才库</View>
                         {
                             list.length >= 3 &&
-                            <View className='search_section_title_right'>
+                            <View className='search_section_title_right' onClick={() => viewMore(1)}>
                                 <View>查看更多</View>
                                 <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                             </View>
@@ -124,7 +139,7 @@ const Index = observer(({ store }) => {
                         <View>线索池</View>
                         {
                             clueList.length >= 3 &&
-                            <View className='search_section_title_right'>
+                            <View className='search_section_title_right' onClick={() => viewMore(2)}>
                                 <View>查看更多</View>
                                 <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                             </View>
@@ -152,7 +167,7 @@ const Index = observer(({ store }) => {
                         <View>招聘项目</View>
                         {
                             jobList.length >= 3 &&
-                            <View className='search_section_title_right'>
+                            <View className='search_section_title_right' onClick={() => viewMore(3)}>
                                 <View>查看更多</View>
                                 <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                             </View>

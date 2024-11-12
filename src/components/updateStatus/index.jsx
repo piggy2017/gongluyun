@@ -14,7 +14,7 @@ import { getStatus, getColor } from '@/util/utils'
 import './index.scss';
 
 const UpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomHeight, onClose, type = 1, store }) => {
-    // 默认 type=1 名单反馈、列表反馈页面、客户详情,第一个状态是未到面      type=2 花名册 第一个状态是已约面
+    // 默认 type=1 名单反馈、列表反馈页面、客户详情,第一个状态是未到面      type=2 名单 第一个状态是已约面
 
     // const [currentCliskstatus, setCurrentCliskstatus] = useState('未到面');
     const [status, setStatus] = useState('');

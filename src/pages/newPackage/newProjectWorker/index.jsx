@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-04 16:39:51
+ * @LastEditTime: 2024-11-11 11:26:50
  * @Description: 
  */
 
@@ -10,13 +10,13 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, Textarea, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import Navbar from '@/components/navbar';
-import './index.scss'
 
+import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 
 import { batchInsert } from '@/util/api'
+import './index.scss'
 
 
 const Index = observer(({ store }) => {

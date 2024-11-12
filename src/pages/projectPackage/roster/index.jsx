@@ -105,7 +105,7 @@ const Index = observer(({ store }) => {
         }
     }, [chooseList])
 
-    const getList = async (_pageNo) => {    // 获取花名册列表
+    const getList = async (_pageNo) => {    // 获取名单列表
         const { recruitSerialCode } = route.params;
         setRequestState(1);
         Taro.showLoading({ title: '加载中...' });
@@ -121,7 +121,7 @@ const Index = observer(({ store }) => {
             endDate: dateObj.endDate
         }
         const { code, data } = await contractsgetRoster(params);
-        console.log("获取花名册列表", code, data);
+        console.log("获取名单列表", code, data);
         setCustomRequestParams({ ...params });
         Taro.hideLoading();
         setIsRefresh(false);

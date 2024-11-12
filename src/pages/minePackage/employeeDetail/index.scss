@@ -111,7 +111,7 @@
             @include flex-center(space-between);
         }
 
-        .btn{
+        .btn {
             width: 220rpx;
             height: 84rpx;
             border-radius: 8rpx;
@@ -122,21 +122,149 @@
             font-weight: 500;
             line-height: 84rpx;
         }
+
         .open_btn {
             background: #1678ff1c;
             color: #1678ff;
         }
-        .disable_btn{
+
+        .disable_btn {
             color: #F00000;
             background: #f0000014;
         }
-        .upload_password{
+
+        .upload_password {
             background: #1678ff1c;
             color: #1678ff;
         }
-        .edit_btn{
+
+        .edit_btn {
             background-color: #1678FF;
             color: #ffffff;
+        }
+    }
+
+
+
+    .role_init_layout {
+        .at-float-layout__container {
+            height: auto !important;
+            min-height: auto !important;
+            overflow: hidden;
+            border-radius: 20rpx 20rpx 0 0 !important;
+
+            .layout-body {
+                min-height: auto !important;
+            }
+        }
+
+        .layout-body__content {
+            min-height: auto !important;
+        }
+
+        .filter_wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-color: #ffffff;
+
+            .filter_wrapper_bg {
+                width: 100%;
+                height: 100%;
+
+                .filter_title {
+                    @include flex-center(space-between);
+                    padding: 24rpx 0 40rpx 38rpx;
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 34rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                }
+
+                .filter_wrapper_content {
+                    display: flex;
+                    flex-flow: row wrap;
+
+                    .employee_group {
+                        width: 710rpx;
+                        background: #FFF;
+                        border-radius: 20rpx;
+                        margin: 0 auto 22rpx auto;
+
+                        .employee_item {
+                            width: 654rpx;
+                            height: 130rpx;
+                            margin: 0 auto;
+                            border-bottom: 1rpx solid #0000000a;
+                            @include flex-center(flex-start);
+
+                            .employee_item_label {
+                                color: #222222;
+                                font-family: "PingFang SC";
+                                font-size: 30rpx;
+                                font-style: normal;
+                                font-weight: 400;
+                                line-height: normal;
+                                width: 152rpx;
+                            }
+
+                            .employee_item_input {
+                                font-family: "PingFang SC";
+                                font-size: 30rpx;
+                                width: 440rpx;
+                            }
+
+                            image {
+                                width: 40rpx;
+                                height: 40rpx;
+                                flex-shrink: 0;
+                                margin-left: 20rpx;
+                            }
+                        }
+                    }
+
+                    .save_btn {
+                        width: 694rpx;
+                        height: 96rpx;
+                        border-radius: 8rpx;
+                        background: #CDE1FF;
+                        color: rgb(255, 255, 255);
+                        text-align: center;
+                        font-family: "PingFang SC";
+                        font-size: 30rpx;
+                        font-style: normal;
+                        font-weight: 500;
+                        line-height: 96rpx;
+                        margin: 40rpx auto 0 auto;
+                    }
+                    .save_btn_active{
+                        background: #1678FF;
+                    }
+                }
+
+                .custom_filter_date {
+                    width: 662rpx;
+                    height: 76rpx;
+                    flex-shrink: 0;
+                    border-radius: 10rpx;
+                    margin: 0 auto;
+                    text-align: center;
+                    line-height: 76rpx;
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    background: #F2F2F2;
+                    color: #222222;
+                }
+
+                .custom_filter_date_active {
+                    background: #0483FF;
+                    color: #ffffff;
+                }
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 11:06:09
+ * @LastEditTime: 2024-11-11 18:00:54
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -22,7 +22,7 @@ import "taro-ui/dist/style/components/icon.scss";
 import './index.scss'
 
 import {
-  workbenchtodayData, workbenchcluePool, workbenchdrainageData, workbenchconvertData, userCenter, todo
+  workbenchtodayData, workbenchcluePool, workbenchdrainageData, workbenchconvertData, userCenter, todo,getRoleAndPermissionByUserId
 } from '@/util/api'
 
 
@@ -68,11 +68,13 @@ const Index = observer(({ store }) => {
     console.log("首页 监听 当前角色role:", role);
     console.log("首页 监听 当前用户信息userInfo:", userInfo);
     getRoleAndPermissionFunc();
+    
   }, [isLogin, role, userInfo]);
 
   useEffect(() => {
     if (isLogin) {
       refreshUserInfo();
+      getUserRole();
     }
   }, [isLogin])
 
@@ -102,6 +104,11 @@ const Index = observer(({ store }) => {
       getconvertData();
     }
   }, [transformDate])
+
+  const getUserRole = async () => {
+    const result = await getRoleAndPermissionByUserId({});
+    console.log("获取角色和权限", result);
+}
 
   const getTodayData = async () => {   // 获取今日数据
     const { code, data } = await workbenchtodayData({ companySerialCode: '', dateRange: '' });
@@ -160,7 +167,7 @@ const Index = observer(({ store }) => {
     return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px)`;
   }
 
-  const navigateFunc = (type, url) => {
+  const navigateFunc = (type, url, data) => {
     if (type) {   // 需要校验用户是否登录
       if (isLogin === 0) {
         Taro.navigateTo({
@@ -169,9 +176,15 @@ const Index = observer(({ store }) => {
         return
       }
     }
-    Taro.navigateTo({
-      url
-    })
+    if (data) {
+      Taro.switchTab({
+        url
+      })
+    } else {
+      Taro.navigateTo({
+        url
+      })
+    }
   }
 
   const customDateSelect = (e) => {
@@ -283,11 +296,11 @@ const Index = observer(({ store }) => {
         {
           role === 'ON_SITE' &&
           <View className='enter_wrapper'>
-            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/projectPackage/signinCode/index')}>
+            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/talentsPackage/filterJob/index?type=6&title=选择岗位')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
               <View>签到码</View>
             </View>
-            <View className='enter_wrap_item'>
+            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/onSiteList/index', 2)}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
               <View>导出名单</View>
             </View>

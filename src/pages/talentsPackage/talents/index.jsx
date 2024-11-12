@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-05 15:14:26
+ * @LastEditTime: 2024-11-11 11:15:08
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
@@ -24,6 +24,7 @@ import {
 } from '@/util/api'
 
 const Index = observer(({ store }) => {
+    const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
         userStore: { isLogin, companyVerified, filterJobTypes, setFilterJobTypes },
@@ -48,6 +49,14 @@ const Index = observer(({ store }) => {
     const [ageText, setAgeText] = useState("不限年龄");
     const [startAge, setStartAge] = useState(null);
     const [endAge, setEndAge] = useState(null);
+
+    useEffect(()=>{
+        const { searchValue } = route.params;
+        if (searchValue) {
+            setSearchValue(searchValue);
+            getList(1);
+        }
+    },[])
 
     useEffect(() => {
         setTimeout(async () => {

@@ -2,33 +2,41 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-31 17:50:22
+ * @LastEditTime: 2024-11-11 17:50:04
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useRouter } from '@tarojs/taro';
-import { View, Image } from '@tarojs/components'
+import { View, Image, Block, Text, Input } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { encryptData } from '@/util/crypto'
+import { AtIcon, AtFloatLayout } from 'taro-ui'
+import "taro-ui/dist/style/components/icon.scss";
+import "taro-ui/dist/style/components/float-layout.scss";
 
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { companyDisableAccount } from '@/util/api'
+import { companyDisableAccount, companyUpdateMember } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const {
         baseStore: { bottomSafeAreaHeight },
-        userStore: { companyInfo,getRoleAndPermissionFunc },
+        userStore: { companyInfo, getRoleAndPermissionFunc },
         businessStore: { employeeInfo, setEmployeeInfo }
     } = store
     const [currentInfo, setCurrentInfo] = useState({});
+    const [showEditModel, setShowEditModel] = useState(false);   // 修改密码的弹窗
+    const [ispassword, setIsPassword] = useState(true);
+    const [newPassword, setNewPassword] = useState('');
+    const [surePassword, setSurePassword] = useState('');
 
-    useEffect(()=>{
+    useEffect(() => {
         getRoleAndPermissionFunc();
-    },[])
+    }, [])
 
     useEffect(() => {
         console.log("employeeInfo", employeeInfo);
@@ -42,6 +50,11 @@ const Index = observer(({ store }) => {
         console.log("_obj_obj", _obj);
         setCurrentInfo(_obj);
     }, [employeeInfo])
+
+    const validatePassword = password => {
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        return regex.test(password);
+    }
 
     const editOpen = async (_type) => {
         let params = {
@@ -59,6 +72,32 @@ const Index = observer(({ store }) => {
                 return currentInfo
             })
             forceUpdate();
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
+        }
+    }
+
+    const savePasswordFunc = async () => {
+        if (!validatePassword(newPassword)) {
+            return Taro.showToast({ title: '密码无效，需至少8位且包含字母和数字', icon: 'none', })
+        }
+        if (newPassword !== surePassword) {
+            return Taro.showToast({ title: '两次密码输入不一致', icon: 'none', })
+        }
+
+        let params = {
+            // ...currentInfo,
+            companySerialCode: companyInfo.companySerialCode,
+            userSerialCode: currentInfo.userSerialCode,
+            password: encryptData(newPassword)
+        }
+        Taro.showLoading({ title: '提交中...', mask: true });
+        const { code, data, msg } = await companyUpdateMember(params);
+        console.log("修改密码结果", code, data);
+        if (code === 200) {
+            Taro.showToast({ title: '修改成功', icon: 'none' });
+            setShowEditModel(false);
+            // setEmployeeInfo({ ...formData });
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
@@ -106,11 +145,54 @@ const Index = observer(({ store }) => {
                         currentInfo.status == '0' ? <View className='btn disable_btn' onClick={() => editOpen('1')}>禁用</View> : <View onClick={() => editOpen('0')} className='btn open_btn'>启用</View>
                     }
 
-                    <View className='btn upload_password'>修改密码</View>
+                    <View className='btn upload_password' onClick={() => { setShowEditModel(true) }}>修改密码</View>
                     <View className='btn edit_btn' onClick={goEdit}>编辑</View>
                 </View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
+
+
+            <Block>
+                <AtFloatLayout catchMove className='role_init_layout' isOpened={showEditModel} onClose={() => { setShowEditModel(false) }}>
+                    <View className='filter_wrapper'>
+                        <View className='filter_wrapper_bg'>
+                            <View className='filter_title'>
+                                <View>修改密码</View>
+                                <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowEditModel(false) }}></AtIcon>
+                            </View>
+                            <View className='filter_wrapper_content'>
+                                <View className='employee_group'>
+                                    <View className='employee_item'>
+                                        <View className='employee_item_label'>新密码</View>
+                                        <Input
+                                            password={ispassword}
+                                            className='employee_item_input'
+                                            placeholder='新密码不低于8位，包含字母和数字'
+                                            placeholderStyle='color: #999999;'
+                                            value={newPassword}
+                                            onInput={(e) => setNewPassword(e.detail.value)}></Input>
+                                        <Image onClick={() => setIsPassword(!ispassword)} src={`${Taro.$cdnUrl}/index/index_eye.webp`}></Image>
+                                    </View>
+                                    <View className='employee_item'>
+                                        <View className='employee_item_label'>确认密码</View>
+                                        <Input
+                                            password={ispassword}
+                                            className='employee_item_input'
+                                            placeholder='新密码不低于8位，包含字母和数字'
+                                            placeholderStyle='color: #999999;'
+                                            value={surePassword}
+                                            onInput={(e) => setSurePassword(e.detail.value)}></Input>
+                                        <Image onClick={() => setIsPassword(!ispassword)} src={`${Taro.$cdnUrl}/index/index_eye.webp`}></Image>
+                                    </View>
+                                </View>
+
+                                <View onClick={() => savePasswordFunc()} className={`save_btn ${(newPassword.length >= 8 && surePassword.length >= 8) ? 'save_btn_active' : ''}`}> 保存</View>
+                            </View>
+                            <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+                        </View>
+                    </View>
+                </AtFloatLayout>
+            </Block>
         </View>
     )
 })

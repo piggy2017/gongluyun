@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 16:15:50
+ * @LastEditTime: 2024-11-11 15:06:21
  * @Description: 
  */
 
@@ -14,7 +14,7 @@ import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { getContractsInfo, getContractsInfoStatistics, stopContracts } from '@/util/api';
+import { getContractsInfo, getContractsInfoStatistics, stopContracts, getContractsInfoHallStatistics } from '@/util/api';
 
 const Index = observer(({ store }) => {
   const route = useRouter();
@@ -25,13 +25,15 @@ const Index = observer(({ store }) => {
 
   const [detail, setDetail] = useState('');
   const [statistics, setStatistics] = useState({});
+  const [basicStatistics, setBasicStatistics] = useState({});
 
   useEffect(() => {
     getProjectDetail();
     getProjectStatistics();
+    getContractsStatistics();
   }, [])
 
-  useDidShow(()=>{
+  useDidShow(() => {
     getProjectDetail();
   })
 
@@ -58,6 +60,17 @@ const Index = observer(({ store }) => {
     console.log("getProjectStatistics_data", code, data);
     if (code === 200 && data) {
       setStatistics(data);
+    } else {
+      Taro.showToast({ title: msg, icon: 'none' });
+    }
+  }
+
+  const getContractsStatistics = async () => {
+    const { contractsSerialCode } = route.params;
+    const { code, data, msg } = await getContractsInfoHallStatistics({ contractsSerialCode });
+    console.log("getContractsStatistics", code, data);
+    if (code === 200 && data) {
+      setBasicStatistics(data);
     } else {
       Taro.showToast({ title: msg, icon: 'none' });
     }
@@ -97,19 +110,19 @@ const Index = observer(({ store }) => {
         <View className='project_addr'>{detail.areaName}·{detail.jobTypeName}·{detail.createDate}发布</View>
         <View className='project_count'>
           <View className='project_count_item'>
-            <View >{detail.numberRecruits}</View>
+            <View >{basicStatistics.numberRecruits}</View>
             <View className='project_count_item_label'>总需求</View>
           </View>
           <View className='project_count_item'>
-            <View >{detail.numberOnJob}</View>
+            <View >{basicStatistics.numberOnJob}</View>
             <View className='project_count_item_label'>在职人数</View>
           </View>
           <View className='project_count_item'>
-            <View >{detail.leaveRate}</View>
+            <View >{basicStatistics.leaveRate}</View>
             <View className='project_count_item_label'>离职率</View>
           </View>
           <View className='project_count_item'>
-            <View >{detail.supplierCount}</View>
+            <View >{basicStatistics.supplierCount}</View>
             <View className='project_count_item_label'>供应商</View>
           </View>
         </View>
@@ -119,7 +132,7 @@ const Index = observer(({ store }) => {
         <View className='project_title'>
           <View>交付数据</View>
           <View className='project_more' onClick={(e) => navigateFunc(e, `/pages/projectPackage/roster/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>
-            <View>查看花名册</View>
+            <View>查看名单</View>
             <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
           </View>
         </View>

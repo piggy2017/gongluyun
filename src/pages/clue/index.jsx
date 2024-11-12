@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 09:55:40
+ * @LastEditTime: 2024-11-11 11:22:55
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
-import Taro, { useDidShow } from '@tarojs/taro';
+import Taro, { useDidShow,useDidHide } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
@@ -86,8 +86,16 @@ const Index = observer(({ store }) => {
 
   useDidShow(() => {
     if (type === '我的客户') {
+      const _clueSearchValue= Taro.getStorageSync('clueSearchValue');
+      if (_clueSearchValue) {
+        setSearchValue(_clueSearchValue);
+      }
       getClientList(1);
     }
+  })
+
+  useDidHide(() => {
+    Taro.removeStorageSync('clueSearchValue');
   })
 
   useEffect(() => {

@@ -111,7 +111,7 @@
         }
 
         .search_total {
-            padding: 50rpx 28rpx 0 28rpx;
+            padding: 50rpx 28rpx 20rpx 28rpx;
             @include flex-center(space-between);
 
             .search_total_left {
@@ -189,7 +189,7 @@
 
     .scrollWrapper {
         width: 100%;
-        border: 1rpx solid red;
+        // border: 1rpx solid red;
         background-color: #ffffff;
 
         .roster_item {

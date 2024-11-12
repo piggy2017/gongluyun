@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 15:12:25
+ * @LastEditTime: 2024-11-11 10:34:00
  * @Description: 
  */
 
@@ -33,7 +33,6 @@ const Index = observer(({ store }) => {
     const [roleList, setRoleList] = useState(['客服', '驻场', '销售']);
 
     const [showLimitModel, setShowLimitModel] = useState(false);
-    const [tabHeight, setTabHeight] = useState(44);
     const [isRefresh, setIsRefresh] = useState(false);
     const [goonLoad, setgoonLoad] = useState(true);
     const [pageNo, setPageNo] = useState(1);

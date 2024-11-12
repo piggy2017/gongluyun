@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-01 09:42:08
+ * @LastEditTime: 2024-11-11 19:44:57
  * @Description: 
  */
 
@@ -15,9 +15,8 @@ import { decryptData, encryptData } from '@/util/crypto'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
-import './index.scss'
-
 import { companyAddAccount } from '@/util/api'
+import './index.scss'
 
 
 const Index = observer(({ store }) => {
@@ -40,35 +39,51 @@ const Index = observer(({ store }) => {
     const [showLimitModel, setShowLimitModel] = useState(false);
 
     useEffect(() => {
+        console.log("permissions", permissions);
         if (permissions.length > 0) {
-            const _list = permissions.map(item => {
-                return { ...item, selected: false }
-            })
+            const _list = JSON.parse(JSON.stringify(permissions));
+            for (let i = 0; i < _list.length; i++) {
+                for (let j = 0; j < _list[i].childPerms.length; j++) {
+                    _list[i].childPerms[j].selected = false;
+                }
+            }
             setPermissionList(_list);
         }
     }, [permissions])
 
-    const choosePerssion = (obj, index) => {
+    const choosePerssion = (obj, index, idx) => {
         console.log("choosePerssion obj, index", obj, index);
         setPermissionList(permissionList => {
             if (obj.selected) {
-                permissionList[index].selected = false;
+                permissionList[index].childPerms[idx].selected = false;
             } else {
-                permissionList[index].selected = true;
+                permissionList[index].childPerms[idx].selected = true;
             }
             console.log("permissionList", permissionList);
-            let _list = permissionList.filter(item => item.selected === true)//.map(item => item.permName);
-            console.log("_list1", _list);
-            if (_list.length > 0) {
-                let _list2 = _list.map(item => item.permName);
-                console.log("_list2", _list2);
-                let _permIds = _list.map(item => item.permId);
-                // let _authority = _list2.join('·');
-                setFormData({ ...formData, authority: _list2, permIds: _permIds });
-            }
+            // let _list = permissionList.filter(item => item.selected === true)//.map(item => item.permName);
+            // if (_list.length > 0) {
+            //     let _list2 = _list.map(item => item.permName);
+            //     let _permIds = _list.map(item => item.permId);
+            //     setFormData({ ...formData, authority: _list2, permIds: _permIds });
+            // }
             return permissionList;
         })
         forceUpdate();
+    }
+
+    const submitPermission = () => {
+        let _permIds = [];
+        let _permNames = [];
+        for (let i = 0; i < permissionList.length; i++) {
+            for (let j = 0; j < permissionList[i].childPerms.length; j++) {
+                if (permissionList[i].childPerms[j].selected) {
+                    _permIds.push(permissionList[i].childPerms[j].permId);
+                    _permNames.push(permissionList[i].childPerms[j].permName);
+                }
+            }
+        }
+        setFormData({ ...formData, authority: _permNames, permIds: _permIds });
+        setShowLimitModel(false);
     }
 
     const validatePassword = password => {
@@ -226,22 +241,33 @@ const Index = observer(({ store }) => {
                     <View className='filter_wrapper'>
                         <View className='filter_wrapper_bg'>
                             <View className='filter_title'>
-                                <View>选择权限</View>
+                                <View></View>
                                 <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowLimitModel(false) }}></AtIcon>
                             </View>
-                            <View className='filter_wrapper_content'>
+                            <View className='permission_wrapper_content'>
                                 {
                                     permissionList.map((item, index) => {
                                         return (
                                             <View
                                                 key={index}
                                                 className={`filter_wrapper_item ${item.selected ? 'filter_wrapper_item_active' : ''}`}
-                                                onClick={() => choosePerssion(item, index)}
-                                            >{item.permName}</View>
+                                            >
+                                                <View className='permission_title'>{item.permName}</View>
+                                                <View className='permission_wrap'>
+                                                    {
+                                                        permissionList[index].childPerms.map((child, idx) => {
+                                                            return (
+                                                                <View onClick={() => choosePerssion(child, index, idx)} className={`permission_item ${child.selected ? 'permission_item_active' : ''}`} key={idx}>{child.permName}</View>
+                                                            )
+                                                        })
+                                                    }
+                                                </View>
+                                            </View>
                                         )
                                     })
                                 }
                             </View>
+                            <View className='sure_btn' onClick={() => { submitPermission() }}>确定</View>
                             <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                         </View>
                     </View>

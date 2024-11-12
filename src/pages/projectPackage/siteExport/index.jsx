@@ -65,7 +65,7 @@ const Index = observer(({ store }) => {
         getList(1);
     }, [])
 
-    const getList = async (_pageNo) => {    // 获取花名册列表
+    const getList = async (_pageNo) => {    // 获取名单列表
         setRequestState(1);
         Taro.showLoading({ title: '加载中...' });
         let params = {
@@ -75,7 +75,7 @@ const Index = observer(({ store }) => {
         }
         console.log('params', params);
         const { code, data } = await contractsgetRoster(params);
-        console.log("获取花名册列表", code, data);
+        console.log("获取名单列表", code, data);
         Taro.hideLoading();
         setIsRefresh(false);
         if (code === 200 && data.responses?.length > 0) {

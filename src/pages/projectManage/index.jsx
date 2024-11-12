@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-04 15:34:07
+ * @LastEditTime: 2024-11-11 15:07:35
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
-import Taro, { useDidShow } from '@tarojs/taro';
+import Taro, { useDidShow, useDidHide } from '@tarojs/taro';
 import { View, Image, Input, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import TabBar from '@/components/tabBar';
@@ -37,8 +37,17 @@ const Index = observer(({ store }) => {
 
   const [type, setType] = useState('PROCESSING');
 
-  useDidShow(()=>{
+  useDidShow(() => {
+    const _projectSearchValue = Taro.getStorageSync('projectSearchValue');
+    if (_projectSearchValue) {
+      setSearchValue(_projectSearchValue);
+    }
     getList(1);
+  })
+
+  useDidHide(() => {
+    console.log("didHide");
+    Taro.removeStorageSync('projectSearchValue');
   })
 
   useEffect(() => {
@@ -183,14 +192,14 @@ const Index = observer(({ store }) => {
           {
             list.length > 0 && list.map((item, index) => {
               return (
-                <View className='project_item' key={index} onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/projectDetail/index?contractsSerialCode=${item.serialCode}&numberRecruits=${item.numberRecruits}&numberOnJob=${item.numberOnJob}&leaveRate=${item.leaveRate}&supplierCount=${item.supplierCount}`)}>
+                <View className='project_item' key={index} onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/projectDetail/index?contractsSerialCode=${item.serialCode}`)}>
                   <View className='project_item_title'>
                     <View className='project_item_title_left'>
                       <View className='project_item_title_left_name'>{item.title}</View>
                     </View>
                     {
                       type === 'PROCESSING' &&
-                      <View className='project_item_title_right' onClick={(e) => navigateFunc(e, 1, '/pages/projectPackage/signinCode/index')}>
+                      <View className='project_item_title_right' onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/signinCode/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>
                         <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
                         <View>签到码</View>
                       </View> ||
@@ -218,7 +227,7 @@ const Index = observer(({ store }) => {
                   </View>
 
                   <View className='project_item_bottom'>
-                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>花名册</View>
+                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>名单</View>
                     <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, 1, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>录入求职者</View>
                   </View>
                 </View>

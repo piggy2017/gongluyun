@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 17:19:04
+ * @LastEditTime: 2024-11-11 17:38:31
  * @Description: 
  */
 
@@ -14,7 +14,7 @@ import { decryptData, encryptData } from '@/util/crypto'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { } from '@/util/api'
+import { contractsSign, getUserInfoByPhone, qrSign } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
@@ -29,37 +29,62 @@ const Index = observer(({ store }) => {
 
     useEffect(() => {
         console.log("userInfo", userInfo);
-        const { title, interviewDate } = router.params;
+        const date = new Date();
+
+        const year = date.getFullYear();       // 获取当前年份
+        const month = date.getMonth() + 1;     // 获取当前月份（从 0 开始，需要 +1）
+        const day = date.getDate();            // 获取当前日期
+        let interviewDate = `${year}年${month}月${day}日`
+
+        const { title, recruitSerialCode } = router.params;
         // setFormData({ ...formData, title, interviewDate });
         if (isLogin) {
-            setFormData({
-                ...formData,
-                phone: decryptData(userInfo.phone),
-                name: userInfo.nickName ? userInfo.nickName : '',
-                sex: userInfo.sex,
-                idCardNo: userInfo.idCardNo ? userInfo.idCardNo : '',
-                title, interviewDate
-            });
-        }else{
+            getUserInfoByPhone({ phone: decryptData(userInfo.phone), recruitSerialCode }).then(res => {
+                console.log("getUserInfoByPhone_res", res);
+                const { code, data, data: { phone, name, sex, idCardNo } } = res;
+                if (code === 200 && data) {
+                    setFormData({
+                        ...formData,
+                        phone,
+                        name,
+                        sex,
+                        idCardNo,
+                        title, interviewDate
+                    });
+                }
+            })
+            // setFormData({
+            //     ...formData,
+            //     phone: decryptData(userInfo.phone),
+            //     name: userInfo.nickName ? userInfo.nickName : '',
+            //     sex: userInfo.sex,
+            //     idCardNo: userInfo.idCardNo ? userInfo.idCardNo : '',
+            //     title, interviewDate
+            // });
+        } else {
             setFormData({ ...formData, title, interviewDate });
         }
     }, [userInfo, isLogin])
 
     const signFunc = async () => {
         Taro.showLoading({ title: '签到中...' });
-        let params={
-            ...formData
+        let params = {
+            ...formData,
+            recruitSerialCode: router.params.recruitSerialCode
         }
         console.log("signFunc_params", params);
         Taro.hideLoading();
-        // const { code, msg } = await stopContracts({ ...formData });
-        // Taro.hideLoading();
-        // console.log("signFunc_code", code, msg);
-        // if (code === 200) {
-        //     Taro.showToast({ title: '签到成功', icon: 'none' });
-        // } else {
-        //     Taro.showToast({ title: msg, icon: 'none' });
-        // }
+        const { code, msg } = await qrSign({ ...formData });
+        Taro.hideLoading();
+        console.log("signFunc_code", code, msg);
+        if (code === 200) {
+            Taro.showToast({ title: '签到成功', icon: 'none' });
+            Taro.navigateTo({
+                url: `/pages/signInPackage/signSuccess/index?title=${router.params.title}&interviewDate=${formData.interviewDate}`
+            })
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
+        }
     }
 
     return (

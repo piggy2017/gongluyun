@@ -2,14 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 16:06:57
- * @Description: 
- */
-/*
- * @Author: 孙林 1164700321@qq.com
- * @Date: 2024-09-09 09:47:15
- * @LastEditors: 孙林
- * @LastEditTime: 2024-09-11 16:44:22
+ * @LastEditTime: 2024-11-11 11:27:08
  * @Description: 
  */
 
@@ -18,14 +11,14 @@ import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, Textarea, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { reverseGeocoder } from '@/util/getLocation';
-import Navbar from '@/components/navbar';
-import './index.scss'
 
+import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import SourcePicker from '@/components/sourcePcker';
 
 import { clueInsert, clueUpdate } from '@/util/api'
+import './index.scss'
 
 
 const Index = observer(({ store }) => {
