@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-12 17:55:18
+ * @LastEditTime: 2024-11-13 17:57:57
  * @Description: 
  */
 
@@ -10,7 +10,7 @@ import http from "./request"
 
 const env = 'prod'
 const base = env === 'prod' ? 'https://sa-api.apujiyu.com' : 'https://sa-api.apujiyu.com'
-const API_BASE_URL = base + "/mini"
+export const API_BASE_URL = base + "/mini"
 // const API_BASE_URL_JOB = "https://testios.joymian.com/jobfly/order"
 const CDN_BASE_URL = "https://apu-mini.oss-accelerate.aliyuncs.com"
 const webSocketUrl = env === 'prod' ? "wss://im.apujiyu.com/websocket" : "ws://test.im.apujiyu.com/websocket"

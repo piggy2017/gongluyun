@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-05 15:24:49
+ * @LastEditTime: 2024-11-13 18:23:43
  * @Description: 
  */
 import { useEffect } from 'react';
@@ -22,6 +22,7 @@ function App({ children }) {
   })
 
   useEffect(()=>{
+    console.log("app.js 中的 useEffect")
     baseStore.setSystemInfo();
     businessStore.setSourceList();
     Taro.$cdnUrl = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject';

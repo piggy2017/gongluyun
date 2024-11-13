@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-12 17:03:51
+ * @LastEditTime: 2024-11-13 18:04:10
  * @Description: 
  */
 export default defineAppConfig({
@@ -21,9 +21,6 @@ export default defineAppConfig({
         navigationBarTextStyle: 'black'
     },
     permission: {
-      "scope.userLocation": {
-        "desc": "获取用户手机号"
-      },
       "scope.userLocation": {
         "desc": "你的位置信息将用于小程序位置接口的效果展示"
       },

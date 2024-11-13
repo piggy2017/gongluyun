@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-13 15:02:37
+ * @LastEditTime: 2024-11-13 16:16:27
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -10,15 +10,6 @@ import Taro from '@tarojs/taro';
 import { View, Text, Input, Picker, Image, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import TabBar from '@/components/tabBar';
-import TimePicker from '@/components/timePicker'
-import DatePicker from '@/components/datePicker'
-import AgePicker from '@/components/agePicker';
-import SexPicker from '@/components/sexPicker';
-import CustomDate from '@/components/customDate';
-import { AtIcon, AtFloatLayout } from 'taro-ui'
-import "taro-ui/dist/style/components/float-layout.scss";
-import "taro-ui/dist/style/components/button.scss";
-import "taro-ui/dist/style/components/icon.scss";
 import './index.scss'
 
 import {
@@ -31,26 +22,6 @@ const Index = observer(({ store }) => {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
     userStore: { isLogin, role, userInfo, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions }
   } = store
-  const [showTimePicker, setShowTimePicker] = useState(false);
-  const [timeText, setTimeText] = useState("");
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [dateText, setDateText] = useState("");
-  const [showAgePicker, setShowAgePicker] = useState(false);
-  const [ageText, setAgeText] = useState("");
-
-  const [showSexPicker, setShowSexPicker] = useState(false);
-  const [sexText, setSexText] = useState("");
-
-  const [showFilterDate, setShowFilterDate] = useState(false);
-
-  const filterList = [                 // 时间筛选列表
-    { text: "今日", code: "TODAY" },
-    { text: "昨日", code: "YESTERDAY" },
-    { text: "本周", code: "THIS_WEEK" },
-    { text: "上周", code: "LAST_WEEK" },
-    { text: "本月", code: "THIS_MONTH" },
-    { text: "上月", code: "LAST_MONTH" },
-  ];
 
   const [drainageDate, setDrainageDate] = useState('YESTERDAY');
   const [drainageInfo, setDrainageInfo] = useState('');      // 迎流数据
@@ -106,11 +77,6 @@ const Index = observer(({ store }) => {
     }
   }, [transformDate])
 
-  const getUserRole = async () => {
-    const result = await getRoleAndPermissionByUserId({});
-    console.log("获取角色和权限", result);
-  }
-
   const getTodayData = async () => {   // 获取今日数据
     const { code, data } = await workbenchtodayData({ companySerialCode: '', dateRange: '' });
     console.log("获取今日数据", data);
@@ -142,26 +108,6 @@ const Index = observer(({ store }) => {
     }
   }
 
-  const timePickerSelect = (e) => {
-    console.log("pickerSelect", e.data);
-    console.log("pickerSelect", e.data.join(':'));
-    setTimeText(e.data.join(':'));
-  }
-
-  const datePickerSelect = (e) => {
-    console.log("seleceDate", e);
-    setDateText(e);
-  }
-
-  const agePickerSelect = (e) => {
-    console.log("agePickerSelect", e);
-    setAgeText(e[0] + " - " + e[1]);
-  }
-
-  const sexPickerSelect = (e) => {
-    console.log("sexPickerSelect", e);
-    setSexText(e === "" ? "不限性别" : (e === 0 ? "男" : "女"));
-  }
 
   const getHeight = () => {              // 获取scrollview的高度  statusTitleHeight, contenTitleHeight
     // return `calc(100vh - ${system.navBarHeight + system.navBarExtendHeight + tabHeight + topDis + 15}px)`;
@@ -187,11 +133,6 @@ const Index = observer(({ store }) => {
       })
     }
   }
-
-  const customDateSelect = (e) => {
-    console.log("自定义选择日期组件 customDateSelect", e);
-  }
-
   const getRole = (type) => {
     if (type === 'ADMIN') {
       return '管理员'
@@ -234,7 +175,7 @@ const Index = observer(({ store }) => {
       >
 
         <View className='search_wrapper'>
-          <View className='search_con' onClick={() => navigateFunc(1, '/pages/talentsPackage/search/index')} style={`width:${role === 'CUSTOMER' ? '608rpx' : '508rpx'}`}>
+          <View className='search_con' onClick={() => navigateFunc(1, '/pages/talentsPackage/search/index')} style={`width:${role === 'CUSTOMER' ? '608rpx' : '608rpx'}`}>
             <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
             <View className='search_input' style={`width:${role === 'CUSTOMER' ? '500rpx' : '400rpx'}`}>输入关键词搜索项目、求职者</View>
           </View>
@@ -482,29 +423,8 @@ const Index = observer(({ store }) => {
             </View>
           </View>
         }
-
-        {/* <View className='component_hr'>---下面是公共组件---</View>
-        <View onClick={() => { setShowTimePicker(true) }}>时间选择器:{timeText}</View>
-        <View onClick={() => { setShowDatePicker(true) }}>日期选择器:{dateText}</View>
-        <View onClick={() => { setShowAgePicker(true) }}>年龄范围选择:{ageText}</View>
-        <View onClick={() => { setShowSexPicker(true) }}>选择性别:{sexText}</View>
-        <View onClick={() => { setShowFilterDate(true) }}>日期筛选:</View> */}
-
       </ScrollView>
-
-      {/* <TimePicker showPicker={showTimePicker} onClose={() => { setShowTimePicker(false) }} onChange={timePickerSelect} />
-
-      <DatePicker type='Single' showPicker={showDatePicker} onClose={() => { setShowDatePicker(false) }} onSelectDate={datePickerSelect}></DatePicker>
-
-      <AgePicker showPicker={showAgePicker} onClose={() => { setShowAgePicker(false) }} onChange={agePickerSelect}></AgePicker>
-
-      <SexPicker showPicker={showSexPicker} onClose={() => { setShowSexPicker(false) }} onChange={sexPickerSelect}></SexPicker>
-
-      <CustomDate showPicker={showFilterDate} onClose={() => { setShowFilterDate(false) }} onChange={customDateSelect}></CustomDate> */}
-
-
       <TabBar actCurrent={0} />
-
     </View>
   )
 })

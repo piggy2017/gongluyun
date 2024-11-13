@@ -84,6 +84,7 @@
     "sass": "^1.78.0",
     "stylelint": "^14.4.0",
     "ts-node": "^10.9.1",
-    "webpack": "5.78.0"
+    "webpack": "5.78.0",
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }
