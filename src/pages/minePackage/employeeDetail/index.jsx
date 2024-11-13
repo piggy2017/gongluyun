@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 17:50:04
+ * @LastEditTime: 2024-11-12 11:13:40
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
-import Taro, { useRouter } from '@tarojs/taro';
+import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Block, Text, Input } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
@@ -19,14 +19,14 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { companyDisableAccount, companyUpdateMember } from '@/util/api'
+import { getMemberInfo, companyDisableAccount, companyUpdateMember } from '@/util/api'
 
 const Index = observer(({ store }) => {
+    const router = useRouter();
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const {
         baseStore: { bottomSafeAreaHeight },
         userStore: { companyInfo, getRoleAndPermissionFunc },
-        businessStore: { employeeInfo, setEmployeeInfo }
     } = store
     const [currentInfo, setCurrentInfo] = useState({});
     const [showEditModel, setShowEditModel] = useState(false);   // 修改密码的弹窗
@@ -38,18 +38,21 @@ const Index = observer(({ store }) => {
         getRoleAndPermissionFunc();
     }, [])
 
-    useEffect(() => {
-        console.log("employeeInfo", employeeInfo);
-        // setCurrentInfo(employeeInfo);
-        let _obj = { ...employeeInfo }
-        if (_obj.permission?.length > 0) {
-            _obj.permissionNames = _obj.permission.map((item) => {
+    useDidShow(() => {
+        getUserInfo();
+    })
+
+    const getUserInfo = async () => {
+        const { userSerialCode } = router.params;
+        const { code, data, msg } = await getMemberInfo({ userSerialCode });
+        console.log("code", code, "data", data, "msg", msg);
+        if (code === 200) {
+            data.permissionNames = data.permission.map((item) => {
                 return item.permName
             }).join('、');
+            setCurrentInfo(data);
         }
-        console.log("_obj_obj", _obj);
-        setCurrentInfo(_obj);
-    }, [employeeInfo])
+    }
 
     const validatePassword = password => {
         const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
@@ -97,15 +100,14 @@ const Index = observer(({ store }) => {
         if (code === 200) {
             Taro.showToast({ title: '修改成功', icon: 'none' });
             setShowEditModel(false);
-            // setEmployeeInfo({ ...formData });
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
     }
 
     const goEdit = () => {
-        setEmployeeInfo(currentInfo);
-        Taro.navigateTo({ url: '/pages/minePackage/editEmployee/index' });
+        const { userSerialCode } = router.params;
+        Taro.navigateTo({ url: `/pages/minePackage/editEmployee/index?userSerialCode=${userSerialCode}` });
     }
 
 

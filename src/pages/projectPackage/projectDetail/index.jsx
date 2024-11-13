@@ -2,39 +2,46 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 15:06:21
+ * @LastEditTime: 2024-11-13 14:59:41
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
-import { View, Image, Input, ScrollView, Text, Button, Picker } from '@tarojs/components'
+import { View, Image, Textarea, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
+
+import { AtIcon, AtFloatLayout } from 'taro-ui'
+import "taro-ui/dist/style/components/icon.scss";
+import "taro-ui/dist/style/components/float-layout.scss";
+
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { getContractsInfo, getContractsInfoStatistics, stopContracts, getContractsInfoHallStatistics } from '@/util/api';
+import { getContractsInfo, getContractsInfoStatistics, stopContracts, getContractsInfoHallStatistics, updateContracts } from '@/util/api';
 
 const Index = observer(({ store }) => {
   const route = useRouter();
   const {
     baseStore: { bottomSafeAreaHeight },
-    businessStore: { setEditProjectInfo },
+    businessStore: { setEditProjectInfo, onSiteInfo, setOnSiteInfo },
+    userStore: { myPermissions }
   } = store
 
   const [detail, setDetail] = useState('');
   const [statistics, setStatistics] = useState({});
   const [basicStatistics, setBasicStatistics] = useState({});
+  const [showAddress, setShowAddress] = useState(false);     //  是否显示修改面试地址的弹窗
+  const [addressInt, setAddressInt] = useState('');          //  面试地址
+  const [showDate, setShowDate] = useState(false);           //  是否显示修改面试时间的弹窗
+  const [interviewDate, setInterviewDate] = useState('');    //  面试时间
 
-  useEffect(() => {
-    getProjectDetail();
-    getProjectStatistics();
-    getContractsStatistics();
-  }, [])
 
   useDidShow(() => {
     getProjectDetail();
+    getProjectStatistics();
+    getContractsStatistics();
   })
 
   const getProjectDetail = async () => {
@@ -48,6 +55,12 @@ const Index = observer(({ store }) => {
       data.numberOnJob = numberOnJob;
       data.leaveRate = leaveRate;
       data.supplierCount = supplierCount;
+      if (data.interviewAddress) {
+        setAddressInt(data.interviewAddress);
+      }
+      if (data.interviewDate) {
+        setInterviewDate(data.interviewDate);
+      }
       setDetail(data);
     } else {
       Taro.showToast({ title: msg, icon: 'none' });
@@ -101,13 +114,53 @@ const Index = observer(({ store }) => {
     Taro.navigateTo({ url: `/pages/newPackage/newProject/index` });
   }
 
+  const setInterviewAddress = async () => {
+    let params = {
+      recruitSerialCode: detail.recruitSerialCode,
+      serialCode: detail.serialCode,
+      interviewAddress: addressInt
+    }
+    Taro.showLoading({ title: '保存中...' });
+    const { code, data, msg } = await updateContracts(params);
+    Taro.hideLoading();
+    if (code === 200) {
+      Taro.showToast({ title: '设置成功', icon: 'none', });
+      setShowAddress(false);
+      setTimeout(() => {
+        getProjectDetail();
+      }, 1000);
+    } else {
+      Taro.showToast({ title: msg, icon: 'none', });
+    }
+  }
+
+  const setInterviewDateFunc = async () => {
+    let params = {
+      recruitSerialCode: detail.recruitSerialCode,
+      serialCode: detail.serialCode,
+      interviewDate
+    }
+    Taro.showLoading({ title: '保存中...' });
+    const { code, data, msg } = await updateContracts(params);
+    Taro.hideLoading();
+    if (code === 200) {
+      Taro.showToast({ title: '设置成功', icon: 'none', });
+      setShowDate(false);
+      setTimeout(() => {
+        getProjectDetail();
+      }, 1000);
+    } else {
+      Taro.showToast({ title: msg, icon: 'none', });
+    }
+  }
+
   return (
     <View className='container'>
       <Navbar fixed placeholder bgColor='transparent' title='项目详情'></Navbar>
 
       <View className='project_baseInfo'>
         <View className='project_name'>{detail.title}</View>
-        <View className='project_addr'>{detail.areaName}·{detail.jobTypeName}·{detail.createDate}发布</View>
+        <View className='project_addr'>{detail.conAreaName}·{detail.jobTypeName}·{detail.createDate}发布</View>
         <View className='project_count'>
           <View className='project_count_item'>
             <View >{basicStatistics.numberRecruits}</View>
@@ -118,7 +171,7 @@ const Index = observer(({ store }) => {
             <View className='project_count_item_label'>在职人数</View>
           </View>
           <View className='project_count_item'>
-            <View >{basicStatistics.leaveRate}</View>
+            <View >{basicStatistics.leaveRate}%</View>
             <View className='project_count_item_label'>离职率</View>
           </View>
           <View className='project_count_item'>
@@ -159,81 +212,77 @@ const Index = observer(({ store }) => {
       <View className='interview_info'>
         <View className='project_title'>
           <View>面试信息</View>
-          {
-            (detail.interviewContactId && detail.addressDetail && detail.interviewDate) &&
-            <View className='project_more' onClick={goEditProject}>
-              <View>修改</View>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
-            </View>
-          }
+        </View>
+        <View className='interview_item'>
+          <View className='interview_item_title'>驻场联系人</View>
+          <View className='interview_item_content' onClick={() => {
+            if (!myPermissions.includes('5')) {
+              return Taro.showToast({ title: '您没有权限', icon: 'none' });
+            }
+            Taro.navigateTo({
+              url: `/pages/newPackage/setOnsite/index?recruitSerialCode=${detail.recruitSerialCode}&serialCode=${detail.serialCode}&code=${detail.interviewContactInfo}`
+            })
+          }}>
+            {
+              !detail.interviewContactInfo &&
+              <View className='interview_item_label'>设置驻场联系人</View> ||
+              <View className='interview_item_text'>{detail.interviewContactName} {detail.interviewContactPhone}</View>
+            }
+            <Image className='interview_item_img' src={`${Taro.$cdnUrl}/newIndex/newIndex_7.webp`}></Image>
+          </View>
         </View>
 
-        {
-          detail.interviewContactId &&
-          <View className='interview_item'>
-            <Image src={`${Taro.$cdnUrl}/index/index_icon22.webp`}></Image>
-            <View className='interview_item_content'><Text>驻场联系人：</Text>{detail.interviewContactName} {detail.interviewContactPhone}</View>
-          </View> ||
-          <View className='interview_item_set'>
-            <View className='interview_item_set_left'>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon22.webp`}></Image>
-              <View className='interview_item_content'>驻场联系人:</View>
-            </View>
-            <View className='interview_item_set_right' onClick={goEditProject}>
-              <View>设置驻场联系人</View>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon57.webp`}></Image>
-            </View>
+        <View className='interview_item'>
+          <View className='interview_item_title'>面试地点</View>
+          <View className='interview_item_content' onClick={() => {
+            if (!myPermissions.includes('5')) {
+              return Taro.showToast({ title: '您没有权限', icon: 'none' });
+            }
+            setShowAddress(true);
+          }}>
+            {
+              !detail.interviewAddress &&
+              <View className='interview_item_label'>设置面试地点</View> ||
+              <View className='interview_item_text'>{detail.interviewAddress}</View>
+            }
+            <Image className='interview_item_img' src={`${Taro.$cdnUrl}/newIndex/newIndex_7.webp`}></Image>
           </View>
-        }
-
-        {
-          detail.addressDetail &&
-          <View className='interview_item'>
-            <Image src={`${Taro.$cdnUrl}/index/index_icon23.webp`}></Image>
-            <View className='interview_item_content'><Text>面试地点：</Text>{detail.addressDetail}</View>
-          </View> ||
-          <View className='interview_item_set'>
-            <View className='interview_item_set_left'>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon23.webp`}></Image>
-              <View className='interview_item_content'>面试地点：</View>
-            </View>
-            <View className='interview_item_set_right' onClick={goEditProject}>
-              <View>设置面试地点</View>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon57.webp`}></Image>
-            </View>
+        </View>
+        <View className='interview_item'>
+          <View className='interview_item_title'>面试时间</View>
+          <View className='interview_item_content' onClick={() => {
+            if (!myPermissions.includes('5')) {
+              return Taro.showToast({ title: '您没有权限', icon: 'none' });
+            }
+            setShowDate(true);
+          }}>
+            {
+              !detail.interviewDate &&
+              <View className='interview_item_label'>设置面试时间</View> ||
+              <View className='interview_item_text'>{detail.interviewDate}</View>
+            }
+            <Image className='interview_item_img' src={`${Taro.$cdnUrl}/newIndex/newIndex_7.webp`}></Image>
           </View>
-        }
-
-        {
-          detail.interviewDate &&
-          <View className='interview_item'>
-            <Image src={`${Taro.$cdnUrl}/index/index_icon24.webp`}></Image>
-            <View className='interview_item_content'><Text>面试时间：</Text>{detail.interviewDate}</View>
-          </View> ||
-          <View className='interview_item_set'>
-            <View className='interview_item_set_left'>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon24.webp`}></Image>
-              <View className='interview_item_content'>面试时间：</View>
-            </View>
-            <View className='interview_item_set_right' onClick={goEditProject}>
-              <View>设置面试时间</View>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon57.webp`}></Image>
-            </View>
-          </View>
-        }
+        </View>
       </View>
 
       <View className='interview_info'>
         <View className='project_title'>
           <View>招聘简章</View>
-          <View className='project_more' onClick={goEditProject}>
-            <View>修改</View>
-            <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
-          </View>
+          {
+            myPermissions.includes('5') &&
+            <View className='project_more' onClick={() => {
+              goEditProject()
+            }}>
+              <View>修改</View>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
+            </View> ||
+            <View> </View>
+          }
         </View>
-
         <View className='job_introduce'>{detail.introduction}</View>
       </View>
+      <View style={`height:300rpx;`}></View>
 
       <View className='project_btns'>
         <View style={`height:20rpx;`}></View>
@@ -242,14 +291,76 @@ const Index = observer(({ store }) => {
             <Image src={`${Taro.$cdnUrl}/index/index_icon25.webp`}></Image>
             <View>停招</View>
           </View>
-          <View className='btn_item' onClick={goEditProject}>
-            <Image src={`${Taro.$cdnUrl}/index/index_icon26.webp`}></Image>
-            <View>编辑</View>
-          </View>
-          <View className='add_worker' onClick={(e) => navigateFunc(e, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>录入求职者</View>
+          {
+            myPermissions.includes('5') &&
+            <View className='btn_item' onClick={goEditProject}>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon26.webp`}></Image>
+              <View>编辑</View>
+            </View>
+          }
+          <View className='add_worker' style={`width:${myPermissions.includes('5') ? '482rpx' : '562rpx'}`} onClick={(e) => navigateFunc(e, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>录入求职者</View>
         </View>
         <View style={`height:${bottomSafeAreaHeight}px;`}></View>
       </View>
+
+
+      <Block>
+        <AtFloatLayout catchMove className='role_init_layout' isOpened={showAddress} onClose={() => { setShowAddress(false) }}>
+          <View className='filter_wrapper'>
+            <View className='filter_wrapper_bg'>
+              <View className='filter_title'>
+                <View>设置面试地点</View>
+                <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowAddress(false) }}></AtIcon>
+              </View>
+              <View className='input_wrapper'>
+                <Textarea count={false}
+                  className='float_input'
+                  auto-height
+                  confirmType='return'
+                  value={addressInt}
+                  onInput={(e) => setAddressInt(e.detail.value)}
+                  adjustPosition={false} //键盘弹起时，是否自动上推页面 
+                  show-confirm-bar
+                  maxlength={500}
+                  autoHeight
+                  placeholder={`请输入面试地点`}>
+                </Textarea>
+              </View>
+              <View className='post_btn' onClick={setInterviewAddress}>保存</View>
+              <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+            </View>
+          </View>
+        </AtFloatLayout>
+      </Block>
+
+      <Block>
+        <AtFloatLayout catchMove className='role_init_layout' isOpened={showDate} onClose={() => { setShowDate(false) }}>
+          <View className='filter_wrapper'>
+            <View className='filter_wrapper_bg'>
+              <View className='filter_title'>
+                <View>设置面试时间</View>
+                <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowDate(false) }}></AtIcon>
+              </View>
+              <View className='input_wrapper'>
+                <Textarea count={false}
+                  className='float_input'
+                  auto-height
+                  confirmType='return'
+                  value={interviewDate}
+                  onInput={(e) => setInterviewDate(e.detail.value)}
+                  adjustPosition={false} //键盘弹起时，是否自动上推页面 
+                  show-confirm-bar
+                  maxlength={500}
+                  autoHeight
+                  placeholder={`请输入面试时间`}>
+                </Textarea>
+              </View>
+              <View className='post_btn' onClick={setInterviewDateFunc}>保存</View>
+              <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+            </View>
+          </View>
+        </AtFloatLayout>
+      </Block>
     </View>
   )
 })

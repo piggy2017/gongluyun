@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 18:00:54
+ * @LastEditTime: 2024-11-13 15:02:37
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -22,14 +22,14 @@ import "taro-ui/dist/style/components/icon.scss";
 import './index.scss'
 
 import {
-  workbenchtodayData, workbenchcluePool, workbenchdrainageData, workbenchconvertData, userCenter, todo,getRoleAndPermissionByUserId
+  workbenchtodayData, workbenchcluePool, workbenchdrainageData, workbenchconvertData, userCenter, todo, getRoleAndPermissionByUserId
 } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
-    userStore: { isLogin, role, userInfo, refreshUserInfo, getRoleAndPermissionFunc }
+    userStore: { isLogin, role, userInfo, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions }
   } = store
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [timeText, setTimeText] = useState("");
@@ -68,13 +68,14 @@ const Index = observer(({ store }) => {
     console.log("首页 监听 当前角色role:", role);
     console.log("首页 监听 当前用户信息userInfo:", userInfo);
     getRoleAndPermissionFunc();
-    
+
   }, [isLogin, role, userInfo]);
 
   useEffect(() => {
     if (isLogin) {
       refreshUserInfo();
-      getUserRole();
+      // getUserRole();
+      setMyPermissions();
     }
   }, [isLogin])
 
@@ -108,7 +109,7 @@ const Index = observer(({ store }) => {
   const getUserRole = async () => {
     const result = await getRoleAndPermissionByUserId({});
     console.log("获取角色和权限", result);
-}
+  }
 
   const getTodayData = async () => {   // 获取今日数据
     const { code, data } = await workbenchtodayData({ companySerialCode: '', dateRange: '' });
@@ -238,12 +239,20 @@ const Index = observer(({ store }) => {
             <View className='search_input' style={`width:${role === 'CUSTOMER' ? '500rpx' : '400rpx'}`}>输入关键词搜索项目、求职者</View>
           </View>
 
-          <View className='message_notice'>
+          {/* <View className='message_notice'>
             <View className='message_notice_dot'></View>
-          </View>
+          </View> */}
           {
-            (role === 'ADMIN' || role === 'ON_SITE' || role === 'SEEK') &&
-            <View className='add_user_icon' onClick={() => { setShowAddType(!showAddType) }}>
+            (role === 'ADMIN' || role === "CUSTOMER" || role === 'ON_SITE' || role === 'SEEK') &&
+            <View className='add_user_icon' onClick={() => {
+              if (!isLogin) {
+                Taro.navigateTo({
+                  url: '/pages/login/index'
+                })
+                return
+              }
+              setShowAddType(!showAddType);
+            }}>
               {
                 showAddType &&
                 <View className='add_types_wrapper'>
@@ -251,14 +260,20 @@ const Index = observer(({ store }) => {
                     <Image src={`${Taro.$cdnUrl}/index/index_icon11.webp`}></Image>
                     <View>新增求职者线索</View>
                   </View>
-                  <View className='add_types_item' onClick={() => navigateFunc(1, '/pages/newPackage/newProject/index')}>
-                    <Image src={`${Taro.$cdnUrl}/index/index_icon10.webp`}></Image>
-                    <View>新增招聘项目</View>
-                  </View>
-                  <View className='add_types_item' onClick={() => navigateFunc(1, '/pages/newPackage/newEmployee/index')}>
-                    <Image src={`${Taro.$cdnUrl}/index/index_icon9.webp`}></Image>
-                    <View>新增员工账号</View>
-                  </View>
+                  {
+                    myPermissions.includes('4') &&
+                    <View className='add_types_item' onClick={() => navigateFunc(1, '/pages/newPackage/newProject/index')}>
+                      <Image src={`${Taro.$cdnUrl}/index/index_icon10.webp`}></Image>
+                      <View>新增招聘项目</View>
+                    </View>
+                  }
+                  {
+                    role === 'ADMIN' &&
+                    <View className='add_types_item' onClick={() => navigateFunc(1, '/pages/newPackage/newEmployee/index')}>
+                      <Image src={`${Taro.$cdnUrl}/index/index_icon9.webp`}></Image>
+                      <View>新增员工账号</View>
+                    </View>
+                  }
                 </View>
               }
             </View>
@@ -286,7 +301,10 @@ const Index = observer(({ store }) => {
               <Image src={`${Taro.$cdnUrl}/index/index_icon6.webp`}></Image>
               <View>录入求职线索</View>
             </View>
-            <View className='enter_wrap_item' style={`margin-left:230rpx;`} onClick={() => navigateFunc(1, '/pages/projectPackage/listFeedback/index')}>
+            <View className='enter_wrap_item' style={`margin-left:230rpx;`} onClick={() => {
+              return
+              navigateFunc(1, '/pages/projectPackage/listFeedback/index')
+            }}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
               <View>反馈名单</View>
             </View>
@@ -465,16 +483,16 @@ const Index = observer(({ store }) => {
           </View>
         }
 
-        <View className='component_hr'>---下面是公共组件---</View>
+        {/* <View className='component_hr'>---下面是公共组件---</View>
         <View onClick={() => { setShowTimePicker(true) }}>时间选择器:{timeText}</View>
         <View onClick={() => { setShowDatePicker(true) }}>日期选择器:{dateText}</View>
         <View onClick={() => { setShowAgePicker(true) }}>年龄范围选择:{ageText}</View>
         <View onClick={() => { setShowSexPicker(true) }}>选择性别:{sexText}</View>
-        <View onClick={() => { setShowFilterDate(true) }}>日期筛选:</View>
+        <View onClick={() => { setShowFilterDate(true) }}>日期筛选:</View> */}
 
       </ScrollView>
 
-      <TimePicker showPicker={showTimePicker} onClose={() => { setShowTimePicker(false) }} onChange={timePickerSelect} />
+      {/* <TimePicker showPicker={showTimePicker} onClose={() => { setShowTimePicker(false) }} onChange={timePickerSelect} />
 
       <DatePicker type='Single' showPicker={showDatePicker} onClose={() => { setShowDatePicker(false) }} onSelectDate={datePickerSelect}></DatePicker>
 
@@ -482,7 +500,7 @@ const Index = observer(({ store }) => {
 
       <SexPicker showPicker={showSexPicker} onClose={() => { setShowSexPicker(false) }} onChange={sexPickerSelect}></SexPicker>
 
-      <CustomDate showPicker={showFilterDate} onClose={() => { setShowFilterDate(false) }} onChange={customDateSelect}></CustomDate>
+      <CustomDate showPicker={showFilterDate} onClose={() => { setShowFilterDate(false) }} onChange={customDateSelect}></CustomDate> */}
 
 
       <TabBar actCurrent={0} />

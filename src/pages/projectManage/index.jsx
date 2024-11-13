@@ -22,7 +22,7 @@ const Index = observer(({ store }) => {
   const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
-    userStore: { role, isLogin, companyVerified }
+    userStore: { role, isLogin, companyVerified, myPermissions }
   } = store
   const [searchValue, setSearchValue] = useState('');
   const [searchHeight, setSearchHeight] = useState(34);
@@ -153,7 +153,7 @@ const Index = observer(({ store }) => {
         </View>
       </View>
       <View className='search_wrap'>
-        <View className='search_con'>
+        <View className='search_con' style={`width:${myPermissions.includes('4') ? '608rpx' : '690rpx'}`}>
           <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
           <Input className='search_input'
             placeholder='搜索关键字搜索订单'
@@ -166,7 +166,10 @@ const Index = observer(({ store }) => {
             }}
             value={searchValue}></Input>
         </View>
-        <Image className='add_icon' src={`${Taro.$cdnUrl}/index/index_icon3.webp`} onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newProject/index')}></Image>
+        {
+          myPermissions.includes('4') &&
+          <Image className='add_icon' src={`${Taro.$cdnUrl}/index/index_icon3.webp`} onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newProject/index')}></Image>
+        }
       </View>
       {
         (!isLogin || (role === 'SEEK' && !companyVerified)) &&

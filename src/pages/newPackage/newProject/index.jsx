@@ -2,16 +2,20 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 13:53:55
+ * @LastEditTime: 2024-11-13 14:15:24
  * @Description: 
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import Taro from '@tarojs/taro';
-import { View, Image, Text, Input, Textarea, Block } from '@tarojs/components'
+import { View, Image, Text, Input, Textarea, Block, Picker } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import { reverseGeocoder } from '@/util/getLocation';
+
+import { AtIcon, AtFloatLayout } from 'taro-ui'
+import "taro-ui/dist/style/components/icon.scss";
+import "taro-ui/dist/style/components/float-layout.scss";
 
 import Navbar from '@/components/navbar';
 import ChooseJobType from '@/components/chooseJobType';
@@ -23,35 +27,107 @@ import './index.scss'
 const Index = observer(({ store }) => {
     const {
         baseStore: { bottomSafeAreaHeight },
-        businessStore: { onSiteInfo, setOnSiteInfo, editProjectInfo, setEditProjectInfo },
+        businessStore: { onSiteInfo, setOnSiteInfo, editProjectInfo, setEditProjectInfo, jobFilterAddress, setJobFilterAddress },
     } = store
+    const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const [formData, setFormData] = useState({});
 
-    const [chooseJob, setChooseJob] = useState(false);  // 选择岗位类型的弹窗
+    const [chooseJob, setChooseJob] = useState(false);     // 选择岗位类型的弹窗
+    const [chooseType, setChooseType] = useState(false);   // 选择工作类型的弹窗   全职-兼职
+    const [typeInfo, setTypeInfo] = useState({
+        name: "", salaryType: ''
+    });
     const [chooseAddr, setChooseAddr] = useState({})
 
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
+    const [types, setTypes] = useState([
+        { name: "全职", salaryType: 'FIXED' },
+        { name: "兼职", salaryType: 'DAY' },
+        { name: "全职/兼职", salaryType: 'ALL' }
+    ])
+
+    const [selector, setSelector] = useState(["月", "周", "天", "小时"]);
+    const [selectorIndex, setSelectorIndex] = useState(0);
+    const [selectorCodes, setSelectorCodes] = useState(['MONTH', 'WEEK', 'DAY', 'HOUR']);
+
+    const [xzType, setxzType] = useState(1);           // 1 固定工资  2 范围工资
+    const [rangeLeft, setRangeLeft] = useState('');
+    const [rangeRight, setRangeRight] = useState('');
+
+    useEffect(() => {
+        console.log("jobFilterAddress", formData, jobFilterAddress);
+        if (jobFilterAddress.province && !jobFilterAddress.init) {
+            setFormData({
+                ...formData,
+                areaCode: jobFilterAddress.adcode,
+                areaName: jobFilterAddress.province + '·' + jobFilterAddress.city + '·' + jobFilterAddress.district
+            })
+            forceUpdate();
+        }
+    }, [jobFilterAddress]);
 
     useEffect(() => {
         if (editProjectInfo) {
             console.log("修改项目信息---editProjectInfo", editProjectInfo);
+            let _editProjectInfo = JSON.parse(JSON.stringify(editProjectInfo));
             setIsUpdate(true);
+
+            if (_editProjectInfo.salaryType) {
+                let _jobTypeText = _editProjectInfo.salaryType === 'FIXED' ? '全职' : _editProjectInfo.salaryType === 'DAY' ? '兼职' : '全职/兼职';
+                setTypeInfo({ name: _jobTypeText, salaryType: _editProjectInfo.salaryType });
+                _editProjectInfo.jobTypeText = _jobTypeText;
+            }
+            _editProjectInfo.salaryRange=_editProjectInfo.salaryRange.split("元")[0];
+            if (_editProjectInfo.salaryRange.includes("-")) {
+                setRangeLeft(_editProjectInfo.salaryRange.split("-")[0]);
+                setRangeRight(_editProjectInfo.salaryRange.split("-")[1]);
+                setxzType(2);
+            }
+            if (_editProjectInfo.salaryUnit) {
+                setSelectorIndex(selectorCodes.indexOf(_editProjectInfo.salaryUnit));
+            }
+            if (_editProjectInfo.areaName) {
+                let _areaName = _editProjectInfo.areaName.split("·");
+                setJobFilterAddress({
+                    init: true,
+                    adcode: _editProjectInfo.areaCode,
+                    city: _areaName[1],
+                    district: _areaName[2],
+                    province: _areaName[0],
+                })
+
+            }
             setFormData({
-                ...editProjectInfo,
-                interviewContactInfo: editProjectInfo.interviewContactId
+                ..._editProjectInfo,
             });
+            forceUpdate();
+
+        } else {
+            setFormData({
+                ...formData,
+                settlementType: 'MONTH',
+                salaryUnit: 'MONTH',
+
+            })
         }
         return () => {
             setEditProjectInfo(null);
+            setJobFilterAddress({
+                init: false,
+                adcode: '',
+                city: '',
+                district: '',
+                province: '',
+            })
         }
-    }, [editProjectInfo])
+    }, [editProjectInfo]);
 
-    useEffect(() => {
-        if (onSiteInfo.phone) {
-            setFormData({ ...formData, interviewContactInfo: onSiteInfo.userSerialCode, interviewContactName: onSiteInfo.name, interviewContactPhone: onSiteInfo.phone });
-        }
-    }, [onSiteInfo]);
+    // useEffect(() => {
+    //     if (onSiteInfo.phone) {
+    //         setFormData({ ...formData, interviewContactInfo: onSiteInfo.userSerialCode, interviewContactName: onSiteInfo.name, interviewContactPhone: onSiteInfo.phone });
+    //     }
+    // }, [onSiteInfo]);
 
     const getMyAddress = async () => {
         try {
@@ -85,22 +161,23 @@ const Index = observer(({ store }) => {
 
     const datePickerSelect = (e) => {
         console.log("seleceDate", e);
-        // setDateText(e);
         setFormData({ ...formData, interviewDate: e })
     }
 
     const postProject = async () => {
         let params = {
             ...formData,
-            addressDetail: formData.areaName + formData.addressDetail,
+            // addressDetail: formData.areaName + formData.addressDetail,
         }
         params.numberRecruits = Number(params.numberRecruits);
-        console.log("params", params);
         const errorMessages = [
-            !params.title && '岗位标题不能为空',
+            // !params.title && '岗位标题不能为空',
+            !params.jobTypeId && '岗位类型不能为空',
+            !params.jobTypeId && '工作类型不能为空',
             !params.company && '企业名称不能为空',
             !params.numberRecruits && '招聘人数不能为空',
-            !params.jobTypeId && '岗位类型不能为空',
+            !params.areaCode && '工作地区不能为空',
+            !params.addressDetail && '工作详细地址不能为空',
             !params.introduction && '岗位描述不能为空',
         ].filter(Boolean);
 
@@ -110,15 +187,27 @@ const Index = observer(({ store }) => {
                 icon: 'none',
             })
         }
+
+        if (xzType === 1 && !params.salaryRange) {
+            return Taro.showToast({ title: '薪资不能为空', icon: 'none', })
+        } else if (xzType === 2 && (!rangeLeft || !rangeRight)) {
+            return Taro.showToast({ title: '薪资范围不能为空', icon: 'none', })
+        }
+        if (xzType === 2 && rangeLeft && rangeRight) {
+            params.salaryRange = `${rangeLeft}-${rangeRight}`
+        }
+
+        console.log("params", params);
+        // return
         Taro.showLoading({ title: '提交中...', mask: true });
         const { code, data, msg } = await (isUpdate ? updateContracts(params) : contractsCreate(params));
         console.log("contractsCreate", code, data);
         if (code === 200) {
             Taro.showToast({ title: '提交成功', icon: 'none' });
             setTimeout(() => {
-                if(isUpdate){
+                if (isUpdate) {
                     Taro.navigateBack({ delta: 1 })
-                }else{
+                } else {
                     Taro.redirectTo({ url: `/pages/newPackage/newProjectSuccess/index?serialCode=${data.serialCode}` });
                 }
             }, 1500);
@@ -128,27 +217,54 @@ const Index = observer(({ store }) => {
         Taro.hideLoading();
     }
 
+    const chooseTypeFunc = (name, salaryType) => {
+        setChooseType(false);
+        setTypeInfo({ name, salaryType });
+        setFormData({ ...formData, salaryType, jobTypeText: name });
+    }
+
+    const onCustomChange = (e) => {
+        console.log("onCustomChange", e);
+        let _index = e.detail.value * 1;
+        setSelectorIndex(_index);
+        setFormData({ ...formData, salaryUnit: selectorCodes[_index] });
+    }
+
+    const setxzTypeFunc = (type) => {
+        setxzType(type);
+        if (type === 1 && formData.salaryRange.includes("-")) {
+            setFormData({ ...formData, salaryRange: formData.salaryRange.split('-')[0] });
+        }
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#F4F4F4' title='完善项目信息'></Navbar>
 
             <View className='project_group'>
-                <View className='project_item'>
+                {/* <View className='project_item'>
                     <View className='project_item_label project_item_label_required'>岗位标题</View>
                     <View className='project_item_right'>
                         <Input
                             className='new_input'
                             placeholder='请输入岗位标题(必填)'
-                            placeholderStyle='color: #777777;'
+                            placeholderStyle='color: #999999;'
                             value={formData.title}
                             onInput={(e) => setFormData({ ...formData, title: e.detail.value })}
                         ></Input>
                     </View>
-                </View>
+                </View> */}
                 <View className='project_item project_item_border'>
                     <View className='project_item_label project_item_label_required'>岗位类型</View>
                     <View className='project_item_right' onClick={() => setChooseJob(true)}>
                         <Text className={`${formData.jobTypeId ? 'project_item_text_active' : 'project_item_text'}`}>{formData.jobTypeId ? formData.jobTypeName : '请选择岗位类型(必填)'}</Text>
+                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                    </View>
+                </View>
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label project_item_label_required'>工作类型</View>
+                    <View className='project_item_right' onClick={() => setChooseType(true)}>
+                        <Text className={`${formData.salaryType ? 'project_item_text_active' : 'project_item_text'}`}>{formData.salaryType ? formData.jobTypeText : '请选择工作类型(必填)'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
@@ -158,7 +274,7 @@ const Index = observer(({ store }) => {
                         <Input
                             className='new_input'
                             placeholder='请输入企业名称(必填)'
-                            placeholderStyle='color: #777777;'
+                            placeholderStyle='color: #999999;'
                             value={formData.company}
                             onInput={(e) => setFormData({ ...formData, company: e.detail.value })}
                         ></Input>
@@ -171,11 +287,88 @@ const Index = observer(({ store }) => {
                             type='number'
                             className='new_input'
                             placeholder='请输入所需的总人数'
-                            placeholderStyle='color: #777777;'
+                            placeholderStyle='color: #999999;'
                             value={formData.numberRecruits}
                             onInput={(e) => setFormData({ ...formData, numberRecruits: e.detail.value })}
                         ></Input>
                     </View>
+                </View>
+                <View className='project_item_address project_item_border'>
+                    <View className='project_item_label project_item_label_required'>工作地址</View>
+                    <View className='item_address_wrap'>
+                        <View className='item_address_wrap_left' onClick={() => {
+                            Taro.navigateTo({
+                                url: `/pages/selectorPackage/areaChoose/index`
+                            })
+                        }}>
+                            <View className='item_address_text'>{jobFilterAddress.district ? jobFilterAddress.city + "·" + jobFilterAddress.district : '选择地区'}</View>
+                            <AtIcon value='chevron-down' size='14' color='#333'></AtIcon>
+                        </View>
+                        <Input
+                            className='new_input_3'
+                            placeholder='输入岗详细地址(必填)'
+                            placeholderStyle='color: #999999;'
+                            value={formData.addressDetail}
+                            onInput={(e) => setFormData({ ...formData, addressDetail: e.detail.value })}>
+                        </Input>
+                    </View>
+                </View>
+            </View>
+
+            <View className='project_group_2'>
+                <View className='unit_title_wraper'>
+                    <View onClick={() => setxzTypeFunc(1)} className={`unit_title_item ${xzType === 1 ? 'unit_title_item_active' : ''} `}>固定工资</View>
+                    <View onClick={() => setxzTypeFunc(2)} className={`unit_title_item ${xzType === 2 ? 'unit_title_item_active' : ''} `}>范围工资</View>
+                </View>
+                <View className='unit_content'>
+                    <View className='unit_content_left'>
+                        {
+                            xzType === 1 &&
+                            <Input
+                                type='number'
+                                className='salary_input'
+                                placeholder='请输入固定工资(必填)'
+                                placeholderStyle='color: #999999;'
+                                value={formData.salaryRange}
+                                onInput={(e) => setFormData({ ...formData, salaryRange: e.detail.value })}></Input> ||
+
+                            xzType === 2 &&
+                            <>
+                                <Input
+                                    type='number'
+                                    className='salary_input_2'
+                                    placeholder='最低'
+                                    placeholderStyle='color: #999999;'
+                                    value={rangeLeft}
+                                    onInput={(e) => setRangeLeft(e.detail.value)}></Input>
+                                <View className='salary_input_hr'>至</View>
+                                <Input
+                                    type='number'
+                                    className='salary_input_3'
+                                    placeholder='最高'
+                                    placeholderStyle='color: #999999;'
+                                    value={rangeRight}
+                                    onInput={(e) => setRangeRight(e.detail.value)}></Input>
+                            </>
+                        }
+                    </View>
+
+
+                    <Picker mode='selector' range={selector} onChange={onCustomChange}>
+                        {/* <View className={`picker ${startDate ? 'picker_active' : ''}}`}>
+                            {startDate ? startDate + '开始' : '开始日期'}
+                        </View> */}
+                        <View className='unit_content_right'>
+                            <View className='unit_content_right_text'>元/{selector[selectorIndex]}</View>
+                            <AtIcon value='chevron-down' size='20' color='#888888;'></AtIcon>
+                        </View>
+                    </Picker>
+                </View>
+
+                <View className='settle_wrapper'>
+                    <View onClick={() => setFormData({ ...formData, settlementType: 'DAY' })} className={`settle_item ${formData.settlementType === 'DAY' ? 'settle_item_active' : ''}`}>日结</View>
+                    <View onClick={() => setFormData({ ...formData, settlementType: 'WEEK' })} className={`settle_item ${formData.settlementType === 'WEEK' ? 'settle_item_active' : ''}`}>周结</View>
+                    <View onClick={() => setFormData({ ...formData, settlementType: 'MONTH' })} className={`settle_item ${formData.settlementType === 'MONTH' ? 'settle_item_active' : ''}`}>月结</View>
                 </View>
             </View>
 
@@ -236,11 +429,15 @@ const Index = observer(({ store }) => {
                     <View className={`pay_btn `}>元/月</View>
                 </View>
             </View> */}
+            <View onClick={() => {
+                Taro.navigateTo({
+                    url: `/pages/selectorPackage/areaChoose/index`
+                })
+            }}>选择区域</View>
 
-            <View className='project_group '>
+            {/* <View className='project_group '>
                 <View className='project_item' onClick={() => { Taro.navigateTo({ url: `/pages/newPackage/setOnsite/index?code=${formData.interviewContactInfo ? formData.interviewContactInfo : ''}` }) }}>
                     <View className='project_item_label '>驻场人员</View>
-                    {/* 姓名+手机号 */}
                     <View className='project_item_right'>
                         <Text className={`${formData.interviewContactInfo ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewContactInfo ? formData.interviewContactName : '驻场人员或者面试联系人'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
@@ -260,7 +457,7 @@ const Index = observer(({ store }) => {
                             className='new_input_2'
                             count={false}
                             placeholder='请输入详细地址'
-                            placeholderStyle='color: #777777;'
+                            placeholderStyle='color: #999999;'
                             value={formData.addressDetail}
                             auto-height
                             show-confirm-bar
@@ -299,13 +496,13 @@ const Index = observer(({ store }) => {
                         />
                     </View>
                 </View>
-            </View>
+            </View> */}
 
             <View style={`height:300rpx;`}></View>
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={postProject} className={`post_btn ${(formData.title && formData.jobTypeId && formData.company && formData.numberRecruits && formData.introduction) ? 'post_btn_active' : ''}`}>{isUpdate ? '保存' : '发布'}项目</View>
+                <View onClick={postProject} className={`post_btn ${(formData.jobTypeId && formData.salaryType && formData.company && formData.numberRecruits && formData.addressDetail && formData.introduction) ? 'post_btn_active' : ''}`}>{isUpdate ? '修改' : '发布'}项目</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 
@@ -328,6 +525,25 @@ const Index = observer(({ store }) => {
 
             <Block>
                 <DatePicker type='Single' showPicker={showDatePicker} onClose={() => { setShowDatePicker(false) }} onSelectDate={datePickerSelect}></DatePicker>
+            </Block>
+
+            <Block>
+                <AtFloatLayout catchMove className='role_init_layout' isOpened={chooseType} onClose={() => { setChooseType(false) }}>
+                    <View className='filter_wrapper'>
+                        <View className='filter_wrapper_bg'>
+                            <View className='filter_title'>
+                                <View>请选择工作类型</View>
+                                <AtIcon value='close' size='14' color='#222222' onClick={() => { setChooseType(false) }}></AtIcon>
+                            </View>
+                            <View className='type_wrapper'>
+                                <View onClick={() => chooseTypeFunc('全职', 'FIXED')} className={`type_item ${typeInfo.name === '全职' ? 'type_item_active' : ''}`}>全职</View>
+                                <View onClick={() => chooseTypeFunc('兼职', 'DAY')} className={`type_item ${typeInfo.name === '兼职' ? 'type_item_active' : ''}`}>兼职</View>
+                                <View onClick={() => chooseTypeFunc('全职/兼职', 'ALL')} className={`type_item ${typeInfo.name === '全职/兼职' ? 'type_item_active' : ''}`}>全职/兼职</View>
+                            </View>
+                            <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+                        </View>
+                    </View>
+                </AtFloatLayout>
             </Block>
 
 

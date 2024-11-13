@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-06 17:45:48
+ * @LastEditTime: 2024-11-13 10:00:45
  * @Description: 
  */
 
@@ -193,7 +193,7 @@ const Index = observer(({ store }) => {
 
                                                     <View className='record_item_list_item_addr flex-row-items'>
                                                         <Image src={`${Taro.$cdnUrl}/index/index_icon12.webp`}></Image>
-                                                        <View>{child.areaName}</View>
+                                                        <View>{child.conAreaName}</View>
                                                     </View>
                                                 </View>
                                             )

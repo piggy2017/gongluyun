@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-12 09:35:09
+ * @LastEditTime: 2024-11-12 11:17:30
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
@@ -18,10 +18,11 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { companyUpdateMember } from '@/util/api'
+import { getMemberInfo, companyUpdateMember } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
+    const router = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
         userStore: { companyInfo, roles, permissions },
@@ -39,18 +40,24 @@ const Index = observer(({ store }) => {
     const [showLimitModel, setShowLimitModel] = useState(false);
 
     useEffect(() => {
-        console.log("编辑员工信息 - employeeInfo", employeeInfo);
-        if (employeeInfo) {
-            let _obj = { ...employeeInfo };
-            _obj.permIds = _obj.permIds.split(',');
-            _obj.authority = _obj.permission.map(item => item.permName);
-            setFormData(_obj);
+        getUserInfo();
+    }, [])
+
+    const getUserInfo = async () => {
+        const { userSerialCode } = router.params;
+        const { code, data, msg } = await getMemberInfo({ userSerialCode });
+        console.log("code", code, "data", data, "msg", msg);
+        if (code === 200) {
+            data.authority = data.permission.map(item => item.permName);
+            data.permIds = data.permIds.split(',');
+            setFormData(data);
+            console.log("permissions_permissions", permissions);
 
             if (permissions.length > 0) {
                 const _list = JSON.parse(JSON.stringify(permissions));
                 for (let i = 0; i < _list.length; i++) {
                     for (let j = 0; j < _list[i].childPerms.length; j++) {
-                        if (_obj.permIds.indexOf(_list[i].childPerms[j].permId) > -1) {
+                        if (data.permIds.indexOf(_list[i].childPerms[j].permId) > -1) {
                             _list[i].childPerms[j].selected = true;
                         }
                     }
@@ -59,7 +66,8 @@ const Index = observer(({ store }) => {
                 setPermissionList(_list);
             }
         }
-    }, [employeeInfo, permissions])
+    }
+
 
     const choosePerssion = (obj, index, idx) => {
         console.log("choosePerssion obj, index", obj, index);
@@ -70,14 +78,6 @@ const Index = observer(({ store }) => {
                 permissionList[index].childPerms[idx].selected = true;
             }
             console.log("permissionList", permissionList);
-            // let _list = permissionList.filter(item => item.selected === true)//.map(item => item.permName);
-            // console.log("_list1", _list);
-            // if (_list.length > 0) {
-            //     let _list2 = _list.map(item => item.permName);
-            //     console.log("_list2", _list2);
-            //     let _permIds = _list.map(item => item.permId);
-            //     setFormData({ ...formData, permission: _list, authority: _list2, permIds: _permIds });
-            // }
             return permissionList;
         })
         forceUpdate();

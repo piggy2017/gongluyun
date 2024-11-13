@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 11:34:26
+ * @LastEditTime: 2024-11-13 12:05:12
  * @Description: 
  */
 
@@ -25,7 +25,7 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-        userStore: { }
+        userStore: { myPermissions }
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
 
@@ -446,9 +446,17 @@ const Index = observer(({ store }) => {
                                 </View>
                                 <View className='roster_item_detail'>
                                     <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.idCardNo) ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
-                                    <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }} onClick={(e) => showOptionFunc(e, item, index)}>
+                                    <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }} onClick={(e) => {
+                                        if(!myPermissions.includes('6')){
+                                            return
+                                        }
+                                        showOptionFunc(e, item, index);
+                                    }}>
                                         <View>{getStatus(item.seekState)}</View>
-                                        <AtIcon value='chevron-down' size='14' color={getColor(item.seekState)}></AtIcon>
+                                        {
+                                            myPermissions.includes('6') &&
+                                            <AtIcon value='chevron-down' size='14' color={getColor(item.seekState)}></AtIcon>
+                                        }
                                     </View>
                                     {
                                         item.showOptions &&

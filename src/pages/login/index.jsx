@@ -19,7 +19,7 @@ import './index.scss'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { setToken, setIsLogin, setRole, setUserInfo, getRoleAndPermissionFunc }
+        userStore: { setToken, setIsLogin, setRole, setUserInfo, getRoleAndPermissionFunc, setMyPermissions }
     } = store
 
     const [step, setStep] = useState(1);
@@ -79,6 +79,7 @@ const Index = observer(({ store }) => {
                     getRoleAndPermissionFunc();
                     setTimeout(() => {
                         getUserRole();
+                        // setMyPermissions();
                     }, 50);
                 }
                 Taro.hideLoading();
@@ -116,6 +117,7 @@ const Index = observer(({ store }) => {
                 getRoleAndPermissionFunc();
                 setTimeout(() => {
                     getUserRole();
+                    // setMyPermissions();
                 }, 50);
             }
             Taro.hideLoading();
@@ -123,9 +125,7 @@ const Index = observer(({ store }) => {
     }
 
     const getUserRole = async () => {
-        const result = await getRoleAndPermissionByUserId();
-        console.log("获取角色和权限", result);
-        // return;
+        setMyPermissions();
         Taro.navigateBack({
             delta: 1
         })

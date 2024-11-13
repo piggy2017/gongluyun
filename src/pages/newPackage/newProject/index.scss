@@ -129,6 +129,60 @@
             }
         }
 
+        .project_item_address {
+            padding: 50rpx 20rpx 48rpx 44rpx;
+
+            .project_item_label {
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+            }
+
+            .project_item_label_required {
+                position: relative;
+
+                &::before {
+                    content: '';
+                    width: 8rpx;
+                    height: 8rpx;
+                    flex-shrink: 0;
+                    background-color: #FF385C;
+                    border-radius: 50%;
+                    position: absolute;
+                    z-index: 9;
+                    left: -18rpx;
+                    top: 16rpx;
+                }
+            }
+
+            .item_address_wrap {
+                @include flex-center(space-between);
+                margin-top: 24rpx;
+
+                .item_address_wrap_left {
+                    @include flex-center(flex-start);
+
+                    .item_address_text {
+                        font-family: "PingFang SC";
+                        font-size: 30rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: normal;
+                        width: 150rpx;
+                        @include ellipsis;
+                    }
+                }
+
+                .new_input_3{
+                    width: 450rpx;
+                    text-align: right;
+                }
+            }
+        }
+
         .project_item_textarea {
             width: 100%;
 
@@ -274,7 +328,7 @@
                 box-sizing: border-box;
             }
 
-            .pay_btn_active{
+            .pay_btn_active {
                 background: #1678ff21;
                 color: #1678ff;
                 border: none;
@@ -288,6 +342,146 @@
         background: #FFF;
         margin: 20rpx auto 0 auto;
         padding-bottom: 16rpx;
+
+        .unit_title_wraper {
+            @include flex-center(flex-start);
+            padding: 36rpx 0 24rpx 44rpx;
+            color: #999999;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            position: relative;
+
+            &::before {
+                content: '';
+                width: 8rpx;
+                height: 8rpx;
+                flex-shrink: 0;
+                background-color: #FF385C;
+                border-radius: 50%;
+                position: absolute;
+                z-index: 9;
+                left: 22rpx;
+                top: 51rpx;
+            }
+
+            .unit_title_item {
+                margin-right: 48rpx;
+                position: relative;
+            }
+
+            .unit_title_item_active {
+                color: #666666;
+
+                &::after {
+                    content: '';
+                    width: 32rpx;
+                    height: 6rpx;
+                    flex-shrink: 0;
+                    background-color: #1678FF;
+                    border-radius: 3rpx;
+                    position: absolute;
+                    z-index: 9;
+                    left: 44rpx;
+                    bottom: -12rpx;
+                }
+            }
+        }
+
+        .unit_content {
+            width: 642rpx;
+            height: 74rpx;
+            margin: 8rpx auto 0 auto;
+            border-bottom: 1rpx solid #0000000a;
+            @include flex-center(space-between);
+
+            .unit_content_left {
+                @include flex-center(flex-start);
+
+                .salary_input {
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+
+                .salary_input_2 {
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    width: 160rpx;
+                }
+
+                .salary_input_3 {
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    width: 260rpx;
+                    text-align: center;
+                    border-right: 1rpx solid #0000000a;
+                }
+
+                .salary_input_hr {
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    margin-right: 20rpx;
+                }
+            }
+
+            .unit_content_right {
+                @include flex-center(flex-end);
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                position: relative;
+
+                .unit_content_right_text {
+                    margin-right: 10rpx;
+                }
+            }
+        }
+
+        .settle_wrapper {
+            width: 642rpx;
+            padding-bottom: 12rpx;
+            margin: 28rpx auto 0 auto;
+            @include flex-center(flex-end);
+            gap: 20rpx;
+
+            .settle_item {
+                width: 140rpx;
+                height: 64rpx;
+                border: 2rpx solid #999;
+                border-radius: 8rpx;
+                box-sizing: border-box;
+                color: #999999;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 64rpx;
+                text-align: center;
+            }
+
+            .settle_item_active {
+                color: #1678ff;
+                border: 2rpx solid #1678ff;
+            }
+        }
 
         .project_item_textarea {
             width: 100%;
@@ -389,8 +583,74 @@
             line-height: 96rpx;
             margin: 0 auto;
         }
-        .post_btn_active{
+
+        .post_btn_active {
             background-color: #1678FF;
+        }
+    }
+
+
+    .role_init_layout {
+        .at-float-layout__container {
+            height: auto !important;
+            min-height: auto !important;
+            overflow: hidden;
+            border-radius: 20rpx 20rpx 0 0 !important;
+
+            .layout-body {
+                min-height: auto !important;
+            }
+        }
+
+        .layout-body__content {
+            min-height: auto !important;
+        }
+
+        .filter_wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-color: #ffffff;
+
+            .filter_wrapper_bg {
+                width: 100%;
+                height: 100%;
+
+                .filter_title {
+                    @include flex-center(space-between);
+                    padding: 24rpx 0 40rpx 38rpx;
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 34rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                }
+
+                .type_wrapper {
+                    @include flex-center();
+                    gap: 20rpx;
+
+                    .type_item {
+                        width: 220rpx;
+                        height: 76rpx;
+                        border-radius: 8rpx;
+                        background: #F2F2F2;
+                        color: rgb(34, 34, 34);
+                        font-family: "PingFang SC";
+                        font-size: 28rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: 76rpx;
+                        text-align: center;
+                    }
+
+                    .type_item_active {
+                        background: #1678FF;
+                        color: rgb(255, 255, 255);
+                    }
+                }
+            }
         }
     }
 }

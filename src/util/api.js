@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 16:47:14
+ * @LastEditTime: 2024-11-12 17:55:18
  * @Description: 
  */
 
@@ -106,6 +106,9 @@ export const companyUpdateMember = params => {             // 修改企业成员
 }
 export const companygetInfo = params => {                  // 获取公司详情
     return http(API_BASE_URL + '/company/getInfo', params, "POST", {"Content-Type": "application/json"});
+}
+export const getMemberInfo = params => {                   // 获取企业成员详情
+    return http(API_BASE_URL + '/company/getMemberInfo', params, "POST", {"Content-Type": "application/json"});
 }
 
 
@@ -212,4 +215,13 @@ export const fetchOssConfig = params => {   //  获取oss校验
 // 反馈名单
 export const getFeedbackObjectsByCustomer = params => {   //  客服获取反馈对象
     return http(API_BASE_URL + '/fb/getFeedbackObjectsByCustomer', params, "POST", {"Content-Type": "application/json"});
+};
+
+
+
+export const getAreaJson = params => { //获取地域信息
+    return http(CDN_BASE_URL + '/china/data.json', params, "GET", { "Content-Type": "application/json" });
+};
+export const getCityJson = params => { //获取地区信息
+    return http(CDN_BASE_URL + '/china/all_cities.json', params, "GET", { "Content-Type": "application/json" });
 };

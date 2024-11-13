@@ -59,7 +59,7 @@
     }
 
     .search_wrap {
-        padding: 20rpx 28rpx 0 30rpx;
+        padding: 20rpx 28rpx 20rpx 30rpx;
         @include flex-center(space-between);
 
         .search_con {
@@ -257,6 +257,9 @@
                 line-height: normal;
                 @include flex-center(space-between);
             }
+        }
+        .project_item:first-child{
+            margin-top: 0rpx;
         }
     }
 }

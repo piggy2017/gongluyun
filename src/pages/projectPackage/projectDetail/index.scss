@@ -180,77 +180,52 @@
         }
 
         .interview_item {
-            padding: 0 24rpx;
-            display: flex;
-            flex-flow: row nowrap;
-            align-items: flex-start;
-            justify-content: space-between;
+            margin-bottom: 40rpx;
+            padding: 0 26rpx;
 
-            image {
-                width: 36rpx;
-                height: 36rpx;
-                flex-shrink: 0;
-                margin-top: 14rpx;
-            }
-
-            .interview_item_content {
-                width: 614rpx;
-                color: #666666;
-                font-family: "PingFang SC";
-                font-size: 30rpx;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 51rpx;
-
-                text {
-                    color: #222222;
-                }
-            }
-        }
-
-        .interview_item_set {
-            padding: 0 24rpx;
-            margin-bottom: 32rpx;
-            @include flex-center(space-between);
-
-            .interview_item_set_left {
-                @include flex-center(flex-start);
-                width: 320rpx;
-
-                image {
-                    width: 36rpx;
-                    height: 36rpx;
-                    flex-shrink: 0;
-                    margin-right: 14rpx;
-                }
-
-                .interview_item_content {
-                    width: 614rpx;
-                    color: #666666;
-                    font-family: "PingFang SC";
-                    font-size: 30rpx;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: 51rpx;
-                }
-            }
-
-            .interview_item_set_right {
-                @include flex-center(flex-end);
-                color: #1678ff;
+            .interview_item_title {
+                color: #222222;
                 font-family: "PingFang SC";
                 font-size: 30rpx;
                 font-style: normal;
                 font-weight: 400;
                 line-height: normal;
+                margin-bottom: 16rpx;
+            }
 
-                image {
+            .interview_item_content {
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: flex-start;
+                justify-content: space-between;
+
+                .interview_item_label {
+                    color: #1678ff;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+
+                .interview_item_text {
+                    color: #666666;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+
+                .interview_item_img {
                     width: 40rpx;
                     height: 40rpx;
                     flex-shrink: 0;
                 }
             }
         }
+
+
 
         .job_introduce {
             padding: 0 44rpx 0 30rpx;
@@ -307,6 +282,83 @@
                 font-style: normal;
                 font-weight: 500;
                 line-height: 96rpx;
+            }
+        }
+    }
+
+
+    .role_init_layout {
+        .at-float-layout__container {
+            height: auto !important;
+            min-height: auto !important;
+            overflow: hidden;
+            border-radius: 20rpx 20rpx 0 0 !important;
+
+            .layout-body {
+                min-height: auto !important;
+            }
+        }
+
+        .layout-body__content {
+            min-height: auto !important;
+        }
+
+        .filter_wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-color: #ffffff;
+
+            .filter_wrapper_bg {
+                width: 100%;
+                height: 100%;
+
+                .filter_title {
+                    @include flex-center(space-between);
+                    padding: 24rpx 0 40rpx 38rpx;
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 34rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                }
+
+                .input_wrapper {
+                    height: 250rpx;
+
+                    .float_input {
+                        color: #222222;
+                        font-family: "PingFang SC";
+                        font-size: 30rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: 45rpx;
+                        padding-left: 4rpx;
+                        min-height: 160rpx;
+                        width: 640rpx;
+                        background-color: #F4F4F4;
+                        border-radius: 10rpx;
+                        margin: 0 auto;
+                        padding: 20rpx;
+                    }
+                }
+
+                .post_btn {
+                    background: #0483FF;
+                    color: #ffffff;
+                    width: 662rpx;
+                    height: 76rpx;
+                    flex-shrink: 0;
+                    border-radius: 10rpx;
+                    margin: 0 auto;
+                    text-align: center;
+                    line-height: 76rpx;
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                }
             }
         }
     }

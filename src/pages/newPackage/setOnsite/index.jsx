@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 10:34:00
+ * @LastEditTime: 2024-11-13 14:06:08
  * @Description: 
  */
 
@@ -18,14 +18,14 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { companyMemberList } from '@/util/api'
+import { companyMemberList, updateContracts } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
         userStore: { companyInfo },
-        businessStore: { onSiteInfo,setOnSiteInfo },
+        businessStore: { onSiteInfo, setOnSiteInfo },
     } = store
     const [formData, setFormData] = useState({});
 
@@ -57,12 +57,30 @@ const Index = observer(({ store }) => {
             _list[index].selected = true;
             return _list;
         })
-        setOnSiteInfo(obj);
-        setTimeout(() => {
-            Taro.navigateBack({
-                delta: 1
-            });
-        }, 300);
+        // setOnSiteInfo(obj);
+        // setTimeout(() => {
+        //     Taro.navigateBack({
+        //         delta: 1
+        //     });
+        // }, 300);
+        const { recruitSerialCode, serialCode } = route.params;
+        let params = {
+            recruitSerialCode,
+            serialCode,
+            interviewContactInfo: obj.userSerialCode,
+            interviewContactName: obj.name,
+            interviewContactPhone: obj.phone
+        }
+        updateContracts(params).then(res => {
+            if (res.code === 200) {
+                Taro.showToast({ title: '设置成功', icon: 'none', });
+                setTimeout(() => {
+                    Taro.navigateBack({
+                        delta: 1
+                    });
+                }, 1500);
+            }
+        })
     }
 
     const getList = async (_pageNo) => {

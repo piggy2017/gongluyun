@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 11:23:22
+ * @LastEditTime: 2024-11-12 17:03:51
  * @Description: 
  */
 export default defineAppConfig({
@@ -73,6 +73,7 @@ export default defineAppConfig({
             "root": "pages/selectorPackage/",    // 筛选库子包
             "pages": [
                 "jobChoose/index",               // 筛选岗位类型
+                "areaChoose/index",              // 筛选区域
             ]
         },
         {

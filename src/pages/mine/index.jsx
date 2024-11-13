@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 11:11:11
+ * @LastEditTime: 2024-11-13 13:34:36
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -82,20 +82,26 @@ const Index = observer(({ store }) => {
       }
 
       <View className='section_group'>
-        <View className='section_item' onClick={() => navigateFunc(1, '/pages/minePackage/employeeManage/index')}>
-          <View className='section_item_left'>
-            <Image src={`${Taro.$cdnUrl}/mine/mine_icon1.webp`}></Image>
-            <Text>员工管理</Text>
-          </View>
-          <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
-        </View>
-        <View className='section_item' onClick={() => navigateFunc(1, '/pages/minePackage/componyManage/index')}>
-          <View className='section_item_left'>
-            <Image src={`${Taro.$cdnUrl}/mine/mine_icon2.webp`}></Image>
-            <Text>企业设置</Text>
-          </View>
-          <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
-        </View>
+        {
+          (role === 'ADMIN' || role === 'SEEK') &&
+          <>
+            <View className='section_item' onClick={() => navigateFunc(1, '/pages/minePackage/employeeManage/index')}>
+              <View className='section_item_left'>
+                <Image src={`${Taro.$cdnUrl}/mine/mine_icon1.webp`}></Image>
+                <Text>员工管理</Text>
+              </View>
+              <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
+            </View>
+            <View className='section_item' onClick={() => navigateFunc(1, '/pages/minePackage/componyManage/index')}>
+              <View className='section_item_left'>
+                <Image src={`${Taro.$cdnUrl}/mine/mine_icon2.webp`}></Image>
+                <Text>企业设置</Text>
+              </View>
+              <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
+            </View>
+          </>
+        }
+
         <View className='section_item'>
           <View className='section_item_left'>
             <Image src={`${Taro.$cdnUrl}/mine/mine_icon3.webp`}></Image>

@@ -1,0 +1,157 @@
+@import '@/app.scss';
+
+.area_wrap {
+    width: 100%;
+    height: 100vh;
+    background: #ffffff;
+
+    .bottom_wrapper {
+        width: 100%;
+        background: #ffffff;
+        position: fixed;
+        z-index: 99;
+        left: 0;
+        bottom: 0;
+
+        .bottom_wrapper_btns {
+            @include flex-center;
+            width: 100%;
+            height: 100px;
+
+            .reset_btn {
+                width: 248rpx;
+                height: 100rpx;
+                flex-shrink: 0;
+                border-radius: 10rpx;
+                border: 2rpx solid #0483FF;
+                color: #0483ff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 32rpx;
+                font-style: normal;
+                line-height: 100rpx;
+                font-weight: 600;
+            }
+
+            .save_btn {
+                width: 690rpx;
+                height: 100rpx;
+                flex-shrink: 0;
+                border-radius: 10rpx;
+                background: #0483FF;
+                color: #ffffff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 32rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 100rpx;
+                margin-left: 20rpx;
+            }
+        }
+    }
+
+    .content_area {
+        width: 100%;
+        // background-color: aqua;
+        @include flex-center(flex-start);
+
+        .province_wrap {
+            height: 100%;
+            overflow-y: scroll;
+            width: 250rpx;
+            display: flex;
+            flex-flow: column nowrap;
+
+            .province_item {
+                background-color: #F4F4F4;
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                position: relative;
+
+                .province_item_ext {
+                    padding: 24rpx 0 24rpx 48rpx;
+                    width: 240rpx;
+                }
+            }
+
+            .province_item_active {
+                background-color: #ffffff;
+
+                .province_item_ext {
+                    color: #0483FF;
+                }
+            }
+        }
+
+        .city_wrap {
+            height: 100%;
+            overflow-y: scroll;
+            width: 250rpx;
+            display: flex;
+            flex-flow: column nowrap;
+
+            .city_item {
+                background-color: #ffffff;
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+
+                .city_item_ext {
+                    padding: 24rpx 0 24rpx 20rpx;
+                    width: 240rpx;
+                }
+            }
+
+            .city_item_active {
+                .city_item_ext {
+                    color: #0483FF;
+                }
+            }
+        }
+
+        .district_wrap {
+            height: 100%;
+            overflow-y: scroll;
+            width: 250rpx;
+            display: flex;
+            flex-flow: column nowrap;
+
+            .district_item {
+                background-color: #ffffff;
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                position: relative;
+
+                .district_item_ext {
+                    padding: 24rpx 0 24rpx 20rpx;
+                    width: 206rpx;
+                }
+            }
+
+            .district_item_active {
+                .district_item_ext {
+                    color: #0483FF;
+                }
+
+                .district_item_img {
+                    width: 36rpx;
+                    height: 36rpx;
+                    flex-shrink: 0;
+                    position: absolute;
+                    z-index: 1;
+                    right: 28rpx;
+                    top: calc(50% - 18rpx);
+                }
+            }
+        }
+    }
+}

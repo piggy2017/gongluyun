@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 15:59:30
+ * @LastEditTime: 2024-11-13 11:10:25
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -111,7 +111,7 @@ const businessStore = observable({
     },
 
 
-    onSiteInfo: {     // 添加项目设置驻场人员
+    onSiteInfo: { // 添加项目设置驻场人员
         name: '',
         phone: '',
         userSerialCode: '',
@@ -123,6 +123,23 @@ const businessStore = observable({
     editProjectInfo: null, // 编辑项目信息
     setEditProjectInfo(value) {
         businessStore.editProjectInfo = value;
+    },
+
+    baseFilterAddress: {
+        adcode: '510100',
+        city: '成都市',
+        district: '全成都',
+        province: '四川省',
+    },
+    jobFilterAddress: { // 新增岗位的时候筛选区域
+        init: false,
+        adcode: '',
+        city: '',
+        district: '',
+        province: '',
+    },
+    setJobFilterAddress(value) {
+        businessStore.jobFilterAddress = value;
     },
 });
 

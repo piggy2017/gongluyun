@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-07 09:35:25
+ * @LastEditTime: 2024-11-12 10:51:32
  * @Description: 
  */
 
@@ -166,9 +166,9 @@ const Index = observer(({ store }) => {
                     list.length > 0 && list.map((item, index) => {
                         return (
                             <View className='employee_item' key={item.userSerialCode} onClick={() => {
-                                setEmployeeInfo(item);
+                                // setEmployeeInfo(item);
                                 Taro.navigateTo({
-                                    url: `/pages/minePackage/employeeDetail/index`
+                                    url: `/pages/minePackage/employeeDetail/index?userSerialCode=${item.userSerialCode}`
                                 })
                             }}>
                                 <View className='employee_item_left'>
