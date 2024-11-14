@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-13 13:34:36
+ * @LastEditTime: 2024-11-14 10:44:52
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -49,6 +49,25 @@ const Index = observer(({ store }) => {
     })
   }
 
+  const navigateVerifiedFunc = (url) => {
+    if (isLogin === 0) {
+      Taro.navigateTo({
+        url: '/pages/login/index'
+      })
+      return
+    }
+    if (!companyVerified) {
+      Taro.showToast({ title: '请先完成企业认证', icon: 'none', duration: 2000 })
+      setTimeout(() => {
+        Taro.navigateTo({
+          url: '/pages/minePackage/companyAuth/index'
+        })
+      }, 1500);
+    } else {
+      Taro.navigateTo({ url })
+    }
+  }
+
   return (
     <View className='container'>
       <View className='my_header'>
@@ -85,14 +104,14 @@ const Index = observer(({ store }) => {
         {
           (role === 'ADMIN' || role === 'SEEK') &&
           <>
-            <View className='section_item' onClick={() => navigateFunc(1, '/pages/minePackage/employeeManage/index')}>
+            <View className='section_item' onClick={() => navigateVerifiedFunc(1, '/pages/minePackage/employeeManage/index')}>
               <View className='section_item_left'>
                 <Image src={`${Taro.$cdnUrl}/mine/mine_icon1.webp`}></Image>
                 <Text>员工管理</Text>
               </View>
               <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
             </View>
-            <View className='section_item' onClick={() => navigateFunc(1, '/pages/minePackage/componyManage/index')}>
+            <View className='section_item' onClick={() => navigateVerifiedFunc(1, '/pages/minePackage/componyManage/index')}>
               <View className='section_item_left'>
                 <Image src={`${Taro.$cdnUrl}/mine/mine_icon2.webp`}></Image>
                 <Text>企业设置</Text>

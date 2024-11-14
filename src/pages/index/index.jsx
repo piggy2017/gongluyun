@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-13 16:16:27
+ * @LastEditTime: 2024-11-14 10:38:40
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -20,7 +20,7 @@ import {
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
-    userStore: { isLogin, role, userInfo, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions }
+    userStore: { isLogin, role, userInfo, companyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions }
   } = store
 
   const [drainageDate, setDrainageDate] = useState('YESTERDAY');
@@ -35,7 +35,7 @@ const Index = observer(({ store }) => {
   const [todoData, setTodoData] = useState('');          //  待办
 
   useEffect(() => {
-    console.log("首页 监听 是否登录isLogin:", isLogin);
+    console.log("首页 监听 是否登录isLogin:companyVerified",companyVerified, isLogin);
     console.log("首页 监听 当前角色role:", role);
     console.log("首页 监听 当前用户信息userInfo:", userInfo);
     getRoleAndPermissionFunc();
@@ -133,6 +133,33 @@ const Index = observer(({ store }) => {
       })
     }
   }
+
+  const navigateVerifiedFunc = (url) => {
+    console.log("navigateVerifiedFunc_companyVerified", companyVerified);
+    if (isLogin === 0) {
+      Taro.navigateTo({
+        url: '/pages/login/index'
+      })
+      return
+    }
+    
+    if (!companyVerified) {
+      Taro.showToast({
+        title: '请先完成企业认证',
+        icon: 'none',
+        duration: 2000
+      })
+      setTimeout(() => {
+        Taro.navigateTo({
+          url: '/pages/minePackage/companyAuth/index'
+        })
+      }, 1500);
+    }else{
+      Taro.navigateTo({
+        url
+      })
+    }
+  }
   const getRole = (type) => {
     if (type === 'ADMIN') {
       return '管理员'
@@ -197,20 +224,20 @@ const Index = observer(({ store }) => {
               {
                 showAddType &&
                 <View className='add_types_wrapper'>
-                  <View className='add_types_item' onClick={() => navigateFunc(1, '/pages/newPackage/newWorker/index?entryChannel=SOURCE')}>
+                  <View className='add_types_item' onClick={() => navigateVerifiedFunc('/pages/newPackage/newWorker/index?entryChannel=SOURCE')}>
                     <Image src={`${Taro.$cdnUrl}/index/index_icon11.webp`}></Image>
                     <View>新增求职者线索</View>
                   </View>
                   {
                     myPermissions.includes('4') &&
-                    <View className='add_types_item' onClick={() => navigateFunc(1, '/pages/newPackage/newProject/index')}>
+                    <View className='add_types_item' onClick={() => navigateVerifiedFunc('/pages/newPackage/newProject/index')}>
                       <Image src={`${Taro.$cdnUrl}/index/index_icon10.webp`}></Image>
                       <View>新增招聘项目</View>
                     </View>
                   }
                   {
                     role === 'ADMIN' &&
-                    <View className='add_types_item' onClick={() => navigateFunc(1, '/pages/newPackage/newEmployee/index')}>
+                    <View className='add_types_item' onClick={() => navigateVerifiedFunc('/pages/newPackage/newEmployee/index')}>
                       <Image src={`${Taro.$cdnUrl}/index/index_icon9.webp`}></Image>
                       <View>新增员工账号</View>
                     </View>
@@ -224,11 +251,11 @@ const Index = observer(({ store }) => {
         {
           (role === "ADMIN" || role === 'SEEK') &&
           <View className='btn_wrapper'>
-            <View className='btn_wrap_item' onClick={() => navigateFunc(1, '/pages/talentsPackage/talents/index')}>
+            <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/talentsPackage/talents/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon4.webp`}></Image>
               <View>人才库</View>
             </View>
-            <View className='btn_wrap_item' onClick={() => navigateFunc(1, '/pages/minePackage/employeeManage/index')}>
+            <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/employeeManage/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon5.webp`}></Image>
               <View>员工数据</View>
             </View>
@@ -238,14 +265,11 @@ const Index = observer(({ store }) => {
         {
           (role === "ADMIN" || role === "CUSTOMER" || role === 'SEEK') &&
           <View className='enter_wrapper'>
-            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/newPackage/newWorker/index?entryChannel=SOURCE')}>
+            <View className='enter_wrap_item' onClick={() => navigateVerifiedFunc('/pages/newPackage/newWorker/index?entryChannel=SOURCE')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon6.webp`}></Image>
               <View>录入求职线索</View>
             </View>
-            <View className='enter_wrap_item' style={`margin-left:230rpx;`} onClick={() => {
-              return
-              navigateFunc(1, '/pages/projectPackage/listFeedback/index')
-            }}>
+            <View className='enter_wrap_item' style={`margin-left:230rpx;`} >
               <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
               <View>反馈名单</View>
             </View>

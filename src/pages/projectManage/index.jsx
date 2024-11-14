@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 15:07:35
+ * @LastEditTime: 2024-11-14 10:39:45
  * @Description: 
  */
 
@@ -77,7 +77,7 @@ const Index = observer(({ store }) => {
     console.log("getList", code, data);
     Taro.hideLoading();
     setIsRefresh(false);
-    if (code === 200 && data.responses?.length > 0) {
+    if (code === 200 && data?.responses?.length > 0) {
       setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
       setgoonLoad(true);
       setPageNo(data.pageNo);
