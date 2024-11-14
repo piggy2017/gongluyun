@@ -24,7 +24,7 @@ const Index = observer(({ store }) => {
 
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-    userStore: { setCompanyVerified, refreshUserInfo }
+    userStore: { setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions }
   } = store
 
   const getHeight = () => {
@@ -148,11 +148,13 @@ const Index = observer(({ store }) => {
       if (res.code === 200) {
         setCompanyVerified(true);
         refreshUserInfo();
+        getRoleAndPermissionFunc();
+        setMyPermissions();
         Taro.showToast({ title: '认证成功', icon: 'none', duration: 2000 });
         setTimeout(() => {
           Taro.navigateBack({ delta: 1 })
         }, 1500);
-      }else{
+      } else {
         Taro.showToast({ title: res.msg, icon: 'none', duration: 2000 });
         refreshUserInfo();
       }

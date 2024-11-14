@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-13 11:10:25
+ * @LastEditTime: 2024-11-14 14:43:17
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 

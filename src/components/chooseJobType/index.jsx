@@ -30,7 +30,7 @@ const ChooseJob = observer(({ store, isShow, initData, onClose }) => {
     useEffect(() => {
         const fetchData = async () => {
             let params = {
-                feedsType: ''
+                // feedsType: ''
             };
             let data = await jobTypeList(params)
             if (data.code === 200) {

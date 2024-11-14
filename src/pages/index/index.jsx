@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 10:38:40
+ * @LastEditTime: 2024-11-14 15:09:31
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -20,7 +20,8 @@ import {
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
-    userStore: { isLogin, role, userInfo, companyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions }
+    userStore: { isLogin, role, userInfo, companyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
+    businessStore: { setSourceList }
   } = store
 
   const [drainageDate, setDrainageDate] = useState('YESTERDAY');
@@ -35,7 +36,7 @@ const Index = observer(({ store }) => {
   const [todoData, setTodoData] = useState('');          //  待办
 
   useEffect(() => {
-    console.log("首页 监听 是否登录isLogin:companyVerified",companyVerified, isLogin);
+    console.log("首页 监听 是否登录isLogin:companyVerified", companyVerified, isLogin);
     console.log("首页 监听 当前角色role:", role);
     console.log("首页 监听 当前用户信息userInfo:", userInfo);
     getRoleAndPermissionFunc();
@@ -47,6 +48,7 @@ const Index = observer(({ store }) => {
       refreshUserInfo();
       // getUserRole();
       setMyPermissions();
+      setSourceList();
     }
   }, [isLogin])
 
@@ -142,7 +144,7 @@ const Index = observer(({ store }) => {
       })
       return
     }
-    
+
     if (!companyVerified) {
       Taro.showToast({
         title: '请先完成企业认证',
@@ -154,7 +156,7 @@ const Index = observer(({ store }) => {
           url: '/pages/minePackage/companyAuth/index'
         })
       }, 1500);
-    }else{
+    } else {
       Taro.navigateTo({
         url
       })

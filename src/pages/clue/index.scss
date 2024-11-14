@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:52
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-28 17:31:58
+ * @LastEditTime: 2024-11-14 14:51:31
  * @Description: 
  */
 @import '@/app.scss';
@@ -196,7 +196,7 @@
                         margin-right: 10rpx;
                     }
 
-                    .item_title_phone{
+                    .item_title_phone {
                         color: #1678ff;
                         font-family: "D-DIN-PRO";
                         font-size: 32rpx;
@@ -215,7 +215,7 @@
                 }
             }
 
-            .roster_item_infos{
+            .roster_item_infos {
                 color: #666666;
                 font-family: "PingFang SC";
                 font-size: 28rpx;
@@ -226,7 +226,7 @@
                 margin-top: 10rpx;
             }
 
-            .roster_item_jobName{
+            .roster_item_jobName {
                 color: #666666;
                 font-family: "PingFang SC";
                 font-size: 28rpx;
@@ -342,6 +342,20 @@
                         font-weight: 500;
                         line-height: normal;
                         margin-left: 22rpx;
+                        @include flex-center(flex-start);
+                    }
+
+                    .clue_item_title_source {
+                        padding: 4rpx 6rpx;
+                        border: 1rpx solid #1678FF;
+                        border-radius: 8rpx;
+                        color: #1678FF;
+                        font-family: "PingFang SC";
+                        font-size: 22rpx;
+                        font-style: normal;
+                        font-weight: 500;
+                        line-height: normal;
+                        margin-left: 4rpx;
                     }
                 }
 

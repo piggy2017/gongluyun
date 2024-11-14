@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 11:27:08
+ * @LastEditTime: 2024-11-14 15:15:07
  * @Description: 
  */
 
@@ -56,7 +56,7 @@ const Index = observer(({ store }) => {
                 setSourceObj(_obj);
             }
 
-            if (editClientInfos.jobTypes.length > 0) {
+            if (editClientInfos.jobTypes && editClientInfos.jobTypes.length > 0) {
                 setJobTypes(editClientInfos.jobTypes);
 
                 let _ids = editClientInfos.jobTypes.map(item => item.id);
@@ -258,7 +258,7 @@ const Index = observer(({ store }) => {
                             confirmType='return'
                             value={formData.remark}
                             onInput={(e) => setFormData({ ...formData, remark: e.detail.value })}
-                            adjustPosition={false} //键盘弹起时，是否自动上推页面 
+                            adjustPosition={true} //键盘弹起时，是否自动上推页面 
                             show-confirm-bar
                             maxlength={500}
                             autoHeight

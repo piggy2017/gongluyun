@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 10:43:47
+ * @LastEditTime: 2024-11-14 15:15:40
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
     userStore: { isLogin, role, companyVerified },
-    businessStore: { poorJobId, myClientJobId, setMyClientParams }
+    businessStore: { poorJobId, myClientJobId, setMyClientParams, sourceList }
   } = store
   const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
   const [type, setType] = useState('客户池');
@@ -81,8 +81,8 @@ const Index = observer(({ store }) => {
   }, [isLogin, companyVerified, type]);
 
   useEffect(() => {
-    console.log("list发生了改变", list);
-  }, [list])
+    console.log("sourceList发生了改变", sourceList);
+  }, [sourceList])
 
   useDidShow(() => {
     if (type === '我的客户') {
@@ -172,7 +172,7 @@ const Index = observer(({ store }) => {
           url: '/pages/minePackage/companyAuth/index'
         })
       }, 1500);
-    }else{
+    } else {
       Taro.navigateTo({
         url
       })
@@ -243,6 +243,15 @@ const Index = observer(({ store }) => {
     Taro.hideLoading();
     setIsRefresh(false);
     if (code === 200 && data.responses?.length > 0) {
+      for (let i = 0; i < data.responses.length; i++) {
+        if (data.responses[i].age == 0) {
+          data.responses[i].age = null;
+        }
+        const _arr = [data.responses[i].age ? data.responses[i].age + "岁" : data.responses[i].age, data.responses[i].sex === 0 ? "男" : data.responses[i].sex === 1 ? "女" : null, data.responses[i].idCardNo ? data.responses[i].idCardNo : null].filter(item => item != null && item != 0);
+        // console.log("_arr", _arr);
+        data.responses[i].detailInfo = _arr?.length > 0 ? _arr.join("·") : "";
+      }
+      console.log("data.responses", data.responses);
       setmyList(_pageNo === 1 ? data.responses : [...mylist, ...data.responses]);
       setgoonLoad(true);
       setPageNo(data.pageNo);
@@ -253,6 +262,7 @@ const Index = observer(({ store }) => {
       setRequestState(3);
       if (_pageNo === 1) {
         setmyList([]);
+        setMyClientCount(0);
       }
     }
   }
@@ -338,6 +348,8 @@ const Index = observer(({ store }) => {
               setgoonLoad(true);
               if (type === '客户池') {
                 getClueList(1);
+              } else {
+                getClientList(1);
               }
             }}
             value={searchValue}></Input>
@@ -417,7 +429,10 @@ const Index = observer(({ store }) => {
                           <View className='clue_item_title'>
                             <View className='clue_item_title_left'>
                               <View className='clue_item_title_sort'>{index + 1}</View>
-                              <View className='clue_item_title_name'>{item.name}{item.source}</View>
+                              <View className='clue_item_title_name'>
+                                <View>{item.name}</View>
+                                <View className='clue_item_title_source'>{item.sourceDesc.split('-')[0]}</View>
+                              </View>
                             </View>
                           </View>
                           {
@@ -440,7 +455,7 @@ const Index = observer(({ store }) => {
                 })
               }
               {
-                list.length >= 4 &&
+                list.length >= 6 &&
                 <View className='loading_text'>
                   {
                     goonLoad ?
@@ -475,13 +490,19 @@ const Index = observer(({ store }) => {
                             <View className='item_title_phone' onClick={(e) => callFunc(e, item)}>{item.phone}</View>
                           </View>
                         </View>
-                        <View className='roster_item_infos'>{item.age ? item.age + '岁.' : ''}{item.sex === 0 ? '男' : '女'}{item.idCardNo ? item.idCardNo + '.' : ''}</View>
+                        <View className='roster_item_infos'>{item.detailInfo}</View>
 
                         {
                           item.recruitTitle &&
                           <View className='roster_item_jobName'>{item.recruitTitle}</View>
                         }
-                        <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
+
+                        {
+                          item.createDate && !item.interviewDate &&
+                          <View className='roster_item_time'>录入时间：{item.createDate}</View> ||
+                          item.interviewDate &&
+                          <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
+                        }
                       </View>
 
                       <View className='roster_item_right' style={{ color: getColor(item.seekState) }}>{getStatus(item.seekState)}</View>
@@ -491,7 +512,7 @@ const Index = observer(({ store }) => {
               }
 
               {
-                mylist.length >= 4 &&
+                mylist.length >= 6 &&
                 <View className='loading_text'>
                   {
                     goonLoad ?

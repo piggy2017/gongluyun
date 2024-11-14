@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-13 10:00:45
+ * @LastEditTime: 2024-11-14 11:06:03
  * @Description: 
  */
 
@@ -183,12 +183,16 @@ const Index = observer(({ store }) => {
                                                 <View className='record_item_list_item' key={idx}>
                                                     <View className='record_item_names flex-row-between'>
                                                         <View className='record_item_list_item_name row-show-1'>{child.recruitTitle}</View>
-                                                        <View className='record_item_list_item_price'>
-                                                            {child.recruitSalaryRange.split('元/')[0]}
-                                                            {
-                                                                child.recruitSalaryRange.split('元/')[1] && <Text>元/{child.recruitSalaryRange.split('元/')[1]}</Text>
-                                                            }
-                                                        </View>
+                                                        {
+                                                            child.recruitSalaryRange &&
+                                                            <View className='record_item_list_item_price'>
+                                                                {child.recruitSalaryRange.split('元/')[0]}
+                                                                {
+                                                                    child.recruitSalaryRange.split('元/')[1] && <Text>元/{child.recruitSalaryRange.split('元/')[1]}</Text>
+                                                                }
+                                                            </View>
+                                                        }
+
                                                     </View>
 
                                                     <View className='record_item_list_item_addr flex-row-items'>

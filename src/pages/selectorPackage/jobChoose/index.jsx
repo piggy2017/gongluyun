@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:41:55
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-06 17:40:02
+ * @LastEditTime: 2024-11-14 11:09:03
  * @Description: 
  */
 /* eslint-disable react/jsx-key */
@@ -40,7 +40,7 @@ const ChooseJob = observer(({ store }) => {
         const { type } = router.params;
         const fetchData = async () => {
             let params = {
-                feedsType: ''   // examine == 1 ? feedsExamine : ''
+                // feedsType: ''   // examine == 1 ? feedsExamine : ''
             };
             let data = await jobTypeList(params);
             console.log("查询岗位 jobchoose   data", data)

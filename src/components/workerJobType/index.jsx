@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-30 10:53:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 11:17:48
+ * @LastEditTime: 2024-11-14 11:12:17
  * @Description:  求职者选择求职偏好
  */
 /* eslint-disable react/jsx-key */
@@ -30,9 +30,10 @@ const WorkerJobType = observer(({ store, isShow, initData, onClose }) => {
     useEffect(() => {
         const fetchData = async () => {
             let params = {
-                feedsType: ''
+                // feedsType: ''
             };
-            let data = await jobTypeList(params)
+            let data = await jobTypeList(params);
+            console.log("查询岗位 workerjobchoose   data", data)
             if (data.code === 200) {
                 // 默认聚焦
                 setInit(data.data)

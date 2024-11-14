@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-13 14:15:24
+ * @LastEditTime: 2024-11-14 15:22:20
  * @Description: 
  */
 
@@ -78,7 +78,7 @@ const Index = observer(({ store }) => {
                 setTypeInfo({ name: _jobTypeText, salaryType: _editProjectInfo.salaryType });
                 _editProjectInfo.jobTypeText = _jobTypeText;
             }
-            _editProjectInfo.salaryRange=_editProjectInfo.salaryRange.split("元")[0];
+            _editProjectInfo.salaryRange = _editProjectInfo.salaryRange.split("元")[0];
             if (_editProjectInfo.salaryRange.includes("-")) {
                 setRangeLeft(_editProjectInfo.salaryRange.split("-")[0]);
                 setRangeRight(_editProjectInfo.salaryRange.split("-")[1]);
@@ -237,6 +237,14 @@ const Index = observer(({ store }) => {
         }
     }
 
+    const readClipData = () => {  // 读取剪切板 粘贴
+        Taro.getClipboardData({
+            success: function (res) {
+                setFormData({ ...formData, introduction: res.data })
+            }
+        })
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#F4F4F4' title='完善项目信息'></Navbar>
@@ -376,7 +384,7 @@ const Index = observer(({ store }) => {
                 <View className='project_item_textarea'>
                     <View className='project_item_textarea_title'>
                         <View className='project_item_textarea_title_left project_item_label_required'>招聘简章</View>
-                        <View className='project_item_stick'>粘贴</View>
+                        <View className='project_item_stick' onClick={() => readClipData()}>粘贴</View>
                     </View>
                     <View className='input_box'>
                         <Textarea
@@ -429,11 +437,6 @@ const Index = observer(({ store }) => {
                     <View className={`pay_btn `}>元/月</View>
                 </View>
             </View> */}
-            <View onClick={() => {
-                Taro.navigateTo({
-                    url: `/pages/selectorPackage/areaChoose/index`
-                })
-            }}>选择区域</View>
 
             {/* <View className='project_group '>
                 <View className='project_item' onClick={() => { Taro.navigateTo({ url: `/pages/newPackage/setOnsite/index?code=${formData.interviewContactInfo ? formData.interviewContactInfo : ''}` }) }}>
