@@ -361,6 +361,8 @@ const Index = observer(({ store }) => {
                         placeholderStyle='color: #777777;'
                         onInput={(e) => { setSearchValue(e.detail.value) }}
                         onConfirm={(e) => {
+                            setgoonLoad(true);
+                            getList(1);
                         }}
                         value={searchValue}></Input>
                 </View>

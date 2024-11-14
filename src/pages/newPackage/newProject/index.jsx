@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 15:22:20
+ * @LastEditTime: 2024-11-14 15:33:27
  * @Description: 
  */
 
@@ -173,7 +173,7 @@ const Index = observer(({ store }) => {
         const errorMessages = [
             // !params.title && '岗位标题不能为空',
             !params.jobTypeId && '岗位类型不能为空',
-            !params.jobTypeId && '工作类型不能为空',
+            !params.salaryType && '工作类型不能为空',
             !params.company && '企业名称不能为空',
             !params.numberRecruits && '招聘人数不能为空',
             !params.areaCode && '工作地区不能为空',

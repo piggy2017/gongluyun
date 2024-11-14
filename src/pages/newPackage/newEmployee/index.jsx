@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 19:44:57
+ * @LastEditTime: 2024-11-14 17:25:57
  * @Description: 
  */
 
@@ -110,6 +110,9 @@ const Index = observer(({ store }) => {
                 title: errorMessages[0],
                 icon: 'none',
             })
+        }
+        if(params.phone.length!=11){
+            return Taro.showToast({ title: '无效手机号码', icon: 'none', })
         }
         if (!validatePassword(params.password)) {
             return Taro.showToast({ title: '密码无效，需至少8位且包含字母和数字', icon: 'none', })
