@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 14:43:17
+ * @LastEditTime: 2024-11-15 15:25:43
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -46,7 +46,8 @@ const businessStore = observable({
     addWorkerJobInfo: { // 新增求职线索-选择报名岗位
         title: '',
         recruitSerialCode: '',
-        selected: false
+        selected: false,
+        init: false,
     },
     setAddWorkerJobInfo(value) {
         businessStore.addWorkerJobInfo = value;
@@ -55,7 +56,8 @@ const businessStore = observable({
     interviewJobInfo: { // 安排面试-选择报名岗位
         title: '',
         recruitSerialCode: '',
-        selected: false
+        selected: false,
+        init: false,
     },
     setInterviewJobInfo(value) {
         businessStore.interviewJobInfo = value;

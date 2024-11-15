@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 17:25:57
+ * @LastEditTime: 2024-11-15 15:59:05
  * @Description: 
  */
 
@@ -111,7 +111,7 @@ const Index = observer(({ store }) => {
                 icon: 'none',
             })
         }
-        if(params.phone.length!=11){
+        if (params.phone.length != 11) {
             return Taro.showToast({ title: '无效手机号码', icon: 'none', })
         }
         if (!validatePassword(params.password)) {
@@ -122,7 +122,11 @@ const Index = observer(({ store }) => {
         }
         Taro.showLoading({ title: '提交中...', mask: true });
         params.password = encryptData(params.password);
-        params.permissionNames = formData.authority.join(',');
+        if (formData.authority?.length > 0) {
+            params.permissionNames = formData.authority.join(',');
+        } else {
+            params.permissionNames = '';
+        }
         const { code, data, msg } = await companyAddAccount(params);
         console.log("companyAddAccount", code, data);
         if (code === 200) {

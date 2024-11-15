@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 17:02:23
+ * @LastEditTime: 2024-11-15 15:57:02
  * @Description: 
  */
 
@@ -52,7 +52,7 @@ const Index = observer(({ store }) => {
         try {
             const info = await Taro.login();
             console.log(1, info);
-            const { code, errMsg } = e.detail;
+            const { code, errMsg  } = e.detail;
             if (errMsg === 'getPhoneNumber:ok') {
                 Taro.showLoading({
                     title: "请求中",
@@ -66,6 +66,7 @@ const Index = observer(({ store }) => {
                 console.log("一键登录,提交的参数", params)
                 const result = await loginPhone(params);
                 console.log("手机号码登录结果", result);
+                Taro.hideLoading();
                 if (result.code === 200) {
                     Taro.showToast({ title: "登录成功", icon: "none", duration: 2000 })
                     setToken(result.data.token);
@@ -81,8 +82,9 @@ const Index = observer(({ store }) => {
                         getUserRole();
                         // setMyPermissions();
                     }, 50);
+                }else{
+                    Taro.showToast({ title: result.msg, icon: "none", duration: 2000 })
                 }
-                Taro.hideLoading();
             }
         } catch (error) {
             console.error('获取用户手机号失败:', error);
@@ -103,7 +105,8 @@ const Index = observer(({ store }) => {
         })
         loginEmployeePhone(params).then((res) => {
             console.log("登录结果", res);
-            const { code, data } = res
+            const { code, data, msg } = res;
+            Taro.hideLoading();
             if (code === 200) {
                 Taro.showToast({ title: "登录成功", icon: "none", duration: 2000 })
                 setToken(data.token);
@@ -119,8 +122,10 @@ const Index = observer(({ store }) => {
                     getUserRole();
                     // setMyPermissions();
                 }, 50);
+            } else {
+                Taro.showToast({ title: msg, icon: "none", duration: 2000 })
             }
-            Taro.hideLoading();
+
         })
     }
 

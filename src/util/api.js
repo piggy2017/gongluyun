@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-13 17:57:57
+ * @LastEditTime: 2024-11-15 10:58:14
  * @Description: 
  */
 
@@ -53,7 +53,7 @@ export const workbenchclueList = params => {            // 人才库
 export const workbenchtodayData = params => {            // 今日数据
     return http(API_BASE_URL + '/workbench/todayData', params, "POST", {"Content-Type": "application/json"});
 }
-export const todo = params => {                         // 客服、驻场待办
+export const todo = params => {                         // 驻场待办
     return http(API_BASE_URL + '/workbench/todo', params, "POST", {"Content-Type": "application/json"});
 }
 export const workbenchcluePool = params => {            // 线索公海
@@ -64,6 +64,12 @@ export const workbenchdrainageData = params => {            // 引流数据
 }
 export const workbenchconvertData = params => {            // 转化数据
     return http(API_BASE_URL + '/workbench/convertData', params, "POST", {"Content-Type": "application/json"});
+}
+export const onSiteTodayData = params => {                 // 驻场今日数据
+    return http(API_BASE_URL + '/workbench/onSiteTodayData', params, "POST", {"Content-Type": "application/json"});
+}
+export const customerTodo = params => {                    // 客服待办
+    return http(API_BASE_URL + '/workbench/customerTodo', params, "POST", {"Content-Type": "application/json"});
 }
 
 

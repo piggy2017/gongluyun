@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-12 11:13:40
+ * @LastEditTime: 2024-11-15 15:53:04
  * @Description: 
  */
 
@@ -47,9 +47,13 @@ const Index = observer(({ store }) => {
         const { code, data, msg } = await getMemberInfo({ userSerialCode });
         console.log("code", code, "data", data, "msg", msg);
         if (code === 200) {
-            data.permissionNames = data.permission.map((item) => {
-                return item.permName
-            }).join('、');
+            if (data.permission?.length > 0) {
+                data.permissionNames = data.permission.map((item) => {
+                    return item.permName
+                }).join('、');
+            } else {
+                data.permissionNames = '暂无权限'
+            }
             setCurrentInfo(data);
         }
     }

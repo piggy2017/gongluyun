@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 11:06:03
+ * @LastEditTime: 2024-11-15 14:08:29
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
-import Taro, { useRouter } from '@tarojs/taro';
+import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Text, Input, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
@@ -25,20 +25,26 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const [type, setType] = useState('SIGNED_UP');
     const [signUpList, setSignUpList] = useState([]);
-    const [initData, setInitData] = useState([]);    // 原始数据
+    const [initData, setInitData] = useState([]);           // 原始数据
     const [clientInfos, setClientInfos] = useState(null);
     const [isRefresh, setIsRefresh] = useState(false);
     const [goonLoad, setgoonLoad] = useState(true);
     const [pageNo, setPageNo] = useState(1);
     const pageSize = 10;
-    const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
+    const [requestState, setRequestState] = useState(0);    // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
     const [bottomHeight, setBottomHeight] = useState(90);
     const [infoHeight, setInfoHeight] = useState(170);
 
-    useEffect(() => {
+    useDidShow(() => {
         const { uuid, phone } = route.params;
         getClientDetail(uuid);
         getHistoryList(1);
+    })
+
+    useEffect(() => {
+        // const { uuid, phone } = route.params;
+        // getClientDetail(uuid);
+        // getHistoryList(1);
     }, [])
 
     useEffect(() => {
@@ -141,7 +147,7 @@ const Index = observer(({ store }) => {
 
     const goInterview = () => {
         Taro.navigateTo({
-            url: `/pages/talentsPackage/interview/index?uuid=${clientInfos.uuid}`
+            url: `/pages/talentsPackage/talentInterview/index?uuid=${clientInfos.uuid}`
         })
     }
 
@@ -150,7 +156,7 @@ const Index = observer(({ store }) => {
             <Navbar fixed placeholder bgColor='rgba(237,243,254)' title='求职历史'></Navbar>
 
             <View className='info_wrap'>
-                <WorkerInfo info={clientInfos}></WorkerInfo>
+                <WorkerInfo info={clientInfos} type={2}></WorkerInfo>
             </View>
 
             <View className='record_title flex-row-items'>

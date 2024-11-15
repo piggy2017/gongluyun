@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 15:15:07
+ * @LastEditTime: 2024-11-15 15:49:45
  * @Description: 
  */
 
@@ -25,7 +25,7 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
-        businessStore: { workerSetCustomerInfo, addWorkerJobInfo, editClientInfos, setEditClientInfos, sourceGroup },
+        businessStore: { workerSetCustomerInfo, addWorkerJobInfo, setAddWorkerJobInfo, editClientInfos, setEditClientInfos, sourceGroup },
         userStore: { userInfo: { userSerialCode } },
     } = store
     const [formData, setFormData] = useState({});
@@ -56,6 +56,12 @@ const Index = observer(({ store }) => {
                 setSourceObj(_obj);
             }
 
+            if (editClientInfos.recruitTitle) {
+                setAddWorkerJobInfo({
+                    title: editClientInfos.recruitTitle, recruitSerialCode: editClientInfos.recruitSerialCode, selected: true, init: true,
+                })
+            }
+
             if (editClientInfos.jobTypes && editClientInfos.jobTypes.length > 0) {
                 setJobTypes(editClientInfos.jobTypes);
 
@@ -69,7 +75,7 @@ const Index = observer(({ store }) => {
                 })
             }
         }
-        console.log("sourceGroup", sourceGroup)
+        // console.log("sourceGroup", sourceGroup)
         return () => {
             setEditClientInfos(null);
         }
@@ -79,16 +85,21 @@ const Index = observer(({ store }) => {
         if (workerSetCustomerInfo.name) {
             setFormData({ ...formData, service: workerSetCustomerInfo.name });
         }
-        if (addWorkerJobInfo.title) {
-            setFormData({ ...formData, recruitSerialCode: addWorkerJobInfo.recruitSerialCode });
+        if (addWorkerJobInfo.title && !addWorkerJobInfo.init) {
+            setFormData({ ...formData, recruitSerialCode: addWorkerJobInfo.recruitSerialCode, recruitTitle: addWorkerJobInfo.title });
         }
     }, [workerSetCustomerInfo, addWorkerJobInfo])
 
     useEffect(() => {
-        if (jobTypes.length > 0) {
-            // setFormData({ ...formData, jobTypeIds: jobTypes.map(item => item.id) });
+        return () => {
+            setAddWorkerJobInfo({
+                title: '',
+                recruitSerialCode: '',
+                selected: false,
+                init: false,
+            })
         }
-    }, [jobTypes])
+    }, [])
 
     const datePickerSelect = (e) => {
         console.log("seleceDate", e);
@@ -103,8 +114,11 @@ const Index = observer(({ store }) => {
     }
 
     const saveWorker = async () => {
-        console.log("isUpdateisUpdateisUpdate",isUpdate);
+        console.log("isUpdateisUpdateisUpdate", isUpdate);
 
+        if (formData.agentSerialCode === '') {   // 公海线索 不能设置面试时间
+            formData.interviewDate = null;
+        }
         let params = {
             ...formData,
             entryChannel: route.params.entryChannel,
@@ -198,7 +212,7 @@ const Index = observer(({ store }) => {
                 }}>
                     <View className='project_item_label'>报名岗位</View>
                     <View className='project_item_right' >
-                        <Text className={`${formData.recruitSerialCode ? 'project_item_text_active' : 'project_item_text'}`}>{formData.recruitSerialCode ? addWorkerJobInfo.title : '选择求职者报名的岗位'}</Text>
+                        <Text className={`${formData.recruitSerialCode ? 'project_item_text_active' : 'project_item_text'}`}>{formData.recruitSerialCode ? formData.recruitTitle : '选择求职者报名的岗位'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
@@ -232,16 +246,19 @@ const Index = observer(({ store }) => {
                         <View onClick={() => setFormData({ ...formData, interviewArranged: false })} className={`option_item ${formData.interviewArranged === false ? 'option_item_active' : ''}`}>否</View>
                     </View>
                 </View> */}
-                <View className='project_item project_item_border'>
-                    <View className='project_item_label'>面试日期</View>
-                    <View className='project_item_right' onClick={() => {
-                        if (isUpdate) return;
-                        setShowDatePicker(true)
-                    }}>
-                        <Text className={`${formData.interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewDate ? formData.interviewDate : '请选择面试日期'}</Text>
-                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                {
+                    formData.agentSerialCode !== '' &&
+                    <View className='project_item project_item_border'>
+                        <View className='project_item_label'>面试日期</View>
+                        <View className='project_item_right' onClick={() => {
+                            if (isUpdate) return;
+                            setShowDatePicker(true)
+                        }}>
+                            <Text className={`${formData.interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewDate ? formData.interviewDate : '请选择面试日期'}</Text>
+                            <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                        </View>
                     </View>
-                </View>
+                }
             </View>
 
             <View className='project_group_2'>

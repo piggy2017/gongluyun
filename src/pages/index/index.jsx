@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 15:09:31
+ * @LastEditTime: 2024-11-15 11:40:51
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -13,14 +13,14 @@ import TabBar from '@/components/tabBar';
 import './index.scss'
 
 import {
-  workbenchtodayData, workbenchcluePool, workbenchdrainageData, workbenchconvertData, userCenter, todo, getRoleAndPermissionByUserId
+  workbenchtodayData, workbenchcluePool, workbenchdrainageData, workbenchconvertData, userCenter, todo, onSiteTodayData, customerTodo
 } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
-    userStore: { isLogin, role, userInfo, companyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
+    userStore: { isLogin, role, userInfo, companyInfo, companyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
     businessStore: { setSourceList }
   } = store
 
@@ -33,7 +33,9 @@ const Index = observer(({ store }) => {
   const [todayData, setTodayData] = useState('');        //  今日数据
   const [poorData, setPoorData] = useState('');          //  线索公海
 
-  const [todoData, setTodoData] = useState('');          //  待办
+  const [todoData, setTodoData] = useState('');          //  驻场待办
+  const [siteTodayData, setSiteTodayData] = useState('');          //  驻场今日数据
+  const [customerTodoData, setCustomerTodoData] = useState('');          //  客户待办
 
   useEffect(() => {
     console.log("首页 监听 是否登录isLogin:companyVerified", companyVerified, isLogin);
@@ -56,14 +58,15 @@ const Index = observer(({ store }) => {
     if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
       getTodayData();
       getPoorData();
+      // getOnSiteToDo();
+      getOnSiteData();
+      getCustomerTodo();
     }
-    if (role === 'CUSTOMER' || role === 'ON_SITE') {   // 客服、驻场待办
-      todo({ companySerialCode: '' }).then(res => {
-        console.log("首页 监听 待办res:", res);
-        if (res?.code === 200) {
-          setTodoData(res?.data);
-        }
-      })
+    if (role === 'CUSTOMER') {   // 驻场待办
+
+    }
+    if (role === 'ON_SITE') {
+      getOnSiteToDo();
     }
   }, [isLogin, role]);
 
@@ -79,8 +82,32 @@ const Index = observer(({ store }) => {
     }
   }, [transformDate])
 
+  const getCustomerTodo = async () => {    // 获取客服待办
+    const { code, data } = await customerTodo({ type: 'EMPLOYING_UNIT', companySerialCode: companyInfo.companySerialCode, dateRange: 'TODAY' });
+    console.log("getCustomerTodo-获取客服待办", data);
+    if (code === 200) {
+      setCustomerTodoData(data);
+    }
+  }
+
+  const getOnSiteData = async () => {  // 获取驻场今日数据
+    const { code, data } = await onSiteTodayData({ type: 'EMPLOYING_UNIT', companySerialCode: companyInfo.companySerialCode, dateRange: 'TODAY' });
+    console.log("getOnSiteData-获取驻场今日数据", data);
+    if (code === 200) {
+      setSiteTodayData(data);
+    }
+  }
+
+  const getOnSiteToDo = async () => {    // 获取驻场待办
+    const { code, data } = await todo({ type: 'EMPLOYING_UNIT', companySerialCode: companyInfo.companySerialCode, dateRange: 'TODAY' });
+    console.log("getOnSiteToDo-获取驻场待办", data);
+    if (code === 200) {
+      setTodoData(data);
+    }
+  }
+
   const getTodayData = async () => {   // 获取今日数据
-    const { code, data } = await workbenchtodayData({ companySerialCode: '', dateRange: '' });
+    const { code, data } = await workbenchtodayData({ companySerialCode: companyInfo.companySerialCode, dateRange: 'TODAY' });
     console.log("获取今日数据", data);
     if (code === 200) {
       setTodayData(data);
@@ -88,7 +115,7 @@ const Index = observer(({ store }) => {
   }
 
   const getPoorData = async () => {    // 线索公海
-    const { code, data } = await workbenchcluePool({ companySerialCode: '', dateRange: '' });
+    const { code, data } = await workbenchcluePool({ companySerialCode: companyInfo.companySerialCode, dateRange: 'TODAY' });
     console.log("获取今日线索公海", data);
     if (code === 200) {
       setPoorData(data);
@@ -96,14 +123,14 @@ const Index = observer(({ store }) => {
   }
 
   const getdrainageData = async () => {    // 获取引流数据
-    const { code, data } = await workbenchdrainageData({ companySerialCode: '', dateRange: drainageDate });
+    const { code, data } = await workbenchdrainageData({ companySerialCode: companyInfo.companySerialCode, dateRange: drainageDate });
     console.log("获取引流数据", data);
     if (code === 200) {
       setDrainageInfo(data);
     }
   }
   const getconvertData = async () => {    // 获取转化数据
-    const { code, data } = await workbenchconvertData({ companySerialCode: '', dateRange: transformDate });
+    const { code, data } = await workbenchconvertData({ companySerialCode: companyInfo.companySerialCode, dateRange: transformDate });
     console.log("获取转化数据", data);
     if (code === 200) {
       setConvertInfo(data);
@@ -323,15 +350,15 @@ const Index = observer(({ store }) => {
             <View className='today_data_title'>客服待办</View>
             <View className='today_data_content'>
               <View className='today_data_item'>
-                <View className='today_data_number'>333</View>
+                <View className='today_data_number'>{customerTodoData.todoHandle}</View>
                 <View className='today_data_laber'>待处理</View>
               </View>
               <View className='today_data_item'>
-                <View className='today_data_number'>333</View>
+                <View className='today_data_number'>{customerTodoData.todoInterview}</View>
                 <View className='today_data_laber'>待约面</View>
               </View>
               <View className='today_data_item'>
-                <View className='today_data_number'>333</View>
+                <View className='today_data_number'>{customerTodoData.todoStable}</View>
                 <View className='today_data_laber'>待回访</View>
               </View>
             </View>
@@ -344,16 +371,16 @@ const Index = observer(({ store }) => {
               <View className='today_data_title'>驻场待办</View>
               <View className='today_data_content' style={`padding: 0 58rpx`}>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>333</View>
-                  <View className='today_data_laber'>待处理</View>
+                  <View className='today_data_number'>{todoData.todoChecked}</View>
+                  <View className='today_data_laber'>待签到</View>
                 </View>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>333</View>
-                  <View className='today_data_laber'>待约面</View>
+                  <View className='today_data_number'>{todoData.interviewFollowUp}</View>
+                  <View className='today_data_laber'>面试跟进</View>
                 </View>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>333</View>
-                  <View className='today_data_laber'>待回访</View>
+                  <View className='today_data_number'>{todoData.onboardingFollowUp}</View>
+                  <View className='today_data_laber'>入职跟进</View>
                 </View>
               </View>
             </View>
@@ -362,19 +389,19 @@ const Index = observer(({ store }) => {
               <View className='today_data_title'>今日数据</View>
               <View className='today_data_content'>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>333</View>
+                  <View className='today_data_number'>{siteTodayData.sinterviewCounts}</View>
                   <View className='today_data_laber'>已约面</View>
                 </View>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>333</View>
+                  <View className='today_data_number'>{siteTodayData.alreadyArrivedCounts}</View>
                   <View className='today_data_laber'>已到面</View>
                 </View>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>333</View>
+                  <View className='today_data_number'>{siteTodayData.interviewPassCounts}</View>
                   <View className='today_data_laber'>面试通过</View>
                 </View>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>333</View>
+                  <View className='today_data_number'>{siteTodayData.deliveredCounts}</View>
                   <View className='today_data_laber'>已入职</View>
                 </View>
               </View>

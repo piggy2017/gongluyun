@@ -1,0 +1,127 @@
+@import '@/app.scss';
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #E8F1FF 0%, #edf3fc00 100%) #F4F4F4;
+    background-size: 100% 1158rpx;
+    background-repeat: no-repeat;
+
+    .choose_wrapper {
+        width: 710rpx;
+        background: #FFF;
+        border-radius: 20rpx;
+        margin: 20rpx auto 0 auto;
+
+        .choose_item {
+            height: 140rpx;
+            width: 664rpx;
+            margin: 0 0 0 26rpx;
+            border-bottom: 1rpx solid #0000000a;
+
+            .choose_item_left {
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+
+                .choose_item_left_dot {
+                    margin-right: 18rpx;
+                    width: 8rpx;
+                    height: 8rpx;
+                    flex-shrink: 0;
+                    background-color: #FF385C;
+                    border-radius: 50%;
+                }
+                .choose_item_left_dot_1{
+                    margin-right: 18rpx;
+                    width: 8rpx;
+                }
+            }
+
+            .choose_item_right {
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                text-align: right;
+
+                input {
+                    text-align: right;
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                }
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                    flex-shrink: 0;
+                }
+
+                .choose_item_right_text {
+                    width: 414rpx;
+                    color: #222222;
+
+                }
+
+                .choose_item_right_text_gray {
+                    width: 414rpx;
+                    color: #999999;
+                }
+
+                .sex_item {
+                    width: 180rpx;
+                    height: 72rpx;
+                    border-radius: 6rpx;
+                    border: 1rpx solid #CACACA;
+                    color: #b7b7b7;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 72rpx;
+                }
+                .sex_item:first-child{
+                    margin-right: 20rpx;
+                }
+                .sex_item_active{
+                    background: #1678ff21;
+                    color: #1678ff;
+                    border: none;
+                }
+            }
+        }
+    }
+
+    .bottom_wrapper {
+        width: 100%;
+        position: fixed;
+        z-index: 9;
+        bottom: 0;
+        left: 0;
+        background-color: #FFFFFF;
+
+        .interview_btn {
+            width: 694rpx;
+            height: 96rpx;
+            border-radius: 8rpx;
+            background: #CDE1FF;
+            color: #ffffff;
+            text-align: center;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 96rpx;
+            margin: 0 auto;
+        }
+        .interview_btn_active{
+            background: #1678FF;
+        }
+    }
+}

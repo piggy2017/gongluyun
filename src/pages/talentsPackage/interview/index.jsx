@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-29 16:14:20
+ * @LastEditTime: 2024-11-15 15:22:44
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
-        businessStore: { interviewJobInfo }
+        businessStore: { interviewJobInfo, setInterviewJobInfo }
     } = store
 
     const [formData, setFormData] = useState({});
@@ -42,22 +42,33 @@ const Index = observer(({ store }) => {
                 console.log("_query_query_query", _query.height);
             }
         }, 0);
-
         getClientDetail();
+        return () => {
+            setInterviewJobInfo({
+                title: '',
+                recruitSerialCode: '',
+                selected: false,
+                init: false,
+            })
+        }
     }, [])
 
     useEffect(() => {
-        if (interviewJobInfo && interviewJobInfo.title) {
-            setFormData({ ...formData, recruitSerialCode: interviewJobInfo.recruitSerialCode })
+        if (interviewJobInfo && interviewJobInfo.title && !interviewJobInfo.init) {
+            setFormData({ ...formData, recruitSerialCode: interviewJobInfo.recruitSerialCode, recruitTitle: interviewJobInfo.title });
         }
     }, [interviewJobInfo])
 
     const getClientDetail = async () => {
-        const { uuid, phone, recruitSerialCode } = route.params;
-        const { code, data, msg } = await cluegetUserInfo({ uuid, phone, recruitSerialCode });
+        const { uuid } = route.params;
+        const { code, data, msg } = await cluegetUserInfo({ uuid });
         console.log("code", code, "data", data, "msg", msg);
         if (code === 200) {
             setClientInfos(data);
+            setFormData({ ...formData, ...data });
+            if (data.recruitTitle) {
+                setInterviewJobInfo({ title: data.recruitTitle, recruitSerialCode: data.recruitSerialCode, selected: true, init: true, })
+            }
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
@@ -70,10 +81,12 @@ const Index = observer(({ store }) => {
     }
 
     const submitFunc = async () => {
+        const { uuid } = route.params;
         let params = {
             ...formData,
-            uuid: route.params.uuid
+            uuid
         }
+
         console.log("params", params);
         const errorMessages = [
             !params.name && '请输入求职者真实姓名',
@@ -141,7 +154,7 @@ const Index = observer(({ store }) => {
                             url: `/pages/talentsPackage/filterJob/index?type=4&title=报名岗位`
                         })
                     }}>
-                        <View className={`${!interviewJobInfo.title ? 'choose_item_right_text_gray' : 'choose_item_right_text'} row-show-1`}>{interviewJobInfo.title ? interviewJobInfo.title : '选择岗位(必填)'}</View>
+                        <View className={`${!formData.recruitTitle ? 'choose_item_right_text_gray' : 'choose_item_right_text'} row-show-1`}>{formData.recruitTitle ? formData.recruitTitle : '选择岗位(必填)'}</View>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>

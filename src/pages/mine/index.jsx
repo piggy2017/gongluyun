@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 10:44:52
+ * @LastEditTime: 2024-11-15 15:51:28
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -104,14 +104,14 @@ const Index = observer(({ store }) => {
         {
           (role === 'ADMIN' || role === 'SEEK') &&
           <>
-            <View className='section_item' onClick={() => navigateVerifiedFunc(1, '/pages/minePackage/employeeManage/index')}>
+            <View className='section_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/employeeManage/index')}>
               <View className='section_item_left'>
                 <Image src={`${Taro.$cdnUrl}/mine/mine_icon1.webp`}></Image>
                 <Text>员工管理</Text>
               </View>
               <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
             </View>
-            <View className='section_item' onClick={() => navigateVerifiedFunc(1, '/pages/minePackage/componyManage/index')}>
+            <View className='section_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/componyManage/index')}>
               <View className='section_item_left'>
                 <Image src={`${Taro.$cdnUrl}/mine/mine_icon2.webp`}></Image>
                 <Text>企业设置</Text>

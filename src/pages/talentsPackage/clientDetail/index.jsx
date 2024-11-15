@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 10:20:44
+ * @LastEditTime: 2024-11-15 15:40:17
  * @Description: 
  */
 
@@ -58,11 +58,12 @@ const Index = observer(({ store }) => {
 
     useEffect(() => {
         const { uid, myClientCount, index } = route.params;
+        console.log("route.params", route.params);
         getClientDetail(uid);
         getHistoryList(uid);
         setUuid(uid);
-        setCurrent(index);
-        setTotalPerson(myClientCount);
+        setCurrent(index * 1);
+        setTotalPerson(myClientCount * 1);
         setTimeout(async () => {
             const _query = await selectorQueryDomInfo('.bottom_wrapper');
             if (_query?.height) {
@@ -213,7 +214,7 @@ const Index = observer(({ store }) => {
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='rgba(237,243,254)' title='客户详情'></Navbar>
-            <WorkerInfo info={clientInfos}></WorkerInfo>
+            <WorkerInfo info={clientInfos} type={1}></WorkerInfo>
 
             <View className='client_status'>
                 <View className='client_status_title'>

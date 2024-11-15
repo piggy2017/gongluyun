@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-06 14:36:42
+ * @LastEditTime: 2024-11-15 14:04:46
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -11,14 +11,16 @@ import { observer, inject } from 'mobx-react';
 import { View, Image, Text } from '@tarojs/components';
 import './index.scss';
 
-const WorkerInfo = observer(({ store, info, interview }) => {
+const WorkerInfo = observer(({ store, info, interview, type }) => {
     const {
         businessStore: { setEditClientInfos }
     } = store
 
     const goEdit = () => {
         setEditClientInfos(info);
-        Taro.navigateTo({ url: '/pages/newPackage/newWorker/index' });
+        Taro.navigateTo({
+            url: type === 1 ? '/pages/newPackage/newWorker/index' : '/pages/talentsPackage/editTalent/index'
+        });
     }
 
     return (

@@ -159,7 +159,10 @@ const Index = observer(({ store }) => {
         } else if (type == 3) {
             setAddWorkerJobInfo(obj);
         } else if (type == 4) {
-            setInterviewJobInfo(obj);
+            setInterviewJobInfo({
+                ...obj,
+                init: false,
+            });
         } else if (type == 5) {
             setOnSiteFilterJob(obj);
         } else if (type == 6) {
