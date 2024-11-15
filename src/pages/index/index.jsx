@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 11:40:51
+ * @LastEditTime: 2024-11-15 16:08:44
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -418,6 +418,7 @@ const Index = observer(({ store }) => {
               <View className='clue_sea_total'>线索池共 <Text>{poorData ? poorData.totalSeeker : 32}</Text> 名求职者等待领取并跟进</View>
             </View>
             <View className='clue_sea_right' onClick={() => {
+              Taro.setStorageSync("poor", true);
               Taro.switchTab({
                 url: '/pages/clue/index'
               })

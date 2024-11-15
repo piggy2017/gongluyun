@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 18:01:51
+ * @LastEditTime: 2024-11-15 16:13:35
  * @Description: 
  */
 
@@ -85,17 +85,25 @@ const Index = observer(({ store }) => {
   }, [sourceList])
 
   useDidShow(() => {
-    if (type === '我的客户') {
+    console.log("出发 didShow");
+    const _poor = Taro.getStorageSync('poor');   // 是否是从首页点击领取进入
+    console.log("_poor", _poor);
+    if (_poor) {
+      setType('客户池');
+      getClueList(1);
+    } else {
       const _clueSearchValue = Taro.getStorageSync('clueSearchValue');
       if (_clueSearchValue) {
+        setType('客户池');
         setSearchValue(_clueSearchValue);
+        getClueList(1);
       }
-      getClientList(1);
     }
   })
 
   useDidHide(() => {
     Taro.removeStorageSync('clueSearchValue');
+    Taro.removeStorageSync('poor');
   })
 
   useEffect(() => {
