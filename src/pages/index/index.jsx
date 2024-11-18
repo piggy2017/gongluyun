@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 14:23:21
+ * @LastEditTime: 2024-11-18 15:01:40
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -46,7 +46,12 @@ const Index = observer(({ store }) => {
   }, [isLogin, role, userInfo]);
 
   usePullDownRefresh(() => {
+    console.log("下拉刷新");
     if(isLogin){
+      Taro.showLoading({
+        title: '加载中',
+        mask: true
+      })
       getRoleAndPermissionFunc();
       if (role === 'ADMIN' || role === 'SEEK') {
         getTodayData();
@@ -64,7 +69,12 @@ const Index = observer(({ store }) => {
         getOnSiteData();
       }
     }
-    Taro.stopPullDownRefresh();
+    setTimeout(() => {
+      Taro.hideLoading();
+      // 数据加载完成后停止下拉刷新
+      Taro.stopPullDownRefresh();
+    }, 1500);
+    // Taro.stopPullDownRefresh();
   })
 
   useEffect(() => {
@@ -252,13 +262,13 @@ const Index = observer(({ store }) => {
         </View>
       </View>
 
-      <ScrollView
-        scrollY
+      <View
+        // scrollY
         className='scrollWrapper'
         style={{ height: getHeight(), marginTop: `${statusTitleHeight + contenTitleHeight}px` }}
-        scrollWithAnimation
-        showScrollbar={false}
-        enablePassive
+        // scrollWithAnimation
+        // showScrollbar={false}
+        // enablePassive
       >
 
         <View className='search_wrapper'>
@@ -508,7 +518,7 @@ const Index = observer(({ store }) => {
             </View>
           </View>
         }
-      </ScrollView>
+      </View>
       <TabBar actCurrent={0} />
     </View>
   )

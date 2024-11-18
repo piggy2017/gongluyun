@@ -80,6 +80,7 @@
         left: 0;
         z-index: 10;
         -webkit-overflow-scrolling: touch;
+        overflow-y: scroll;
         // border: 1rpx solid red;
 
         &::-webkit-scrollbar {

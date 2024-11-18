@@ -2,26 +2,40 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 15:51:28
+ * @LastEditTime: 2024-11-18 15:02:14
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro';
-import { View, Text, Image, Button, Picker } from '@tarojs/components'
+import Taro, { usePullDownRefresh } from '@tarojs/taro';
+import { View, Text, Image } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import TabBar from '@/components/tabBar';
 import './index.scss'
 
 const Index = observer(({ store }) => {
   const {
-    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-    userStore: { isLogin, role, userInfo, companyInfo, companyVerified }
+    baseStore: { statusTitleHeight, contenTitleHeight },
+    userStore: { isLogin, role, userInfo, companyInfo, companyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
   } = store
 
   useEffect(() => {
     console.log("userInfo", userInfo);
     console.log("companyVerified_companyInfo", companyVerified, companyInfo);
   }, [])
+
+  usePullDownRefresh(() => {
+    Taro.showLoading({
+      title: '加载中',
+      mask: true
+    })
+    refreshUserInfo();
+    getRoleAndPermissionFunc();
+    setMyPermissions();
+    setTimeout(() => {
+      Taro.hideLoading();
+      Taro.stopPullDownRefresh();
+    }, 1500);
+  })
 
   const getRole = (type) => {
     if (type === 'ADMIN') {
