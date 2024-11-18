@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 16:15:44
+ * @LastEditTime: 2024-11-18 11:08:23
  * @Description: 
  */
 
@@ -25,13 +25,22 @@ const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const {
         baseStore: { statusTitleHeight, contenTitleHeight },
+        businessStore: { sourceList },
     } = store
 
     const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
     const [searchValue, setSearchValue] = useState('');
     const [list, setList] = useState([])
     const [clueList, setClueList] = useState([])
-    const [jobList, setJobList] = useState([])
+    const [jobList, setJobList] = useState([]);
+
+    const getSourceName = (state) => {
+        if (state) {
+            const _list = sourceList.find(item => item.value === state);
+            console.log("_list", _list, _list.name)
+            return _list.name
+        }
+    }
 
     const getData = async (value) => {
         const { code, data: { cluePools, contracts, talentPools } } = await workbenchSearch({ searchInfo: value });
@@ -45,10 +54,11 @@ const Index = observer(({ store }) => {
         }
     }
 
-    const getClueFunc = async (obj, index) => {
+    const onGetClient = async (obj, index) => {
         console.log("egetClueFunc", obj, index);
         Taro.showLoading({ title: '领取中...' });
         const { code, data, msg } = await clueReceive({ uuid: obj.uuid });
+        Taro.hideLoading();
         console.log("getClient", code, data);
         if (code === 200) {
             Taro.showToast({ title: '领取成功', icon: 'none', duration: 2000 });
@@ -59,14 +69,13 @@ const Index = observer(({ store }) => {
                     }
                     return item
                 })
-                return _list
+                console.log("_list", _list);
+                return _list;
             })
             forceUpdate();
         } else {
-
             Taro.showToast({ title: msg, icon: 'none', duration: 2000 });
         }
-        Taro.hideLoading();
     }
 
     const viewMore = (type) => {
@@ -77,7 +86,7 @@ const Index = observer(({ store }) => {
         } else if (type === 2) {
             _url = `/pages/clue/index`;
             Taro.setStorageSync('clueSearchValue', searchValue);
-        }else if(type === 3){
+        } else if (type === 3) {
             _url = `/pages/projectManage/index`;
             Taro.setStorageSync('projectSearchValue', searchValue);
         }
@@ -151,7 +160,33 @@ const Index = observer(({ store }) => {
                     <View className='clue_wrapper'>
                         {
                             clueList.length > 0 && clueList.map((item, index) => {
-                                return <ClueItem index={index} item={item} onGetClient={getClueFunc}></ClueItem>
+                                // return <ClueItem index={index} item={item} onGetClient={getClueFunc}></ClueItem>
+                                return (
+                                    <View key={index} className='clue_item'>
+                                        <View className='clue_item_wrap'>
+                                            <View className='clue_item_wrap_left'>
+                                                <View className='clue_item_title'>
+                                                    <View className='clue_item_title_left'>
+                                                        <View className='clue_item_title_sort'>{index + 1}</View>
+                                                        <View className='clue_item_title_name'>{item.name}</View>
+                                                    </View>
+                                                </View>
+                                                <View className='clue_item_info'><Text>录入时间：</Text>{item.createTime}</View>
+                                                {
+                                                    item.source && <View className='clue_item_info'><Text>来源：</Text>{getSourceName(item.source)}</View>
+                                                }
+                                                {
+                                                    item.recruitTitle ? <View className='clue_item_info'><Text>报名岗位：</Text>{item.recruitTitle}</View> : ''
+                                                }
+                                            </View>
+                                            {
+                                                item.isGet &&
+                                                <View className='clue_item_wrap_right_done'>已领取</View> ||
+                                                <View className='clue_item_wrap_right' onClick={() => onGetClient(item, index)}>立即领取</View>
+                                            }
+                                        </View>
+                                    </View>
+                                )
                             })
                         }
                     </View>

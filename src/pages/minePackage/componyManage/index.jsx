@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-01 16:41:17
+ * @LastEditTime: 2024-11-18 10:30:15
  * @Description: 
  */
 
@@ -52,10 +52,10 @@ const Index = observer(({ store }) => {
         const { code, data } = await companygetInfo({ companySerialCode: companyInfo.companySerialCode });
         console.log("getInfo", code, data);
         if (code === 200) {
-            if (!data.imageUrls){
+            if (!data.imageUrls) {
                 data.imageUrls = [];
                 setImages([]);
-            }else{
+            } else {
                 setImages([...data.imageUrls]);
             }
             setFormData({ ...data });
@@ -71,7 +71,7 @@ const Index = observer(({ store }) => {
         // 用户同意授权
         try {
             Taro.chooseImage({
-                count: 1, // 最多可选择的图片数量
+                count: 9 - images.length, // 最多可选择的图片数量
                 sourceType: [sourceType[type]], // 图片来源，可选值：album（相册），camera（相机）
                 sizeType: ['original', 'compressed'], // 图片尺寸类型，可选值：original（原图），compressed（压缩图）
                 success(res) {
@@ -105,49 +105,83 @@ const Index = observer(({ store }) => {
                         ["content-length-range", 0, 1024 * 1024 * 1024],
                     ],
                 };
-                console.log(1)
                 const policy = Base64.encode(JSON.stringify(policyText));
-                console.log(policy, "policy")
                 const signature = computeSignature(accessKeySecret, policy);
-                console.log(signature, "signature")
-                const params = {
-                    'key': `${urlPath}${Date.now()}-${Math.random() * 1000000}.jpg`,
-                    'policy': policy,
-                    'OSSAccessKeyId': accessKeyId,
-                    'success_action_status': '200',
-                    'Signature': signature,
-                    'x-oss-security-token': securityToken,
-                };
-                console.log(arr[0], "arr[0]")
+
+                console.log("arrarrarrarr", arr);
                 // 返回 Promise 对象
-                Taro.uploadFile({
-                    url: ossServiceDomain,
-                    filePath: arr[0],
-                    name: 'file',
-                    formData: params,
-                    success(res) {
-                        // let info = { ...res, url: params.key }
-                        Taro.hideLoading();
-                        let imgUrl = ossServiceDomain + '/' + params.key;
-                        // setImgSrc(imgUrl);
-                        console.log('上传成功 --  oss地址为', imgUrl);
-                        // setAvatar(ossServiceDomain + '/' + params.key)
-                        if (upType === 0) {
+                if (upType === 0) {
+                    const params = {
+                        'key': `${urlPath}${Date.now()}-${Math.random() * 1000000}.jpg`,
+                        'policy': policy,
+                        'OSSAccessKeyId': accessKeyId,
+                        'success_action_status': '200',
+                        'Signature': signature,
+                        'x-oss-security-token': securityToken,
+                    };
+                    console.log(arr[0], "arr[0]")
+                    Taro.uploadFile({
+                        url: ossServiceDomain,
+                        filePath: arr[0],
+                        name: 'file',
+                        formData: params,
+                        success(res) {
+                            Taro.hideLoading();
+                            let imgUrl = ossServiceDomain + '/' + params.key;
+                            console.log('上传成功 --  oss地址为', imgUrl);
                             setFormData({ ...formData, logo: imgUrl });
-                        } else if (upType === 1) {
-                            setImages([...images, imgUrl])
+                        },
+                        fail(err) {
+                            console.log(err)
                         }
-                    },
-                    fail(err) {
-                        console.log(err)
-                    }
-                });
+                    });
+                } else {
+                    const uploadPromises = arr.map(r => {
+                        const params = {
+                            'key': `${urlPath}${Date.now()}-${Math.random() * 1000000}.jpg`,
+                            'policy': policy,
+                            'OSSAccessKeyId': accessKeyId,
+                            'success_action_status': '200',
+                            'Signature': signature,
+                            'x-oss-security-token': securityToken,
+                        };
+
+                        // 返回 Promise 对象
+                        return new Promise((resolve, reject) => {
+                            Taro.uploadFile({
+                                url: ossServiceDomain,
+                                filePath: r,
+                                name: 'file',
+                                formData: params,
+                                success(res) {
+                                    let imgUrl = ossServiceDomain + '/' + params.key;
+                                    resolve(imgUrl);
+                                },
+                                fail(err) {
+                                    reject(err);
+                                }
+                            });
+                        });
+                    });
+
+                    // 等待所有异步操作完成
+                    Promise.all(uploadPromises)
+                        .then(results => {
+                            Taro.hideLoading();
+                            setImages([...images, ...results]);
+                        })
+                        .catch(error => {
+                            Taro.hideLoading();
+                            console.error(error);
+                        });
+                }
             } else {
                 Taro.hideLoading();
             }
         } catch (e) {
         }
-    };
+    }
+
 
     const computeSignature = (accessKeySecret, canonicalString) => {
         return crypto.enc.Base64.stringify(crypto.HmacSHA1(canonicalString, accessKeySecret));

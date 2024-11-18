@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-08 17:51:22
+ * @LastEditTime: 2024-11-18 10:51:16
  * @Description: 
  */
 
@@ -10,15 +10,13 @@ import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro';
 import { View, Textarea, Text, Input, Block, Image } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import { AtActionSheet, AtActionSheetItem } from 'taro-ui'
-import { reverseGeocoder } from '@/util/getLocation';
 import crypto from 'crypto-js';
 
 import "taro-ui/dist/style/components/action-sheet.scss";
 import Navbar from '@/components/navbar';
 import Base64 from '@/util/base64'
-import { fetchOssConfig } from "@/util/api";
+import { fetchOssConfig, userFeedBack } from "@/util/api";
 import './index.scss'
 
 
@@ -26,7 +24,6 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
     } = store
-    const [formData, setFormData] = useState({});
 
     const [openAction, setOpenAction] = useState(false);           // 是否打开选择照片弹窗
     const [images, setImages] = useState([
@@ -49,9 +46,9 @@ const Index = observer(({ store }) => {
         // 用户同意授权
         try {
             Taro.chooseImage({
-                count: 1, // 最多可选择的图片数量
-                sourceType: [sourceType[type]], // 图片来源，可选值：album（相册），camera（相机）
-                sizeType: ['original', 'compressed'], // 图片尺寸类型，可选值：original（原图），compressed（压缩图）
+                count: 5 - images.length,              // 最多可选择的图片数量
+                sourceType: [sourceType[type]],        // 图片来源，可选值：album（相册），camera（相机）
+                sizeType: ['original', 'compressed'],  // 图片尺寸类型，可选值：original（原图），compressed（压缩图）
                 success(res) {
                     setOpenAction(false);
                     // 获取到用户选择的照片信息
@@ -71,8 +68,7 @@ const Index = observer(({ store }) => {
             mask: true
         })
         try {
-            const result = await fetchOssConfig({ type: "AVATAR", bucket: 'apu-mini' });
-            console.log(result, "result")
+            const result = await fetchOssConfig({ type: "COMPLAINT", bucket: 'apu-mini' });
             if (result.code === 200) {
                 let { ossServiceDomain, accessKeyId, urlPath, accessKeySecret, securityToken } = result.data;
                 const date = new Date();
@@ -83,38 +79,49 @@ const Index = observer(({ store }) => {
                         ["content-length-range", 0, 1024 * 1024 * 1024],
                     ],
                 };
-                console.log(1)
+
                 const policy = Base64.encode(JSON.stringify(policyText));
-                console.log(policy, "policy")
                 const signature = computeSignature(accessKeySecret, policy);
-                console.log(signature, "signature")
-                const params = {
-                    'key': `${urlPath}${Date.now()}-${Math.random() * 1000000}.jpg`,
-                    'policy': policy,
-                    'OSSAccessKeyId': accessKeyId,
-                    'success_action_status': '200',
-                    'Signature': signature,
-                    'x-oss-security-token': securityToken,
-                };
-                console.log(arr[0], "arr[0]")
-                // 返回 Promise 对象
-                Taro.uploadFile({
-                    url: ossServiceDomain,
-                    filePath: arr[0],
-                    name: 'file',
-                    formData: params,
-                    success(res) {
-                        // let info = { ...res, url: params.key }
-                        Taro.hideLoading();
-                        let imgUrl = ossServiceDomain + '/' + params.key;
-                        // setImgSrc(imgUrl);
-                        console.log('上传成功 --  oss地址为', imgUrl);
-                        // setAvatar(ossServiceDomain + '/' + params.key)
-                    },
-                    fail(err) {
-                        console.log(err)
-                    }
+
+
+                const uploadPromises = arr.map(r => {
+                    const params = {
+                        'key': `${urlPath}${Date.now()}-${Math.random() * 1000000}.jpg`,
+                        'policy': policy,
+                        'OSSAccessKeyId': accessKeyId,
+                        'success_action_status': '200',
+                        'Signature': signature,
+                        'x-oss-security-token': securityToken,
+                    };
+
+                    // 返回 Promise 对象
+                    return new Promise((resolve, reject) => {
+                        Taro.uploadFile({
+                            url: ossServiceDomain,
+                            filePath: r,
+                            name: 'file',
+                            formData: params,
+                            success(res) {
+                                let imgUrl = ossServiceDomain + '/' + params.key;
+                                resolve(imgUrl);
+                            },
+                            fail(err) {
+                                reject(err);
+                            }
+                        });
+                    });
                 });
+
+                // 等待所有异步操作完成
+                Promise.all(uploadPromises)
+                    .then(results => {
+                        Taro.hideLoading();
+                        setImages([...images, ...results]);
+                    })
+                    .catch(error => {
+                        Taro.hideLoading();
+                        console.error(error);
+                    });
             } else {
                 Taro.hideLoading();
             }
@@ -128,6 +135,25 @@ const Index = observer(({ store }) => {
 
     const deleteImg = (index) => {
         setImages([...images.slice(0, index), ...images.slice(index + 1)])
+    }
+
+    const handleSubmit = async () => {
+        if (!feedbackValue) {
+            return Taro.showToast({ title: '请填写反馈内容', icon: 'none' })
+        }
+        let params = {
+            describes: feedbackValue,
+            imageUrl: images
+        }
+        const { code, data, msg } = await userFeedBack(params);
+        if (code === 200) {
+            Taro.showToast({ title: '提交成功', icon: 'none' });
+            setTimeout(() => {
+                Taro.navigateBack({ delta: 1 });
+            }, 1500);
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
+        }
     }
 
     return (
@@ -171,7 +197,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View className='post_btn'>提交</View>
+                <View className={`post_btn ${feedbackValue ? 'post_btn_active' : ''}`} onClick={handleSubmit}>提交</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 

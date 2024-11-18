@@ -250,8 +250,8 @@
 
                     .choose_box {
                         width: 100%;
-                        padding: 10rpx 32rpx 0rpx;
-                        height: 138rpx;
+                        padding: 10rpx 32rpx 20rpx 32rpx;
+                        height: 166rpx;
 
                         .choose_title {
                             width: 100%;
@@ -277,6 +277,7 @@
                             @include flex-center(flex-start);
                             flex-wrap: wrap;
                             margin-top: 10rpx;
+                            gap: 10rpx;
 
                             >view {
                                 padding: 0 20rpx;
@@ -288,7 +289,7 @@
                                 font-weight: 500;
                                 font-size: 24rpx;
                                 color: #1678ff;
-                                margin-right: 14rpx;
+                                // margin-right: 14rpx;
 
                                 .at-icon {
                                     margin-left: 10rpx;

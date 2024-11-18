@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 10:58:14
+ * @LastEditTime: 2024-11-18 10:39:20
  * @Description: 
  */
 
@@ -38,8 +38,11 @@ export const authInfo = params => {            // 获取认证信息
 
 
 // 用户模块
-export const userCenter = params => {            // 个人中心
+export const userCenter = params => {               // 个人中心
     return http(API_BASE_URL + '/user/center', params, "POST", {"Content-Type": "application/json"});
+}
+export const userFeedBack = params => {             // 意见反馈
+    return http(API_BASE_URL + '/user/feedBack', params, "POST", {"Content-Type": "application/json"});
 }
 
 

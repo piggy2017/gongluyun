@@ -106,6 +106,104 @@
             background: #FFF;
             padding: 20rpx 0;
 
+            .clue_item {
+                width: 710rpx;
+                background-color: #FFF;
+                border-radius: 20rpx;
+                margin: 0 auto 20rpx auto;
+                padding: 24rpx 0;
+                box-sizing: border-box;
+
+                .clue_item_wrap {
+                    width: 710rpx;
+                    margin: 0 auto;
+                    @include flex-center(space-between);
+
+                    .clue_item_wrap_right {
+                        width: 152rpx;
+                        height: 60rpx;
+                        border-radius: 8rpx;
+                        border: 2rpx solid #1678FF;
+                        background: #1678FF;
+                        color: #ffffff;
+                        font-family: "PingFang SC";
+                        font-size: 26rpx;
+                        font-style: normal;
+                        font-weight: 500;
+                        text-align: center;
+                        line-height: 60rpx;
+                        margin-right: 24rpx;
+                    }
+
+                    .clue_item_wrap_right_done {
+                        width: 152rpx;
+                        height: 60rpx;
+                        border-radius: 8rpx;
+                        border: 2rpx solid #1678FF;
+                        background: #ffffff;
+                        color: #1678FF;
+                        font-family: "PingFang SC";
+                        font-size: 26rpx;
+                        font-style: normal;
+                        font-weight: 500;
+                        text-align: center;
+                        line-height: 60rpx;
+                        margin-right: 24rpx;
+                    }
+
+                    .clue_item_title {
+                        padding: 0 24rpx 0 22rpx;
+                        @include flex-center(space-between);
+
+                        .clue_item_title_left {
+                            @include flex-center(flex-start);
+                        }
+
+                        .clue_item_title_sort {
+                            color: #222222;
+                            font-family: "D-DIN-PRO";
+                            font-size: 32rpx;
+                            font-style: normal;
+                            font-weight: 600;
+                            line-height: normal;
+                        }
+
+                        .clue_item_title_name {
+                            color: #222222;
+                            font-family: "PingFang SC";
+                            font-size: 32rpx;
+                            font-style: normal;
+                            font-weight: 500;
+                            line-height: normal;
+                            margin-left: 22rpx;
+                        }
+                    }
+
+                    .clue_item_info {
+                        padding: 0 30rpx 0 58rpx;
+                        color: #666666;
+                        font-family: "PingFang SC";
+                        font-size: 28rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: normal;
+                        margin-top: 8rpx;
+                        width: 400rpx;
+                        @include ellipsis;
+
+                        text {
+                            color: #222222;
+                            font-size: 30rpx;
+                        }
+                    }
+
+                    .clue_item_info:first-child {
+                        margin-top: 16rpx;
+                    }
+
+                }
+            }
+
             .clue_item:last-child {
                 border-bottom: none;
             }
@@ -129,6 +227,7 @@
                 line-height: 112rpx;
                 padding-left: 22rpx;
             }
+
             .jobs_item:last-child {
                 border-bottom: none;
             }
