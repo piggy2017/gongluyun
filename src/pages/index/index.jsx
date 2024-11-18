@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 15:01:40
+ * @LastEditTime: 2024-11-18 16:34:10
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -47,7 +47,7 @@ const Index = observer(({ store }) => {
 
   usePullDownRefresh(() => {
     console.log("下拉刷新");
-    if(isLogin){
+    if (isLogin) {
       Taro.showLoading({
         title: '加载中',
         mask: true
@@ -90,10 +90,13 @@ const Index = observer(({ store }) => {
     if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
       getTodayData();
       getPoorData();
+      getdrainageData();
+      getconvertData();
     }
     if (role === 'CUSTOMER') {   // 客服
       getCustomerTodo();
       getPoorData();
+      getdrainageData();
     }
     if (role === 'ON_SITE') {  // 驻场
       getOnSiteToDo();
@@ -102,7 +105,7 @@ const Index = observer(({ store }) => {
   }, [isLogin, role]);
 
   useEffect(() => {
-    if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
+    if (isLogin && (role === 'ADMIN' || role === 'SEEK' || role === 'CUSTOMER')) {
       getdrainageData();
     }
   }, [drainageDate])
@@ -266,9 +269,9 @@ const Index = observer(({ store }) => {
         // scrollY
         className='scrollWrapper'
         style={{ height: getHeight(), marginTop: `${statusTitleHeight + contenTitleHeight}px` }}
-        // scrollWithAnimation
-        // showScrollbar={false}
-        // enablePassive
+      // scrollWithAnimation
+      // showScrollbar={false}
+      // enablePassive
       >
 
         <View className='search_wrapper'>

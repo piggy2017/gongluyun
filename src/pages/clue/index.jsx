@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 15:57:27
+ * @LastEditTime: 2024-11-18 16:37:11
  * @Description: 
  */
 
@@ -227,6 +227,7 @@ const Index = observer(({ store }) => {
       setRequestState(3);
       if (_pageNo === 1) {
         setList([]);
+        setTotalCount(0);
       }
     }
   }
