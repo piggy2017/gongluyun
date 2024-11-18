@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 10:51:29
+ * @LastEditTime: 2024-11-18 14:14:15
  * @Description: 
  */
 
@@ -49,7 +49,7 @@ const Index = observer(({ store }) => {
     let params = {
       pageNo: _pageNo,
       pageSize,
-      state: null,
+      seekState: null,
       searchInfo: searchValue,
       recruitSerialCode: '',
       agentSerialCode: '',

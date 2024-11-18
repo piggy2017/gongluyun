@@ -105,7 +105,7 @@ const Index = observer(({ store }) => {
     let params = {
       pageNo: _pageNo,
       pageSize,
-      state: tabList[currentTab].state,
+      seekState: tabList[currentTab].state,
       searchInfo: searchValue,
       recruitSerialCode: onSiteFilterJob.recruitSerialCode,
       agentSerialCode: onSiteFilterSUPPLIER.userSerialCode,

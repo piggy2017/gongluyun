@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-13 12:05:12
+ * @LastEditTime: 2024-11-18 14:16:26
  * @Description: 
  */
 
@@ -112,7 +112,7 @@ const Index = observer(({ store }) => {
         let params = {
             pageNo: _pageNo,
             pageSize,
-            state: tabList[currentTabIndex].state,
+            seekState: tabList[currentTabIndex].state,
             searchInfo: searchValue,
             recruitSerialCode,
             source: sourceObj.source,
