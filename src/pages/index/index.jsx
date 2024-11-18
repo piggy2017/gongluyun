@@ -2,11 +2,11 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 14:03:56
+ * @LastEditTime: 2024-11-18 14:23:21
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { usePullDownRefresh } from '@tarojs/taro';
 import { View, Text, Input, Picker, Image, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import TabBar from '@/components/tabBar';
@@ -45,6 +45,28 @@ const Index = observer(({ store }) => {
 
   }, [isLogin, role, userInfo]);
 
+  usePullDownRefresh(() => {
+    if(isLogin){
+      getRoleAndPermissionFunc();
+      if (role === 'ADMIN' || role === 'SEEK') {
+        getTodayData();
+        getPoorData();
+        getdrainageData();
+        getconvertData();
+      }
+      if (role === 'CUSTOMER') {   // 客服
+        getCustomerTodo();
+        getPoorData();
+        getdrainageData();
+      }
+      if (role === 'ON_SITE') {  // 驻场
+        getOnSiteToDo();
+        getOnSiteData();
+      }
+    }
+    Taro.stopPullDownRefresh();
+  })
+
   useEffect(() => {
     if (isLogin) {
       refreshUserInfo();
@@ -58,15 +80,14 @@ const Index = observer(({ store }) => {
     if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
       getTodayData();
       getPoorData();
-      // getOnSiteToDo();
-      getOnSiteData();
+    }
+    if (role === 'CUSTOMER') {   // 客服
       getCustomerTodo();
+      getPoorData();
     }
-    if (role === 'CUSTOMER') {   // 驻场待办
-
-    }
-    if (role === 'ON_SITE') {
+    if (role === 'ON_SITE') {  // 驻场
       getOnSiteToDo();
+      getOnSiteData();
     }
   }, [isLogin, role]);
 
