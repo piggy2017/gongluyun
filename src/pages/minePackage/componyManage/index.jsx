@@ -246,6 +246,7 @@ const Index = observer(({ store }) => {
                     <Input
                         type='number'
                         disabled={true}
+                        maxlength='11'
                         className='info_item_input'
                         placeholder='请输入联系手机号码'
                         value={formData.contactMobile}

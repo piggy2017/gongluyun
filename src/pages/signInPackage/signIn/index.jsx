@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 17:38:31
+ * @LastEditTime: 2024-11-18 13:59:57
  * @Description: 
  */
 
@@ -100,6 +100,7 @@ const Index = observer(({ store }) => {
                             <Input
                                 disabled
                                 type='number'
+                                maxlength='11'
                                 className='employee_item_input'
                                 placeholder='请输入手机号码'
                                 placeholderStyle='color: #999999;'

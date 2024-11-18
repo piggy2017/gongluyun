@@ -154,6 +154,7 @@ const Index = observer(({ store }) => {
                     <View className='employee_item_label'>手机号码</View>
                     <Input
                         type='number'
+                        maxlength='11'
                         className='employee_item_input'
                         placeholder='请输入员工账户的手机号码'
                         placeholderStyle='color: #999999;'

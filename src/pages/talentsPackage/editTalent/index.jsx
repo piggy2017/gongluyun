@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 14:10:56
+ * @LastEditTime: 2024-11-18 14:00:27
  * @Description: 人才库 - 编辑人才信息页面
  */
 
@@ -157,6 +157,7 @@ const Index = observer(({ store }) => {
                     <View className='project_item_right'>
                         <Input
                             type='number'
+                            maxlength='11'
                             className='new_input'
                             placeholder='输入求职者的手机号'
                             placeholderStyle='color: #777777;'

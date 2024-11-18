@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 15:49:45
+ * @LastEditTime: 2024-11-18 13:58:26
  * @Description: 
  */
 
@@ -128,7 +128,7 @@ const Index = observer(({ store }) => {
         const errorMessages = [
             !params.source && '请选择求职者来源',
             !(params.agentSerialCode || params.agentSerialCode === '') && '请为求职者分配跟进人',
-            (!params.phone || (params.phone && params.phone.length != 11)) && '请输入求职者手机号码',
+            (!params.phone || (params.phone && params.phone.length != 11)) && '请输入11位手机号码',
         ].filter(Boolean);
 
         if (errorMessages.length > 0) {
@@ -176,6 +176,7 @@ const Index = observer(({ store }) => {
                     <View className='project_item_right'>
                         <Input
                             type='number'
+                            maxlength='11'
                             className='new_input'
                             placeholder='输入求职者的手机号'
                             placeholderStyle='color: #777777;'

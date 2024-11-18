@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 17:13:42
+ * @LastEditTime: 2024-11-18 13:58:37
  * @Description: 
  */
 
@@ -228,6 +228,7 @@ const Index = observer(({ store }) => {
                                             <Input
                                                 type='number'
                                                 className='new_input'
+                                                maxlength='11'
                                                 placeholder='输入求职者的手机号(必填）'
                                                 placeholderStyle='color: #777777;'
                                                 value={arrangList[index].phone}

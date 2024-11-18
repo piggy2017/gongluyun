@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 16:08:44
+ * @LastEditTime: 2024-11-18 14:03:56
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -201,6 +201,16 @@ const Index = observer(({ store }) => {
     }
   }
 
+  const feedBackList = () => {
+    if (isLogin === 0) {
+      Taro.navigateTo({
+        url: '/pages/login/index'
+      })
+      return
+    }
+    Taro.showToast({ title: '敬请期待', icon: 'none', duration: 2000 });
+  }
+
 
   return (
     <View className='container'>
@@ -298,7 +308,7 @@ const Index = observer(({ store }) => {
               <Image src={`${Taro.$cdnUrl}/index/index_icon6.webp`}></Image>
               <View>录入求职线索</View>
             </View>
-            <View className='enter_wrap_item' style={`margin-left:230rpx;`} >
+            <View className='enter_wrap_item' style={`margin-left:230rpx;`} onClick={feedBackList}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
               <View>反馈名单</View>
             </View>
@@ -325,19 +335,19 @@ const Index = observer(({ store }) => {
             <View className='today_data_title'>今日数据</View>
             <View className='today_data_content'>
               <View className='today_data_item'>
-                <View className='today_data_number'>{todayData ? todayData.newRecruit : '467'}</View>
+                <View className='today_data_number'>{todayData ? todayData.newRecruit : '0'}</View>
                 <View className='today_data_laber'>在招岗位</View>
               </View>
               <View className='today_data_item'>
-                <View className='today_data_number'>{todayData ? todayData.newEntry : '562'}</View>
+                <View className='today_data_number'>{todayData ? todayData.newEntry : '0'}</View>
                 <View className='today_data_laber'>新增入职</View>
               </View>
               <View className='today_data_item'>
-                <View className='today_data_number'>{todayData ? todayData.newExit : '234'}</View>
+                <View className='today_data_number'>{todayData ? todayData.newExit : '0'}</View>
                 <View className='today_data_laber'>今日离职</View>
               </View>
               <View className='today_data_item'>
-                <View className='today_data_number'>{todayData ? todayData.newClue : '417'}</View>
+                <View className='today_data_number'>{todayData ? todayData.newClue : '0'}</View>
                 <View className='today_data_laber'>新增线索</View>
               </View>
             </View>
@@ -414,8 +424,8 @@ const Index = observer(({ store }) => {
           <View className='clue_sea_wrapper'>
             <View className='clue_sea_left'>
               <View className='clue_sea_title'>线索公海</View>
-              <View className='clue_sea_today'>今日已领 <Text>{poorData ? poorData.todayReceived : 1}</Text> 名</View>
-              <View className='clue_sea_total'>线索池共 <Text>{poorData ? poorData.totalSeeker : 32}</Text> 名求职者等待领取并跟进</View>
+              <View className='clue_sea_today'>今日已领 <Text>{poorData ? poorData.todayReceived : 0}</Text> 名</View>
+              <View className='clue_sea_total'>线索池共 <Text>{poorData ? poorData.totalSeeker : 0}</Text> 名求职者等待领取并跟进</View>
             </View>
             <View className='clue_sea_right' onClick={() => {
               Taro.setStorageSync("poor", true);
