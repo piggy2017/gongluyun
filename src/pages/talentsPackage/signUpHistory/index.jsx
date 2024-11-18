@@ -37,7 +37,7 @@ const Index = observer(({ store }) => {
 
     useDidShow(() => {
         const { uuid, phone } = route.params;
-        getClientDetail(uuid);
+        getClientDetail(uuid, phone);
         getHistoryList(1);
     })
 
@@ -73,8 +73,8 @@ const Index = observer(({ store }) => {
         getHistoryList(1);
     }, [type])
 
-    const getClientDetail = async (_uuid) => {
-        const { code, data, msg } = await cluegetUserInfo({ uuid: _uuid });
+    const getClientDetail = async (_uuid, _phone) => {
+        const { code, data, msg } = await cluegetUserInfo({ uuid: _uuid, phone: _phone });
         console.log("code", code, "data", data, "msg", msg);
         if (code === 200) {
             setClientInfos(data);
@@ -147,7 +147,7 @@ const Index = observer(({ store }) => {
 
     const goInterview = () => {
         Taro.navigateTo({
-            url: `/pages/talentsPackage/talentInterview/index?uuid=${clientInfos.uuid}`
+            url: `/pages/talentsPackage/talentInterview/index?uuid=${clientInfos.uuid}&phone=${clientInfos.phone}`
         })
     }
 

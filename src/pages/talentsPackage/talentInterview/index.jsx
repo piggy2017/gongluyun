@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 15:21:13
+ * @LastEditTime: 2024-11-18 11:38:13
  * @Description: 
  */
 
@@ -60,8 +60,8 @@ const Index = observer(({ store }) => {
     }, [interviewJobInfo])
 
     const getClientDetail = async () => {
-        const { uuid } = route.params;   // type =1 人才库安排面试 
-        const { code, data, msg } = await cluegetUserInfo({ uuid });
+        const { uuid, phone } = route.params;   // type =1 人才库安排面试 
+        const { code, data, msg } = await cluegetUserInfo({ uuid, phone });
         console.log("code", code, "data", data, "msg", msg);
         if (code === 200) {
             setClientInfos(data);

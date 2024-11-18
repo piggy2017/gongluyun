@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 16:13:35
+ * @LastEditTime: 2024-11-18 11:30:05
  * @Description: 
  */
 
@@ -329,7 +329,7 @@ const Index = observer(({ store }) => {
 
   const goClientDetail = (obj, index) => {
     Taro.navigateTo({
-      url: `/pages/talentsPackage/clientDetail/index?uid=${obj.uuid}&myClientCount=${myClientCount}&index=${index * 1 + 1}`
+      url: `/pages/talentsPackage/clientDetail/index?uid=${obj.uuid}&phone=${obj.phone}&myClientCount=${myClientCount}&index=${index * 1 + 1}`
     })
   }
 

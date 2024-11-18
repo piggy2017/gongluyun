@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 15:40:17
+ * @LastEditTime: 2024-11-18 11:35:45
  * @Description: 
  */
 
@@ -47,7 +47,7 @@ const Index = observer(({ store }) => {
 
     useDidShow(() => {
         if (clientInfos && clientInfos.uuid) {
-            getClientDetail(clientInfos.uuid);
+            getClientDetail(clientInfos.uuid, clientInfos.phone);
             getHistoryList(clientInfos.uuid);
         }
     })
@@ -57,9 +57,9 @@ const Index = observer(({ store }) => {
     }, [myClientParams])
 
     useEffect(() => {
-        const { uid, myClientCount, index } = route.params;
+        const { uid, myClientCount, index, phone } = route.params;
         console.log("route.params", route.params);
-        getClientDetail(uid);
+        getClientDetail(uid, phone);
         getHistoryList(uid);
         setUuid(uid);
         setCurrent(index * 1);
@@ -72,8 +72,8 @@ const Index = observer(({ store }) => {
         }, 0);
     }, [])
 
-    const getClientDetail = async (_uuid) => {
-        const { code, data, msg } = await cluegetUserInfo({ uuid: _uuid });
+    const getClientDetail = async (_uuid, _phone) => {
+        const { code, data, msg } = await cluegetUserInfo({ uuid: _uuid, phone: _phone });
         console.log("code", code, "data", data, "msg", msg);
         if (code === 200) {
             setClientInfos(data);
@@ -207,7 +207,7 @@ const Index = observer(({ store }) => {
 
     const goInterview = () => {
         Taro.navigateTo({
-            url: `/pages/talentsPackage/interview/index?uuid=${clientInfos.uuid}`
+            url: `/pages/talentsPackage/interview/index?uuid=${clientInfos.uuid}&phone=${clientInfos.phone}`
         })
     }
 
