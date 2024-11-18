@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 11:30:05
+ * @LastEditTime: 2024-11-18 15:57:27
  * @Description: 
  */
 
@@ -216,7 +216,7 @@ const Index = observer(({ store }) => {
     console.log("getClueList", code, data);
     Taro.hideLoading();
     setIsRefresh(false);
-    if (code === 200 && data.responses?.length > 0) {
+    if (code === 200 && data?.responses?.length > 0) {
       setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
       setgoonLoad(true);
       setPageNo(data.pageNo);
@@ -250,7 +250,7 @@ const Index = observer(({ store }) => {
     console.log("getClientList", code, data);
     Taro.hideLoading();
     setIsRefresh(false);
-    if (code === 200 && data.responses?.length > 0) {
+    if (code === 200 && data?.responses?.length > 0) {
       for (let i = 0; i < data.responses.length; i++) {
         if (data.responses[i].age == 0) {
           data.responses[i].age = null;

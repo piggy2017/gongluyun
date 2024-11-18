@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 11:38:13
+ * @LastEditTime: 2024-11-18 16:13:41
  * @Description: 
  */
 
@@ -19,7 +19,7 @@ import WorkerInfo from '@/components/workerInfo';
 import DatePicker from '@/components/datePicker'
 import './index.scss'
 
-import { cluegetUserInfo, arrangeInterview } from '@/util/api'
+import { arrangeInterview, getClueUserInfo } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
@@ -61,7 +61,7 @@ const Index = observer(({ store }) => {
 
     const getClientDetail = async () => {
         const { uuid, phone } = route.params;   // type =1 人才库安排面试 
-        const { code, data, msg } = await cluegetUserInfo({ uuid, phone });
+        const { code, data, msg } = await getClueUserInfo({ uuid, phone });
         console.log("code", code, "data", data, "msg", msg);
         if (code === 200) {
             setClientInfos(data);

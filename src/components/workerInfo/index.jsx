@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 14:04:46
+ * @LastEditTime: 2024-11-18 16:15:19
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -34,7 +34,7 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
                             <View>{info.age ? info.age + '岁' : ''}{(info.age && (info.sex === 0 || info.sex === 1)) ? '·' : ''}{info.sex === 0 ? '男' : info.sex === 1 ? '女' : '未知'}</View>
                         </View>
                         {
-                            info.seekState === 'PENDING' && !interview &&
+                            ((info.seekState === 'PENDING' && !interview) || type == 2) &&
                             <View className='userInfo_title_right' onClick={goEdit}>
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon41.webp`}></Image>
                                 <View>编辑</View>

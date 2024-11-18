@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 14:08:29
+ * @LastEditTime: 2024-11-18 16:13:29
  * @Description: 
  */
 
@@ -15,7 +15,7 @@ import Navbar from '@/components/navbar';
 import WorkerInfo from '@/components/workerInfo';
 import './index.scss'
 
-import { cluegetUserInfo, getUserSignUpList } from '@/util/api'
+import { getUserSignUpList, getClueUserInfo } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
@@ -74,7 +74,7 @@ const Index = observer(({ store }) => {
     }, [type])
 
     const getClientDetail = async (_uuid, _phone) => {
-        const { code, data, msg } = await cluegetUserInfo({ uuid: _uuid, phone: _phone });
+        const { code, data, msg } = await getClueUserInfo({ uuid: _uuid, phone: _phone });
         console.log("code", code, "data", data, "msg", msg);
         if (code === 200) {
             setClientInfos(data);
