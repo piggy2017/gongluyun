@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 13:58:37
+ * @LastEditTime: 2024-11-18 17:15:48
  * @Description: 
  */
 
@@ -117,7 +117,9 @@ const Index = observer(({ store }) => {
             item.source = 'GLPK';
             return item;
         })
+        console.log("list", list);
         for (let i = 0; i < list.length; i++) {
+
             if (!list[i].interviewDate) {
                 Taro.showToast({ title: '请选择面试日期', icon: 'none', })
                 return;
@@ -127,7 +129,7 @@ const Index = observer(({ store }) => {
             } else if (list[i].sex === '') {
                 Taro.showToast({ title: '请选择求职者性别', icon: 'none', })
                 return;
-            } else if (!list[i].phone || !list[i].phone.length != 11) {
+            } else if (!list[i].phone || list[i].phone.length != 11) {
                 Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
                 return;
             }

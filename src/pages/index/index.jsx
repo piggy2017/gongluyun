@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 16:34:10
+ * @LastEditTime: 2024-11-18 16:43:17
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -394,15 +394,15 @@ const Index = observer(({ store }) => {
             <View className='today_data_title'>客服待办</View>
             <View className='today_data_content'>
               <View className='today_data_item'>
-                <View className='today_data_number'>{customerTodoData.todoHandle}</View>
+                <View className='today_data_number'>{customerTodoData.todoHandle ? customerTodoData.todoHandle : 0}</View>
                 <View className='today_data_laber'>待处理</View>
               </View>
               <View className='today_data_item'>
-                <View className='today_data_number'>{customerTodoData.todoInterview}</View>
+                <View className='today_data_number'>{customerTodoData.todoInterview ? customerTodoData.todoInterview : 0}</View>
                 <View className='today_data_laber'>待约面</View>
               </View>
               <View className='today_data_item'>
-                <View className='today_data_number'>{customerTodoData.todoStable}</View>
+                <View className='today_data_number'>{customerTodoData.todoStable ? customerTodoData.todoStable : 0}</View>
                 <View className='today_data_laber'>待回访</View>
               </View>
             </View>
@@ -415,15 +415,15 @@ const Index = observer(({ store }) => {
               <View className='today_data_title'>驻场待办</View>
               <View className='today_data_content' style={`padding: 0 58rpx`}>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>{todoData.todoChecked}</View>
+                  <View className='today_data_number'>{todoData.todoChecked ? todoData.todoChecked : 0}</View>
                   <View className='today_data_laber'>待签到</View>
                 </View>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>{todoData.interviewFollowUp}</View>
+                  <View className='today_data_number'>{todoData.interviewFollowUp ? todoData.interviewFollowUp : 0}</View>
                   <View className='today_data_laber'>面试跟进</View>
                 </View>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>{todoData.onboardingFollowUp}</View>
+                  <View className='today_data_number'>{todoData.onboardingFollowUp ? todoData.onboardingFollowUp : 0}</View>
                   <View className='today_data_laber'>入职跟进</View>
                 </View>
               </View>
@@ -433,19 +433,19 @@ const Index = observer(({ store }) => {
               <View className='today_data_title'>今日数据</View>
               <View className='today_data_content'>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>{siteTodayData.sinterviewCounts}</View>
+                  <View className='today_data_number'>{siteTodayData.sinterviewCounts ? siteTodayData.sinterviewCounts : 0}</View>
                   <View className='today_data_laber'>已约面</View>
                 </View>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>{siteTodayData.alreadyArrivedCounts}</View>
+                  <View className='today_data_number'>{siteTodayData.alreadyArrivedCounts ? siteTodayData.alreadyArrivedCounts : 0}</View>
                   <View className='today_data_laber'>已到面</View>
                 </View>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>{siteTodayData.interviewPassCounts}</View>
+                  <View className='today_data_number'>{siteTodayData.interviewPassCounts ? siteTodayData.interviewPassCounts : 0}</View>
                   <View className='today_data_laber'>面试通过</View>
                 </View>
                 <View className='today_data_item'>
-                  <View className='today_data_number'>{siteTodayData.deliveredCounts}</View>
+                  <View className='today_data_number'>{siteTodayData.deliveredCounts ? siteTodayData.deliveredCounts : 0}</View>
                   <View className='today_data_laber'>已入职</View>
                 </View>
               </View>
