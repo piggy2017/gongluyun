@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 16:11:58
+ * @LastEditTime: 2024-11-19 14:16:17
  * @Description: 
  */
 
@@ -223,7 +223,7 @@ const Index = observer(({ store }) => {
                         (clientInfos && clientInfos.seekState === 'PENDING') &&
                         <View className='client_status_title_right'>
                             <View>待安排面试</View>
-                            <AtIcon value='chevron-right' size='16' color='#1678FF'></AtIcon>
+                            {/* <AtIcon value='chevron-right' size='16' color='#1678FF'></AtIcon> */}
                         </View> ||
                         (clientInfos && clientInfos.seekState != 'PENDING') &&
                         <View className='client_status_title_status' style={`color:${getColor(clientInfos.seekState)}`}>{getStatus(clientInfos.seekState)}</View>

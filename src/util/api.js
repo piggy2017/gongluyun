@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 10:20:23
+ * @LastEditTime: 2024-11-19 13:47:04
  * @Description: 
  */
 
@@ -46,6 +46,9 @@ export const userCenter = params => {               // 个人中心
 }
 export const userFeedBack = params => {             // 意见反馈
     return http(API_BASE_URL + '/user/feedBack', params, "POST", {"Content-Type": "application/json"});
+}
+export const callUp = params => {                   // 用户拨打电话
+    return http(API_BASE_URL + '/user/callUp', params, "POST", {"Content-Type": "application/json"});
 }
 
 

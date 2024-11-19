@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 16:15:19
+ * @LastEditTime: 2024-11-19 14:04:36
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -10,6 +10,7 @@ import Taro from '@tarojs/taro';
 import { observer, inject } from 'mobx-react';
 import { View, Image, Text } from '@tarojs/components';
 import './index.scss';
+import { callUp } from '@/util/api';
 
 const WorkerInfo = observer(({ store, info, interview, type }) => {
     const {
@@ -21,6 +22,15 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
         Taro.navigateTo({
             url: type === 1 ? '/pages/newPackage/newWorker/index' : '/pages/talentsPackage/editTalent/index'
         });
+    }
+
+    const callUser = (obj) => {
+        Taro.makePhoneCall({ phoneNumber: obj.phone });
+        if (type === 1) {
+            callUp({ uuid: obj.uuid }).then(res => {
+                console.log("拨打电话 调用接口", res);
+            })
+        }
     }
 
     return (
@@ -41,7 +51,7 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
                             </View>
                         }
                     </View>
-                    <View className='userInfo_tel flex-row-items' onClick={() => Taro.makePhoneCall({ phoneNumber: info.phone })}>
+                    <View className='userInfo_tel flex-row-items' onClick={() => callUser(info)}>
                         <Image className='tel_img' src={`${Taro.$cdnUrl}/index/mine_icon7.webp`}></Image>
                         <View>{info.phone}</View>
                     </View>

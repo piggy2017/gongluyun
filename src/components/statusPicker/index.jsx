@@ -28,6 +28,7 @@ const SourcePicker = observer(({ onChange, showPicker, onClose, store }) => {
     const [statusList, setStatusList] = useState([
         { name: '全部状态', state: '' },
         { name: '待处理', state: 'PENDING' },
+        { name: "已约面", state: "SCHEDULED_INTERVIEW" },
         { name: '未到面', state: 'NOT_INTERVIEW' },
         { name: '已到面', state: 'ARRIVE_INTERVIEW' },
         { name: '面试失败', state: 'INTERVIEW_FAILED' },

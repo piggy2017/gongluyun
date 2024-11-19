@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 13:41:22
+ * @LastEditTime: 2024-11-19 14:22:34
  * @Description: 
  */
 
@@ -20,7 +20,7 @@ import './index.scss'
 import CustomDate from '@/components/customDate';
 import SourcePicker from '@/components/sourcePcker';
 import StatusPicker from '@/components/statusPicker';
-import { cluePool, cluemyClients, clueReceive } from '@/util/api'
+import { cluePool, cluemyClients, clueReceive, callUp } from '@/util/api'
 
 const Index = observer(({ store }) => {
   const {
@@ -97,6 +97,10 @@ const Index = observer(({ store }) => {
         setType('客户池');
         setSearchValue(_clueSearchValue);
         getClueList(1);
+      } else {
+        if (type === '我的客户') {
+          getClientList(1);
+        }
       }
     }
   })
@@ -197,7 +201,7 @@ const Index = observer(({ store }) => {
         url: '/pages/minePackage/companyAuth/index'
       })
     }
-  },200)
+  }, 200)
 
   const getClueList = async (_pageNo) => {   // 获取客户池列表
     setRequestState(1);
@@ -325,6 +329,9 @@ const Index = observer(({ store }) => {
     e.stopPropagation();
     Taro.makePhoneCall({
       phoneNumber: obj.phone
+    })
+    callUp({ uuid: obj.uuid }).then(res => {
+      console.log("拨打电话 调用接口", res);
     })
   }
 

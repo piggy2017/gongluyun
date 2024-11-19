@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 13:58:26
+ * @LastEditTime: 2024-11-19 14:19:44
  * @Description: 
  */
 
@@ -142,7 +142,9 @@ const Index = observer(({ store }) => {
         if (code === 200) {
             Taro.showToast({ title: `${isUpdate ? '修改成功' : '录入成功'}`, icon: 'none', });
             setTimeout(() => {
-                Taro.navigateBack({ delta: 1 });
+                Taro.navigateBack({
+                    delta: (isUpdate && params.agentSerialCode === '') ? 2 : 1
+                });
             }, 1500);
         } else {
             Taro.showToast({ title: msg, icon: 'none', });
@@ -252,7 +254,7 @@ const Index = observer(({ store }) => {
                     <View className='project_item project_item_border'>
                         <View className='project_item_label'>面试日期</View>
                         <View className='project_item_right' onClick={() => {
-                            if (isUpdate) return;
+                            // if (isUpdate) return;
                             setShowDatePicker(true)
                         }}>
                             <Text className={`${formData.interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewDate ? formData.interviewDate : '请选择面试日期'}</Text>
