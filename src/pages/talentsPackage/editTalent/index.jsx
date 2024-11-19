@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 14:00:27
+ * @LastEditTime: 2024-11-19 11:06:46
  * @Description: 人才库 - 编辑人才信息页面
  */
 
@@ -135,14 +135,14 @@ const Index = observer(({ store }) => {
             <Navbar fixed placeholder bgColor='#F4F4F4' title='编辑信息'></Navbar>
 
             <View className='project_group'>
-                <View className='project_item'>
+                {/* <View className='project_item'>
                     <View className='project_item_label project_item_label_required'>客服</View>
                     <View className='project_item_right'>
                         <View className={`option_item ${formData.agentSerialCode === userSerialCode ? 'option_item_active' : ''}`}>我</View>
                         <View className={`option_item ${formData.agentSerialCode === '' ? 'option_item_active' : ''}`}>公海</View>
                     </View>
-                </View>
-                <View className='project_item project_item_border'>
+                </View> */}
+                <View className='project_item'>
                     <View className='project_item_label project_item_label_required'>来源</View>
                     <View className='project_item_right' onClick={() => setShowSourcePicker(true)}>
                         <Text className={`${formData.source ? 'project_item_text_active' : 'project_item_text'}`}>{formData.source ? sourceObj.name : '选择求职者来源(必填)'}</Text>
