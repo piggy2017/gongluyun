@@ -110,4 +110,67 @@
             border-bottom: none;
         }
     }
+
+    .loginout{
+        background-color: transparent;
+        font-size: 28rpx;
+        text-align: center;
+        margin-top: 35rpx !important;
+    }
+
+    .loginout_box {
+        .at-modal__container {
+            width: 540rpx;
+            // height: 1012rpx;
+            background: #FFFFFF;
+            border-radius: 16rpx;
+        }
+
+        .stop_wechat {
+            width: 100%;
+
+            .warn_title {
+                width: 100%;
+                color: #000000;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 34rpx;
+                padding: 40rpx 0 0 0;
+                font-weight: bolder;
+            }
+
+            .warn_cont {
+                // height: 902rpx;
+                padding: 10rpx 32rpx;
+                text-align: center;
+                color: #000000;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+            }
+
+            .sure_btn {
+                width: 100%;
+                height: 110rpx;
+                @include flex-center;
+                font-family: PingFangSC-Regular;
+                font-weight: 400;
+                font-size: 30rpx;
+                color: #222222;
+
+                >view {
+                    width: 50%;
+                    @include flex-center;
+                    color: $boss-color;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 32rpx;
+                }
+
+                .cancel_btn {
+                    color: #999999;
+                }
+
+            }
+        }
+    }
 }

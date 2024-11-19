@@ -2,21 +2,27 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 15:02:14
+ * @LastEditTime: 2024-11-19 10:31:08
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
 import Taro, { usePullDownRefresh } from '@tarojs/taro';
+import { AtModal } from 'taro-ui';
+import "taro-ui/dist/style/components/modal.scss";
 import { View, Text, Image } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import TabBar from '@/components/tabBar';
 import './index.scss'
 
+import { loginOut } from '@/util/api'
+
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight },
-    userStore: { isLogin, role, userInfo, companyInfo, companyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
+    userStore: { isLogin, setIsLogin, role, setRole, setToken, userInfo, setUserInfo, companyInfo, companyVerified, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
   } = store
+
+  const [loginoutSure, setLoginoutSure] = useState(false);
 
   useEffect(() => {
     console.log("userInfo", userInfo);
@@ -82,6 +88,28 @@ const Index = observer(({ store }) => {
     }
   }
 
+  const loginoutFn = async () => {
+    let res = await loginOut()
+    if (res.code === 200 || res.code === 7003) {
+      Taro.showToast({
+        title: '退出成功',
+        icon: 'none',
+        duration: 2000
+      })
+      setToken('')
+      setIsLogin(0)
+      setRole('SEEK');
+      setUserInfo('');
+      setCompanyVerified(false);
+      setLoginoutSure(false);
+      Taro.setStorageSync('token', '');
+      Taro.setStorageSync('isLogin', 0);
+      Taro.setStorageSync('role', 'SEEK');
+      Taro.setStorageSync('userInfo', '');
+      Taro.setStorageSync('companyInfo', '');
+    }
+  }
+
   return (
     <View className='container'>
       <View className='my_header'>
@@ -89,11 +117,9 @@ const Index = observer(({ store }) => {
         <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
         </View>
       </View>
-
-
       {
         !isLogin &&
-        <View className='user_info'>
+        <View className='user_info' onClick={() => Taro.navigateTo({ url: '/pages/login/index' })}>
           <View className='user_info_avatar'></View>
           <View className='user_info_right'>
             <View className='user_info_name'>
@@ -167,7 +193,30 @@ const Index = observer(({ store }) => {
           <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
         </View>
       </View>
+
+      {
+        isLogin == 1 ?
+          <View className='loginout' onClick={() => setLoginoutSure(true)}>退出登录</View> : ''
+      }
+
       <TabBar actCurrent={3} />
+
+      <AtModal
+        isOpened={loginoutSure}
+        className='loginout_box'
+        catchMove
+        onClose={() => setLoginoutSure(false)}
+
+      >
+        <View className='stop_wechat'>
+          <View className='warn_title'>退出登录</View>
+          <View className='warn_cont'>确定要退出登录吗</View>
+          <View className='sure_btn' >
+            <View className='cancel_btn' onClick={() => setLoginoutSure(false)}>取消</View>
+            <View onClick={() => loginoutFn()}>确定</View>
+          </View>
+        </View>
+      </AtModal>
     </View>
   )
 })

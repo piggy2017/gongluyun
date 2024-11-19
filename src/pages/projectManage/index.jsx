@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 16:15:49
+ * @LastEditTime: 2024-11-19 09:49:58
  * @Description: 
  */
 
@@ -123,7 +123,7 @@ const Index = observer(({ store }) => {
     })
   }
 
-  const loginOrAuth = () => {
+  const loginOrAuth = debounce(() => {
     if (isLogin === 0) {
       Taro.navigateTo({
         url: '/pages/login/index'
@@ -133,7 +133,7 @@ const Index = observer(({ store }) => {
         url: '/pages/minePackage/companyAuth/index'
       })
     }
-  }
+  },200)
 
   const setTypeFunc = (_type) => {
     if (_type != type) {
@@ -161,6 +161,10 @@ const Index = observer(({ store }) => {
             placeholderStyle='color: #777777;'
             onInput={(e) => { setSearchValue(e.detail.value) }}
             onConfirm={(e) => {
+              if (!isLogin || !companyVerified) {
+                loginOrAuth();
+                return
+              }
               getList(1);
               setgoonLoad(true);
             }}

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 16:43:17
+ * @LastEditTime: 2024-11-19 09:53:37
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -275,7 +275,7 @@ const Index = observer(({ store }) => {
       >
 
         <View className='search_wrapper'>
-          <View className='search_con' onClick={() => navigateFunc(1, '/pages/talentsPackage/search/index')} style={`width:${role === 'CUSTOMER' ? '608rpx' : '608rpx'}`}>
+          <View className='search_con' onClick={() => navigateVerifiedFunc('/pages/talentsPackage/search/index')} style={`width:${role === 'CUSTOMER' ? '608rpx' : '608rpx'}`}>
             <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
             <View className='search_input' style={`width:${role === 'CUSTOMER' ? '500rpx' : '400rpx'}`}>输入关键词搜索项目、求职者</View>
           </View>

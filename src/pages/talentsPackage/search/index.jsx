@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 11:08:23
+ * @LastEditTime: 2024-11-19 09:46:58
  * @Description: 
  */
 
@@ -102,6 +102,7 @@ const Index = observer(({ store }) => {
                     <View className='search_wrap'>
                         <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
                         <Input className='search_input'
+                            focus={true}
                             placeholder='输入关键词搜索项目、求职者'
                             confirmType='search'
                             placeholderStyle='color: #777777;'

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 16:11:20
+ * @LastEditTime: 2024-11-19 10:20:23
  * @Description: 
  */
 
@@ -25,6 +25,9 @@ export const loginEmployeePhone = params => {    // 员工通道（通过手机�
 }
 export const loginCheck = params => {    // 校验系统accessToken
     return http(API_BASE_URL + '/login/check/token', params, "POST", {"Content-Type": "application/json"});
+}
+export const loginOut = params => {    // 退出登录
+    return http(API_BASE_URL + '/login/loginOut', params, "POST", {"Content-Type": "application/json"});
 }
 
 

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 16:37:11
+ * @LastEditTime: 2024-11-19 09:50:37
  * @Description: 
  */
 
@@ -187,7 +187,7 @@ const Index = observer(({ store }) => {
     }
   }
 
-  const loginOrAuth = () => {
+  const loginOrAuth = debounce(() => {
     if (isLogin === 0) {
       Taro.navigateTo({
         url: '/pages/login/index'
@@ -197,7 +197,7 @@ const Index = observer(({ store }) => {
         url: '/pages/minePackage/companyAuth/index'
       })
     }
-  }
+  },200)
 
   const getClueList = async (_pageNo) => {   // 获取客户池列表
     setRequestState(1);
@@ -354,6 +354,10 @@ const Index = observer(({ store }) => {
             placeholderStyle='color: #777777;'
             onInput={(e) => { setSearchValue(e.detail.value) }}
             onConfirm={(e) => {
+              if (!isLogin || !companyVerified) {
+                loginOrAuth();
+                return
+              }
               setgoonLoad(true);
               if (type === '客户池') {
                 getClueList(1);
@@ -399,8 +403,8 @@ const Index = observer(({ store }) => {
 
         </View>
         {
-          (type === '客户池' && isLogin && role != 'SEEK') &&
-          <View className='search_total'>客户池共 <Text>{totalCount}</Text> 名求职者等待领取并跟进</View>
+          (type === '客户池' && isLogin === 1 && role != 'SEEK') &&
+          <View className='search_total'>客户池共 <Text>1{totalCount}</Text> 名求职者等待领取并跟进</View>
         }
       </View>
 
