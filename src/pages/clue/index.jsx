@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 09:50:37
+ * @LastEditTime: 2024-11-19 13:41:22
  * @Description: 
  */
 
@@ -404,7 +404,7 @@ const Index = observer(({ store }) => {
         </View>
         {
           (type === '客户池' && isLogin === 1 && role != 'SEEK') &&
-          <View className='search_total'>客户池共 <Text>1{totalCount}</Text> 名求职者等待领取并跟进</View>
+          <View className='search_total'>客户池共 <Text>{totalCount}</Text> 名求职者等待领取并跟进</View>
         }
       </View>
 

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 15:57:02
+ * @LastEditTime: 2024-11-19 13:37:35
  * @Description: 
  */
 
@@ -52,7 +52,7 @@ const Index = observer(({ store }) => {
         try {
             const info = await Taro.login();
             console.log(1, info);
-            const { code, errMsg  } = e.detail;
+            const { code, errMsg } = e.detail;
             if (errMsg === 'getPhoneNumber:ok') {
                 Taro.showLoading({
                     title: "请求中",
@@ -82,7 +82,7 @@ const Index = observer(({ store }) => {
                         getUserRole();
                         // setMyPermissions();
                     }, 50);
-                }else{
+                } else {
                     Taro.showToast({ title: result.msg, icon: "none", duration: 2000 })
                 }
             }
@@ -144,6 +144,20 @@ const Index = observer(({ store }) => {
         console.log("step 发生了改变", step);
     }, [step])
 
+    const viewPrivacy = () => {
+        console.log("viewPrivacyviewPrivacy")
+        // 打开隐私协议页面
+        wx.openPrivacyContract({
+            success: () => {   // 打开成功
+                console.log('打开隐私协议页面成功')
+            },
+            fail: () => {   // 打开失败
+                console.log('打开隐私协议页面失败')
+            },
+            complete: () => { }
+        })
+    }
+
     return (
         <View className='container'>
             {/* <Navbar fixed placeholder bgColor='transparent' title='' customBack={() => backFunc()}></Navbar> */}
@@ -168,8 +182,7 @@ const Index = observer(({ store }) => {
                         <View className='logn_policy'>
                             <Image onClick={() => setChecked(!checked)} src={`${Taro.$cdnUrl}/index/index_icon2${checked ? 7 : 8}.webp`}></Image>
                             <View onClick={() => setChecked(!checked)} >已阅读并同意</View>
-                            <View className='webview_link'>《公路云服务协议》</View>
-                            <View className='webview_link'>《隐私政策》</View>
+                            <View className='webview_link' onClick={() => viewPrivacy()}>《公路云小程序隐私保护指引》</View>
                         </View>
                         <View style={`height:${bottomSafeAreaHeight * 2}px`}></View>
                     </View>
@@ -203,8 +216,7 @@ const Index = observer(({ store }) => {
                     <View className='logn_policy_2'>
                         <Image onClick={() => setChecked(!checked)} src={`${Taro.$cdnUrl}/index/index_icon2${checked ? 7 : 8}.webp`}></Image>
                         <View onClick={() => setChecked(!checked)} >已阅读并同意</View>
-                        <View className='webview_link'>《公路云服务协议》</View>
-                        <View className='webview_link'>《隐私政策》</View>
+                        <View className='webview_link' onClick={() => viewPrivacy()}>《公路云小程序隐私保护指引》</View>
                     </View>
 
                     <Button onClick={() => btnLogin()} className={`account_login_btn ${account && password && checked ? 'account_login_btn_active' : ''}`}>登录</Button>

@@ -94,6 +94,20 @@ const Index = observer(({ store }) => {
         })
     }
 
+    const viewPrivacy = () => {
+        console.log("viewPrivacyviewPrivacy")
+        // 打开隐私协议页面
+        wx.openPrivacyContract({
+            success: () => {   // 打开成功
+                console.log('打开隐私协议页面成功')
+            },
+            fail: () => {   // 打开失败
+                console.log('打开隐私协议页面失败')
+            },
+            complete: () => { }
+        })
+    }
+
     return (
         <View className='container'>
             {/* <Navbar fixed placeholder bgColor='transparent' title='' customBack={() => backFunc()}></Navbar> */}
@@ -114,8 +128,7 @@ const Index = observer(({ store }) => {
                 <View className='logn_policy'>
                     <Image onClick={() => setChecked(!checked)} src={`${Taro.$cdnUrl}/index/index_icon2${checked ? 7 : 8}.webp`}></Image>
                     <View onClick={() => setChecked(!checked)} >已阅读并同意</View>
-                    <View className='webview_link'>《公路云服务协议》</View>
-                    <View className='webview_link'>《隐私政策》</View>
+                    <View className='webview_link' onClick={() => viewPrivacy()}>《公路云小程序隐私保护指引》</View>
                 </View>
                 <View style={`height:${bottomSafeAreaHeight * 2}px`}></View>
             </View>
