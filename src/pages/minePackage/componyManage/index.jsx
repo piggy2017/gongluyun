@@ -259,7 +259,7 @@ const Index = observer(({ store }) => {
                         count={false}
                         auto-height
                         confirmType='return'
-                        adjustPosition={false} //键盘弹起时，是否自动上推页面 
+                        adjustPosition={true} //键盘弹起时，是否自动上推页面 
                         show-confirm-bar
                         maxlength={100}
                         autoHeight

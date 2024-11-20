@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 16:25:38
+ * @LastEditTime: 2024-11-20 16:04:55
  * @Description: 
  */
 
@@ -11,6 +11,8 @@ import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Text, Input, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { AtIcon } from 'taro-ui'
+import "taro-ui/dist/style/components/icon.scss";
 import Navbar from '@/components/navbar';
 import WorkerInfo from '@/components/workerInfo';
 import './index.scss'

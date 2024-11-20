@@ -93,6 +93,7 @@ const Index = observer(({ store }) => {
             !(params.sex === 0 || params.sex === 1) && '请选择求职者性别',
             !params.recruitSerialCode && '请选择岗位',
             !params.interviewDate && '请选择面试日期',
+            (params.idCardNo && params.idCardNo.length != 18) && '请输入求职者18位身份证号码',
         ].filter(Boolean);
 
         if (errorMessages.length > 0) {

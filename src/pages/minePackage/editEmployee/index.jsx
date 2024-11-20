@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-20 10:26:19
+ * @LastEditTime: 2024-11-20 15:23:08
  * @Description: 
  */
 
@@ -154,6 +154,7 @@ const Index = observer(({ store }) => {
                     <View className='employee_item_label'>手机号码</View>
                     <Input
                         type='number'
+                        disabled
                         maxlength='11'
                         className='employee_item_input'
                         placeholder='请输入员工账户的手机号码'

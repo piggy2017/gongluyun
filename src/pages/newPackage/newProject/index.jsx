@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 15:33:27
+ * @LastEditTime: 2024-11-20 15:02:53
  * @Description: 
  */
 
@@ -394,7 +394,7 @@ const Index = observer(({ store }) => {
                             confirmType='return'
                             value={formData.introduction}
                             onInput={(e) => setFormData({ ...formData, introduction: e.detail.value })}
-                            adjustPosition={false} //键盘弹起时，是否自动上推页面 
+                            adjustPosition={true} //键盘弹起时，是否自动上推页面 
                             show-confirm-bar
                             maxlength={500}
                             autoHeight

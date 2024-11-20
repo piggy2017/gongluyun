@@ -131,6 +131,8 @@ const Index = observer(({ store }) => {
             } else if (!list[i].phone || list[i].phone.length != 11) {
                 Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
                 return;
+            } else if(list[i].idCardNo && list[i].idCardNo.length != 18){
+                Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
             }
         }
         console.log("list", list);

@@ -164,7 +164,7 @@ const Index = observer(({ store }) => {
                 <View className='feedback_wrap_title'>详细描述</View>
                 <Textarea count={false}
                     confirmType='return'
-                    adjustPosition={false} //键盘弹起时，是否自动上推页面 
+                    adjustPosition={true} //键盘弹起时，是否自动上推页面 
                     show-confirm-bar
                     maxlength={500}
                     className='feedback_textarea'

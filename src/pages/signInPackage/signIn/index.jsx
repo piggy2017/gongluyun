@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 13:59:57
+ * @LastEditTime: 2024-11-20 15:31:32
  * @Description: 
  */
 
@@ -68,6 +68,9 @@ const Index = observer(({ store }) => {
 
     const signFunc = async () => {
         Taro.showLoading({ title: '签到中...' });
+        if (formData.idCardNo && formData.idCardNo.length != 18) {
+            Taro.showToast({ title: '请输入18位身份证号码', icon: 'none' });
+        }
         let params = {
             ...formData,
             recruitSerialCode: router.params.recruitSerialCode
