@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-12 11:17:30
+ * @LastEditTime: 2024-11-20 10:26:19
  * @Description: 
  */
 
@@ -48,8 +48,8 @@ const Index = observer(({ store }) => {
         const { code, data, msg } = await getMemberInfo({ userSerialCode });
         console.log("code", code, "data", data, "msg", msg);
         if (code === 200) {
-            data.authority = data.permission.map(item => item.permName);
-            data.permIds = data.permIds.split(',');
+            data.authority = data.permission ? data.permission.map(item => item.permName) : [];
+            data.permIds = data.permIds ? data.permIds.split(',') : [];
             setFormData(data);
             console.log("permissions_permissions", permissions);
 

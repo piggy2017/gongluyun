@@ -233,6 +233,7 @@ const Index = observer(({ store }) => {
                     <View className='project_item_right'>
                         <Input
                             type='idcard'
+                            maxlength='18'
                             className='new_input'
                             placeholder='输入真实身份证号'
                             placeholderStyle='color: #777777;'

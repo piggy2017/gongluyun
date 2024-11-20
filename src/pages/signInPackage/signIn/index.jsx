@@ -128,7 +128,9 @@ const Index = observer(({ store }) => {
                         <View className='employee_item'>
                             <View className='employee_item_label'>身份证号</View>
                             <Input
+                                type='idcard'
                                 className='employee_item_input'
+                                maxlength='18'
                                 placeholder='请输入身份证号'
                                 placeholderStyle='color: #999999;'
                                 value={formData.idCardNo}

@@ -176,6 +176,7 @@ const Index = observer(({ store }) => {
                     <View className='choose_item_right flex-row-items'>
                         <Input
                             type='idcard'
+                            maxlength='18'
                             className='info_item_input'
                             placeholder='输入真实身份证号(选填)'
                             placeholderStyle='color: #777777;'

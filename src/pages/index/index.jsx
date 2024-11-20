@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 09:53:37
+ * @LastEditTime: 2024-11-19 16:48:16
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -98,7 +98,7 @@ const Index = observer(({ store }) => {
       getPoorData();
       getdrainageData();
     }
-    if (role === 'ON_SITE') {  // 驻场
+    if (role === 'ON_SITE') {    // 驻场
       getOnSiteToDo();
       getOnSiteData();
     }
@@ -483,7 +483,7 @@ const Index = observer(({ store }) => {
             </View>
             <View className='drainage_data_content'>
               <View className='drainage_data_content_left'>
-                <View className='drainage_data_content_left_data'>{drainageInfo ? drainageInfo.interviewRate : '0'}</View>
+                <View className='drainage_data_content_left_data'>{drainageInfo ? drainageInfo.interviewRate : '0'}%</View>
                 <View className='drainage_data_content_left_laber'>约面率</View>
               </View>
               <Image className='drainage_data_content_img' src={`${Taro.$cdnUrl}/index/index_icon8.webp`}></Image>
@@ -509,7 +509,7 @@ const Index = observer(({ store }) => {
             </View>
             <View className='drainage_data_content'>
               <View className='drainage_data_content_left'>
-                <View className='drainage_data_content_left_data'>{convertInfo ? convertInfo.arrivalRate : '0'}</View>
+                <View className='drainage_data_content_left_data'>{convertInfo ? convertInfo.arrivalRate : '0'}%</View>
                 <View className='drainage_data_content_left_laber'>到面率</View>
               </View>
               <Image className='drainage_data_content_img' src={`${Taro.$cdnUrl}/index/index_icon8.webp`}></Image>

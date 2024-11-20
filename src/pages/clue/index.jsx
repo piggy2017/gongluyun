@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 14:22:34
+ * @LastEditTime: 2024-11-20 10:22:58
  * @Description: 
  */
 
@@ -306,6 +306,7 @@ const Index = observer(({ store }) => {
     Taro.showLoading({ title: '领取中...' });
     const { code, data, msg } = await clueReceive({ uuid: obj.uuid });
     console.log("getClient", code, data);
+    Taro.hideLoading();
     if (code === 200) {
       Taro.showToast({ title: '领取成功', icon: 'none', duration: 2000 });
       setList(list => {
@@ -322,7 +323,6 @@ const Index = observer(({ store }) => {
     } else {
       Taro.showToast({ title: msg, icon: 'none', duration: 2000 });
     }
-    Taro.hideLoading();
   }
 
   const callFunc = (e, obj) => {

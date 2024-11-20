@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:41:55
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 11:09:03
+ * @LastEditTime: 2024-11-20 10:39:03
  * @Description: 
  */
 /* eslint-disable react/jsx-key */
@@ -13,7 +13,7 @@ import { AtIcon } from 'taro-ui'
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 // import NavBar from '../../../components/nav/nav';
 import { throttle, selectorQueryDomInfo } from '@/util/utils'
-import { jobTypeList } from '@/util/api'
+import { jobTypeList, jobAssoc } from '@/util/api'
 import './index.scss';
 
 const ChooseJob = observer(({ store }) => {
@@ -65,7 +65,7 @@ const ChooseJob = observer(({ store }) => {
             // componentWillUnmount
         }
     }, [chooseJobItem])
-    
+
     const setInit = (data) => {
         if (filterJobTypes.length) {
             let currentIndnx = []

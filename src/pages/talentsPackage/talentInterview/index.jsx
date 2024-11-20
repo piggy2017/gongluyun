@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 16:13:41
+ * @LastEditTime: 2024-11-20 09:24:45
  * @Description: 
  */
 
@@ -81,7 +81,7 @@ const Index = observer(({ store }) => {
     const submitFunc = async () => {
         let params = {
             ...formData,
-            uuid: null
+            uuid: null    
         }
 
         console.log("params", params);
@@ -173,6 +173,7 @@ const Index = observer(({ store }) => {
                     <View className='choose_item_right flex-row-items'>
                         <Input
                             type='idcard'
+                            maxlength='18'
                             className='info_item_input'
                             placeholder='输入真实身份证号(选填)'
                             placeholderStyle='color: #777777;'

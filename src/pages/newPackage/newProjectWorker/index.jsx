@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 17:15:48
+ * @LastEditTime: 2024-11-19 15:44:57
  * @Description: 
  */
 
@@ -119,7 +119,6 @@ const Index = observer(({ store }) => {
         })
         console.log("list", list);
         for (let i = 0; i < list.length; i++) {
-
             if (!list[i].interviewDate) {
                 Taro.showToast({ title: '请选择面试日期', icon: 'none', })
                 return;
@@ -162,7 +161,7 @@ const Index = observer(({ store }) => {
                     <View className='project_item_label project_item_label_required'>岗位</View>
                     <View className='project_item_right' >
                         <Text className={`${route.params.title ? 'project_item_text_active' : 'project_item_text'}`}>{route.params.title ? route.params.title : '选择求职者报名的岗位'}</Text>
-                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                        {/* <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image> */}
                     </View>
                 </View>
 
@@ -253,6 +252,7 @@ const Index = observer(({ store }) => {
                                         <View className='project_item_right'>
                                             <Input
                                                 type='idcard'
+                                                maxlength='18'
                                                 className='new_input'
                                                 placeholder='输入真实身份证号(选填）'
                                                 placeholderStyle='color: #777777;'

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 13:47:04
+ * @LastEditTime: 2024-11-20 10:37:01
  * @Description: 
  */
 
@@ -85,6 +85,9 @@ export const customerTodo = params => {                    // 客服待办
 // 岗位相关
 export const jobTypeList = params => {            // 获取工种数据
     return http(API_BASE_URL + '/job/jobTypeList', params, "POST", {"Content-Type": "application/json"});
+}
+export const jobAssoc = params => {               // 岗位联想
+    return http(API_BASE_URL + '/job/jobAssoc', params, "POST", {"Content-Type": "application/json"});
 }
 
 
