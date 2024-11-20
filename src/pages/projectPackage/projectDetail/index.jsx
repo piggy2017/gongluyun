@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 11:23:41
+ * @LastEditTime: 2024-11-20 16:28:59
  * @Description: 
  */
 
@@ -19,7 +19,7 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { getContractsInfo, getContractsInfoStatistics, stopContracts, getContractsInfoHallStatistics, updateContracts } from '@/util/api';
+import { getContractsInfo, getContractsInfoStatistics, stopContracts, openContracts, getContractsInfoHallStatistics, updateContracts } from '@/util/api';
 
 const Index = observer(({ store }) => {
   const route = useRouter();
@@ -104,6 +104,29 @@ const Index = observer(({ store }) => {
     console.log("stopJob_data", code, data);
     if (code === 200) {
       Taro.showToast({ title: '操作成功', icon: 'none' });
+      setDetail(detail => {
+        let _detail = JSON.parse(JSON.stringify(detail));
+        _detail.status = 'COMPLETED';
+        return _detail;
+      })
+    } else {
+      Taro.showToast({ title: msg, icon: 'none' });
+    }
+  }
+
+  const startJob = async () => {
+    const { contractsSerialCode } = route.params;
+    Taro.showLoading({ title: '加载中...' });
+    const { code, data, msg } = await openContracts({ contractsSerialCode });
+    Taro.hideLoading();
+    console.log("stopJob_data", code, data);
+    if (code === 200) {
+      Taro.showToast({ title: '操作成功', icon: 'none' });
+      setDetail(detail => {
+        let _detail = JSON.parse(JSON.stringify(detail));
+        _detail.status = 'PROCESSING';
+        return _detail;
+      })
     } else {
       Taro.showToast({ title: msg, icon: 'none' });
     }
@@ -287,10 +310,19 @@ const Index = observer(({ store }) => {
       <View className='project_btns'>
         <View style={`height:20rpx;`}></View>
         <View className='btn_wrap'>
-          <View className='btn_item' onClick={stopJob}>
-            <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_8.webp`}></Image>
-            <View>暂停面试</View>
-          </View>
+          {
+            detail.status === 'PROCESSING' &&
+            <View className='btn_item' onClick={stopJob}>
+              <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_12.webp`}></Image>
+              <View>暂停面试</View>
+            </View> ||
+            detail.status === 'COMPLETED' &&
+            <View className='btn_item' onClick={startJob}>
+              <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_13.webp`}></Image>
+              <View>恢复面试</View>
+            </View>
+          }
+
           {
             myPermissions.includes('5') &&
             <View className='btn_item' onClick={goEditProject}>
