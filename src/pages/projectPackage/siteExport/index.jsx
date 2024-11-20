@@ -51,8 +51,8 @@ const Index = observer(({ store }) => {
     useEffect(() => {
         console.log("route", route);
         const { title, sourceName, dateRange, startDate, endDate } = route.params;
-        setTitle(title);
-        setSource(sourceName);
+        setTitle(decodeURIComponent(title));
+        setSource(decodeURIComponent(sourceName));
 
         setTimeout(async () => {
             const _query = await selectorQueryDomInfo('.export_infos');

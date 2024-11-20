@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 14:40:42
+ * @LastEditTime: 2024-11-20 17:46:50
  * @Description: 
  */
 /*
@@ -51,8 +51,9 @@ const Index = observer(({ store }) => {
     useEffect(() => {
         console.log("route", route);
         const { title, sourceName, dateRange, startDate, endDate } = route.params;
-        setTitle(title);
-        setSource(sourceName);
+        console.log('title', decodeURIComponent(title))
+        setTitle(decodeURIComponent(title));
+        setSource(decodeURIComponent(sourceName));
 
         setTimeout(async () => {
             const _query = await selectorQueryDomInfo('.export_infos');
