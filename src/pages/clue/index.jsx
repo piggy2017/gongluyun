@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-20 10:22:58
+ * @LastEditTime: 2024-11-20 11:18:55
  * @Description: 
  */
 
@@ -100,6 +100,8 @@ const Index = observer(({ store }) => {
       } else {
         if (type === '我的客户') {
           getClientList(1);
+        } else {
+          getClueList(1);
         }
       }
     }
@@ -310,18 +312,27 @@ const Index = observer(({ store }) => {
     if (code === 200) {
       Taro.showToast({ title: '领取成功', icon: 'none', duration: 2000 });
       setList(list => {
-        let _list = list.map((item, i) => {
-          if (i === idx) {
-            item.isGet = true;
-          }
-          return item
-        })
+        // let _list = list.map((item, i) => {
+        //   if (i === idx) {
+        //     item.isGet = true;
+        //   }
+        //   return item
+        // })
+
+        // 删除
+        let _list = list.filter((item, i) => i !== idx);
         return _list
       })
       setTotalCount(totalCount - 1);
       forceUpdate();
     } else {
       Taro.showToast({ title: msg, icon: 'none', duration: 2000 });
+      if (code === 8071) {   // 求职者已经被别人领取
+        setList(list => {
+          let _list = list.filter((item, i) => i !== idx);
+          return _list
+        })
+      }
     }
   }
 
@@ -583,5 +594,6 @@ const Index = observer(({ store }) => {
     </View>
   )
 })
+
 
 export default inject('store')(Index)

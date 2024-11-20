@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 11:06:46
+ * @LastEditTime: 2024-11-20 11:08:15
  * @Description: 人才库 - 编辑人才信息页面
  */
 
@@ -108,7 +108,7 @@ const Index = observer(({ store }) => {
         console.log("params", params);
         const errorMessages = [
             !params.source && '请选择求职者来源',
-            !(params.agentSerialCode || params.agentSerialCode === '') && '请为求职者分配跟进人',
+            // !(params.agentSerialCode || params.agentSerialCode === '') && '请为求职者分配跟进人',
             (!params.phone || (params.phone && params.phone.length != 11)) && '请输入求职者手机号码',
         ].filter(Boolean);
 
@@ -269,7 +269,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={saveWorker} className={`post_btn ${(formData.source && (formData.agentSerialCode || formData.agentSerialCode === '') && formData.phone) ? 'post_btn_active' : ''}`}>保存</View>
+                <View onClick={saveWorker} className={`post_btn ${(formData.source && formData.phone) ? 'post_btn_active' : ''}`}>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 
