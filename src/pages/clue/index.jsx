@@ -364,9 +364,15 @@ const Index = observer(({ store }) => {
 
       <View className='search_wrapper'>
         <View style={`height: 12rpx;`}></View>
-        <View className='search_content'>
+        <View className='search_content' onClick={() => {
+          if (!isLogin || !companyVerified) {
+            loginOrAuth();
+            return
+          }
+        }}>
           <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
           <Input className='search_input'
+            disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
             placeholder='搜索姓名、手机号、身份证号'
             confirmType='search'
             placeholderStyle='color: #777777;'

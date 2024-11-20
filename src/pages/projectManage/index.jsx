@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 09:49:58
+ * @LastEditTime: 2024-11-20 11:53:33
  * @Description: 
  */
 
@@ -153,11 +153,17 @@ const Index = observer(({ store }) => {
         </View>
       </View>
       <View className='search_wrap'>
-        <View className='search_con' style={`width:${myPermissions.includes('4') ? '608rpx' : '690rpx'}`}>
+        <View className='search_con' style={`width:${myPermissions.includes('4') ? '608rpx' : '690rpx'}`} onClick={()=>{
+          if (!isLogin || !companyVerified) {
+            loginOrAuth();
+            return
+          }
+        }}>
           <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
           <Input className='search_input'
             placeholder='搜索关键字搜索订单'
             confirmType='search'
+            disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
             placeholderStyle='color: #777777;'
             onInput={(e) => { setSearchValue(e.detail.value) }}
             onConfirm={(e) => {

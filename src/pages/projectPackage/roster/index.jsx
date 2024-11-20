@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 14:16:26
+ * @LastEditTime: 2024-11-20 11:45:08
  * @Description: 
  */
 
@@ -118,7 +118,8 @@ const Index = observer(({ store }) => {
             source: sourceObj.source,
             dateRange: dateObj.dateRange,
             startDate: dateObj.startDate,
-            endDate: dateObj.endDate
+            endDate: dateObj.endDate,
+            channel: 1
         }
         const { code, data } = await contractsgetRoster(params);
         console.log("获取名单列表", code, data);
@@ -449,7 +450,7 @@ const Index = observer(({ store }) => {
                                 <View className='roster_item_detail'>
                                     <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.idCardNo) ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
                                     <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }} onClick={(e) => {
-                                        if(!myPermissions.includes('6')){
+                                        if (!myPermissions.includes('6')) {
                                             return
                                         }
                                         showOptionFunc(e, item, index);
