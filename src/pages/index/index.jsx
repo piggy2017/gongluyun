@@ -2,11 +2,11 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 15:04:00
+ * @LastEditTime: 2024-11-21 16:46:09
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
-import Taro, { usePullDownRefresh } from '@tarojs/taro';
+import Taro, { usePullDownRefresh, useDidShow } from '@tarojs/taro';
 import { View, Text, Input, Picker, Image, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import TabBar from '@/components/tabBar';
@@ -75,6 +75,30 @@ const Index = observer(({ store }) => {
       Taro.stopPullDownRefresh();
     }, 1500);
     // Taro.stopPullDownRefresh();
+  })
+
+  useDidShow(() => {
+    if (isLogin) {
+      refreshUserInfo();
+      // getUserRole();
+      setMyPermissions();
+      setSourceList();
+    }
+    if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
+      getTodayData();
+      getPoorData();
+      getdrainageData();
+      getconvertData();
+    }
+    if (role === 'CUSTOMER') {   // 客服
+      getCustomerTodo();
+      getPoorData();
+      getdrainageData();
+    }
+    if (role === 'ON_SITE') {    // 驻场
+      getOnSiteToDo();
+      getOnSiteData();
+    }
   })
 
   useEffect(() => {
