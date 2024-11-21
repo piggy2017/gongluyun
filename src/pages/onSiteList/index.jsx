@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 14:34:17
+ * @LastEditTime: 2024-11-21 16:07:33
  * @Description: 
  */
 
@@ -231,7 +231,7 @@ const Index = observer(({ store }) => {
     setBatchOperations(false);
   }
 
-  const signUpFunc = async (obj, index) => {
+  const signUpFunc = async (e, obj, index) => {
     if (batchOperations) return;
     e.stopPropagation();
     const { uuid } = obj;
@@ -248,7 +248,7 @@ const Index = observer(({ store }) => {
     }
   }
 
-  const changeItemState = (e,obj, index, state) => {    // 单个修改状态
+  const changeItemState = (e, obj, index, state) => {    // 单个修改状态
     e.stopPropagation();
     setCurrentCliskstatus(state);
     Taro.showLoading({ title: '提交中...' });
@@ -449,7 +449,7 @@ const Index = observer(({ store }) => {
                   <View className='roster_item_wrap_right'>
                     {
                       item.seekState === 'SCHEDULED_INTERVIEW' &&
-                      <View className='roster_item_detail_status1' onClick={(e) => signUpFunc(e,item, index)}>签到</View> ||
+                      <View className='roster_item_detail_status1' onClick={(e) => signUpFunc(e, item, index)}>签到</View> ||
                       <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }} onClick={(e) => showOptionFunc(e, item, index)}>
                         <View>{getStatus(item.seekState, 1)}</View>
                         <AtIcon value='chevron-down' size='14' color={getColor(item.seekState)}></AtIcon>
@@ -461,7 +461,7 @@ const Index = observer(({ store }) => {
                     item.showOptions &&
                     <View className='item_status_options'>
                       <View className='item_status_options_wrap'>
-                        <View className='item_status_option_item' onClick={(e) => changeItemState(e,item, index, 'SCHEDULED_INTERVIEW')}>
+                        <View className='item_status_option_item' onClick={(e) => changeItemState(e, item, index, 'SCHEDULED_INTERVIEW')}>
                           <View className='item_status_option_item_left'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon50.webp`}></Image>
                             <View style={{ color: '#08B5FF' }}>已约面</View>
@@ -472,7 +472,7 @@ const Index = observer(({ store }) => {
                           }
                         </View>
 
-                        <View className='item_status_option_item' onClick={(e) => changeItemState(e,item, index, 'ARRIVE_INTERVIEW')}>
+                        <View className='item_status_option_item' onClick={(e) => changeItemState(e, item, index, 'ARRIVE_INTERVIEW')}>
                           <View className='item_status_option_item_left'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon43.webp`}></Image>
                             <View style={{ color: '#1678FF' }}>已签到</View>
@@ -483,7 +483,7 @@ const Index = observer(({ store }) => {
                           }
                         </View>
 
-                        <View className='item_status_option_item' onClick={(e) => changeItemState(e,item, index, 'INTERVIEW_PASSED')}>
+                        <View className='item_status_option_item' onClick={(e) => changeItemState(e, item, index, 'INTERVIEW_PASSED')}>
                           <View className='item_status_option_item_left'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon37.webp`}></Image>
                             <View style={{ color: '#FF6B17' }}>面试通过</View>
@@ -494,7 +494,7 @@ const Index = observer(({ store }) => {
                           }
                         </View>
 
-                        <View className='item_status_option_item' onClick={(e) => changeItemState(e,item, index, 'INTERVIEW_FAILED')}>
+                        <View className='item_status_option_item' onClick={(e) => changeItemState(e, item, index, 'INTERVIEW_FAILED')}>
                           <View className='item_status_option_item_left'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon44.webp`}></Image>
                             <View style={{ color: '#F00000' }}>面试失败</View>

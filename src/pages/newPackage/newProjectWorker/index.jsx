@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 15:44:57
+ * @LastEditTime: 2024-11-21 15:19:36
  * @Description: 
  */
 
@@ -264,7 +264,7 @@ const Index = observer(({ store }) => {
                                         </View>
                                     </View>
                                 </> ||
-                                <View className='show_close_info'>{arrangList[index].name ? arrangList[index].name : '-'}{arrangList[index].phone ? arrangList[index].phone : '-'}</View>
+                                <View className='show_close_info'>{arrangList[index].name ? arrangList[index].name : '-'} {arrangList[index].phone ? arrangList[index].phone : '-'}</View>
                             }
                             {
                                 (index === (arrangList.length - 1)) &&

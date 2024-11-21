@@ -26,6 +26,7 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight },
         businessStore: { sourceList },
+        userStore: { role, userInfo: { userSerialCode } },
     } = store
 
     const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
@@ -108,7 +109,9 @@ const Index = observer(({ store }) => {
                             placeholderStyle='color: #777777;'
                             onInput={(e) => { setSearchValue(e.detail.value) }}
                             onConfirm={(e) => {
-                                getData(e.detail.value);
+                                if(e.detail.value){
+                                    getData(e.detail.value);
+                                }
                             }}
                             value={searchValue}></Input>
                     </View>
@@ -141,59 +144,61 @@ const Index = observer(({ store }) => {
                 </>
             </View>
 
-            <View className='search_section'>
-
-                {
-                    clueList.length > 0 &&
-                    <View className='search_section_title'>
-                        <View>线索池</View>
-                        {
-                            clueList.length >= 3 &&
-                            <View className='search_section_title_right' onClick={() => viewMore(2)}>
-                                <View>查看更多</View>
-                                <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
-                            </View>
-                        }
-                    </View>
-                }
-                {
-                    clueList.length > 0 &&
-                    <View className='clue_wrapper'>
-                        {
-                            clueList.length > 0 && clueList.map((item, index) => {
-                                // return <ClueItem index={index} item={item} onGetClient={getClueFunc}></ClueItem>
-                                return (
-                                    <View key={index} className='clue_item'>
-                                        <View className='clue_item_wrap'>
-                                            <View className='clue_item_wrap_left'>
-                                                <View className='clue_item_title'>
-                                                    <View className='clue_item_title_left'>
-                                                        <View className='clue_item_title_sort'>{index + 1}</View>
-                                                        <View className='clue_item_title_name'>{item.name}</View>
+            {
+                role != 'ON_SITE' &&
+                <View className='search_section'>
+                    {
+                        clueList.length > 0 &&
+                        <View className='search_section_title'>
+                            <View>线索池</View>
+                            {
+                                clueList.length >= 3 &&
+                                <View className='search_section_title_right' onClick={() => viewMore(2)}>
+                                    <View>查看更多</View>
+                                    <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                                </View>
+                            }
+                        </View>
+                    }
+                    {
+                        clueList.length > 0 &&
+                        <View className='clue_wrapper'>
+                            {
+                                clueList.length > 0 && clueList.map((item, index) => {
+                                    // return <ClueItem index={index} item={item} onGetClient={getClueFunc}></ClueItem>
+                                    return (
+                                        <View key={index} className='clue_item'>
+                                            <View className='clue_item_wrap'>
+                                                <View className='clue_item_wrap_left'>
+                                                    <View className='clue_item_title'>
+                                                        <View className='clue_item_title_left'>
+                                                            <View className='clue_item_title_sort'>{index + 1}</View>
+                                                            <View className='clue_item_title_name'>{item.name}</View>
+                                                        </View>
                                                     </View>
+                                                    <View className='clue_item_info'><Text>录入时间：</Text>{item.createTime}</View>
+                                                    {
+                                                        item.source && <View className='clue_item_info'><Text>来源：</Text>{getSourceName(item.source)}</View>
+                                                    }
+                                                    {
+                                                        item.recruitTitle ? <View className='clue_item_info'><Text>报名岗位：</Text>{item.recruitTitle}</View> : ''
+                                                    }
                                                 </View>
-                                                <View className='clue_item_info'><Text>录入时间：</Text>{item.createTime}</View>
                                                 {
-                                                    item.source && <View className='clue_item_info'><Text>来源：</Text>{getSourceName(item.source)}</View>
-                                                }
-                                                {
-                                                    item.recruitTitle ? <View className='clue_item_info'><Text>报名岗位：</Text>{item.recruitTitle}</View> : ''
+                                                    item.isGet &&
+                                                    <View className='clue_item_wrap_right_done'>已领取</View> ||
+                                                    <View className='clue_item_wrap_right' onClick={() => onGetClient(item, index)}>立即领取</View>
                                                 }
                                             </View>
-                                            {
-                                                item.isGet &&
-                                                <View className='clue_item_wrap_right_done'>已领取</View> ||
-                                                <View className='clue_item_wrap_right' onClick={() => onGetClient(item, index)}>立即领取</View>
-                                            }
                                         </View>
-                                    </View>
-                                )
-                            })
-                        }
-                    </View>
-                }
+                                    )
+                                })
+                            }
+                        </View>
+                    }
 
-            </View>
+                </View>
+            }
 
             <View className='search_section'>
 

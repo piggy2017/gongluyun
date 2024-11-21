@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 11:15:08
+ * @LastEditTime: 2024-11-21 16:11:05
  * @Description: 
  */
 
@@ -50,14 +50,6 @@ const Index = observer(({ store }) => {
     const [startAge, setStartAge] = useState(null);
     const [endAge, setEndAge] = useState(null);
 
-    useEffect(()=>{
-        const { searchValue } = route.params;
-        if (searchValue) {
-            setSearchValue(searchValue);
-            getList(1);
-        }
-    },[])
-
     useEffect(() => {
         setTimeout(async () => {
             const _query = await selectorQueryDomInfo('.search_wrapper');
@@ -73,16 +65,24 @@ const Index = observer(({ store }) => {
     }, [filterJobTypes])
 
     useEffect(() => {
-        getList(1);
+        // getList(1);
+        console.log("route", route, requestState);
+        const { searchValue } = route.params;
+        if (searchValue && requestState === 0) {
+            setSearchValue(searchValue);
+            getList(1, searchValue);
+        } else {
+            getList(1);
+        }
     }, [sex, startAge, endAge, filterJobTypes])
 
-    const getList = async (_pageNo) => {
+    const getList = async (_pageNo, _value) => {
         setRequestState(1);
         Taro.showLoading({ title: '加载中...' });
         let params = {
             pageNo: _pageNo,
             pageSize,
-            searchInfo: searchValue,
+            searchInfo: _value ? _value : searchValue,
             sex,
             startAge,
             endAge,

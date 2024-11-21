@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 13:37:35
+ * @LastEditTime: 2024-11-21 15:31:36
  * @Description: 
  */
 
@@ -194,6 +194,8 @@ const Index = observer(({ store }) => {
                         <Image className='input_icon' src={`${Taro.$cdnUrl}/index/index_icon45.webp`}></Image>
                         <Input
                             className='my_input'
+                            type='number'
+                            maxlength={11}
                             placeholder='请输入账号'
                             placeholderStyle='color: #777777;'
                             value={account}

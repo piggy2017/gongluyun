@@ -2,21 +2,17 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-20 17:46:50
+ * @LastEditTime: 2024-11-21 16:03:47
  * @Description: 
  */
-/*
- * @Author: 孙林 1164700321@qq.com
- * @Date: 2024-09-09 09:48:48
- * @LastEditors: 孙林
- * @LastEditTime: 2024-09-12 10:53:33
- * @Description: 
- */
+
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
+import { AtIcon } from 'taro-ui'
+import "taro-ui/dist/style/components/icon.scss";
 import './index.scss'
 import { contractsgetRoster } from '@/util/api'
 import Navbar from '@/components/navbar';
@@ -62,9 +58,11 @@ const Index = observer(({ store }) => {
                 setInfoHeight(_query.height)
             }
         }, 0);
-
-        getList(1);
     }, [])
+
+    useEffect(() => {
+        if (isLogin) { getList(1) };
+    }, [isLogin])
 
     const getList = async (_pageNo) => {    // 获取名单列表
         setRequestState(1);
@@ -110,7 +108,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + infoHeight}px)`;
+        return `calc(100vh - ${infoHeight}px)`;   // statusTitleHeight + contenTitleHeight + 
     }
 
     const callUser = (e, obj) => {
@@ -127,9 +125,17 @@ const Index = observer(({ store }) => {
         }
     }
 
+    const loginOrAuth = debounce(() => {
+        if (isLogin === 0) {
+            Taro.navigateTo({
+                url: '/pages/login/index'
+            })
+        }
+    }, 200)
+
     return (
         <View className='container'>
-            <Navbar fixed back={false} placeholder bgColor='transparent' title='名单反馈'></Navbar>
+            {/* <Navbar fixed placeholder bgColor='transparent' title='名单反馈'></Navbar> */}
 
             <View className='export_infos'>
                 <View className='export_infos_name'>岗位：{title}</View>
@@ -137,65 +143,77 @@ const Index = observer(({ store }) => {
                 <View className='export_infos_time'>时间：{route.params.dateRange ? getDate(route.params.dateRange) : route.params.startDate + '-' + route.params.endDate}</View>
             </View>
 
-            <ScrollView
-                scrollY
-                className='scrollWrapper'
-                style={{ height: getHeight() }}
-                scrollWithAnimation
-                showScrollbar={false}
-                enablePassive
-                refresherEnabled
-                refresherTriggered={isRefresh}
-                onScrollToLower={handleScrollToLower}
-                onRefresherRefresh={handleScrollToUpper}
-                lowerThreshold={300}
-            >
-                {
-                    list.length > 0 && list.map((item, index) => {
-                        return (
-                            <View className='roster_item' key={index} style={`padding:30rpx 40rpx 30rpx 68rpx;`}>
-                                <View className='roster_item_title'>
-                                    <View className='item_title_index'>{index + 1}</View>
-                                    <View className='item_title_left'>
-                                        <View className='item_title_name'>{item.name}</View>
-                                        <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
-                                        <View className='item_title_phone' onClick={(e) => callUser(e, item)}>{item.phone}</View>
+            {
+                isLogin &&
+                <ScrollView
+                    scrollY
+                    className='scrollWrapper'
+                    style={{ height: getHeight() }}
+                    scrollWithAnimation
+                    showScrollbar={false}
+                    enablePassive
+                    refresherEnabled
+                    refresherTriggered={isRefresh}
+                    onScrollToLower={handleScrollToLower}
+                    onRefresherRefresh={handleScrollToUpper}
+                    lowerThreshold={300}
+                >
+                    {
+                        list.length > 0 && list.map((item, index) => {
+                            return (
+                                <View className='roster_item' key={index} style={`padding:30rpx 40rpx 30rpx 68rpx;`}>
+                                    <View className='roster_item_title'>
+                                        <View className='item_title_index'>{index + 1}</View>
+                                        <View className='item_title_left'>
+                                            <View className='item_title_name'>{item.name}</View>
+                                            <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                                            <View className='item_title_phone' onClick={(e) => callUser(e, item)}>{item.phone}</View>
+                                        </View>
                                     </View>
-                                </View>
-                                <View className='roster_item_detail'>
-                                    <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.idCardNo) ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
-                                    <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }}>
-                                        <View>{getStatus(item.seekState)}</View>
-                                        {/* <AtIcon value='chevron-down' size='14' color={getColor(item.status)}></AtIcon> */}
+                                    <View className='roster_item_detail'>
+                                        <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.idCardNo) ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
+                                        <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }}>
+                                            <View>{getStatus(item.seekState)}</View>
+                                            {/* <AtIcon value='chevron-down' size='14' color={getColor(item.status)}></AtIcon> */}
+                                        </View>
                                     </View>
+                                    <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
                                 </View>
-                                <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
-                            </View>
-                        )
-                    })
-                }
+                            )
+                        })
+                    }
 
-                {
-                    list.length >= 7 &&
-                    <View className='loading_text'>
-                        {
-                            goonLoad ?
-                                <>
-                                    <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
-                                    加载中
-                                </> :
-                                "数据已经到底了"
-                        }
-                    </View>
-                }
-                {
-                    list.length === 0 && requestState === 3 &&
-                    <View className='no_data'>
-                        <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
-                        <View>暂无相关数据~</View>
-                    </View>
-                }
-            </ScrollView>
+                    {
+                        list.length >= 7 &&
+                        <View className='loading_text'>
+                            {
+                                goonLoad ?
+                                    <>
+                                        <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
+                                        加载中
+                                    </> :
+                                    "数据已经到底了"
+                            }
+                        </View>
+                    }
+                    {
+                        list.length === 0 && requestState === 3 &&
+                        <View className='no_data'>
+                            <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
+                            <View>暂无相关数据~</View>
+                        </View>
+                    }
+                </ScrollView>
+            }
+
+            {
+                !isLogin &&
+                <View className='no_login'>
+                    <Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image>
+                    <View className='no_login_tip'>登录后可查看反馈名单</View>
+                    <View className='login_btn' onClick={() => loginOrAuth()}>立即登录</View>
+                </View>
+            }
         </View>
     )
 })

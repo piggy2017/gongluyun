@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-10 15:58:14
+ * @LastEditTime: 2024-11-21 15:24:19
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -34,12 +34,16 @@ const Navbar = observer(({ store, fixed = false, back = true, title = '', bgColo
                     <View className='navbar_back'>
                         {
                             back && <Image src={`${Taro.$cdnBackIcon}`} onClick={() => {
-                                if(customBack){
-                                    customBack();
-                                }else{
-                                    Taro.navigateBack({ delta: 1 })
-                                }
-                                
+                                // if(customBack){
+                                //     customBack();
+                                // }else{
+                                //     Taro.navigateBack({ delta: 1 })
+                                // }
+
+                                let historyPages = Taro.getCurrentPages();   //历史页面 路由跳转数
+                                if (historyPages.length === 1) Taro.switchTab({ url: `/pages/index/index` });
+                                else Taro.navigateBack({ delta: 1 });//多页面跳转
+
                             }}></Image>
                         }
                     </View>
