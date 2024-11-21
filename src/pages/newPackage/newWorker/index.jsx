@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-20 15:30:35
+ * @LastEditTime: 2024-11-21 11:41:08
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { bottomSafeAreaHeight },
         businessStore: { workerSetCustomerInfo, addWorkerJobInfo, setAddWorkerJobInfo, editClientInfos, setEditClientInfos, sourceGroup },
-        userStore: { userInfo: { userSerialCode } },
+        userStore: { role, userInfo: { userSerialCode } },
     } = store
     const [formData, setFormData] = useState({});
 
@@ -116,6 +116,7 @@ const Index = observer(({ store }) => {
     const saveWorker = async () => {
         console.log("isUpdateisUpdateisUpdate", isUpdate);
 
+
         if (formData.agentSerialCode === '') {   // 公海线索 不能设置面试时间
             formData.interviewDate = null;
         }
@@ -137,6 +138,15 @@ const Index = observer(({ store }) => {
                 title: errorMessages[0],
                 icon: 'none',
             })
+        }
+
+        if (!isUpdate && formData.agentSerialCode === userSerialCode && role === 'ON_SITE') { // 驻场角色 录入求职者页面，当客户来源选择了我后，报名岗位+面试日期必填
+            if (!formData.recruitSerialCode) {
+                return Taro.showToast({ title: '请选择报名岗位', icon: 'none', })
+            }
+            if (!formData.interviewDate) {
+                return Taro.showToast({ title: '请选择面试日期', icon: 'none', })
+            }
         }
 
         const { code, data, msg } = await (isUpdate ? clueUpdate(params) : clueInsert(params));

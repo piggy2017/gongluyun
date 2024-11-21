@@ -70,8 +70,13 @@
             .filter_wrap_item {
                 @include flex-center;
 
+                // view {
+                //     margin-right: 4rpx;
+                // }
                 view {
                     margin-right: 4rpx;
+                    max-width: 210rpx;
+                    @include ellipsis;
                 }
             }
         }

@@ -16,15 +16,26 @@
         .my_header_content {
             height: var(--navContentHeight);
             @include flex-center(flex-start);
+            .navbar_back{
+                width: 60rpx;
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: center;
+                justify-content: flex-end;
+                image{
+                    width: 48rpx;
+                    height: 48rpx;
+                }
+            }
 
             .search_content {
-                width: 488rpx;
+                width: 448rpx;
                 height: 68rpx;
                 flex-shrink: 0;
                 background-color: #FFF;
                 @include flex-center(flex-start);
                 border-radius: 34rpx;
-                margin: 0 auto 0 32rpx;
+                margin: 0 auto 0 14rpx;
 
                 image {
                     width: 36rpx;

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 14:14:15
+ * @LastEditTime: 2024-11-21 11:46:12
  * @Description: 
  */
 
@@ -158,9 +158,16 @@ const Index = observer(({ store }) => {
       <View className='my_header'>
         <View className='my_header_hr' style={`--statusBarHeight:${statusTitleHeight}px;`}></View>
         <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
+          <View className='navbar_back'>
+            <Image src={`${Taro.$cdnBackIcon}`} onClick={() => {
+              Taro.navigateBack({ delta: 1 })
+            }}></Image>
+
+          </View>
           <View className='search_content'>
             <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
             <Input className='search_input'
+              focus={true}
               placeholder='搜索姓名、手机号、身份证号'
               confirmType='search'
               placeholderStyle='color: #777777;'
