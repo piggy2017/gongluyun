@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 09:36:59
+ * @LastEditTime: 2024-11-21 10:02:34
  * @Description: 
  */
 
@@ -63,19 +63,25 @@ const Index = observer(({ store }) => {
         console.log("title", title, "recruitSerialCode", recruitSerialCode);
         // setFormData({ ...formData, title, interviewDate });
         if (isLogin) {
+            console.log("请求参数:phone", decryptData(userInfo.phone), "recruitSerialCode", recruitSerialCode);
             getUserInfoByPhone({ phone: decryptData(userInfo.phone), recruitSerialCode }).then(res => {
                 console.log("getUserInfoByPhone_res", res);
                 const { code, data, data: { phone, name, sex, idCardNo } } = res;
                 if (code === 200 && data) {
+                    console.log("存在用户信息");
                     setFormData({
                         ...formData,
-                        phone:decryptData(userInfo.phone),
+                        phone: decryptData(userInfo.phone),
                         name,
                         sex,
                         idCardNo,
                         title: title,
                         interviewDate
                     });
+                } else {
+                    console.log("不存在用户信息");
+                    setFormData({ ...formData, title: title, interviewDate });
+                    Taro.showToast({ title: '您未报名该岗位,无法完成签到.', icon: 'none' });
                 }
             })
         } else {
