@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 15:39:24
+ * @LastEditTime: 2024-11-21 17:20:28
  * @Description: 
  */
 
@@ -124,7 +124,7 @@ const Index = observer(({ store }) => {
             <Navbar fixed placeholder bgColor='transparent' title='选择供应商'></Navbar>
             <View className='search_wrapper'>
                 <View style={`height: 18rpx;`}></View>
-                <View className='search_content'>
+                {/* <View className='search_content'>
                     <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
                     <Input className='search_input'
                         placeholder='输入关键词搜索'
@@ -135,7 +135,7 @@ const Index = observer(({ store }) => {
                             getList(1);
                         }}
                         value={searchValue}></Input>
-                </View>
+                </View> */}
             </View>
 
             <ScrollView
