@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 09:46:58
+ * @LastEditTime: 2024-11-21 17:27:07
  * @Description: 
  */
 
@@ -109,9 +109,7 @@ const Index = observer(({ store }) => {
                             placeholderStyle='color: #777777;'
                             onInput={(e) => { setSearchValue(e.detail.value) }}
                             onConfirm={(e) => {
-                                if(e.detail.value){
-                                    getData(e.detail.value);
-                                }
+                                getData(e.detail.value);
                             }}
                             value={searchValue}></Input>
                     </View>
