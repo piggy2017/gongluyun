@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 10:51:16
+ * @LastEditTime: 2024-11-21 09:47:45
  * @Description: 
  */
 
@@ -39,6 +39,9 @@ const Index = observer(({ store }) => {
 
 
     const handlePhotoClick = async (type) => {
+        if (images.length >= 5) {
+            return Taro.showToast({ title: '最多上传5张图片', icon: 'none' })
+        }
         let sourceType = {
             1: 'album',
             2: 'camera'
@@ -138,8 +141,8 @@ const Index = observer(({ store }) => {
     }
 
     const handleSubmit = async () => {
-        if (!feedbackValue) {
-            return Taro.showToast({ title: '请填写反馈内容', icon: 'none' })
+        if (!feedbackValue && images.length === 0) {
+            return Taro.showToast({ title: '请填写反馈内容或上传反馈图片', icon: 'none' })
         }
         let params = {
             describes: feedbackValue,
@@ -178,9 +181,14 @@ const Index = observer(({ store }) => {
 
             <View className='compony_info'>
                 <View className='compony_imgs'>
-                    <View className='compony_img_title'>企业图片 <Text>({images.length}/5）</Text></View>
+                    <View className='compony_img_title'>上传图片 <Text>({images.length}/5）</Text></View>
                     <View className='compony_imgs_box'>
-                        <View className='add_img' onClick={() => setOpenAction(true)}>
+                        <View className='add_img' onClick={() => {
+                            if (images.length >= 5) {
+                                return Taro.showToast({ title: '最多上传5张图片', icon: 'none' })
+                            }
+                            setOpenAction(true);
+                        }}>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon14.webp`}></Image>
                         </View>
                         {
@@ -197,7 +205,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View className={`post_btn ${feedbackValue ? 'post_btn_active' : ''}`} onClick={handleSubmit}>提交</View>
+                <View className={`post_btn ${(feedbackValue || images.length > 0) ? 'post_btn_active' : ''}`} onClick={handleSubmit}>提交</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 

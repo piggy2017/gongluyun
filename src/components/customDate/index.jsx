@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-05 15:39:11
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-16 11:51:56
+ * @LastEditTime: 2024-11-21 09:52:34
  * @Description: 自定义选择日期或者日期范围
  */
 import React, { useState, useEffect, useReducer } from 'react';
@@ -53,6 +53,9 @@ const CustomDate = observer(({ showPicker, onClose, onChange, store }) => {
     const postData = () => {   // 点击确定按钮
         if (!filterTime && (!startDate || !endDate)) {
             return Taro.showToast({ title: `请选择${startDate ? '结束' : '开始'}时间`, icon: "none", duration: 2000 });
+        }
+        if(startDate && endDate && startDate > endDate) {
+            return Taro.showToast({ title: '开始时间不能大于结束时间', icon: "none", duration: 2000 });
         }
         let params = {
             dateRange,

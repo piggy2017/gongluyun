@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-20 15:31:32
+ * @LastEditTime: 2024-11-21 09:36:59
  * @Description: 
  */
 
@@ -26,9 +26,27 @@ const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const [formData, setFormData] = useState({});
 
+    const getQueryString = (url) => {
+        url = url.replace(/\s*/g, "");
+
+        let itemArr = [];
+        let itemObj = {};
+
+        url
+            .substring(url.lastIndexOf("?") + 1, url.length)
+            .split("&")
+            .map((item) => {
+                itemArr.push(item.split("="));
+            });
+        itemArr.map((item) => {
+            itemObj[item[0]] = item[1];
+        });
+        return itemObj;
+    }
 
     useEffect(() => {
-        console.log("userInfo", userInfo);
+        console.log("routerrouter", router);
+        console.log("userInfo——isLogin", userInfo, isLogin);
         const date = new Date();
 
         const year = date.getFullYear();       // 获取当前年份
@@ -36,7 +54,13 @@ const Index = observer(({ store }) => {
         const day = date.getDate();            // 获取当前日期
         let interviewDate = `${year}年${month}月${day}日`
 
-        const { title, recruitSerialCode } = router.params;
+        const { q } = router.params;
+        console.log("q", q);
+        let _q = decodeURIComponent(q);
+        console.log("q", _q);
+        const { title, recruitSerialCode } = getQueryString(_q);
+
+        console.log("title", title, "recruitSerialCode", recruitSerialCode);
         // setFormData({ ...formData, title, interviewDate });
         if (isLogin) {
             getUserInfoByPhone({ phone: decryptData(userInfo.phone), recruitSerialCode }).then(res => {
@@ -45,24 +69,17 @@ const Index = observer(({ store }) => {
                 if (code === 200 && data) {
                     setFormData({
                         ...formData,
-                        phone,
+                        phone:decryptData(userInfo.phone),
                         name,
                         sex,
                         idCardNo,
-                        title, interviewDate
+                        title: title,
+                        interviewDate
                     });
                 }
             })
-            // setFormData({
-            //     ...formData,
-            //     phone: decryptData(userInfo.phone),
-            //     name: userInfo.nickName ? userInfo.nickName : '',
-            //     sex: userInfo.sex,
-            //     idCardNo: userInfo.idCardNo ? userInfo.idCardNo : '',
-            //     title, interviewDate
-            // });
         } else {
-            setFormData({ ...formData, title, interviewDate });
+            setFormData({ ...formData, title: title, interviewDate });
         }
     }, [userInfo, isLogin])
 
@@ -96,7 +113,7 @@ const Index = observer(({ store }) => {
 
             <View className='employee_group'>
                 {
-                    isLogin &&
+                    (isLogin === 1) &&
                     <>
                         <View className='employee_item'>
                             <View className='employee_item_label'>手机号码</View>
