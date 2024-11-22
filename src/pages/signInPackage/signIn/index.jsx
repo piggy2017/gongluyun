@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 10:43:10
+ * @LastEditTime: 2024-11-22 11:37:34
  * @Description: 
  */
 
@@ -92,13 +92,19 @@ const Index = observer(({ store }) => {
     }, [userInfo, isLogin])
 
     const signFunc = async () => {
+        const { q } = router.params;
+        console.log("q", q);
+        let _q = decodeURIComponent(q);
+        console.log("q", _q);
+        const { title, recruitSerialCode } = getQueryString(_q);
+
         Taro.showLoading({ title: '签到中...' });
         if (formData.idCardNo && formData.idCardNo.length != 18) {
             return Taro.showToast({ title: '请输入18位身份证号码', icon: 'none' });
         }
         let params = {
             ...formData,
-            recruitSerialCode: router.params.recruitSerialCode
+            recruitSerialCode
         }
         console.log("signFunc_params", params);
         Taro.hideLoading();
@@ -108,7 +114,7 @@ const Index = observer(({ store }) => {
         if (code === 200) {
             Taro.showToast({ title: '签到成功', icon: 'none' });
             Taro.navigateTo({
-                url: `/pages/signInPackage/signSuccess/index?title=${router.params.title}&interviewDate=${formData.interviewDate}`
+                url: `/pages/signInPackage/signSuccess/index?title=${title}&interviewDate=${formData.interviewDate}`
             })
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
