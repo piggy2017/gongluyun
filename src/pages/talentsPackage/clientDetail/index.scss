@@ -65,8 +65,8 @@
             }
 
             .client_status_item_con {
-                width: 420rpx;
-                @include ellipsis;
+                width: 450rpx;
+                // @include ellipsis;
                 text-align: right;
             }
         }

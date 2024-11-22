@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-20 16:02:20
+ * @LastEditTime: 2024-11-22 15:52:59
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -172,13 +172,13 @@ const Index = observer(({ store }) => {
           </>
         }
 
-        <View className='section_item'>
+        {/* <View className='section_item'>
           <View className='section_item_left'>
             <Image src={`${Taro.$cdnUrl}/mine/mine_icon3.webp`}></Image>
             <Text>我的套餐</Text>
           </View>
           <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
-        </View>
+        </View> */}
       </View>
 
       <View className='section_group'>

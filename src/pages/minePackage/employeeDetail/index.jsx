@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 15:53:04
+ * @LastEditTime: 2024-11-22 15:57:20
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const {
         baseStore: { bottomSafeAreaHeight },
-        userStore: { companyInfo, getRoleAndPermissionFunc },
+        userStore: { role, companyInfo, getRoleAndPermissionFunc },
     } = store
     const [currentInfo, setCurrentInfo] = useState({});
     const [showEditModel, setShowEditModel] = useState(false);   // 修改密码的弹窗
@@ -64,6 +64,9 @@ const Index = observer(({ store }) => {
     }
 
     const editOpen = async (_type) => {
+        if (currentInfo.roleId === '1') {
+            return Taro.showToast({ title: '管理员账号不能禁用', icon: 'none', })
+        }
         let params = {
             companySerialCode: companyInfo.companySerialCode,
             userSerialCode: currentInfo.userSerialCode,

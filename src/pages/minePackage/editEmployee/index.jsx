@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-20 15:23:08
+ * @LastEditTime: 2024-11-22 15:59:13
  * @Description: 
  */
 
@@ -25,7 +25,7 @@ const Index = observer(({ store }) => {
     const router = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
-        userStore: { companyInfo, roles, permissions },
+        userStore: { companyInfo, role, permissions },
         businessStore: { employeeInfo, setEmployeeInfo }
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
@@ -167,14 +167,24 @@ const Index = observer(({ store }) => {
             <View className='employee_group_2'>
                 <View className='employee_item'>
                     <View className='employee_item_label'>角色</View>
-                    <View className='employee_item_right' onClick={() => { setShowRoleModel(true) }}>
+                    <View className='employee_item_right' onClick={() => {
+                        if (formData.roleId === '1') {
+                            return Taro.showToast({ title: '管理员账号不能变更角色', icon: 'none', });
+                        }
+                        setShowRoleModel(true)
+                    }}>
                         <View className={`${formData.roleId ? 'option_item_active' : 'option_item_text'}`}>{formData.roleId ? formData.roleName : '请选择'}</View>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
                 <View className='employee_item'>
                     <View className='employee_item_label'>权限</View>
-                    <View className='employee_item_right' onClick={() => { setShowLimitModel(true) }}>
+                    <View className='employee_item_right' onClick={() => { 
+                        if (formData.roleId === '1') {
+                            return Taro.showToast({ title: '管理员账号不能变更权限', icon: 'none', });
+                        }
+                        setShowLimitModel(true)
+                     }}>
                         <View className={`${(formData.authority && formData.authority.length > 0) ? 'option_item_active' : 'option_item_text'}`}>{(formData.authority && formData.authority.length > 0) ? formData.authority.join('·') : '请选择'}</View>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>

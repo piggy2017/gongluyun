@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 11:37:34
+ * @LastEditTime: 2024-11-22 14:37:38
  * @Description: 
  */
 
@@ -108,7 +108,7 @@ const Index = observer(({ store }) => {
         }
         console.log("signFunc_params", params);
         Taro.hideLoading();
-        const { code, msg } = await qrSign({ ...formData });
+        const { code, msg } = await qrSign({ ...params });
         Taro.hideLoading();
         console.log("signFunc_code", code, msg);
         if (code === 200) {
