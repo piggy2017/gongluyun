@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 11:46:12
+ * @LastEditTime: 2024-11-22 09:55:56
  * @Description: 
  */
 
@@ -116,7 +116,7 @@ const Index = observer(({ store }) => {
     })
   }
 
-  const signUpFunc = async (obj, index) => {   // 签到
+  const signUpFunc = async (e, obj, index) => {   // 签到
     e.stopPropagation();
     const { uuid } = obj;
     Taro.showLoading({ title: '签到中...' });

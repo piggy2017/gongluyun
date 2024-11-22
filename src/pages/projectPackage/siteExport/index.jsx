@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 16:04:32
+ * @LastEditTime: 2024-11-22 10:10:10
  * @Description: 
  */
 
@@ -142,7 +142,7 @@ const Index = observer(({ store }) => {
             </View>
 
             {
-                isLogin &&
+                isLogin === 1 &&
                 <ScrollView
                     scrollY
                     className='scrollWrapper'
@@ -178,15 +178,14 @@ const Index = observer(({ store }) => {
                                         </View>
                                         <View className='roster_item_wrap_right'>
                                             {
-                                                item.seekState === 'SCHEDULED_INTERVIEW' &&
-                                                <View className='roster_item_detail_status1'>签到</View> ||
+                                                // item.seekState === 'SCHEDULED_INTERVIEW' &&
+                                                // <View className='roster_item_detail_status1'></View> ||
                                                 <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }}>
                                                     <View>{getStatus(item.seekState, 1)}</View>
                                                     {/* <AtIcon value='chevron-down' size='14' color={getColor(item.seekState)}></AtIcon> */}
                                                 </View>
                                             }
                                         </View>
-
                                     </View>
                                 </View>
                             )

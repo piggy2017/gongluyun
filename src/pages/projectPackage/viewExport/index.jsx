@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 16:03:47
+ * @LastEditTime: 2024-11-22 09:57:09
  * @Description: 
  */
 
@@ -144,7 +144,7 @@ const Index = observer(({ store }) => {
             </View>
 
             {
-                isLogin &&
+                isLogin === 1 &&
                 <ScrollView
                     scrollY
                     className='scrollWrapper'
