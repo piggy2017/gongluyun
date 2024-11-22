@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 11:41:08
+ * @LastEditTime: 2024-11-22 16:39:16
  * @Description: 
  */
 
@@ -147,6 +147,10 @@ const Index = observer(({ store }) => {
             if (!formData.interviewDate) {
                 return Taro.showToast({ title: '请选择面试日期', icon: 'none', })
             }
+        }
+
+        if(formData.interviewDate && !formData.recruitSerialCode && formData.agentSerialCode === userSerialCode){
+            return Taro.showToast({ title: '请选择报名岗位', icon: 'none', })
         }
 
         const { code, data, msg } = await (isUpdate ? clueUpdate(params) : clueInsert(params));
