@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 10:06:24
+ * @LastEditTime: 2024-11-22 10:43:10
  * @Description: 
  */
 
@@ -52,7 +52,8 @@ const Index = observer(({ store }) => {
         const year = date.getFullYear();       // 获取当前年份
         const month = date.getMonth() + 1;     // 获取当前月份（从 0 开始，需要 +1）
         const day = date.getDate();            // 获取当前日期
-        let interviewDate = `${year}年${month}月${day}日`
+        
+        let interviewDate = `${year}-${month}-${day}`
 
         const { q } = router.params;
         console.log("q", q);
@@ -93,7 +94,7 @@ const Index = observer(({ store }) => {
     const signFunc = async () => {
         Taro.showLoading({ title: '签到中...' });
         if (formData.idCardNo && formData.idCardNo.length != 18) {
-            Taro.showToast({ title: '请输入18位身份证号码', icon: 'none' });
+            return Taro.showToast({ title: '请输入18位身份证号码', icon: 'none' });
         }
         let params = {
             ...formData,
