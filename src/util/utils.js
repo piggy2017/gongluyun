@@ -340,6 +340,8 @@ export const getStatus = (status, type) => {
     switch (status) {
         case 'PENDING':
             return '待处理';
+        case 'UNSUITABLE':
+            return '不合适';
         case 'SCHEDULED_INTERVIEW':
             return '已约面';
         case 'NOT_INTERVIEW':
@@ -361,6 +363,8 @@ export const getColor = (status) => {
     switch (status) {
         case 'PENDING':
             return '#1678FF';
+        case 'UNSUITABLE':
+            return '#F00000';
         case 'SCHEDULED_INTERVIEW':
             return '#32C2FF';
         case 'NOT_INTERVIEW':

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 13:59:12
+ * @LastEditTime: 2024-11-22 17:11:35
  * @Description: 
  */
 
@@ -12,6 +12,7 @@ import { View, Image, Text, Input, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import { decryptData, encryptData } from '@/util/crypto'
+import { throttle } from '@/util/utils'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
@@ -91,7 +92,7 @@ const Index = observer(({ store }) => {
         return regex.test(password);
     }
 
-    const submitFunc = async () => {
+    const submitFunc = throttle(async () => {
         let params = {
             ...formData,
             companySerialCode: companyInfo.companySerialCode
@@ -128,6 +129,7 @@ const Index = observer(({ store }) => {
             params.permissionNames = '';
         }
         const { code, data, msg } = await companyAddAccount(params);
+        Taro.hideLoading();
         console.log("companyAddAccount", code, data);
         if (code === 200) {
             Taro.showToast({ title: '提交成功', icon: 'none' });
@@ -137,7 +139,7 @@ const Index = observer(({ store }) => {
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
-    }
+    }, 200)
 
     return (
         <View className='container'>

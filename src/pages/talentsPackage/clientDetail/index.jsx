@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 14:16:17
+ * @LastEditTime: 2024-11-25 10:37:40
  * @Description: 
  */
 
@@ -21,7 +21,7 @@ import DatePicker from '@/components/datePicker'
 import UpdateStatus from '@/components/updateStatus';
 import './index.scss'
 
-import { cluegetUserInfo, updateInterviewer, clueStateFlow, cluemyClients, contractsgetRoster } from '@/util/api'
+import { cluegetUserInfo, updateInterviewer, clueStateFlow, cluemyClients, contractsgetRoster, unsuitable } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
@@ -205,6 +205,17 @@ const Index = observer(({ store }) => {
         })
     }
 
+    const unsuitableFunc = async () => {
+        Taro.showLoading({ title: '提交中...', mask: true });
+        const { code, data, msg } = await unsuitable({ uuid: clientInfos.uuid });
+        Taro.hideLoading();
+        if (code === 200) {
+            Taro.showToast({ title: '提交成功', icon: 'none' });
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
+        }
+    }
+
     const goInterview = () => {
         Taro.navigateTo({
             url: `/pages/talentsPackage/interview/index?uuid=${clientInfos.uuid}&phone=${clientInfos.phone}`
@@ -220,7 +231,7 @@ const Index = observer(({ store }) => {
                 <View className='client_status_title'>
                     <View>当前状态</View>
                     {
-                        (clientInfos && clientInfos.seekState === 'PENDING') &&
+                        (clientInfos && (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'UNSUITABLE')) &&
                         <View className='client_status_title_right'>
                             <View>待安排面试</View>
                             {/* <AtIcon value='chevron-right' size='16' color='#1678FF'></AtIcon> */}
@@ -347,8 +358,12 @@ const Index = observer(({ store }) => {
                 <View className='bottom_wrapper_con'>
                     <View className='' style={`height:16rpx`}></View>
                     {
-                        (clientInfos && clientInfos.seekState === 'PENDING') &&
-                        <View className='create_interview_btn' onClick={() => goInterview()}>安排面试</View> ||
+                        (clientInfos && (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'UNSUITABLE')) &&
+                        <View className='create_interview_pedding'>
+                            <View className='inappropriate' onClick={unsuitableFunc}>不合适</View>
+                            <View className='create_interview_btn' onClick={() => goInterview()}>安排面试</View>
+                        </View>
+                        ||
                         <View className='edit_wrap'>
                             <View className='edit_wrap_btn' onClick={() => setShowbottomOptions(!showbottomOptions)}>修改状态</View>
                             <View className='count_wrap'>

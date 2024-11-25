@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 16:39:16
+ * @LastEditTime: 2024-11-22 17:07:51
  * @Description: 
  */
 
@@ -11,6 +11,7 @@ import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, Textarea, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { reverseGeocoder } from '@/util/getLocation';
+import { throttle } from '@/util/utils'
 
 import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
@@ -113,7 +114,7 @@ const Index = observer(({ store }) => {
         setFormData({ ...formData, source: e.source });
     }
 
-    const saveWorker = async () => {
+    const saveWorker = throttle(async () => {
         console.log("isUpdateisUpdateisUpdate", isUpdate);
 
 
@@ -149,11 +150,15 @@ const Index = observer(({ store }) => {
             }
         }
 
-        if(formData.interviewDate && !formData.recruitSerialCode && formData.agentSerialCode === userSerialCode){
+        if (formData.interviewDate && !formData.recruitSerialCode && formData.agentSerialCode === userSerialCode) {
             return Taro.showToast({ title: '请选择报名岗位', icon: 'none', })
+        }
+        if (!isUpdate) {
+            Taro.showLoading({ title: '提交中...', mask: true });
         }
 
         const { code, data, msg } = await (isUpdate ? clueUpdate(params) : clueInsert(params));
+        Taro.hideLoading();
         if (code === 200) {
             Taro.showToast({ title: `${isUpdate ? '修改成功' : '录入成功'}`, icon: 'none', });
             setTimeout(() => {
@@ -164,7 +169,7 @@ const Index = observer(({ store }) => {
         } else {
             Taro.showToast({ title: msg, icon: 'none', });
         }
-    }
+    }, 200)
 
     return (
         <View className='container'>

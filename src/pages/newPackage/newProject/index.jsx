@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-20 15:02:53
+ * @LastEditTime: 2024-11-22 17:08:48
  * @Description: 
  */
 
@@ -10,9 +10,8 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro from '@tarojs/taro';
 import { View, Image, Text, Input, Textarea, Block, Picker } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, throttle } from '@/util/utils'
 import { reverseGeocoder } from '@/util/getLocation';
-
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -164,7 +163,7 @@ const Index = observer(({ store }) => {
         setFormData({ ...formData, interviewDate: e })
     }
 
-    const postProject = async () => {
+    const postProject = throttle(async () => {
         let params = {
             ...formData,
             // addressDetail: formData.areaName + formData.addressDetail,
@@ -215,7 +214,7 @@ const Index = observer(({ store }) => {
             Taro.showToast({ title: msg, icon: 'none' });
         }
         Taro.hideLoading();
-    }
+    }, 200)
 
     const chooseTypeFunc = (name, salaryType) => {
         setChooseType(false);

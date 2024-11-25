@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-18 11:36:31
+ * @LastEditTime: 2024-11-22 17:12:32
  * @Description: 
  */
 
@@ -10,10 +10,8 @@ import React, { useState, useEffect } from 'react'
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
-import { AtIcon, AtFloatLayout } from 'taro-ui'
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
+import { selectorQueryDomInfo, debounce, throttle } from '@/util/utils'
+
 import Navbar from '@/components/navbar';
 import WorkerInfo from '@/components/workerInfo';
 import DatePicker from '@/components/datePicker'
@@ -80,7 +78,7 @@ const Index = observer(({ store }) => {
         setFormData({ ...formData, interviewDate: e });
     }
 
-    const submitFunc = async () => {
+    const submitFunc = throttle(async () => {
         const { uuid } = route.params;
         let params = {
             ...formData,
@@ -113,7 +111,7 @@ const Index = observer(({ store }) => {
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
-    }
+    }, 200)
 
     return (
         <View className='container'>

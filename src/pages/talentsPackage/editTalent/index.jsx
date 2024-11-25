@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-20 15:32:55
+ * @LastEditTime: 2024-11-22 17:09:37
  * @Description: 人才库 - 编辑人才信息页面
  */
 
@@ -11,6 +11,7 @@ import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, Textarea, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { reverseGeocoder } from '@/util/getLocation';
+import { throttle } from '@/util/utils'
 
 import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
@@ -97,8 +98,8 @@ const Index = observer(({ store }) => {
         setFormData({ ...formData, source: e.source });
     }
 
-    const saveWorker = async () => {
-        console.log("isUpdateisUpdateisUpdate",isUpdate);
+    const saveWorker = throttle(async () => {
+        console.log("isUpdateisUpdateisUpdate", isUpdate);
 
         let params = {
             ...formData,
@@ -129,7 +130,7 @@ const Index = observer(({ store }) => {
         } else {
             Taro.showToast({ title: msg, icon: 'none', });
         }
-    }
+    }, 200)
 
     return (
         <View className='container'>

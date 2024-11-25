@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:52
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 15:23:20
+ * @LastEditTime: 2024-11-25 10:49:53
  * @Description: 
  */
 @import '@/app.scss';
@@ -194,6 +194,19 @@
                         font-style: normal;
                         font-weight: 500;
                         margin-right: 10rpx;
+                    }
+
+                    .clue_item_title_source {
+                        padding: 4rpx 6rpx;
+                        border: 1rpx solid #1678FF;
+                        border-radius: 8rpx;
+                        color: #1678FF;
+                        font-family: "PingFang SC";
+                        font-size: 22rpx;
+                        font-style: normal;
+                        font-weight: 500;
+                        line-height: normal;
+                        margin-left: 4rpx;
                     }
 
                     .item_title_phone {

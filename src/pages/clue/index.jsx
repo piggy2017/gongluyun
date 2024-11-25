@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 16:54:04
+ * @LastEditTime: 2024-11-25 10:48:11
  * @Description: 
  */
 
@@ -471,6 +471,13 @@ const Index = observer(({ store }) => {
                               <View className='clue_item_title_name'>
                                 <View>{item.name}</View>
                                 <View className='clue_item_title_source'>{item.sourceDesc.split('-')[0]}</View>
+                                {
+                                  item.signUpChannel === 'BROWSE_REC' &&
+                                  <>
+                                    <View>-</View>
+                                    <View className='clue_item_title_source'>浏览招聘</View>
+                                  </>
+                                }
                               </View>
                             </View>
                           </View>
@@ -525,6 +532,13 @@ const Index = observer(({ store }) => {
                           <View className='item_title_index'>{index + 1}</View>
                           <View className='item_title_left'>
                             <View className='item_title_name'>{item.name}</View>
+                            {
+                              item.signUpChannel === 'BROWSE_REC' &&
+                              <>
+                                <View>-</View>
+                                <View className='clue_item_title_source'>浏览招聘</View>
+                              </>
+                            }
                             <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
                             <View className='item_title_phone' onClick={(e) => callFunc(e, item)}>{item.phone}</View>
                           </View>

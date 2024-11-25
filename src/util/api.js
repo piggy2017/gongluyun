@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-20 10:37:01
+ * @LastEditTime: 2024-11-25 10:29:33
  * @Description: 
  */
 
@@ -199,7 +199,7 @@ export const cluegetUserInfo = params => {       //  获取客户信息
 export const clueStateFlow = params => {       //  求职状态流转
     return http(API_BASE_URL + '/clue/stateFlow', params, "POST", { "Content-Type": "application/json" });
 };
-export const clueUpdate = params => {       //  编辑求职者信息
+export const clueUpdate = params => {            //  编辑求职者信息
     return http(API_BASE_URL + '/clue/update', params, "POST", { "Content-Type": "application/json" });
 };
 export const getUserInfoByPhone = params => {       //  通过手机号获取客户信息
@@ -207,6 +207,9 @@ export const getUserInfoByPhone = params => {       //  通过手机号获取客
 };
 export const getClueUserInfo = params => {       //  获取人才库用户详情
     return http(API_BASE_URL + '/clue/getClueUserInfo', params, "POST", { "Content-Type": "application/json" });
+};
+export const unsuitable = params => {            //  不合适
+    return http(API_BASE_URL + '/signUp/unsuitable', params, "POST", { "Content-Type": "application/json" });
 };
 
 
