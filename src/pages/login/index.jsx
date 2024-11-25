@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 16:28:01
+ * @LastEditTime: 2024-11-25 16:56:20
  * @Description: 
  */
 
@@ -34,12 +34,8 @@ const Index = observer(({ store }) => {
         console.log("backFunc", step);
         if (step === 2) {
             setStep(1);
-        } else {
-            Taro.navigateBack({
-                delta: 1
-            })
         }
-    }, [step])
+    }, [step]);
 
     const hintBtn = () => {
         if (!checked) {
@@ -175,7 +171,11 @@ const Index = observer(({ store }) => {
             <View className='my_header'>
                 <View className='my_header_hr' style={`--statusBarHeight:${statusTitleHeight}px;`}></View>
                 <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
-                    {/* <Image onClick={() => backFunc()} src={`${Taro.$cdnBackIcon}`} ></Image> */}
+                    {
+                        step === 2 &&
+                        <Image onClick={() => backFunc()} src={`${Taro.$cdnBackIcon}`} ></Image>
+                    }
+
                 </View>
             </View>
 
