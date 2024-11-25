@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:52
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 10:49:53
+ * @LastEditTime: 2024-11-25 11:25:58
  * @Description: 
  */
 @import '@/app.scss';
@@ -155,7 +155,7 @@
             }
 
             .roster_item_title {
-                padding: 24rpx 24rpx 0 60rpx;
+                padding: 24rpx 24rpx 0 68rpx;
                 @include flex-center(flex-start);
                 position: relative;
 
@@ -167,7 +167,7 @@
                     font-weight: 600;
                     line-height: normal;
                     position: absolute;
-                    width: 38rpx;
+                    width: 48rpx;
                     left: 22rpx;
                     top: 32rpx;
                 }
@@ -338,6 +338,7 @@
 
                     .clue_item_title_left {
                         @include flex-center(flex-start);
+                        padding-left: 10rpx;
                     }
 
                     .clue_item_title_sort {
