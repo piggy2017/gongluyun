@@ -131,7 +131,8 @@ const Index = observer(({ store }) => {
       {
         !isLogin &&
         <View className='user_info' onClick={() => Taro.navigateTo({ url: '/pages/login/index' })}>
-          <View className='user_info_avatar'></View>
+          {/* <View className='user_info_avatar'></View> */}
+          <Image className='user_info_avatar' src={`${Taro.$baseCdnUrl}/personal/personal_defaultAvatar.png`}></Image>
           <View className='user_info_right'>
             <View className='user_info_name'>
               <Text>未登录</Text>

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-20 15:49:08
+ * @LastEditTime: 2024-11-25 14:37:20
  * @Description: 
  */
 export default defineAppConfig({
@@ -21,15 +21,15 @@ export default defineAppConfig({
         navigationBarTextStyle: 'black'
     },
     permission: {
-      "scope.userLocation": {
-        "desc": "你的位置信息将用于小程序位置接口的效果展示"
-      },
-      "scope.userFuzzyLocation": {
-        "desc": "你的位置信息将用于小程序位置接口的效果展示"
-      }
+    //   "scope.userLocation": {
+    //     "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    //   },
+    //   "scope.userFuzzyLocation": {
+    //     "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    //   }
     },
     requiredPrivateInfos: [
-      "getLocation", "chooseLocation",
+    //   "getLocation", "chooseLocation",
     ],
     tabBar: {
         custom: true,

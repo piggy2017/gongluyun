@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 11:54:37
+ * @LastEditTime: 2024-11-25 13:56:27
  * @Description: 
  */
 
@@ -129,7 +129,7 @@ const Index = observer(({ store }) => {
       setType(_type);
       setgoonLoad(true);
       setPageNo(1);
-      setSearchValue('');
+      // setSearchValue('');
       if (_type === '客户池') {
         getClueList(1);
       } else {
@@ -538,7 +538,6 @@ const Index = observer(({ store }) => {
                             {
                               item.signUpChannel === 'BROWSE_REC' &&
                               <>
-                                <View>-</View>
                                 <View className='clue_item_title_source'>岗位浏览</View>
                               </>
                             }
