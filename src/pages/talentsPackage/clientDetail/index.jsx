@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 10:37:40
+ * @LastEditTime: 2024-11-25 12:00:35
  * @Description: 
  */
 
@@ -211,6 +211,7 @@ const Index = observer(({ store }) => {
         Taro.hideLoading();
         if (code === 200) {
             Taro.showToast({ title: '提交成功', icon: 'none' });
+            getClientDetail(clientInfos.uuid, clientInfos.phone);
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
@@ -358,12 +359,13 @@ const Index = observer(({ store }) => {
                 <View className='bottom_wrapper_con'>
                     <View className='' style={`height:16rpx`}></View>
                     {
-                        (clientInfos && (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'UNSUITABLE')) &&
+                        (clientInfos && clientInfos.seekState === 'PENDING') &&
                         <View className='create_interview_pedding'>
                             <View className='inappropriate' onClick={unsuitableFunc}>不合适</View>
                             <View className='create_interview_btn' onClick={() => goInterview()}>安排面试</View>
-                        </View>
-                        ||
+                        </View> ||
+                        (clientInfos && clientInfos.seekState === 'UNSUITABLE') &&
+                        <View className='go_interview_btn' onClick={() => goInterview()}>安排面试</View> ||
                         <View className='edit_wrap'>
                             <View className='edit_wrap_btn' onClick={() => setShowbottomOptions(!showbottomOptions)}>修改状态</View>
                             <View className='count_wrap'>

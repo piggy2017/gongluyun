@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:52
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 11:25:58
+ * @LastEditTime: 2024-11-25 11:52:32
  * @Description: 
  */
 @import '@/app.scss';
@@ -359,10 +359,11 @@
                         line-height: normal;
                         margin-left: 22rpx;
                         @include flex-center(flex-start);
+
+
                     }
 
                     .clue_item_title_source {
-                        padding: 4rpx 6rpx;
                         border: 1rpx solid #1678FF;
                         border-radius: 8rpx;
                         color: #1678FF;
@@ -372,6 +373,24 @@
                         font-weight: 500;
                         line-height: normal;
                         margin-left: 4rpx;
+                        @include flex-center(flex-start);
+
+                        image {
+                            width: 16rpx;
+                            height: 34rpx;
+                            flex-shrink: 0;
+                        }
+
+                        .clue_item_title_source_view1 {
+                            padding: 4rpx 6rpx;
+                        }
+                        .clue_item_title_source_view3{
+                            padding: 4rpx 0 4rpx 6rpx;
+                        }
+                        .clue_item_title_source_view2{
+                            padding: 4rpx 6rpx;
+                            background: #1678ff1c;
+                        }
                     }
                 }
 

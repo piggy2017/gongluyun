@@ -196,6 +196,22 @@
             }
         }
 
+        .go_interview_btn {
+            width: 690rpx;
+            height: 96rpx;
+            border-radius: 8rpx;
+            background: #1678FF;
+            color: #ffffff;
+            text-align: center;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            line-height: 96rpx;
+            margin: 0 auto;
+        }
+
         .create_interview_pedding {
             padding: 0 28rpx;
             @include flex-center(space-between);

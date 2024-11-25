@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 11:04:00
+ * @LastEditTime: 2024-11-25 11:54:37
  * @Description: 
  */
 
@@ -470,14 +470,17 @@ const Index = observer(({ store }) => {
                               <View className='clue_item_title_sort'>{index + 1}</View>
                               <View className='clue_item_title_name'>
                                 <View>{item.name}</View>
-                                <View className='clue_item_title_source'>{item.sourceDesc.split('-')[0]}</View>
-                                {
-                                  item.signUpChannel === 'BROWSE_REC' &&
-                                  <>
-                                    <View>-</View>
-                                    <View className='clue_item_title_source'>岗位浏览</View>
-                                  </>
-                                }
+                                <View className='clue_item_title_source'>
+                                  <View className={`${item.signUpChannel === 'BROWSE_REC' ? 'clue_item_title_source_view3' : 'clue_item_title_source_view1'}`}>{item.sourceDesc.split('-')[0]}</View>
+                                  {
+                                    item.signUpChannel === 'BROWSE_REC' &&
+                                    <>
+                                      <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_17.webp`}></Image>
+                                      <View className='clue_item_title_source_view2'>岗位浏览</View>
+                                    </>
+                                  }
+                                </View>
+
                               </View>
                             </View>
                           </View>
@@ -501,7 +504,7 @@ const Index = observer(({ store }) => {
                 })
               }
               {
-                list.length >= 6 &&
+                list.length >= 5 &&
                 <View className='loading_text'>
                   {
                     goonLoad ?
@@ -565,7 +568,7 @@ const Index = observer(({ store }) => {
               }
 
               {
-                mylist.length >= 6 &&
+                mylist.length >= 5 &&
                 <View className='loading_text'>
                   {
                     goonLoad ?
