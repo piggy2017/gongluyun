@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 16:03:51
+ * @LastEditTime: 2024-11-25 16:43:18
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -202,7 +202,7 @@ const Index = observer(({ store }) => {
           <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
         </View>
         {
-          isLogin &&
+          isLogin === 1 &&
           <View className='section_item' onClick={() => {
             if (isLogin) {
               setLoginoutSure(true);
