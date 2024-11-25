@@ -152,7 +152,8 @@ const Index = observer(({ store }) => {
         setMyPermissions();
         Taro.showToast({ title: '认证成功', icon: 'none', duration: 2000 });
         setTimeout(() => {
-          Taro.navigateBack({ delta: 1 })
+          // Taro.navigateBack({ delta: 1 })
+          Taro.switchTab({ url: '/pages/index/index' })
         }, 1500);
       } else {
         Taro.showToast({ title: res.msg, icon: 'none', duration: 2000 });

@@ -2,11 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 14:37:20
+ * @LastEditTime: 2024-11-25 15:55:08
  * @Description: 
  */
 export default defineAppConfig({
     pages: [
+        'pages/launch/index',
+        'pages/auth/index',
         'pages/index/index',
         'pages/projectManage/index',
         'pages/clue/index',

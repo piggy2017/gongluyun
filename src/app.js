@@ -24,7 +24,7 @@ function App({ children }) {
   useEffect(()=>{
     console.log("app.js 中的 useEffect")
     baseStore.setSystemInfo();
-    businessStore.setSourceList();
+    // businessStore.setSourceList();
     Taro.$cdnUrl = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject';
     Taro.$cdnBackIcon = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/mine/back_icon.webp';
     Taro.$baseCdnUrl = 'https://apu-mini.oss-accelerate.aliyuncs.com';

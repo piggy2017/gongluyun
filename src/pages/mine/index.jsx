@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 15:52:59
+ * @LastEditTime: 2024-11-25 16:03:51
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -110,13 +110,13 @@ const Index = observer(({ store }) => {
     }
   }
 
-  const aboutFunc=()=>{
+  const aboutFunc = () => {
     if (isLogin === 0) {
       Taro.navigateTo({
         url: '/pages/login/index'
       })
       return
-    }else{
+    } else {
       Taro.navigateTo({ url: '/pages/minePackage/aboutUs/index' })
     }
   }
@@ -145,7 +145,11 @@ const Index = observer(({ store }) => {
           <View className='user_info_right'>
             <View className='user_info_name'>
               <Text>{userInfo.nickName}</Text>
-              <Text className='user_info_role'>{getRole(userInfo.userRole)}</Text>
+              {
+                userInfo.userRole != 'SEEK' &&
+                <Text className='user_info_role'>{getRole(userInfo.userRole)}</Text>
+              }
+
             </View>
             <View className='user_info_compony'>{companyInfo.company}</View>
           </View>
@@ -197,17 +201,20 @@ const Index = observer(({ store }) => {
           </View>
           <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
         </View>
-        <View className='section_item' onClick={() => {
-          if (isLogin) {
-            setLoginoutSure(true);
-          }
-        }}>
-          <View className='section_item_left'>
-            <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_9.webp`}></Image>
-            <Text>退出登录</Text>
+        {
+          isLogin &&
+          <View className='section_item' onClick={() => {
+            if (isLogin) {
+              setLoginoutSure(true);
+            }
+          }}>
+            <View className='section_item_left'>
+              <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_9.webp`}></Image>
+              <Text>退出登录</Text>
+            </View>
+            <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
           </View>
-          <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
-        </View>
+        }
       </View>
 
       <TabBar actCurrent={3} />

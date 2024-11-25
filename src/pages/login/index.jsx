@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 15:31:36
+ * @LastEditTime: 2024-11-25 16:28:01
  * @Description: 
  */
 
@@ -78,10 +78,13 @@ const Index = observer(({ store }) => {
                     setUserInfo(result.data.user);
                     setRole(result.data.user.userRole);
                     getRoleAndPermissionFunc();
-                    setTimeout(() => {
-                        getUserRole();
-                        // setMyPermissions();
-                    }, 50);
+                    if (result.data.user.companyVerified) {
+                        setTimeout(() => {
+                            getUserRole();
+                        }, 50);
+                    } else {
+                        Taro.navigateTo({ url: '/pages/auth/index' })
+                    }
                 } else {
                     Taro.showToast({ title: result.msg, icon: "none", duration: 2000 })
                 }
@@ -94,6 +97,12 @@ const Index = observer(({ store }) => {
     const btnLogin = () => {
         if (!checked) {
             return Taro.showToast({ title: "请阅读并同意隐私协议", icon: "none", duration: 2000 })
+        }
+        if (!account || account.length < 11) {
+            return Taro.showToast({ title: "请输入11位手机号", icon: "none", duration: 2000 })
+        }
+        if (!password) {
+            return Taro.showToast({ title: "请输入密码", icon: "none", duration: 2000 })
         }
         let params = {
             phone: encryptData(account),
@@ -118,21 +127,23 @@ const Index = observer(({ store }) => {
                 setUserInfo(data.user);
                 setRole(data.user.userRole);
                 getRoleAndPermissionFunc();
-                setTimeout(() => {
-                    getUserRole();
-                    // setMyPermissions();
-                }, 50);
+                if (data.user.companyVerified) {
+                    setTimeout(() => {
+                        getUserRole();
+                    }, 50);
+                } else {
+                    Taro.navigateTo({ url: '/pages/auth/index' })
+                }
             } else {
                 Taro.showToast({ title: msg, icon: "none", duration: 2000 })
             }
-
         })
     }
 
     const getUserRole = async () => {
         setMyPermissions();
-        Taro.navigateBack({
-            delta: 1
+        Taro.switchTab({
+            url: '/pages/index/index'
         })
     }
 
@@ -164,7 +175,7 @@ const Index = observer(({ store }) => {
             <View className='my_header'>
                 <View className='my_header_hr' style={`--statusBarHeight:${statusTitleHeight}px;`}></View>
                 <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
-                    <Image onClick={() => backFunc()} src={`${Taro.$cdnBackIcon}`} ></Image>
+                    {/* <Image onClick={() => backFunc()} src={`${Taro.$cdnBackIcon}`} ></Image> */}
                 </View>
             </View>
 
