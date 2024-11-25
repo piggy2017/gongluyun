@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 10:48:11
+ * @LastEditTime: 2024-11-25 11:04:00
  * @Description: 
  */
 
@@ -475,7 +475,7 @@ const Index = observer(({ store }) => {
                                   item.signUpChannel === 'BROWSE_REC' &&
                                   <>
                                     <View>-</View>
-                                    <View className='clue_item_title_source'>浏览招聘</View>
+                                    <View className='clue_item_title_source'>岗位浏览</View>
                                   </>
                                 }
                               </View>
@@ -536,7 +536,7 @@ const Index = observer(({ store }) => {
                               item.signUpChannel === 'BROWSE_REC' &&
                               <>
                                 <View>-</View>
-                                <View className='clue_item_title_source'>浏览招聘</View>
+                                <View className='clue_item_title_source'>岗位浏览</View>
                               </>
                             }
                             <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
