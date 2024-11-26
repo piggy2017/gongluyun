@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 10:27:57
+ * @LastEditTime: 2024-11-26 09:31:18
  * @Description: 用于存放用户的相关信息
  */
 
@@ -22,7 +22,7 @@ const userStore = observable({
     companyVerified: false, // true 已实名认证  false 未实名认证
     userInfo: Taro.getStorageSync('userInfo') ? Taro.getStorageSync('userInfo') : '',
     companyInfo: Taro.getStorageSync('companyInfo') ? Taro.getStorageSync('companyInfo') : '',
-    refreshUserInfo() { // 统一刷新用户信息
+    refreshUserInfo(callback) { // 统一刷新用户信息
         userCenter({}).then(res => {
             console.log("refreshUserInfo用户信息res:", res);
             if (res?.code === 200) {
@@ -33,6 +33,9 @@ const userStore = observable({
                 userStore.role = res?.data?.userInfo.userRole;
                 Taro.setStorageSync('role', res?.data?.userInfo.userRole);
                 Taro.setStorageSync('companyInfo', res.data);
+                if(callback){
+                    callback(res);
+                }
             }
         })
     },

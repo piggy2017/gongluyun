@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 16:28:44
+ * @LastEditTime: 2024-11-26 09:33:36
  * @Description: 
  */
 import React, { useState, useEffect, useReducer } from 'react'
@@ -16,7 +16,7 @@ const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const {
         baseStore: { statusTitleHeight, contenTitleHeight },
-        userStore: { isLogin, setIsLogin, role, companyVerified, setCompanyVerified },
+        userStore: { refreshUserInfo, isLogin, setIsLogin, role, companyVerified, setCompanyVerified },
     } = store
 
     const [showBack, setShowBack] = useState(false);
@@ -31,6 +31,13 @@ const Index = observer(({ store }) => {
             setShowBack(true);
             forceUpdate();
         }
+        refreshUserInfo((res) => {
+            if (res?.data?.companyVerified) {
+                Taro.switchTab({
+                    url: '/pages/index/index'
+                })
+            }
+        })
     }, [])
 
     const backFunc = () => {
