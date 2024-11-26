@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-26 09:33:36
+ * @LastEditTime: 2024-11-26 09:36:32
  * @Description: 
  */
 import React, { useState, useEffect, useReducer } from 'react'
@@ -32,6 +32,7 @@ const Index = observer(({ store }) => {
             forceUpdate();
         }
         refreshUserInfo((res) => {
+            console.log("auth页面res", res);
             if (res?.data?.companyVerified) {
                 Taro.switchTab({
                     url: '/pages/index/index'
