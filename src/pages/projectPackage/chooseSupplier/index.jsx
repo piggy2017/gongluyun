@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 17:20:28
+ * @LastEditTime: 2024-11-27 10:43:11
  * @Description: 
  */
 
@@ -10,6 +10,8 @@ import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Block, Picker } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
+import { AtIcon } from 'taro-ui'
+import "taro-ui/dist/style/components/icon.scss";
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'

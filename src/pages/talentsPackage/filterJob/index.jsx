@@ -2,13 +2,15 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 18:34:02
+ * @LastEditTime: 2024-11-27 10:41:40
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, ScrollView, Block } from '@tarojs/components'
+import { AtIcon } from 'taro-ui'
+import "taro-ui/dist/style/components/icon.scss";
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
