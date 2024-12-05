@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 16:56:20
+ * @LastEditTime: 2024-12-05 17:08:00
  * @Description: 
  */
 
@@ -138,9 +138,12 @@ const Index = observer(({ store }) => {
 
     const getUserRole = async () => {
         setMyPermissions();
-        Taro.switchTab({
-            url: '/pages/index/index'
-        })
+        let historyPages = Taro.getCurrentPages();   //历史页面 路由跳转数
+        if (historyPages.length === 1) Taro.switchTab({ url: `/pages/index/index` });
+        else Taro.navigateBack({ delta: 1 });//多页面跳转
+        // Taro.switchTab({
+        //     url: '/pages/index/index'
+        // })
     }
 
     const changeStep = () => {

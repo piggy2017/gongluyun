@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-04 17:31:27
+ * @LastEditTime: 2024-12-05 17:00:05
  * @Description: 
  */
 
@@ -199,6 +199,11 @@ const Index = observer(({ store }) => {
                                 placeholderStyle='color: #777777;'
                                 onInput={(e) => { setSearchValue(e.detail.value) }}
                                 onConfirm={(e) => {
+                                    if (isLogin === 0) {
+                                        return Taro.navigateTo({
+                                            url: '/pages/login/index'
+                                        })
+                                    }
                                     setgoonLoad(true);
                                     getList(1);
                                 }}
