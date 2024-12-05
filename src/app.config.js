@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 15:55:08
+ * @LastEditTime: 2024-12-03 16:11:26
  * @Description: 
  */
 export default defineAppConfig({
@@ -99,6 +99,7 @@ export default defineAppConfig({
                 "companyAuth/index",              // 企业认证
                 "editEmployee/index",             // 修改员工
                 "aboutUs/index",                  // 关于我们
+                "dataReport/index",               // 数据报表
             ]
         },
         {

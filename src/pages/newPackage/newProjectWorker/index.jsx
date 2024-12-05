@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 15:19:36
+ * @LastEditTime: 2024-12-03 15:37:55
  * @Description: 
  */
 
@@ -69,6 +69,34 @@ const Index = observer(({ store }) => {
     }
 
     const addWorker = () => {
+        const { recruitSerialCode } = route.params;
+        let list = arrangList.map(item => {
+            item.recruitSerialCode = recruitSerialCode;
+            item.interviewDate = interviewDate;
+            item.interviewArranged = true;
+            item.agentSerialCode = userSerialCode;
+            item.source = 'GLPK';
+            return item;
+        })
+        console.log("list", list);
+        for (let i = 0; i < list.length; i++) {
+            if (!list[i].interviewDate) {
+                Taro.showToast({ title: '请选择面试日期', icon: 'none', })
+                return;
+            } else if (!list[i].name) {
+                Taro.showToast({ title: '请填写求职者姓名', icon: 'none', })
+                return;
+            } else if (list[i].sex === '') {
+                Taro.showToast({ title: '请选择求职者性别', icon: 'none', })
+                return;
+            } else if (!list[i].phone || list[i].phone.length != 11) {
+                Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
+                return;
+            } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
+                Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
+            }
+        }
+
         if (arrangList.length == 4) {
             return Taro.showToast({ title: '一次最多安排4位求职者的面试', icon: 'none', })
         }
@@ -107,6 +135,14 @@ const Index = observer(({ store }) => {
         forceUpdate();
     }
 
+    const deleteItemFunc = (index) => {
+        setArrangList(arrangList => {
+            arrangList.splice(index, 1)
+            return arrangList
+        })
+        forceUpdate();
+    }
+
     const saveWorker = async () => {
         const { recruitSerialCode } = route.params;
         let list = arrangList.map(item => {
@@ -131,7 +167,7 @@ const Index = observer(({ store }) => {
             } else if (!list[i].phone || list[i].phone.length != 11) {
                 Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
                 return;
-            } else if(list[i].idCardNo && list[i].idCardNo.length != 18){
+            } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
                 Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
             }
         }
@@ -198,10 +234,17 @@ const Index = observer(({ store }) => {
                         <View className='project_group' key={index}>
                             <View className='project_group_sort'>
                                 <View className='project_group_sort_left'>{index >= 9 ? index + 1 : '0' + (index + 1)}</View>
-                                <View className='project_group_sort_right' onClick={() => openItemFunc(index)}>
-                                    <Image className={`${arrangList[index].isOpen ? 'eidt_icon' : ''}`} src={`${Taro.$cdnUrl}/newIndex/newIndex_4.webp`}></Image>
-                                    <View>{arrangList[index].isOpen ? '收起' : '展开'}</View>
+
+                                <View className='project_group_sort_rightWrap'>
+                                    {
+                                        index != 0 && <View className='project_group_sort_delete' onClick={() => deleteItemFunc(index)}>删除</View>
+                                    }
+                                    <View className='project_group_sort_right' onClick={() => openItemFunc(index)}>
+                                        <Image className={`${arrangList[index].isOpen ? 'eidt_icon' : ''}`} src={`${Taro.$cdnUrl}/newIndex/newIndex_4.webp`}></Image>
+                                        <View>{arrangList[index].isOpen ? '收起' : '展开'}</View>
+                                    </View>
                                 </View>
+
                             </View>
                             {
                                 item.isOpen &&
@@ -271,7 +314,7 @@ const Index = observer(({ store }) => {
                                 <View className='add_btn' onClick={addWorker}>
                                     <View className='add_btn_content'>
                                         <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_5.webp`}></Image>
-                                        <View>添加信息</View>
+                                        <View>添加求职者</View>
                                     </View>
                                 </View>
                             }

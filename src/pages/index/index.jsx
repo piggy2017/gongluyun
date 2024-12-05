@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 16:46:09
+ * @LastEditTime: 2024-12-04 15:58:30
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -352,9 +352,9 @@ const Index = observer(({ store }) => {
               <Image src={`${Taro.$cdnUrl}/index/index_icon4.webp`}></Image>
               <View>人才库</View>
             </View>
-            <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/employeeManage/index')}>
+            <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/dataReport/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon5.webp`}></Image>
-              <View>员工数据</View>
+              <View>分析报表</View>
             </View>
           </View>
         }

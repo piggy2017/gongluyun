@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 09:57:09
+ * @LastEditTime: 2024-12-04 17:31:27
  * @Description: 
  */
 
@@ -15,12 +15,13 @@ import { AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import './index.scss'
 import { contractsgetRoster } from '@/util/api'
-import Navbar from '@/components/navbar';
+import CustomDate from '@/components/customDate';
 
 const Index = observer(({ store }) => {
+    const route = useRouter();
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { isLogin, companyVerified }
+        baseStore: { statusTitleHeight, contenTitleHeight },
+        userStore: { isLogin, userInfo }
     } = store;
     const filterList = [                 // 时间筛选列表
         { text: "今日", code: "TODAY" },
@@ -30,29 +31,43 @@ const Index = observer(({ store }) => {
         { text: "本月", code: "THIS_MONTH" },
         { text: "上月", code: "LAST_MONTH" },
     ];
-    const route = useRouter();
-    const [infoHeight, setInfoHeight] = useState(94);
+    const [tabList, setTabList] = useState([
+        { state: '', name: "全部" }, { state: 'SCHEDULED_INTERVIEW', name: "已约面" },
+        { state: 'ARRIVE_INTERVIEW', name: "已到面" }, { state: 'INTERVIEW_PASSED', name: "面试通过" },
+        { state: 'INTERVIEW_FAILED', name: "面试失败" }, { state: 'EMPLOYED', name: "已入职" },
+        { state: 'RESIGN', name: "已离职" }]);
+    const [currentTabIndex, setCurrentTabIndex] = useState(0);           // 当前选中的tab
+    const [searchValue, setSearchValue] = useState('');
+    const [showFilterDate, setShowFilterDate] = useState(false);
+    const [dateObj, setDateObj] = useState({
+        dateRange: "",
+        endDate: "",
+        filterTime: "全部日期",
+        startDate: ""
+    });
+    const [totalCount, setTotalCount] = useState(0);
+
+    const [infoHeight, setInfoHeight] = useState(233);
 
     const [isRefresh, setIsRefresh] = useState(false);
     const [goonLoad, setgoonLoad] = useState(true);
     const [pageNo, setPageNo] = useState(1);
     const pageSize = 10
     const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
-    const [totalCount, setTotalCount] = useState(0);
     const [title, setTitle] = useState('');
 
     const [list, setList] = useState([])
     const [source, setSource] = useState('');
 
     useEffect(() => {
-        console.log("route", route);
-        const { title, sourceName, dateRange, startDate, endDate } = route.params;
+        console.log("route", route.params);
+        const { title, sourceName, recruitSerialCode, agentSerialCode } = route.params;
         console.log('title', decodeURIComponent(title))
         setTitle(decodeURIComponent(title));
         setSource(decodeURIComponent(sourceName));
 
         setTimeout(async () => {
-            const _query = await selectorQueryDomInfo('.export_infos');
+            const _query = await selectorQueryDomInfo('.top_wrapper');
             if (_query?.height) {
                 console.log("_query_query_query", _query.height);
                 setInfoHeight(_query.height)
@@ -61,16 +76,32 @@ const Index = observer(({ store }) => {
     }, [])
 
     useEffect(() => {
-        if (isLogin) { getList(1) };
-    }, [isLogin])
+        const { agentSerialCode } = route.params;
+        console.log('agentSerialCode', agentSerialCode, userInfo.userSerialCode);
+        if (isLogin && agentSerialCode === userInfo.userSerialCode) {
+            getList(1)
+        }
+    }, [isLogin, dateObj, currentTabIndex])
 
     const getList = async (_pageNo) => {    // 获取名单列表
+        const { recruitSerialCode, agentSerialCode } = route.params;
+        if (!isLogin || (agentSerialCode != userInfo.userSerialCode)) {
+            return
+        }
         setRequestState(1);
+
         Taro.showLoading({ title: '加载中...' });
         let params = {
-            ...route.params,
             pageNo: _pageNo * 1,
-            pageSize
+            pageSize,
+            recruitSerialCode,
+            agentSerialCode,
+            seekState: tabList[currentTabIndex].state,
+            searchInfo: searchValue,
+            dateRange: dateObj.dateRange,
+            startDate: dateObj.startDate,
+            endDate: dateObj.endDate,
+            channel: 1
         }
         // delete params.title;
         console.log('params', params);
@@ -108,7 +139,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const getHeight = () => {
-        return `calc(100vh - ${infoHeight}px)`;   // statusTitleHeight + contenTitleHeight + 
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + infoHeight}px)`;   // statusTitleHeight + contenTitleHeight + 
     }
 
     const callUser = (e, obj) => {
@@ -125,6 +156,11 @@ const Index = observer(({ store }) => {
         }
     }
 
+    const customDateSelect = (e) => {      // 选择日期的回调
+        console.log("自定义选择日期组件 customDateSelect", e);
+        setDateObj(e);
+    }
+
     const loginOrAuth = debounce(() => {
         if (isLogin === 0) {
             Taro.navigateTo({
@@ -136,15 +172,68 @@ const Index = observer(({ store }) => {
     return (
         <View className='container'>
             {/* <Navbar fixed placeholder bgColor='transparent' title='名单反馈'></Navbar> */}
-
-            <View className='export_infos'>
-                <View className='export_infos_name'>岗位：{title}</View>
-                <View className='export_infos_name'>来源：{source}</View>
-                <View className='export_infos_time'>时间：{route.params.dateRange ? getDate(route.params.dateRange) : route.params.startDate + '-' + route.params.endDate}</View>
+            <View className='my_header'>
+                <View className='my_header_hr' style={`--statusBarHeight:${statusTitleHeight}px;`}></View>
+                <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
+                    <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_27.webp`} onClick={() => {
+                        Taro.redirectTo({ url: '/pages/launch/index' })
+                    }}></Image>
+                    <View className='my_header_title'>名单反馈</View>
+                </View>
             </View>
 
+            <View className='top_wrapper'>
+                <View className='export_infos'>
+                    <View className='export_infos_name'>{source}</View>
+                    <View className='export_infos_name'>岗位：{title}</View>
+                </View>
+
+                <View className='search_wrapper'>
+                    <View style={`height: 36rpx;`}></View>
+                    <View className='search_content'>
+                        <View className='search_content_left'>
+                            <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+                            <Input className='search_input'
+                                placeholder='搜索姓名、手机号、身份证号'
+                                confirmType='search'
+                                placeholderStyle='color: #777777;'
+                                onInput={(e) => { setSearchValue(e.detail.value) }}
+                                onConfirm={(e) => {
+                                    setgoonLoad(true);
+                                    getList(1);
+                                }}
+                                value={searchValue}></Input>
+                        </View>
+
+                        <View className='search_content_right' onClick={() => setShowFilterDate(true)}>
+                            <View>{dateObj.filterTime ? dateObj.filterTime : dateObj.startDate.replace(/-/g, '.') + '-' + dateObj.endDate.replace(/-/g, '.')}</View>
+                            <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
+                        </View>
+                    </View>
+
+                    <ScrollView
+                        className='tab_scroll'
+                        scrollWithAnimation
+                        scrollX
+                        enhanced
+                        bounces
+                        showScrollbar={false}
+                    >
+                        {
+                            tabList.map((item, index) => {
+                                return (
+                                    <View onClick={() => setCurrentTabIndex(index)} className={`tab_item ${currentTabIndex === index ? 'tab_item_active' : ''} `} key={index}>{item.name}</View>
+                                )
+                            })
+                        }
+                    </ScrollView>
+                    <View className='search_total'>共计 <Text>{totalCount}</Text> 人</View>
+                </View>
+            </View>
+
+
             {
-                isLogin === 1 &&
+                isLogin === 1 && (route.params.agentSerialCode === userInfo.userSerialCode) &&
                 <ScrollView
                     scrollY
                     className='scrollWrapper'
@@ -184,7 +273,7 @@ const Index = observer(({ store }) => {
                     }
 
                     {
-                        list.length >= 7 &&
+                        list.length >= 5 &&
                         <View className='loading_text'>
                             {
                                 goonLoad ?
@@ -203,7 +292,12 @@ const Index = observer(({ store }) => {
                             <View>暂无相关数据~</View>
                         </View>
                     }
-                </ScrollView>
+                </ScrollView> ||
+                isLogin === 1 && (route.params.agentSerialCode != userInfo.userSerialCode) &&
+                <View className='no_login'>
+                    <Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image>
+                    <View className='no_login_tip'>只有对应的供应商可以查看</View>
+                </View>
             }
 
             {
@@ -214,6 +308,11 @@ const Index = observer(({ store }) => {
                     <View className='login_btn' onClick={() => loginOrAuth()}>立即登录</View>
                 </View>
             }
+
+            {/* 筛选日期组件 */}
+            <Block>
+                <CustomDate showPicker={showFilterDate} onClose={() => { setShowFilterDate(false) }} onChange={customDateSelect}></CustomDate>
+            </Block>
         </View>
     )
 })

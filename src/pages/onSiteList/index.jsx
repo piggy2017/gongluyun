@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 16:07:33
+ * @LastEditTime: 2024-12-04 17:37:15
  * @Description: 
  */
 
@@ -33,7 +33,7 @@ const Index = observer(({ store }) => {
 
   const [isRefresh, setIsRefresh] = useState(false);
   const [goonLoad, setgoonLoad] = useState(true);
-  const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
+  const [requestState, setRequestState] = useState(0);                // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
   const [totalCount, setTotalCount] = useState(0);
   const [pageNo, setPageNo] = useState(1);
   const pageSize = 10
@@ -58,9 +58,9 @@ const Index = observer(({ store }) => {
   const [customRequestParams, setCustomRequestParams] = useState({});  // 当前请求参数
 
   const [dateObj, setDateObj] = useState({
-    dateRange: "TODAY",
+    dateRange: "",
     endDate: "",
-    filterTime: "今日",
+    filterTime: "全部日期",
     startDate: ""
   });
 
@@ -99,6 +99,7 @@ const Index = observer(({ store }) => {
     setDateObj(e);
   }
 
+  
   const getList = async (_pageNo) => {    // 获取名单列表
     setRequestState(1);
     Taro.showLoading({ title: '加载中...' });
@@ -291,13 +292,13 @@ const Index = observer(({ store }) => {
   }
 
   const exportFunc = () => {
-    if (list.length === 0) {
-      return Taro.showToast({ title: '暂无数据', icon: 'none' });
-    }
     setShowExportModel(true);
   }
 
   const exportAllFunc = async () => {
+    if (list.length === 0) {
+      return Taro.showToast({ title: '暂无数据', icon: 'none' });
+    }
     Taro.showLoading({ title: '导出中...' });
     let params = { ...customRequestParams };
     const { code, data, msg } = await downloadRoster(params);
@@ -338,8 +339,11 @@ const Index = observer(({ store }) => {
     if (res.from === 'button') {
       console.log("页面中的分享---customRequestParams", customRequestParams);
       let _par = {
-        ...customRequestParams,
+        // ...customRequestParams,
         sourceName: onSiteFilterSUPPLIER.name,
+        agentSerialCode: onSiteFilterSUPPLIER.userSerialCode,
+        title: onSiteFilterJob.title,
+        recruitSerialCode: onSiteFilterJob.recruitSerialCode,
       }
       const params = new URLSearchParams(_par);
       path = `${path}?${params.toString()}`
@@ -369,7 +373,7 @@ const Index = observer(({ store }) => {
             <View>{onSiteFilterJob.title}</View>
             <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
           </View>
-          <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/projectPackage/chooseSupplier/index` }) }}>
+          <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/projectPackage/chooseSupplier/index?type=2` }) }}>
             <View>{onSiteFilterSUPPLIER.name}</View>
             <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
           </View>
@@ -621,7 +625,16 @@ const Index = observer(({ store }) => {
               <Image onClick={() => setShowExportModel(false)} className='export_model_close' src={`${Taro.$cdnUrl}/index/index_icon54.webp`}></Image>
               <View className='export_model_title'>导出全部名单</View>
               <Image className='export_model_img' onClick={() => exportAllFunc()} src={`${Taro.$cdnUrl}/index/index_icon53.webp`}></Image>
-              <Button open-type='share' className='export_model_btn'>导出为小程序页面</Button>
+              {
+                (onSiteFilterJob.recruitSerialCode && onSiteFilterSUPPLIER.userSerialCode) ? <Button open-type='share' className='export_model_btn'>导出为小程序页面</Button> :
+                <Button className='export_model_btn' onClick={()=>{
+                  Taro.showToast({
+                    title: '请选择具体的岗位和供应商',
+                    icon: 'none',
+                })
+                }}>导出为小程序页面</Button>
+              }
+              
             </View>
           </View>
         }

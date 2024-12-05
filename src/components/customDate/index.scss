@@ -73,7 +73,7 @@
             }
 
             .custom_filter_date {
-                width: 662rpx;
+                width: 430rpx;
                 height: 76rpx;
                 flex-shrink: 0;
                 border-radius: 10rpx;
@@ -106,12 +106,15 @@
             }
 
             .picker {
-                width: 284rpx;
+                width: 212rpx;
                 text-align: center;
             }
 
             .picker_active {
                 color: #1678ff;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
             }
         }
     }

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 10:29:33
+ * @LastEditTime: 2024-12-04 11:32:56
  * @Description: 
  */
 
@@ -80,6 +80,19 @@ export const onSiteTodayData = params => {                 // 驻场今日数据
 export const customerTodo = params => {                    // 客服待办
     return http(API_BASE_URL + '/workbench/customerTodo', params, "POST", {"Content-Type": "application/json"});
 }
+export const dashContractsData = params => {                    // 分析报表-项目概括
+    return http(API_BASE_URL + '/workbench/dashContractsData', params, "POST", {"Content-Type": "application/json"});
+}
+export const dashDrainageData = params => {                    // 分析报表-引流数据
+    return http(API_BASE_URL + '/workbench/dashDrainageData', params, "POST", {"Content-Type": "application/json"});
+}
+export const dashFlowChannel = params => {                    // 分析报表-流量渠道
+    return http(API_BASE_URL + '/workbench/dashFlowChannel', params, "POST", {"Content-Type": "application/json"});
+}
+export const dashEmployeeData = params => {                    // 分析报表-员工数据
+    return http(API_BASE_URL + '/workbench/dashEmployeeData', params, "POST", {"Content-Type": "application/json"});
+}
+
 
 
 // 岗位相关

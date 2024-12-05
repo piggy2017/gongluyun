@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 16:43:35
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 12:00:35
+ * @LastEditTime: 2024-12-04 15:34:54
  * @Description: 
  */
 
@@ -172,7 +172,7 @@ const Index = observer(({ store }) => {
     }
 
     const getOherClient = async (_current) => {
-        const { type } = route.params;
+        const { type } = route.params;   // type=1 驻场-名单进入
         let _params = {
             ...myClientParams,
             pageNo: _current,

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-20 17:42:34
+ * @LastEditTime: 2024-12-04 17:24:36
  * @Description: 
  */
 
@@ -25,7 +25,8 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-        userStore: { myPermissions }
+        userStore: { myPermissions },
+        businessStore: { rosterFilterSupplier },
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
 
@@ -59,14 +60,14 @@ const Index = observer(({ store }) => {
     const [customRequestParams, setCustomRequestParams] = useState({});  // 当前请求参数
 
     const [showSourcePicker, setShowSourcePicker] = useState(false);              //  是否显示切换状态的弹窗
-    const [showFilterDate, setShowFilterDate] = useState(false);                  //  客户池是否显示切换日期的弹窗
+    const [showFilterDate, setShowFilterDate] = useState(false);                  //  是否显示切换日期的弹窗
     const [sourceObj, setSourceObj] = useState({    // 筛选来源
         source: "", name: '全部来源'
     })
     const [dateObj, setDateObj] = useState({
-        dateRange: "TODAY",
+        dateRange: "",
         endDate: "",
-        filterTime: "今日",
+        filterTime: "全部日期",
         startDate: ""
     });
 
@@ -81,7 +82,7 @@ const Index = observer(({ store }) => {
 
     useEffect(() => {
         getList(1);
-    }, [currentTabIndex, sourceObj, dateObj])
+    }, [currentTabIndex, sourceObj, rosterFilterSupplier, dateObj])
 
     useEffect(() => {
         setTimeout(async () => {
@@ -115,7 +116,8 @@ const Index = observer(({ store }) => {
             seekState: tabList[currentTabIndex].state,
             searchInfo: searchValue,
             recruitSerialCode,
-            source: sourceObj.source,
+            // source: sourceObj.source,
+            agentSerialCode: rosterFilterSupplier.userSerialCode,
             dateRange: dateObj.dateRange,
             startDate: dateObj.startDate,
             endDate: dateObj.endDate,
@@ -281,13 +283,15 @@ const Index = observer(({ store }) => {
     }
 
     const exportFunc = () => {
-        if (list.length === 0) {
-            return Taro.showToast({ title: '暂无数据', icon: 'none' });
-        }
+
         setShowExportModel(true);
     }
 
     const exportAllFunc = async () => {
+        if (list.length === 0) {
+            return Taro.showToast({ title: '暂无数据', icon: 'none' });
+        }
+
         Taro.showLoading({ title: '导出中...' });
         let params = { ...customRequestParams };
         const { code, data, msg } = await downloadRoster(params);
@@ -325,12 +329,16 @@ const Index = observer(({ store }) => {
 
     Taro.useShareAppMessage(res => {
         let path = `/pages/projectPackage/viewExport/index`
+        let _shareTitle = `[名单]${title}`;
         if (res.from === 'button') {
             console.log("页面中的分享---customRequestParams", customRequestParams);
+            const { recruitSerialCode } = route.params;
             let _par = {
-                ...customRequestParams,
+                // ...customRequestParams,
+                recruitSerialCode: recruitSerialCode,
+                agentSerialCode: rosterFilterSupplier.userSerialCode,
                 title: title,
-                sourceName: sourceObj.name,
+                sourceName: rosterFilterSupplier.name,
             }
             const params = new URLSearchParams(_par);
             path = `${path}?${params.toString()}`
@@ -338,6 +346,7 @@ const Index = observer(({ store }) => {
             path = `/pages/index/index`
         }
         return {
+            title: _shareTitle,
             path,
         }
     })
@@ -368,8 +377,12 @@ const Index = observer(({ store }) => {
                         value={searchValue}></Input>
                 </View>
                 <View className='filter_wrapper'>
-                    <View className='filter_wrap_item' onClick={() => setShowSourcePicker(true)}>
+                    {/* <View className='filter_wrap_item' onClick={() => setShowSourcePicker(true)}>
                         <View>{sourceObj.name}</View>
+                        <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
+                    </View> */}
+                    <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/projectPackage/chooseSupplier/index?type=1` }) }}>
+                        <View>{rosterFilterSupplier.name}</View>
                         <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
                     </View>
                     {/* <View className='filter_wrap_item'>
@@ -514,7 +527,17 @@ const Index = observer(({ store }) => {
                             <Image onClick={() => setShowExportModel(false)} className='export_model_close' src={`${Taro.$cdnUrl}/index/index_icon54.webp`}></Image>
                             <View className='export_model_title'>导出全部名单</View>
                             <Image className='export_model_img' onClick={() => exportAllFunc()} src={`${Taro.$cdnUrl}/index/index_icon53.webp`}></Image>
-                            <Button open-type='share' className='export_model_btn'>导出为小程序页面</Button>
+                            {
+                                rosterFilterSupplier.userSerialCode ? <Button open-type='share' className='export_model_btn'>导出为小程序页面</Button> :
+                                    <Button className='export_model_btn' onClick={() => {
+                                        Taro.showToast({
+                                            title: '请选择具体的供应商',
+                                            icon: 'none',
+                                        })
+                                        // setShowExportModel(false);
+                                    }}>导出为小程序页面</Button>
+                            }
+
                         </View>
                     </View>
                 }
@@ -581,12 +604,12 @@ const Index = observer(({ store }) => {
                 </AtFloatLayout> */}
             </Block>
 
-            {/* 客户池筛选日期组件 */}
+            {/* 筛选日期组件 */}
             <Block>
                 <CustomDate showPicker={showFilterDate} onClose={() => { setShowFilterDate(false) }} onChange={customDateSelect}></CustomDate>
             </Block>
 
-            {/* 客户池筛选线索来源 */}
+            {/* 筛选线索来源 */}
             <Block>
                 <SourcePicker showPicker={showSourcePicker} onClose={() => { setShowSourcePicker(false) }} onChange={sourcePickerSelect}></SourcePicker>
             </Block>

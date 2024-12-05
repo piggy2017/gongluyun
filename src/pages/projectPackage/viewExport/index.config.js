@@ -6,8 +6,7 @@
  * @Description: 
  */
 export default definePageConfig({
-    // navigationStyle: "custom",
+    navigationStyle: "custom",
     disableScroll: true,
-    navigationBarTitleText: '名单反馈',
-    navigationBarBackgroundColor: '#F4F4F4',
+    navigationBarTitleText: '',
 })

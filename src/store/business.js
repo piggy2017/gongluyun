@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-15 15:25:43
+ * @LastEditTime: 2024-12-04 14:45:26
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -142,6 +142,15 @@ const businessStore = observable({
     },
     setJobFilterAddress(value) {
         businessStore.jobFilterAddress = value;
+    },
+
+    rosterFilterSupplier: {
+        name: '全部供应商',
+        userSerialCode: '',
+        selected: false
+    },
+    setRosterFilterSupplier(value) {
+        businessStore.rosterFilterSupplier = value;
     },
 });
 

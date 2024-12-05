@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-27 10:43:11
+ * @LastEditTime: 2024-12-04 14:58:45
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Block, Picker } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { AtIcon } from 'taro-ui'
@@ -18,10 +18,12 @@ import './index.scss'
 
 import { getFeedbackObjectsByCustomer } from '@/util/api'
 
+// type = 1 ,来自岗位名单(花名册)的供应商筛选; type = 2 ,来自驻场的名单中供应商筛选
 const Index = observer(({ store }) => {
+    const router = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-        businessStore: { onSiteFilterSUPPLIER, setOnSiteFilterSUPPLIER },
+        businessStore: { onSiteFilterSUPPLIER, setOnSiteFilterSUPPLIER, rosterFilterSupplier, setRosterFilterSupplier },
         userStore: { companyInfo },
     } = store
 
@@ -37,6 +39,9 @@ const Index = observer(({ store }) => {
     const [list, setList] = useState([]);
 
     useEffect(() => {
+        //   type = 1 ,来自岗位名单(花名册)的供应商筛选; type = 2 ,来自驻场的名单中供应商筛选
+        const { type } = router.params;
+        console.log('type', type);
         setTimeout(async () => {
             const _query = await selectorQueryDomInfo('.search_wrapper');
             if (_query?.height) {
@@ -72,9 +77,17 @@ const Index = observer(({ store }) => {
                 }
                 data.responses.unshift(obj);
             }
+            const { type } = router.params;
+            console.log('router.params_type', type);
             for (let i = 0; i < data.responses.length; i++) {
-                if (data.responses[i].userSerialCode == onSiteFilterSUPPLIER.userSerialCode) {
-                    data.responses[i].selected = true;
+                if (type == 2) {
+                    if (data.responses[i].userSerialCode == onSiteFilterSUPPLIER.userSerialCode) {
+                        data.responses[i].selected = true;
+                    }
+                } else if (type == 1) {
+                    if (data.responses[i].userSerialCode == rosterFilterSupplier.userSerialCode) {
+                        data.responses[i].selected = true;
+                    }
                 }
             }
             setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
@@ -110,12 +123,18 @@ const Index = observer(({ store }) => {
     const chooseFunc = (obj, index) => {
         setList(list => {
             let _list = list.map((item, i) => {
-                item.isChoosed = i === index ? true : false;
+                item.selected = i === index ? true : false;
                 return item
             })
             return _list
         })
-        setOnSiteFilterSUPPLIER(obj);
+        const { type } = router.params;
+        if (type == 1) {
+            setRosterFilterSupplier(obj);
+        } else if (type == 2) {
+            setOnSiteFilterSUPPLIER(obj);
+        }
+
         setTimeout(() => {
             Taro.navigateBack({ delta: 1 });
         }, 300);
@@ -159,7 +178,7 @@ const Index = observer(({ store }) => {
                             <View key={index} className='list_item' onClick={() => chooseFunc(item, index)}>
                                 <View className='list_item_name'>{item.name}</View>
                                 {
-                                    item.isChoosed ? <Image className='list_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image> : ''
+                                    item.selected ? <Image className='list_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image> : ''
                                 }
                             </View>
                         )

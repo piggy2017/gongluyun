@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-05 15:39:11
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 09:52:34
+ * @LastEditTime: 2024-12-03 15:53:56
  * @Description: 自定义选择日期或者日期范围
  */
 import React, { useState, useEffect, useReducer } from 'react';
@@ -16,6 +16,7 @@ import './index.scss';
 
 const CustomDate = observer(({ showPicker, onClose, onChange, store }) => {
     const filterList = [                 // 时间筛选列表
+        { text: "全部日期", code: "" },
         { text: "今日", code: "TODAY" },
         { text: "昨日", code: "YESTERDAY" },
         { text: "本周", code: "THIS_WEEK" },
@@ -26,8 +27,8 @@ const CustomDate = observer(({ showPicker, onClose, onChange, store }) => {
 
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [filterTime, setFilterTime] = useState('今日');
-    const [dateRange, setDateRange] = useState('TODAY');
+    const [filterTime, setFilterTime] = useState('全部日期');
+    const [dateRange, setDateRange] = useState('');
 
     const clickFilterDate = (obj, index) => {
         setFilterTime(obj.text);
@@ -54,7 +55,7 @@ const CustomDate = observer(({ showPicker, onClose, onChange, store }) => {
         if (!filterTime && (!startDate || !endDate)) {
             return Taro.showToast({ title: `请选择${startDate ? '结束' : '开始'}时间`, icon: "none", duration: 2000 });
         }
-        if(startDate && endDate && startDate > endDate) {
+        if (startDate && endDate && startDate > endDate) {
             return Taro.showToast({ title: '开始时间不能大于结束时间', icon: "none", duration: 2000 });
         }
         let params = {
@@ -88,22 +89,22 @@ const CustomDate = observer(({ showPicker, onClose, onChange, store }) => {
                                     )
                                 })
                             }
-                        </View>
-                        <View className={`custom_filter_date`}>
-                            <Picker mode='date' onChange={onCustomDateChange}>
-                                <View className={`picker ${startDate ? 'picker_active' : ''}}`}>
-                                    {startDate ? startDate + '开始' : '开始日期'}
-                                </View>
-                            </Picker>
 
-                            <View>-</View>
-
-                            <Picker mode='date' onChange={onCustomDateEndChange}>
-                                <View className={`picker ${endDate ? 'picker_active' : ''}}`}>
-                                    {endDate ? endDate + '结束' : '结束日期'}
-                                </View>
-                            </Picker>
+                            <View className={`custom_filter_date`}>
+                                <Picker mode='date' onChange={onCustomDateChange}>
+                                    <View className={`picker ${startDate ? 'picker_active' : ''}}`}>
+                                        {startDate ? startDate + '' : '开始日期'}
+                                    </View>
+                                </Picker>
+                                <View>-</View>
+                                <Picker mode='date' onChange={onCustomDateEndChange}>
+                                    <View className={`picker ${endDate ? 'picker_active' : ''}}`}>
+                                        {endDate ? endDate + '' : '结束日期'}
+                                    </View>
+                                </Picker>
+                            </View>
                         </View>
+
                         <View className='filter_wrapper_btn' onClick={postData}>确定</View>
                     </View>
                 </View>
