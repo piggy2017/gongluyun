@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-06 11:18:24
+ * @LastEditTime: 2024-12-06 11:32:12
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -417,11 +417,21 @@ const Index = observer(({ store }) => {
           <View className='today_data_wrapper'>
             <View className='today_data_title'>客服待办</View>
             <View className='today_data_content'>
-              <View className='today_data_item'>
+              <View className='today_data_item' onClick={() => {
+                Taro.setStorageSync("poor", true);
+                Taro.switchTab({
+                  url: '/pages/clue/index'
+                })
+              }}>
                 <View className='today_data_number'>{customerTodoData.todoHandle ? customerTodoData.todoHandle : 0}</View>
-                <View className='today_data_laber'>待处理</View>
+                <View className='today_data_laber'>待领取</View>
               </View>
-              <View className='today_data_item'>
+              <View className='today_data_item' onClick={() => {
+                Taro.setStorageSync("myClient", true);
+                Taro.switchTab({
+                  url: '/pages/clue/index'
+                })
+              }}>
                 <View className='today_data_number'>{customerTodoData.todoInterview ? customerTodoData.todoInterview : 0}</View>
                 <View className='today_data_laber'>待约面</View>
               </View>

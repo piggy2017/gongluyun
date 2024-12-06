@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-06 09:57:18
+ * @LastEditTime: 2024-12-06 11:57:40
  * @Description: 
  */
 
@@ -10,11 +10,6 @@ import React, { useState, useEffect, useReducer, useRef } from 'react'
 import Taro, { useRouter,usePullDownRefresh } from '@tarojs/taro';
 import { View, Image, Text, Canvas } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
-import { AtIcon, AtFloatLayout } from 'taro-ui'
-import { decryptData, encryptData } from '@/util/crypto'
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import './index.scss'
 
@@ -24,9 +19,7 @@ import { dashContractsData, dashDrainageData, dashFlowChannel, dashEmployeeData 
 const Index = observer(({ store }) => {
     const router = useRouter();
     const {
-        baseStore: { bottomSafeAreaHeight },
-        userStore: { companyInfo, role, permissions },
-        businessStore: { employeeInfo, setEmployeeInfo }
+        userStore: { companyInfo },
     } = store
 
     const [drainageDate, setDrainageDate] = useState('YESTERDAY');
@@ -141,7 +134,7 @@ const Index = observer(({ store }) => {
         console.log("获取流量渠道数据", data);
         if (code === 200 && data) {
             setPercent(data?.externalRate * 1);
-            setFlowList(data?.list?.length > 0 ? data?.list.slice(0, 6) : []);
+            setFlowList(data.list);
         } else {
             Taro.showToast({ title: msg, icon: 'none', duration: 2000 })
         }
@@ -250,6 +243,7 @@ const Index = observer(({ store }) => {
                         <View className='flow_item_num'><Text className='flow_item_num_text'>52</Text><Text>人</Text></View>
                         <View className='flow_item_join'><Text className='flow_item_join_text'>52</Text><Text>人</Text></View>
                     </View> */}
+                    <View className='flow_item_wrapper'>
                     {
                         flowList.length > 0 && flowList.map((item, index) => {
                             return (
@@ -261,6 +255,8 @@ const Index = observer(({ store }) => {
                             )
                         })
                     }
+                    </View>
+                    
                 </View>
             </View>
 

@@ -199,10 +199,12 @@
                 line-height: normal;
                 padding: 20rpx 0 0 24rpx;
             }
-            .canvas_content{
+
+            .canvas_content {
                 margin: 104rpx 0 0 30rpx;
                 position: relative;
-                .percent_text{
+
+                .percent_text {
                     color: #1678ff;
                     text-align: center;
                     font-family: "D-DIN-PRO";
@@ -214,10 +216,11 @@
                     z-index: 9999;
                     top: 50%;
                     left: 50%;
-                    transform: translate(-50%,-50%);
+                    transform: translate(-50%, -50%);
                 }
-            } 
-            .flow_left_label{
+            }
+
+            .flow_left_label {
                 color: #333333;
                 text-align: center;
                 font-family: "PingFang SC";
@@ -228,7 +231,8 @@
                 margin-left: 20rpx;
                 margin-top: 20rpx;
             }
-            .flow_left_label:last-child{
+
+            .flow_left_label:last-child {
                 margin-top: 0rpx;
             }
         }
@@ -240,7 +244,8 @@
             border-radius: 14rpx;
             background: #1678ff0d;
             margin: 24rpx 24rpx 0 0;
-            .flow_right_title{
+
+            .flow_right_title {
                 color: #666666;
                 text-align: center;
                 font-family: "PingFang SC";
@@ -251,11 +256,20 @@
                 padding: 38rpx 30rpx 0 200rpx;
                 @include flex-center(space-between);
             }
-            .flow_item{
+
+            .flow_item_wrapper {
+                width: 100%;
+                height: 350rpx;
+                // background-color: rgba(0, 0, 0, 0.2);
+                overflow-y: scroll;
+            }
+
+            .flow_item {
                 padding: 0 0 0 28rpx;
                 margin-top: 16rpx;
                 @include flex-center(space-between);
-                .flow_item_label{
+
+                .flow_item_label {
                     color: #666666;
                     font-family: "PingFang SC";
                     font-size: 28rpx;
@@ -264,7 +278,8 @@
                     line-height: normal;
                     width: 172rpx;
                 }
-                .flow_item_num{
+
+                .flow_item_num {
                     width: 124rpx;
                     color: #666666;
                     font-family: "PingFang SC";
@@ -272,7 +287,8 @@
                     font-style: normal;
                     font-weight: 400;
                     line-height: normal;
-                    .flow_item_num_text{
+
+                    .flow_item_num_text {
                         color: #333333;
                         font-family: "PingFang SC";
                         font-size: 26rpx;
@@ -283,7 +299,7 @@
                     }
                 }
 
-                .flow_item_join{
+                .flow_item_join {
                     width: 114rpx;
                     color: #666666;
                     font-family: "PingFang SC";
@@ -291,7 +307,8 @@
                     font-style: normal;
                     font-weight: 400;
                     line-height: normal;
-                    .flow_item_join_text{
+
+                    .flow_item_join_text {
                         color: #333333;
                         font-family: "PingFang SC";
                         font-size: 26rpx;
@@ -305,13 +322,14 @@
         }
     }
 
-    .employee_wrapper{
+    .employee_wrapper {
         width: 710rpx;
         flex-shrink: 0;
         border-radius: 14rpx;
         background: #FFF;
         margin: 20rpx auto 0 auto;
         padding-bottom: 40rpx;
+
         .stream_title {
             padding: 28rpx 24rpx 0 24rpx;
             @include flex-center(space-between);
@@ -348,14 +366,15 @@
             }
         }
 
-        .employee_item{
+        .employee_item {
             width: 616rpx;
             height: 154rpx;
             margin-top: 16rpx;
             padding: 22rpx 50rpx 22rpx 44rpx;
             // box-sizing: border-box;
             border-bottom: 1rpx solid #0000000a;
-            .employee_item_name{
+
+            .employee_item_name {
                 color: #222222;
                 font-family: "PingFang SC";
                 font-size: 30rpx;
@@ -363,7 +382,8 @@
                 font-weight: 500;
                 line-height: normal;
             }
-            .employee_item_datas{
+
+            .employee_item_datas {
                 margin-top: 26rpx;
                 @include flex-center(space-between);
                 text-align: center;
@@ -374,7 +394,8 @@
                 font-style: normal;
                 font-weight: 500;
                 line-height: normal;
-                .employee_item_datas_item_label{
+
+                .employee_item_datas_item_label {
                     color: #666666;
                     font-family: "PingFang SC";
                     font-size: 28rpx;
@@ -385,7 +406,8 @@
                 }
             }
         }
-        .employee_item:first-child{
+
+        .employee_item:first-child {
             border-bottom: none;
         }
     }
