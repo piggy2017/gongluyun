@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-04 15:58:30
+ * @LastEditTime: 2024-12-06 11:18:24
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -390,7 +390,7 @@ const Index = observer(({ store }) => {
         {
           (role === "ADMIN" || role === 'SEEK') &&
           <View className='today_data_wrapper'>
-            <View className='today_data_title'>今日数据</View>
+            <View className='today_data_title'>数据统计</View>
             <View className='today_data_content'>
               <View className='today_data_item'>
                 <View className='today_data_number'>{todayData ? todayData.newRecruit : '0'}</View>
@@ -398,7 +398,7 @@ const Index = observer(({ store }) => {
               </View>
               <View className='today_data_item'>
                 <View className='today_data_number'>{todayData ? todayData.newEntry : '0'}</View>
-                <View className='today_data_laber'>新增入职</View>
+                <View className='today_data_laber'>今日入职</View>
               </View>
               <View className='today_data_item'>
                 <View className='today_data_number'>{todayData ? todayData.newExit : '0'}</View>
@@ -406,7 +406,7 @@ const Index = observer(({ store }) => {
               </View>
               <View className='today_data_item'>
                 <View className='today_data_number'>{todayData ? todayData.newClue : '0'}</View>
-                <View className='today_data_laber'>新增线索</View>
+                <View className='today_data_laber'>今日线索</View>
               </View>
             </View>
           </View>
