@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-04 14:12:41
+ * @LastEditTime: 2024-12-06 09:57:18
  * @Description: 
  */
 
@@ -266,7 +266,7 @@ const Index = observer(({ store }) => {
 
             <View className='employee_wrapper'>
                 <View className='stream_title'>
-                    <View>引流与转化</View>
+                    <View>员工数据</View>
                     <View className='stream_title_right'>
                         <View onClick={() => { setEmployeeDate('YESTERDAY') }} className={`title_right_item ${employeeDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
                         <View onClick={() => { setEmployeeDate('THIS_WEEK') }} className={`title_right_item ${employeeDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
