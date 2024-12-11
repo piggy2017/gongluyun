@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-26 10:03:19
+ * @LastEditTime: 2024-12-11 17:57:04
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -13,13 +13,15 @@ import './index.scss'
 
 const Index = observer(({ store }) => {
     const {
-        userStore: { isLogin, setIsLogin, role, companyVerified, refreshUserInfo },
+        userStore: { isLogin, setIsLogin, token, role, companyVerified, refreshUserInfo },
     } = store
 
     useEffect(() => {
-        console.log("启动页 isLogin companyVerified", isLogin, companyVerified);
+        console.log("启动页 当前登录状态 isLogin:", isLogin, companyVerified);
+        console.log("启动页 当前 token:", token);
+        console.log("启动页 认证状态 companyVerified:", companyVerified);
         setTimeout(() => {
-            if (!isLogin) {  // 未登录
+            if (!isLogin || !token) {  // 未登录
                 Taro.redirectTo({ url: '/pages/login/index' })
             }
             if (isLogin && !companyVerified) {    // 已登录但没有实名认证
@@ -30,11 +32,11 @@ const Index = observer(({ store }) => {
                         Taro.switchTab({
                             url: '/pages/index/index'
                         })
-                    }else{
+                    } else {
                         Taro.redirectTo({ url: '/pages/auth/index' })
                     }
                 })
-            }else if(isLogin && companyVerified){
+            } else if (isLogin && companyVerified) {
                 Taro.switchTab({
                     url: '/pages/index/index'
                 })
