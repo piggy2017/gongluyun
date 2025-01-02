@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 16:31:50
+ * @LastEditTime: 2025-01-02 16:10:18
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -20,7 +20,7 @@ import './index.scss';
 */
 const Navbar = observer(({ store, fixed = false, back = true, title = '', bgColor, placeholder = false, customBack }) => {
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+        baseStore: { statusTitleHeight, contenTitleHeight },
     } = store
 
     useEffect(() => {
