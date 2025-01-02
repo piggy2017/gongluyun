@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 16:05:00
+ * @LastEditTime: 2024-12-31 16:43:44
  * @Description: 
  */
 
@@ -171,6 +171,14 @@ const Index = observer(({ store }) => {
         }
     }, 200)
 
+    const stick = (type) => {    // 执行粘贴操作
+        Taro.getClipboardData({
+            success: function (res) {
+                setFormData({ ...formData, phone: res.data });
+            }
+        })
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#F4F4F4' title='录入求职者信息'></Navbar>
@@ -193,19 +201,20 @@ const Index = observer(({ store }) => {
             </View>
 
             <View className='project_group'>
-                <View className='project_item'>
+                <View className='project_item project_item_stick'>
                     <View className='project_item_label project_item_label_required'>手机号码</View>
                     <View className='project_item_right'>
                         <Input
                             type='number'
                             disabled={isUpdate ? true : false}
                             maxlength='11'
-                            className='new_input'
+                            className='new_input new_input_phone'
                             placeholder='输入求职者的手机号'
                             placeholderStyle='color: #777777;'
                             value={formData.phone}
                             onInput={(e) => setFormData({ ...formData, phone: e.detail.value })}
                         ></Input>
+                        <View className='project_item_right_stick' onClick={() => stick()}>粘贴</View>
                     </View>
                 </View>
                 <View className='project_item project_item_border'>
@@ -241,12 +250,27 @@ const Index = observer(({ store }) => {
                     </View>
                 </View>
 
-                <View className='project_item project_item_border' onClick={() => setChooseJob(true)}>
+                {/* <View className='project_item project_item_border' onClick={() => setChooseJob(true)}>
                     <View className='project_item_label'>岗位偏好</View>
                     <View className='project_item_right' >
                         <Text className={`${jobTypes.length > 0 ? 'project_item_text_active' : 'project_item_text'}`}>{jobTypes.length > 0 ? jobTypeNames : '选择求职意向'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
+                </View> */}
+                <View className='project_item_job project_item_border'>
+                    <View className='project_item_label'>求职意向</View>
+                    <Textarea
+                        count={false}
+                        className='job_type_input'
+                        confirmType='return'
+                        value={formData.jobTypeName}
+                        onInput={(e) => setFormData({ ...formData, jobTypeName: e.detail.value })}
+                        adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                        show-confirm-bar
+                        autoHeight
+                        placeholder={`输入求职者的求职意向`}>
+
+                    </Textarea>
                 </View>
 
                 <View className='project_item project_item_border'>

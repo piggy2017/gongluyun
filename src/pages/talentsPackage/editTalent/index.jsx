@@ -202,12 +202,28 @@ const Index = observer(({ store }) => {
                     </View>
                 </View> */}
 
-                <View className='project_item project_item_border' onClick={() => setChooseJob(true)}>
+                {/* <View className='project_item project_item_border' onClick={() => setChooseJob(true)}>
                     <View className='project_item_label'>岗位偏好</View>
                     <View className='project_item_right' >
                         <Text className={`${jobTypes.length > 0 ? 'project_item_text_active' : 'project_item_text'}`}>{jobTypes.length > 0 ? jobTypeNames : '选择求职意向'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
+                </View> */}
+
+                <View className='project_item_job project_item_border'>
+                    <View className='project_item_label'>求职意向</View>
+                    <Textarea
+                        count={false}
+                        className='job_type_input'
+                        confirmType='return'
+                        value={formData.jobTypeName}
+                        onInput={(e) => setFormData({ ...formData, jobTypeName: e.detail.value })}
+                        adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                        show-confirm-bar
+                        autoHeight
+                        placeholder={`输入求职者的求职意向`}>
+
+                    </Textarea>
                 </View>
 
                 <View className='project_item project_item_border'>

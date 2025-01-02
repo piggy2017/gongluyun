@@ -65,7 +65,31 @@
             }
         }
 
-
+        .project_item_job{
+            // min-height: 140rpx;
+            padding: 50rpx 20rpx 50rpx 44rpx;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: flex-start;
+            justify-content: space-between;
+            .project_item_label {
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+            }
+            .job_type_input{
+                width: 480rpx;
+                text-align: right;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+            }
+        }
 
         .project_item {
             height: 140rpx;
@@ -107,6 +131,13 @@
                 font-style: normal;
                 font-weight: 400;
                 line-height: normal;
+                .project_item_right_stick{
+                    color: #0483ff;
+                    margin-left: 20rpx;
+                }
+                .new_input_phone{
+                    width: 380rpx !important;
+                }
 
                 .project_item_text {
                     color: #999999;
