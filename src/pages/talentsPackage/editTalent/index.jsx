@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 17:09:37
+ * @LastEditTime: 2025-01-02 16:29:20
  * @Description: 人才库 - 编辑人才信息页面
  */
 
@@ -202,15 +202,15 @@ const Index = observer(({ store }) => {
                     </View>
                 </View> */}
 
-                {/* <View className='project_item project_item_border' onClick={() => setChooseJob(true)}>
+                <View className='project_item project_item_border' onClick={() => setChooseJob(true)}>
                     <View className='project_item_label'>岗位偏好</View>
                     <View className='project_item_right' >
                         <Text className={`${jobTypes.length > 0 ? 'project_item_text_active' : 'project_item_text'}`}>{jobTypes.length > 0 ? jobTypeNames : '选择求职意向'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
-                </View> */}
+                </View>
 
-                <View className='project_item_job project_item_border'>
+                {/* <View className='project_item_job project_item_border'>
                     <View className='project_item_label'>求职意向</View>
                     <Textarea
                         count={false}
@@ -224,7 +224,7 @@ const Index = observer(({ store }) => {
                         placeholder={`输入求职者的求职意向`}>
 
                     </Textarea>
-                </View>
+                </View> */}
 
                 <View className='project_item project_item_border'>
                     <View className='project_item_label'>身份证号</View>
