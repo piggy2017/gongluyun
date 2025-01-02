@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-06 11:32:12
+ * @LastEditTime: 2025-01-02 15:28:54
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -392,7 +392,12 @@ const Index = observer(({ store }) => {
           <View className='today_data_wrapper'>
             <View className='today_data_title'>数据统计</View>
             <View className='today_data_content'>
-              <View className='today_data_item'>
+              <View className='today_data_item' onClick={() => {
+                Taro.setStorageSync("acticeProject", true);
+                Taro.switchTab({
+                  url: '/pages/projectManage/index'
+                })
+              }}>
                 <View className='today_data_number'>{todayData ? todayData.newRecruit : '0'}</View>
                 <View className='today_data_laber'>在招岗位</View>
               </View>
@@ -404,7 +409,12 @@ const Index = observer(({ store }) => {
                 <View className='today_data_number'>{todayData ? todayData.newExit : '0'}</View>
                 <View className='today_data_laber'>今日离职</View>
               </View>
-              <View className='today_data_item'>
+              <View className='today_data_item' onClick={() => {
+                Taro.setStorageSync("poor", true);
+                Taro.switchTab({
+                  url: '/pages/clue/index'
+                })
+              }}>
                 <View className='today_data_number'>{todayData ? todayData.newClue : '0'}</View>
                 <View className='today_data_laber'>今日线索</View>
               </View>

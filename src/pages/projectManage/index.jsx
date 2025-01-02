@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 15:57:37
+ * @LastEditTime: 2025-01-02 16:06:43
  * @Description: 
  */
 
@@ -42,12 +42,18 @@ const Index = observer(({ store }) => {
     if (_projectSearchValue) {
       setSearchValue(_projectSearchValue);
     }
+
+    const _acticeProject = Taro.getStorageSync('acticeProject');
+    if( _acticeProject){
+      setType('PROCESSING');
+    }
     getList(1);
   })
 
   useDidHide(() => {
     console.log("didHide");
     Taro.removeStorageSync('projectSearchValue');
+    Taro.removeStorageSync('acticeProject');
   })
 
   useEffect(() => {

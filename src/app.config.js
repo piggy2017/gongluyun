@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-03 16:11:26
+ * @LastEditTime: 2025-01-02 15:43:28
  * @Description: 
  */
 export default defineAppConfig({
@@ -68,6 +68,7 @@ export default defineAppConfig({
                 "clientDetail/index",           // 客户详情
                 "editTalent/index",             // 编辑人才信息
                 "talentInterview/index",        // 人才库详情安排面试
+                "clueDetail/index",             // 线索详情
             ]
         },
         {

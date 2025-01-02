@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 11:35:58
+ * @LastEditTime: 2025-01-02 15:34:00
  * @Description: 
  */
 
@@ -337,61 +337,69 @@ const Index = observer(({ store }) => {
 
 
       <Block>
-        <AtFloatLayout catchMove className='role_init_layout' isOpened={showAddress} onClose={() => { setShowAddress(false) }}>
-          <View className='filter_wrapper'>
-            <View className='filter_wrapper_bg'>
-              <View className='filter_title'>
-                <View>设置面试地点</View>
-                <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowAddress(false) }}></AtIcon>
+        {
+          showAddress &&
+          <AtFloatLayout catchMove className='role_init_layout' isOpened={showAddress} onClose={() => { setShowAddress(false) }}>
+            <View className='filter_wrapper'>
+              <View className='filter_wrapper_bg'>
+                <View className='filter_title'>
+                  <View>设置面试地点</View>
+                  <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowAddress(false) }}></AtIcon>
+                </View>
+                <View className='input_wrapper'>
+                  <Textarea count={false}
+                    className='float_input'
+                    auto-height
+                    confirmType='return'
+                    value={addressInt}
+                    onInput={(e) => setAddressInt(e.detail.value)}
+                    adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                    show-confirm-bar
+                    maxlength={500}
+                    autoHeight
+                    placeholder={`请输入面试地点`}>
+                  </Textarea>
+                </View>
+                <View className='post_btn' onClick={setInterviewAddress}>保存</View>
+                <View style={`height:${bottomSafeAreaHeight}px;`}></View>
               </View>
-              <View className='input_wrapper'>
-                <Textarea count={false}
-                  className='float_input'
-                  auto-height
-                  confirmType='return'
-                  value={addressInt}
-                  onInput={(e) => setAddressInt(e.detail.value)}
-                  adjustPosition={true} //键盘弹起时，是否自动上推页面 
-                  show-confirm-bar
-                  maxlength={500}
-                  autoHeight
-                  placeholder={`请输入面试地点`}>
-                </Textarea>
-              </View>
-              <View className='post_btn' onClick={setInterviewAddress}>保存</View>
-              <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
-          </View>
-        </AtFloatLayout>
+          </AtFloatLayout>
+        }
+
       </Block>
 
       <Block>
-        <AtFloatLayout catchMove className='role_init_layout' isOpened={showDate} onClose={() => { setShowDate(false) }}>
-          <View className='filter_wrapper'>
-            <View className='filter_wrapper_bg'>
-              <View className='filter_title'>
-                <View>设置面试时间</View>
-                <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowDate(false) }}></AtIcon>
+        {
+          showDate &&
+          <AtFloatLayout catchMove className='role_init_layout' isOpened={showDate} onClose={() => { setShowDate(false) }}>
+            <View className='filter_wrapper'>
+              <View className='filter_wrapper_bg'>
+                <View className='filter_title'>
+                  <View>设置面试时间</View>
+                  <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowDate(false) }}></AtIcon>
+                </View>
+                <View className='input_wrapper'>
+                  <Textarea count={false}
+                    className='float_input'
+                    auto-height
+                    confirmType='return'
+                    value={interviewDate}
+                    onInput={(e) => setInterviewDate(e.detail.value)}
+                    adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                    show-confirm-bar
+                    maxlength={500}
+                    autoHeight
+                    placeholder={`请输入面试时间`}>
+                  </Textarea>
+                </View>
+                <View className='post_btn' onClick={setInterviewDateFunc}>保存</View>
+                <View style={`height:${bottomSafeAreaHeight}px;`}></View>
               </View>
-              <View className='input_wrapper'>
-                <Textarea count={false}
-                  className='float_input'
-                  auto-height
-                  confirmType='return'
-                  value={interviewDate}
-                  onInput={(e) => setInterviewDate(e.detail.value)}
-                  adjustPosition={true} //键盘弹起时，是否自动上推页面 
-                  show-confirm-bar
-                  maxlength={500}
-                  autoHeight
-                  placeholder={`请输入面试时间`}>
-                </Textarea>
-              </View>
-              <View className='post_btn' onClick={setInterviewDateFunc}>保存</View>
-              <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
-          </View>
-        </AtFloatLayout>
+          </AtFloatLayout>
+        }
+
       </Block>
     </View>
   )

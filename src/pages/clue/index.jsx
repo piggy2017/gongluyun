@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-06 11:53:50
+ * @LastEditTime: 2025-01-02 16:04:57
  * @Description: 
  */
 
@@ -310,8 +310,9 @@ const Index = observer(({ store }) => {
     setFilterState(e);
   }
 
-  const getClient = async (obj, idx) => {   // 领取客户
+  const getClient = async (e,obj, idx) => {   // 领取客户
     console.log("getClient obj, idx", obj, idx);
+    e.stopPropagation();
 
     Taro.showLoading({ title: '领取中...' });
     const { code, data, msg } = await clueReceive({ uuid: obj.uuid });
@@ -359,6 +360,12 @@ const Index = observer(({ store }) => {
   const goClientDetail = (obj, index) => {
     Taro.navigateTo({
       url: `/pages/talentsPackage/clientDetail/index?uid=${obj.uuid}&phone=${obj.phone}&myClientCount=${myClientCount}&index=${index * 1 + 1}`
+    })
+  }
+
+  const goClueDetail = (obj, index) => {
+    Taro.navigateTo({
+      url: `/pages/talentsPackage/clueDetail/index?uid=${obj.uuid}&phone=${obj.phone}`
     })
   }
 
@@ -470,7 +477,7 @@ const Index = observer(({ store }) => {
                 list.length > 0 && list.map((item, index) => {
                   // return <ClueItem index={index} item={item} onGetClient={(obj, idx) => getClient(obj, idx)}></ClueItem>
                   return (
-                    <View key={index} className='clue_item'>
+                    <View key={index} className='clue_item' onClick={() => goClueDetail(item, index)}>
                       <View className='clue_item_wrap'>
                         <View className='clue_item_wrap_left'>
                           <View className='clue_item_title'>
@@ -507,7 +514,7 @@ const Index = observer(({ store }) => {
                         {
                           item.isGet &&
                           <View className='clue_item_wrap_right_done'>已领取</View> ||
-                          <View className='clue_item_wrap_right' onClick={() => getClient(item, index)}>立即领取</View>
+                          <View className='clue_item_wrap_right' onClick={(e) => getClient(e,item, index)}>立即领取</View>
                         }
                       </View>
                     </View>

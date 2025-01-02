@@ -1,12 +1,10 @@
 /*
  * @Author: 孙林 1164700321@qq.com
- * @Date: 2024-09-10 16:43:35
+ * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-04 15:34:54
+ * @LastEditTime: 2025-01-02 15:41:57
  * @Description: 
  */
-
-
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Text, Input, ScrollView, Block } from '@tarojs/components'
