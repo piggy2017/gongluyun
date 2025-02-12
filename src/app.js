@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-13 18:23:43
+ * @LastEditTime: 2025-02-08 15:10:24
  * @Description: 
  */
 import { useEffect } from 'react';
@@ -22,7 +22,6 @@ function App({ children }) {
   })
 
   useEffect(()=>{
-    console.log("app.js 中的 useEffect")
     baseStore.setSystemInfo();
     // businessStore.setSourceList();
     Taro.$cdnUrl = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject';
@@ -31,7 +30,6 @@ function App({ children }) {
   },[])
 
   useEffect(() => {
-    // 在 onLaunch 中执行逻辑
     if (Taro.canIUse('getUpdateManager')) {
       const updateManager = Taro.getUpdateManager()
       updateManager.onCheckForUpdate(function (res) {
@@ -67,8 +65,6 @@ function App({ children }) {
     }
   }, []);
 
-  // children 是将要会渲染的页面
-  // return children
   return (
     <Provider store={store}>
       {children}
