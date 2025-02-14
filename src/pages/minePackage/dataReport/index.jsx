@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-01-21 16:54:51
+ * @LastEditTime: 2025-02-14 13:46:22
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer, useRef } from 'react'
-import Taro, { useRouter,usePullDownRefresh } from '@tarojs/taro';
+import Taro, { useRouter, usePullDownRefresh } from '@tarojs/taro';
 import { View, Image, Text, Canvas } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import Navbar from '@/components/navbar';
@@ -24,6 +24,7 @@ const Index = observer(({ store }) => {
 
     const [drainageDate, setDrainageDate] = useState('YESTERDAY');
     const [employeeDate, setEmployeeDate] = useState('YESTERDAY');
+    const [flowDate, setFlowDate] = useState('YESTERDAY');
     const [percent, setPercent] = useState(0);
     const canvasId = 'progressCanvas';
     const canvasRef = useRef(null);
@@ -40,9 +41,9 @@ const Index = observer(({ store }) => {
         getDashDrainageData();
         getDashEmployeeData();
         setTimeout(() => {
-          Taro.stopPullDownRefresh();
+            Taro.stopPullDownRefresh();
         }, 1500);
-      })
+    })
 
     useEffect(() => {
         getDashContractsData();
@@ -56,6 +57,10 @@ const Index = observer(({ store }) => {
     useEffect(() => {
         getDashEmployeeData();
     }, [employeeDate]);
+
+    useEffect(() => {
+        getDashFlowChannel();
+    },[flowDate])
 
     useEffect(() => {
         const query = Taro.createSelectorQuery();
@@ -214,50 +219,55 @@ const Index = observer(({ store }) => {
             </View>
 
             <View className='flow_wrapper'>
-                <View className='flow_left'>
-                    <View className='flow_left_title'>流量渠道</View>
-                    <View className='canvas_content'>
-                        <Canvas
-                            id={canvasId}
-                            canvasId={canvasId}
-                            style={{
-                                width: '80px',
-                                height: '80px',
-                            }}
-                            ref={canvasRef}
-                            type='2d'
-                        />
-                        <View className='percent_text'>{percent}%</View>
+                <View className='stream_title'>
+                    <View>流量渠道</View>
+                    <View className='stream_title_right'>
+                        <View onClick={() => { setFlowDate('YESTERDAY') }} className={`title_right_item ${flowDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
+                        <View onClick={() => { setFlowDate('THIS_WEEK') }} className={`title_right_item ${flowDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
+                        <View onClick={() => { setFlowDate('THIS_MONTH') }} className={`title_right_item ${flowDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
+                    </View>
+                </View>
+                <View className='flow_content'>
+                    <View className='flow_left'>
+                        <View className='canvas_content'>
+                            <Canvas
+                                id={canvasId}
+                                canvasId={canvasId}
+                                style={{
+                                    width: '80px',
+                                    height: '80px',
+                                }}
+                                ref={canvasRef}
+                                type='2d'
+                            />
+                            <View className='percent_text'>{percent}%</View>
+
+                        </View>
+                        <View className='flow_left_label'>外部占比</View>
+                        <View className='flow_left_label'>（私域以外来源）</View>
+                    </View>
+                    <View className='flow_right'>
+                        <View className='flow_right_title'>
+                            <View>线索数</View>
+                            <View>入职数</View>
+                        </View>
+                        <View className='flow_item_wrapper'>
+                            {
+                                flowList.length > 0 && flowList.map((item, index) => {
+                                    return (
+                                        <View className='flow_item' key={index}>
+                                            <View className='flow_item_label'>{item.source}</View>
+                                            <View className='flow_item_num'><Text className='flow_item_num_text'>{item.newSignup}</Text><Text>人</Text></View>
+                                            <View className='flow_item_join'><Text className='flow_item_join_text'>{item.finalEntry}</Text><Text>人</Text></View>
+                                        </View>
+                                    )
+                                })
+                            }
+                        </View>
 
                     </View>
-                    <View className='flow_left_label'>外部占比</View>
-                    <View className='flow_left_label'>（私域以外来源）</View>
                 </View>
-                <View className='flow_right'>
-                    <View className='flow_right_title'>
-                        <View>线索数</View>
-                        <View>入职数</View>
-                    </View>
-                    {/* <View className='flow_item'>
-                        <View className='flow_item_label'>供应商</View>
-                        <View className='flow_item_num'><Text className='flow_item_num_text'>52</Text><Text>人</Text></View>
-                        <View className='flow_item_join'><Text className='flow_item_join_text'>52</Text><Text>人</Text></View>
-                    </View> */}
-                    <View className='flow_item_wrapper'>
-                    {
-                        flowList.length > 0 && flowList.map((item, index) => {
-                            return (
-                                <View className='flow_item' key={index}>
-                                    <View className='flow_item_label'>{item.source}</View>
-                                    <View className='flow_item_num'><Text className='flow_item_num_text'>{item.newSignup}</Text><Text>人</Text></View>
-                                    <View className='flow_item_join'><Text className='flow_item_join_text'>{item.finalEntry}</Text><Text>人</Text></View>
-                                </View>
-                            )
-                        })
-                    }
-                    </View>
-                    
-                </View>
+
             </View>
 
             <View className='employee_wrapper'>
@@ -272,8 +282,8 @@ const Index = observer(({ store }) => {
                 </View>
 
                 {
-                    employeeList.length>0 && employeeList.map((item,index)=>{
-                        return(
+                    employeeList.length > 0 && employeeList.map((item, index) => {
+                        return (
                             <View className='employee_item' key={index}>
                                 <View className='employee_item_name'>{item.operator}</View>
                                 <View className='employee_item_datas'>

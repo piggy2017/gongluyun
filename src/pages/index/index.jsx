@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-01-02 15:28:54
+ * @LastEditTime: 2025-02-14 14:05:48
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -266,7 +266,9 @@ const Index = observer(({ store }) => {
       })
       return
     }
-    Taro.showToast({ title: '敬请期待', icon: 'none', duration: 2000 });
+    Taro.navigateTo({
+      url: `/pages/newPackage/newInterviewWorker/index`
+    })
   }
 
 
@@ -346,7 +348,7 @@ const Index = observer(({ store }) => {
         </View>
 
         {
-          (role === "ADMIN" || role === 'SEEK') &&
+          (role === "ADMIN" || role === 'SEEK' || role === "CUSTOMER") &&
           <View className='btn_wrapper'>
             <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/talentsPackage/talents/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon4.webp`}></Image>
@@ -366,9 +368,9 @@ const Index = observer(({ store }) => {
               <Image src={`${Taro.$cdnUrl}/index/index_icon6.webp`}></Image>
               <View>录入求职线索</View>
             </View>
-            <View className='enter_wrap_item' style={`margin-left:230rpx;`} onClick={feedBackList}>
+            <View className='enter_wrap_item' style={`margin-left:190rpx;`} onClick={feedBackList}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
-              <View>反馈名单</View>
+              <View>录入面试信息</View>
             </View>
           </View>
         }

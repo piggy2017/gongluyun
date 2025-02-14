@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-01-02 15:43:28
+ * @LastEditTime: 2025-02-14 14:05:07
  * @Description: 
  */
 export default defineAppConfig({
@@ -88,6 +88,7 @@ export default defineAppConfig({
                 "newProjectSuccess/index",       // 新增项目成功
                 "setCustom/index",               // 新增求职者选择跟进的客服
                 "newProjectWorker/index",        // 项目新增求职者
+                "newInterviewWorker/index",      // 首页 录入面试信息 新增求职者
             ]
         },
         {

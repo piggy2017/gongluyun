@@ -185,6 +185,15 @@ const Index = observer(({ store }) => {
         }
     }
 
+    const stick = (index) => {
+        Taro.getClipboardData({
+            success: function (res) {
+                console.log('res')
+                setFormListData(index, 'phone', res.data);
+            }
+        })
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#F4F4F4' title='录入求职者信息'></Navbar>
@@ -273,6 +282,7 @@ const Index = observer(({ store }) => {
                                         <View className='project_item_right'>
                                             <Input
                                                 type='number'
+                                                style={`width:400rpx;`}
                                                 className='new_input'
                                                 maxlength='11'
                                                 placeholder='输入求职者的手机号(必填）'
@@ -280,6 +290,7 @@ const Index = observer(({ store }) => {
                                                 value={arrangList[index].phone}
                                                 onInput={(e) => setFormListData(index, 'phone', e.detail.value)}
                                             ></Input>
+                                            <View className='project_item_right_stick' onClick={() => stick(index)}>粘贴</View>
                                         </View>
                                     </View>
                                     <View className='project_item project_item_border' onClick={() => {
