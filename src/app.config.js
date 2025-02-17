@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-14 14:05:07
+ * @LastEditTime: 2025-02-17 17:00:46
  * @Description: 
  */
 export default defineAppConfig({
@@ -124,6 +124,12 @@ export default defineAppConfig({
                 "signIn/index",                   // 签到页面
                 "signLogin/index",                // 求职者签到-登录页面
                 "signSuccess/index",              // 求职者签到-成功页面
+            ]
+        },
+        {
+            "root": "pages/supplierPackage/",     // 供应商相关页面
+            "pages":[
+                "supplierManage/index",           // 供应商管理
             ]
         }
     ]

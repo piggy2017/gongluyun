@@ -187,14 +187,17 @@
 
     .btn_wrapper {
         @include flex-center(space-between);
-        padding: 0 102rpx;
+        padding: 0 66rpx;
         margin-top: 24rpx;
 
         .btn_wrap_item {
-            @include flex-center;
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: center;
+            justify-content: center;
             color: #222222;
             font-family: "PingFang SC";
-            font-size: 28rpx;
+            font-size: 26rpx;
             font-style: normal;
             font-weight: 500;
             line-height: normal;
@@ -202,7 +205,7 @@
             image {
                 width: 104rpx;
                 height: 104rpx;
-                margin-right: 4rpx;
+                // margin-right: 4rpx;
             }
         }
     }

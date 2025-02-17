@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-08 15:10:24
+ * @LastEditTime: 2025-02-17 17:11:45
  * @Description: 
  */
 import { useEffect } from 'react';
@@ -26,6 +26,7 @@ function App({ children }) {
     // businessStore.setSourceList();
     Taro.$cdnUrl = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject';
     Taro.$cdnBackIcon = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/mine/back_icon.webp';
+    Taro.$cdnBlackBackIcon = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/supplier/supplier_5.webp';
     Taro.$baseCdnUrl = 'https://apu-mini.oss-accelerate.aliyuncs.com';
   },[])
 

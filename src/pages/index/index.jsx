@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-14 17:43:12
+ * @LastEditTime: 2025-02-17 16:52:03
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -369,7 +369,11 @@ const Index = observer(({ store }) => {
             </View>
             <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/dataReport/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon5.webp`}></Image>
-              <View>分析报表</View>
+              <View>员工数据</View>
+            </View>
+            <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/dataReport/index')}>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_1.webp`}></Image>
+              <View>供应商</View>
             </View>
           </View>
         }
