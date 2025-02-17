@@ -484,4 +484,123 @@
             }
         }
     }
+
+    .stream_wrapper {
+        width: 710rpx;
+        height: 552rpx;
+        flex-shrink: 0;
+        border-radius: 14rpx;
+        background-color: #FFF;
+        margin: 20rpx auto 0 auto;
+        background-image: url($cdnUrl + '/newIndex/newIndex_26.webp');
+        background-repeat: no-repeat;
+        background-size: 388rpx 302rpx;
+        background-position: 74rpx 224rpx;
+
+        .stream_title {
+            padding: 28rpx 24rpx 0 24rpx;
+            @include flex-center(space-between);
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+        }
+
+        .stream_title_right {
+            @include flex-center();
+            gap: 0 20rpx;
+
+            .title_right_item {
+                width: 100rpx;
+                height: 40rpx;
+                border-radius: 4rpx;
+                background: #F2F2F2;
+                color: #444444;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 40rpx;
+                text-align: center;
+            }
+
+            .title_right_item_active {
+                background: #EAF3FF;
+                color: #1678ff;
+            }
+        }
+
+        .stream_content {
+            padding: 46rpx 94rpx 0 94rpx;
+            @include flex-center(space-between);
+
+            .stream_content_item {
+                color: #1678ff;
+                text-align: center;
+                font-family: "D-DIN-PRO";
+                font-size: 36rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: center;
+                justify-content: center;
+
+                .stream_content_item_label {
+                    color: #222222;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 26rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    margin-top: 4rpx;
+                }
+            }
+        }
+
+        .stream_num_wapper {
+            margin: 38rpx 0 0 412rpx;
+
+            // border: 1px solid red;
+            .stream_num_item {
+                color: #666666;
+                // text-align: center;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                margin-bottom: 14rpx;
+
+                text {
+                    color: #333333;
+                    font-weight: 600;
+                }
+            }
+
+            .stream_num_item:nth-child(1) {
+                margin-left: 80rpx;
+            }
+
+            .stream_num_item:nth-child(2) {
+                margin-left: 64rpx;
+            }
+
+            .stream_num_item:nth-child(3) {
+                margin-left: 48rpx;
+            }
+
+            .stream_num_item:nth-child(4) {
+                margin-left: 32rpx;
+            }
+
+            .stream_num_item:nth-child(5) {
+                margin-left: 16rpx;
+            }
+        }
+    }
 }

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-14 13:46:22
+ * @LastEditTime: 2025-02-14 17:42:34
  * @Description: 
  */
 
@@ -60,7 +60,7 @@ const Index = observer(({ store }) => {
 
     useEffect(() => {
         getDashFlowChannel();
-    },[flowDate])
+    }, [flowDate])
 
     useEffect(() => {
         const query = Taro.createSelectorQuery();
@@ -135,7 +135,7 @@ const Index = observer(({ store }) => {
     }
 
     const getDashFlowChannel = async () => {   // 获取流量渠道数据
-        const { code, data, msg } = await dashFlowChannel({ companySerialCode: companyInfo.companySerialCode });
+        const { code, data, msg } = await dashFlowChannel({ companySerialCode: companyInfo.companySerialCode, dateRange: flowDate });
         console.log("获取流量渠道数据", data);
         if (code === 200 && data) {
             setPercent(data?.externalRate * 1);
@@ -183,7 +183,7 @@ const Index = observer(({ store }) => {
                 </View>
             </View>
 
-            <View className='stream_wrapper'>
+            {/* <View className='stream_wrapper'>
                 <View className='stream_title'>
                     <View>引流与转化</View>
                     <View className='stream_title_right'>
@@ -216,7 +216,7 @@ const Index = observer(({ store }) => {
                     <View className='stream_num_item'>面试通过 <Text>{streamData.interviewPass}</Text> 人</View>
                     <View className='stream_num_item'>最终入职 <Text>{streamData.finalEntry}</Text> 人</View>
                 </View>
-            </View>
+            </View> */}
 
             <View className='flow_wrapper'>
                 <View className='stream_title'>
@@ -225,6 +225,7 @@ const Index = observer(({ store }) => {
                         <View onClick={() => { setFlowDate('YESTERDAY') }} className={`title_right_item ${flowDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
                         <View onClick={() => { setFlowDate('THIS_WEEK') }} className={`title_right_item ${flowDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
                         <View onClick={() => { setFlowDate('THIS_MONTH') }} className={`title_right_item ${flowDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
+                        <View onClick={() => { setFlowDate('') }} className={`title_right_item ${flowDate === '' ? 'title_right_item_active' : ''}`}>全部</View>
                     </View>
                 </View>
                 <View className='flow_content'>
