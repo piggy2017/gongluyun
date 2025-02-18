@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-14 17:42:34
+ * @LastEditTime: 2025-02-17 17:22:15
  * @Description: 
  */
 
@@ -183,13 +183,14 @@ const Index = observer(({ store }) => {
                 </View>
             </View>
 
-            {/* <View className='stream_wrapper'>
+            <View className='stream_wrapper'>
                 <View className='stream_title'>
                     <View>引流与转化</View>
                     <View className='stream_title_right'>
                         <View onClick={() => { setDrainageDate('YESTERDAY') }} className={`title_right_item ${drainageDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
                         <View onClick={() => { setDrainageDate('THIS_WEEK') }} className={`title_right_item ${drainageDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
                         <View onClick={() => { setDrainageDate('THIS_MONTH') }} className={`title_right_item ${drainageDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
+                        <View onClick={() => { setDrainageDate('') }} className={`title_right_item ${drainageDate === '' ? 'title_right_item_active' : ''}`}>全部</View>
                     </View>
                 </View>
 
@@ -216,7 +217,7 @@ const Index = observer(({ store }) => {
                     <View className='stream_num_item'>面试通过 <Text>{streamData.interviewPass}</Text> 人</View>
                     <View className='stream_num_item'>最终入职 <Text>{streamData.finalEntry}</Text> 人</View>
                 </View>
-            </View> */}
+            </View>
 
             <View className='flow_wrapper'>
                 <View className='stream_title'>

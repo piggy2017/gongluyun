@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-14 17:43:12
+ * @LastEditTime: 2025-02-17 17:27:21
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -538,6 +538,7 @@ const Index = observer(({ store }) => {
                 <View onClick={() => { setDrainageDate('YESTERDAY') }} className={`title_right_item ${drainageDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
                 <View onClick={() => { setDrainageDate('THIS_WEEK') }} className={`title_right_item ${drainageDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
                 <View onClick={() => { setDrainageDate('THIS_MONTH') }} className={`title_right_item ${drainageDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
+                <View onClick={() => { setDrainageDate('') }} className={`title_right_item ${drainageDate === '' ? 'title_right_item_active' : ''}`}>全部</View>
               </View>
             </View>
 
