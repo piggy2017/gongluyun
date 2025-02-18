@@ -371,7 +371,7 @@ const Index = observer(({ store }) => {
               <Image src={`${Taro.$cdnUrl}/index/index_icon5.webp`}></Image>
               <View>员工数据</View>
             </View>
-            <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/dataReport/index')}>
+            <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/supplierPackage/supplierManage/index')}>
               <Image src={`${Taro.$cdnUrl}/supplier/supplier_1.webp`}></Image>
               <View>供应商</View>
             </View>
