@@ -2,17 +2,18 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-01-02 15:41:57
+ * @LastEditTime: 2025-02-19 11:07:07
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
-import { View, Image, Text, Input, ScrollView, Block } from '@tarojs/components'
+import { View, Image, Textarea, Text, Input, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
+
 import Navbar from '@/components/navbar';
 import WorkerInfo from '@/components/workerInfo';
 import DatePicker from '@/components/datePicker'
@@ -25,7 +26,7 @@ import { cluegetUserInfo, updateInterviewer, clueStateFlow, cluemyClients, contr
 const Index = observer(({ store }) => {
     const route = useRouter();
     const {
-        baseStore: { bottomSafeAreaHeight },
+        baseStore: { bottomSafeAreaHeight, keyBoardHeight, setKeyBoardHeight },
         businessStore: { myClientParams }
     } = store
 
@@ -42,6 +43,8 @@ const Index = observer(({ store }) => {
     const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示地步的操作选项
     const [currentCliskstatus, setCurrentCliskstatus] = useState('面试失败');
     const [clientInfos, setClientInfos] = useState(null);
+    const [reason, setReason] = useState('');
+    const [showReason, setShowReason] = useState(false);
 
     useDidShow(() => {
         if (clientInfos && clientInfos.uuid) {
@@ -188,11 +191,22 @@ const Index = observer(({ store }) => {
         }
     }
 
-    const changeStatus = (e) => {
-        console.log("changeStatus", e);
+    const changeStatus = (e, reason) => {
+        console.log("changeStatus", e, reason);
         setCurrentCliskstatus(e);
         Taro.showLoading({ title: '提交中...' });
-        updateInterviewer({ uuid: clientInfos.uuid, seekState: e }).then(res => {
+        let params = {
+            uuid: clientInfos.uuid,
+            seekState: e
+        }
+        if (reason) {
+            if (e === 'INTERVIEW_FAILED') {
+                params.failReason = reason;
+            } else if (e === 'RESIGN') {
+                params.resignReason = reason;
+            }
+        }
+        updateInterviewer(params).then(res => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
@@ -204,11 +218,21 @@ const Index = observer(({ store }) => {
     }
 
     const unsuitableFunc = async () => {
+        setShowReason(true);
+        return
+
+    }
+
+    const saveReasonFunc = async () => {
+        if (!reason) {
+            return Taro.showToast({ title: '请输入不合适原因', icon: 'none' });
+        }
         Taro.showLoading({ title: '提交中...', mask: true });
-        const { code, data, msg } = await unsuitable({ uuid: clientInfos.uuid });
+        const { code, data, msg } = await unsuitable({ uuid: clientInfos.uuid, unsuitableReason: reason });
         Taro.hideLoading();
         if (code === 200) {
             Taro.showToast({ title: '提交成功', icon: 'none' });
+            setShowReason(false);
             getClientDetail(clientInfos.uuid, clientInfos.phone);
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
@@ -389,6 +413,50 @@ const Index = observer(({ store }) => {
                     </View>
                 </View>
             </View>
+
+            <Block>
+                {
+                    showReason &&
+                    <AtFloatLayout catchMove className='role_init_layout' isOpened={showReason} onClose={() => { setShowReason(false) }}>
+                        <View className='filter_wrapper'>
+                            <View className='filter_wrapper_bg'>
+                                <View className='filter_title'>
+                                    <View></View>
+                                    <View>反馈不合适原因</View>
+                                    <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowReason(false) }}></AtIcon>
+                                </View>
+                                <View className='input_wrapper'>
+                                    <Textarea count={false}
+                                        focus={true}
+                                        className='float_input'
+                                        auto-height
+                                        confirmType='return'
+                                        value={reason}
+                                        onInput={(e) => setReason(e.detail.value)}
+                                        adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                                        showConfirmBar={false}
+                                        maxlength={50}
+                                        autoHeight
+                                        placeholder={`请描述具体原因...（必填）`}
+                                        onKeyboardHeightChange={(e) => {
+                                            let currHeight = e.detail.height;
+                                            console.log('currHeight', currHeight)
+                                            if (currHeight > 0) {
+                                                setKeyBoardHeight(currHeight);
+                                            }
+                                        }}
+                                    >
+                                    </Textarea>
+                                    <View className='input_number'><Text>{reason.length}</Text>/50</View>
+                                </View>
+                                <View style={`background:${reason.length > 0 ? '#0483FF' : '#CDE1FF'}`} className='post_btn' onClick={saveReasonFunc}>提交</View>
+                                <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+                            </View>
+                        </View>
+                    </AtFloatLayout>
+                }
+
+            </Block>
         </View>
     )
 })

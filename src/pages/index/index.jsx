@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-17 17:27:21
+ * @LastEditTime: 2025-02-18 15:55:30
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -24,7 +24,7 @@ const Index = observer(({ store }) => {
     businessStore: { setSourceList }
   } = store
 
-  const [drainageDate, setDrainageDate] = useState('YESTERDAY');
+  const [drainageDate, setDrainageDate] = useState('TODAY');
   // const [drainageDate, setDrainageDate] = useState('YESTERDAY');
   const [drainageInfo, setDrainageInfo] = useState('');      // 迎流数据
   const [transformDate, setTransformDate] = useState('YESTERDAY');
@@ -535,6 +535,7 @@ const Index = observer(({ store }) => {
             <View className='stream_title'>
               <View>引流与转化</View>
               <View className='stream_title_right'>
+                <View onClick={() => { setDrainageDate('TODAY') }} className={`title_right_item ${drainageDate === 'TODAY' ? 'title_right_item_active' : ''}`}>今日</View>
                 <View onClick={() => { setDrainageDate('YESTERDAY') }} className={`title_right_item ${drainageDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
                 <View onClick={() => { setDrainageDate('THIS_WEEK') }} className={`title_right_item ${drainageDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
                 <View onClick={() => { setDrainageDate('THIS_MONTH') }} className={`title_right_item ${drainageDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>

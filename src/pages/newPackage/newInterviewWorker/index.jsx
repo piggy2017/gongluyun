@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-14 14:37:19
+ * @LastEditTime: 2025-02-19 13:55:46
  * @Description: 
  */
 
@@ -197,7 +197,7 @@ const Index = observer(({ store }) => {
 
     return (
         <View className='container'>
-            <Navbar fixed placeholder bgColor='#F4F4F4' title='录入求职者信息'></Navbar>
+            <Navbar fixed placeholder bgColor='#F4F4F4' title='录入面试信息'></Navbar>
 
             <View className='project_title'>面试信息</View>
             <View className='project_group'>
@@ -315,6 +315,34 @@ const Index = observer(({ store }) => {
                                                 placeholderStyle='color: #777777;'
                                                 value={arrangList[index].idCardNo}
                                                 onInput={(e) => setFormListData(index, 'idCardNo', e.detail.value)}
+                                            ></Input>
+                                        </View>
+                                    </View>
+                                    <View className='project_item project_item_border'>
+                                        <View className='project_item_label'>年龄</View>
+                                        <View className='project_item_right'>
+                                            <Input
+                                                type='number'
+                                                // maxlength='18'
+                                                className='new_input'
+                                                placeholder='输入用户年龄'
+                                                placeholderStyle='color: #777777;'
+                                                value={arrangList[index].age}
+                                                onInput={(e) => setFormListData(index, 'age', e.detail.value)}
+                                            ></Input>
+                                        </View>
+                                    </View>
+                                    <View className='project_item project_item_border'>
+                                        <View className='project_item_label'>联系地址</View>
+                                        <View className='project_item_right'>
+                                            <Input
+                                                // type='idcard'
+                                                // maxlength='18'
+                                                className='new_input'
+                                                placeholder='输入用户联系地址'
+                                                placeholderStyle='color: #777777;'
+                                                value={arrangList[index].address}
+                                                onInput={(e) => setFormListData(index, 'address', e.detail.value)}
                                             ></Input>
                                         </View>
                                     </View>

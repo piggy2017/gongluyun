@@ -356,6 +356,10 @@ export const getStatus = (status, type) => {
             return '已入职';
         case 'RESIGN':
             return '已离职';
+        case 'SETTLEMENT':
+            return '可结算';
+        case 'CONTACT':
+            return '已联系';
     }
 }
 
@@ -379,5 +383,7 @@ export const getColor = (status) => {
             return '#04B400';
         case 'RESIGN':
             return '#666666';
+        case 'CONTACT':
+            return '#1678FF';
     }
 }

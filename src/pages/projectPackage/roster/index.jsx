@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-04 17:24:36
+ * @LastEditTime: 2025-02-19 11:45:58
  * @Description: 
  */
 
@@ -239,11 +239,23 @@ const Index = observer(({ store }) => {
         Taro.navigateTo({ url: `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${recruitSerialCode}&title=${title}` })
     }
 
-    const changeStatus = (e) => {
-        console.log("changeStatus", e);
+    const changeStatus = (e, reason) => {
+        console.log("changeStatus", e, reason);
         setCurrentCliskstatus(e);
+        let params = {
+            uuid: editCustom.uuid,
+            seekState: e
+        }
+        if (reason) {
+            if (e === 'INTERVIEW_FAILED') {
+                params.failReason = reason;
+            } else if (e === 'RESIGN') {
+                params.resignReason = reason;
+            }
+        }
+
         Taro.showLoading({ title: '提交中...' });
-        updateInterviewer({ uuid: editCustom.uuid, seekState: e }).then(res => {
+        updateInterviewer(params).then(res => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
@@ -255,8 +267,8 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const changeStatusBatch = (e) => {    // 批量修改状态
-        console.log("changeStatusBatch", e);
+    const changeStatusBatch = (e, reason) => {    // 批量修改状态
+        console.log("changeStatusBatch", e, reason);
         if (chooseList.length === 0) {
             return Taro.showToast({ title: '请先选择用户', icon: 'none' });
         }
@@ -264,6 +276,13 @@ const Index = observer(({ store }) => {
             let obj = {
                 uuid: item,
                 seekState: e
+            }
+            if (reason) {
+                if (e === 'INTERVIEW_FAILED') {
+                    obj.failReason = reason;
+                } else if (e === 'RESIGN') {
+                    obj.resignReason = reason;
+                }
             }
             return obj
         })

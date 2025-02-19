@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-05 15:39:11
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-03 15:53:56
+ * @LastEditTime: 2025-02-18 17:50:40
  * @Description: 自定义选择日期或者日期范围
  */
 import React, { useState, useEffect, useReducer } from 'react';
@@ -14,7 +14,11 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss';
 
-const CustomDate = observer(({ showPicker, onClose, onChange, store }) => {
+/*
+ * defaultToday: 是否默认选中 今日
+ */
+
+const CustomDate = observer(({ showPicker, defaultToday, onClose, onChange, store }) => {
     const filterList = [                 // 时间筛选列表
         { text: "全部日期", code: "" },
         { text: "今日", code: "TODAY" },
@@ -24,6 +28,12 @@ const CustomDate = observer(({ showPicker, onClose, onChange, store }) => {
         { text: "本月", code: "THIS_MONTH" },
         { text: "上月", code: "LAST_MONTH" },
     ];
+    useEffect(() => {
+        if(defaultToday){
+            setFilterTime('今日');
+            setDateRange('TODAY');
+        }
+    },[defaultToday])
 
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
