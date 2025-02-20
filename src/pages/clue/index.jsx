@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-01-02 16:04:57
+ * @LastEditTime: 2025-02-18 17:55:15
  * @Description: 
  */
 
@@ -508,6 +508,9 @@ const Index = observer(({ store }) => {
                           }
                           {
                             item.sourceDesc ? <View className='clue_item_info'>录入人员：{item.sourceDesc}</View> : ''
+                          }
+                          {
+                            item.remark ? <View className='clue_item_info'>备注：{item.remark}</View> : ''
                           }
                           <View className='clue_item_info'>{item.createTime}录入</View>
                         </View>

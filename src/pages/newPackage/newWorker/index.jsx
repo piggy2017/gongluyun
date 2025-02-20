@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-14 14:36:52
+ * @LastEditTime: 2025-02-19 17:56:56
  * @Description: 
  */
 
@@ -236,6 +236,34 @@ const Index = observer(({ store }) => {
                         <View onClick={() => setFormData({ ...formData, sex: 1 })} className={`option_item ${formData.sex === 1 ? 'option_item_active' : ''}`}>女</View>
                     </View>
                 </View>
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>年龄</View>
+                    <View className='project_item_right'>
+                        <Input
+                            type='number'
+                            // maxlength='18'
+                            className='new_input'
+                            placeholder='请输入用户年龄'
+                            placeholderStyle='color: #777777;'
+                            value={formData.age}
+                            onInput={(e) => setFormData({ ...formData, age: e.detail.value })}
+                        ></Input>
+                    </View>
+                </View>
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>联系地址</View>
+                    <View className='project_item_right'>
+                        <Input
+                            // type='number'
+                            // maxlength='18'
+                            className='new_input'
+                            placeholder='请输入用户联系地址'
+                            placeholderStyle='color: #777777;'
+                            value={formData.address}
+                            onInput={(e) => setFormData({ ...formData, address: e.detail.value })}
+                        ></Input>
+                    </View>
+                </View>
             </View>
             <View className='project_group'>
                 {/* <View className='project_item project_item_border' onClick={() => {
@@ -296,17 +324,17 @@ const Index = observer(({ store }) => {
                     </View>
                 </View> */}
                 {
-                    formData.agentSerialCode !== '' &&
-                    <View className='project_item project_item_border'>
-                        <View className='project_item_label'>面试日期</View>
-                        <View className='project_item_right' onClick={() => {
-                            // if (isUpdate) return;
-                            setShowDatePicker(true)
-                        }}>
-                            <Text className={`${formData.interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewDate ? formData.interviewDate : '请选择面试日期'}</Text>
-                            <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
-                        </View>
-                    </View>
+                    // formData.agentSerialCode !== '' &&
+                    // <View className='project_item project_item_border'>
+                    //     <View className='project_item_label'>面试日期</View>
+                    //     <View className='project_item_right' onClick={() => {
+                    //         // if (isUpdate) return;
+                    //         setShowDatePicker(true)
+                    //     }}>
+                    //         <Text className={`${formData.interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewDate ? formData.interviewDate : '请选择面试日期'}</Text>
+                    //         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                    //     </View>
+                    // </View>
                 }
             </View>
 

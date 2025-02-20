@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-04 11:24:31
  * @LastEditors: 孙林
- * @LastEditTime: 2024-09-09 10:56:42
+ * @LastEditTime: 2025-02-19 10:28:07
  * @Description: 用于存放系统的相关信息
  */
 import { observable,makeAutoObservable } from 'mobx'
@@ -33,6 +33,10 @@ const baseStore = observable({
     setTabbarHeight(value){    // 获取底部tabbar的高度 (进入小程序或者切换角色后会自动计算)
         baseStore.tabbarHeight = value;
     },
+    keyBoardHeight: 336, // 键盘高度
+    setKeyBoardHeight(value) {
+        baseStore.keyBoardHeight = value;
+    }
 });
 
 export default baseStore

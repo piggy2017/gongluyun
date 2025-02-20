@@ -512,10 +512,15 @@
         }
 
         .stream_title_right {
-            @include flex-center();
-            gap: 0 20rpx;
+            // @include flex-center();
+            // gap: 0 20rpx;
+            width: 500px;
+            overflow-x: scroll;
+            white-space: nowrap;
 
             .title_right_item {
+                display: inline-block;
+                margin-right: 20rpx;
                 width: 100rpx;
                 height: 40rpx;
                 border-radius: 4rpx;

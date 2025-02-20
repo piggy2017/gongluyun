@@ -2,17 +2,18 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-04 17:37:15
+ * @LastEditTime: 2025-02-19 11:58:26
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro';
-import { View, Image, Button, ScrollView, Text, Block } from '@tarojs/components'
+import { View, Image, Button, ScrollView, Text, Block, RootPortal,Textarea } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
-import { AtIcon } from 'taro-ui'
+import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
+import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
 
 import TabBar from '@/components/tabBar';
@@ -23,7 +24,7 @@ import { contractsgetRoster, contractsSign, updateInterviewer, batchUpdateInterv
 const Index = observer(({ store }) => {
   const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
   const {
-    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight, setKeyBoardHeight },
     businessStore: { onSiteFilterJob, onSiteFilterSUPPLIER, setMyClientParams },
   } = store
 
@@ -39,6 +40,9 @@ const Index = observer(({ store }) => {
   const pageSize = 10
 
   const [list, setList] = useState([]);
+
+  const [showModel, setShowModel] = useState(false);
+  const [failReason, setFailReason] = useState(''); // 面试失败原因
 
   const [tabList, setTabList] = useState([
     { state: 'SCHEDULED_INTERVIEW', name: '已约面' },
@@ -56,6 +60,8 @@ const Index = observer(({ store }) => {
   const [showExportModel, setShowExportModel] = useState(false);       // 是否显示导出弹窗
   const [editCustom, setEditCustom] = useState({});                    // 当前需要更改的客户信息
   const [customRequestParams, setCustomRequestParams] = useState({});  // 当前请求参数
+
+  const [currentFailParams, setCurrentFailParams] = useState({});      // 当前面试失败请求参数
 
   const [dateObj, setDateObj] = useState({
     dateRange: "",
@@ -99,7 +105,7 @@ const Index = observer(({ store }) => {
     setDateObj(e);
   }
 
-  
+
   const getList = async (_pageNo) => {    // 获取名单列表
     setRequestState(1);
     Taro.showLoading({ title: '加载中...' });
@@ -249,11 +255,11 @@ const Index = observer(({ store }) => {
     }
   }
 
-  const changeItemState = (e, obj, index, state) => {    // 单个修改状态
+  const changeItemState = (e, uuid, state) => {    // 单个修改状态
     e.stopPropagation();
     setCurrentCliskstatus(state);
     Taro.showLoading({ title: '提交中...' });
-    updateInterviewer({ uuid: obj.uuid, seekState: state }).then(res => {
+    updateInterviewer({ uuid, seekState: state }).then(res => {
       Taro.hideLoading();
       if (res.code === 200) {
         Taro.showToast({ title: '更新成功', icon: 'none' })
@@ -264,7 +270,34 @@ const Index = observer(({ store }) => {
     })
   }
 
-  const batchChangeState = (state) => {    // 批量修改状态
+  const postReasonFunc = () => {
+    if (!failReason) {
+      return Taro.showToast({ title: '请输入失败原因', icon: 'none' });
+    }
+    if (batchOperations) {   // 多选
+      batchChangeState('INTERVIEW_FAILED', failReason);
+    } else {
+      setShowModel(false);
+      setCurrentCliskstatus(currentFailParams.seekState);
+
+      let params = {
+        ...currentFailParams,
+        failReason: failReason
+      }
+      updateInterviewer(params).then(res => {
+        if (res.code === 200) {
+          Taro.showToast({ title: '更新成功', icon: 'none' })
+          setCurrentFailParams({});
+          setFailReason('');
+          getList(1);
+        } else {
+          Taro.showToast({ title: res.msg, icon: 'none' })
+        }
+      })
+    }
+  }
+
+  const batchChangeState = (state, reason) => {    // 批量修改状态
     setCurrentCliskstatus(state);
     if (chooseList.length === 0) {
       return Taro.showToast({ title: '请先选择用户', icon: 'none' });
@@ -274,8 +307,14 @@ const Index = observer(({ store }) => {
         uuid: item,
         seekState: state
       }
+      if (state === 'INTERVIEW_FAILED' && reason) {
+        obj.failReason = failReason;
+      }
       return obj
     })
+    setShowModel(false);
+    setCurrentFailParams({});
+    setFailReason('');
     Taro.showLoading({ title: '提交中...' });
     batchUpdateInterviewer(_list).then(res => {
       Taro.hideLoading();
@@ -290,6 +329,7 @@ const Index = observer(({ store }) => {
       }
     })
   }
+
 
   const exportFunc = () => {
     setShowExportModel(true);
@@ -465,7 +505,7 @@ const Index = observer(({ store }) => {
                     item.showOptions &&
                     <View className='item_status_options'>
                       <View className='item_status_options_wrap'>
-                        <View className='item_status_option_item' onClick={(e) => changeItemState(e, item, index, 'SCHEDULED_INTERVIEW')}>
+                        <View className='item_status_option_item' onClick={(e) => changeItemState(e, item.uuid, 'SCHEDULED_INTERVIEW')}>
                           <View className='item_status_option_item_left'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon50.webp`}></Image>
                             <View style={{ color: '#08B5FF' }}>已约面</View>
@@ -476,7 +516,7 @@ const Index = observer(({ store }) => {
                           }
                         </View>
 
-                        <View className='item_status_option_item' onClick={(e) => changeItemState(e, item, index, 'ARRIVE_INTERVIEW')}>
+                        <View className='item_status_option_item' onClick={(e) => changeItemState(e, item.uuid, 'ARRIVE_INTERVIEW')}>
                           <View className='item_status_option_item_left'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon43.webp`}></Image>
                             <View style={{ color: '#1678FF' }}>已签到</View>
@@ -487,7 +527,7 @@ const Index = observer(({ store }) => {
                           }
                         </View>
 
-                        <View className='item_status_option_item' onClick={(e) => changeItemState(e, item, index, 'INTERVIEW_PASSED')}>
+                        <View className='item_status_option_item' onClick={(e) => changeItemState(e, item.uuid, 'INTERVIEW_PASSED')}>
                           <View className='item_status_option_item_left'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon37.webp`}></Image>
                             <View style={{ color: '#FF6B17' }}>面试通过</View>
@@ -498,7 +538,15 @@ const Index = observer(({ store }) => {
                           }
                         </View>
 
-                        <View className='item_status_option_item' onClick={(e) => changeItemState(e, item, index, 'INTERVIEW_FAILED')}>
+                        <View className='item_status_option_item' onClick={(e) => {
+                          e.stopPropagation();
+                          setCurrentFailParams({
+                            uuid: item.uuid,
+                            seekState: 'INTERVIEW_FAILED'
+                          })
+                          setShowModel(true);
+                          // changeItemState(e, item.uuid, 'INTERVIEW_FAILED')
+                        }}>
                           <View className='item_status_option_item_left'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon44.webp`}></Image>
                             <View style={{ color: '#F00000' }}>面试失败</View>
@@ -589,7 +637,10 @@ const Index = observer(({ store }) => {
                       }
                     </View>
 
-                    <View className='item_status_option_item' onClick={() => batchChangeState('INTERVIEW_FAILED')}>
+                    <View className='item_status_option_item' onClick={() => {
+                      // batchChangeState('INTERVIEW_FAILED')
+                      setShowModel(true);
+                    }}>
                       <View className='item_status_option_item_left'>
                         <Image src={`${Taro.$cdnUrl}/index/index_icon44.webp`}></Image>
                         <View style={{ color: '#F00000' }}>面试失败</View>
@@ -627,16 +678,62 @@ const Index = observer(({ store }) => {
               <Image className='export_model_img' onClick={() => exportAllFunc()} src={`${Taro.$cdnUrl}/index/index_icon53.webp`}></Image>
               {
                 (onSiteFilterJob.recruitSerialCode && onSiteFilterSUPPLIER.userSerialCode) ? <Button open-type='share' className='export_model_btn'>导出为小程序页面</Button> :
-                <Button className='export_model_btn' onClick={()=>{
-                  Taro.showToast({
-                    title: '请选择具体的岗位和供应商',
-                    icon: 'none',
-                })
-                }}>导出为小程序页面</Button>
+                  <Button className='export_model_btn' onClick={() => {
+                    Taro.showToast({
+                      title: '请选择具体的岗位和供应商',
+                      icon: 'none',
+                    })
+                  }}>导出为小程序页面</Button>
               }
-              
+
             </View>
           </View>
+        }
+      </Block>
+
+      <Block>
+        {
+          showModel &&
+          <RootPortal>
+            <AtFloatLayout catchMove className='status_init_layout' isOpened={showModel} onClose={() => { setShowModel(false) }}>
+              <View className='filter_wrapper'>
+                <View className='filter_wrapper_bg'>
+                  <View className='filter_title'>
+                    <View></View>
+                    <View>反馈面试失败原因</View>
+                    <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowModel(false) }}></AtIcon>
+                  </View>
+                  <View className='input_wrapper'>
+                    <Textarea count={false}
+                      focus={true}
+                      className='float_input'
+                      auto-height
+                      confirmType='return'
+                      value={failReason}
+                      onInput={(e) => setFailReason(e.detail.value)}
+                      adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                      showConfirmBar={false}
+                      maxlength={50}
+                      autoHeight
+                      placeholder={`请描述具体原因...（必填）`}
+                      onKeyboardHeightChange={(e) => {
+                        let currHeight = e.detail.height;
+                        console.log('currHeight', currHeight)
+                        if (currHeight > 0) {
+                          setKeyBoardHeight(currHeight);
+                        }
+                      }}
+                    >
+                    </Textarea>
+                    <View className='input_number'><Text>{failReason.length}</Text>/50</View>
+                  </View>
+                  <View style={`background:${failReason.length > 0 ? '#0483FF' : '#CDE1FF'}`} className='post_btn' onClick={postReasonFunc}>提交</View>
+                  <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+                </View>
+              </View>
+            </AtFloatLayout>
+          </RootPortal>
+
         }
       </Block>
 

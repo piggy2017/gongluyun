@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-01-02 16:29:20
+ * @LastEditTime: 2025-02-19 13:53:28
  * @Description: 人才库 - 编辑人才信息页面
  */
 
@@ -186,6 +186,34 @@ const Index = observer(({ store }) => {
                     <View className='project_item_right'>
                         <View onClick={() => setFormData({ ...formData, sex: 0 })} className={`option_item ${formData.sex === 0 ? 'option_item_active' : ''}`}>男</View>
                         <View onClick={() => setFormData({ ...formData, sex: 1 })} className={`option_item ${formData.sex === 1 ? 'option_item_active' : ''}`}>女</View>
+                    </View>
+                </View>
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>年龄</View>
+                    <View className='project_item_right'>
+                        <Input
+                            type='number'
+                            // maxlength='18'
+                            className='new_input'
+                            placeholder='请输入用户年龄'
+                            placeholderStyle='color: #777777;'
+                            value={formData.age}
+                            onInput={(e) => setFormData({ ...formData, age: e.detail.value })}
+                        ></Input>
+                    </View>
+                </View>
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>联系地址</View>
+                    <View className='project_item_right'>
+                        <Input
+                            // type='number'
+                            // maxlength='18'
+                            className='new_input'
+                            placeholder='请输入用户联系地址'
+                            placeholderStyle='color: #777777;'
+                            value={formData.address}
+                            onInput={(e) => setFormData({ ...formData, address: e.detail.value })}
+                        ></Input>
                     </View>
                 </View>
             </View>

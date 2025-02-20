@@ -58,20 +58,52 @@
         }
     }
 
+    .data_wrapper {
+        width: 100%;
+        background-color: #FFF;
+        border-radius: 14rpx 14rpx 0 0;
+        padding-top: 32rpx;
+        margin-top: 22rpx;
+
+        .data_filter_wrap {
+            border-radius: 8rpx;
+            background: #1678ff1a;
+            @include flex-center();
+            color: #1678ff;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            padding: 4rpx 16rpx;
+            width: fit-content;
+            margin: 0 0 44rpx 44rpx;
+        }
+    }
+
     .stream_wrapper {
         width: 710rpx;
         height: 552rpx;
         flex-shrink: 0;
         border-radius: 14rpx;
         background-color: #FFF;
-        margin: 20rpx auto 0 auto;
-        background-image: url($cdnUrl + '/newIndex/newIndex_26.webp');
-        background-repeat: no-repeat;
-        background-size: 388rpx 302rpx;
-        background-position: 74rpx 224rpx;
+        margin: 0 auto;
+
+
+        .stream_content_wrap {
+            margin-top: 20rpx;
+            width: 100%;
+            background: #F8F8F8;
+            border-radius: 14rpx;
+            background-image: url($cdnUrl + '/newIndex/newIndex_26.webp');
+            background-repeat: no-repeat;
+            background-size: 388rpx 302rpx;
+            background-position: 74rpx 148rpx;
+            padding-bottom: 20rpx;
+        }
 
         .stream_title {
-            padding: 28rpx 24rpx 0 24rpx;
+            padding: 0 24rpx 0 24rpx;
             @include flex-center(space-between);
             color: #222222;
             font-family: "PingFang SC";
@@ -137,6 +169,7 @@
 
         .stream_num_wapper {
             margin: 38rpx 0 0 412rpx;
+
 
             // border: 1px solid red;
             .stream_num_item {
@@ -227,6 +260,9 @@
             flex-flow: row nowrap;
             align-items: center;
             justify-content: space-between;
+            border-radius: 14rpx;
+            background: #F8F8F8;
+            width: 710rpx;
         }
 
 
@@ -254,7 +290,7 @@
                     font-weight: 600;
                     line-height: normal;
                     position: absolute;
-                    z-index: 9999;
+                    z-index: 9;
                     top: 50%;
                     left: 50%;
                     transform: translate(-50%, -50%);
@@ -283,7 +319,7 @@
             // height: 446rpx;
             flex-shrink: 0;
             border-radius: 14rpx;
-            background: #1678ff0d;
+            // background: #1678ff0d;
             margin: 0 24rpx 0 0;
 
             .flow_right_title {
@@ -382,6 +418,12 @@
             font-weight: 500;
             line-height: normal;
             margin-bottom: 26rpx;
+        }
+
+        .employee_list {
+            width: 710rpx;
+            border-radius: 14rpx;
+            background: #F8F8F8;
         }
 
         .stream_title_right {

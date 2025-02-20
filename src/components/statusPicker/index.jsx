@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-16 16:37:03
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-25 09:51:07
+ * @LastEditTime: 2025-02-19 15:13:16
  * @Description: 
  */
 
@@ -27,6 +27,7 @@ const SourcePicker = observer(({ onChange, showPicker, onClose, store }) => {
 
     const [statusList, setStatusList] = useState([
         { name: '全部状态', state: '' },
+        { name: '已联系', state: 'CONTACT' },
         { name: '不合适', state: 'UNSUITABLE' },
         { name: '待处理', state: 'PENDING' },
         { name: "已约面", state: "SCHEDULED_INTERVIEW" },

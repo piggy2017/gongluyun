@@ -2,14 +2,18 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-14 17:42:34
+ * @LastEditTime: 2025-02-18 18:02:29
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer, useRef } from 'react'
 import Taro, { useRouter, usePullDownRefresh } from '@tarojs/taro';
-import { View, Image, Text, Canvas } from '@tarojs/components'
+import { View, Image, Text, Canvas, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
+import { AtIcon } from 'taro-ui'
+import "taro-ui/dist/style/components/icon.scss";
+
+import CustomDate from '@/components/customDate';
 import Navbar from '@/components/navbar';
 import './index.scss'
 
@@ -33,6 +37,13 @@ const Index = observer(({ store }) => {
     const [streamData, setStreamData] = useState('');
     const [flowList, setFlowList] = useState([]);
     const [employeeList, setEmployeeList] = useState([]);
+    const [dateObj, setDateObj] = useState({
+        dateRange: "TODAY",
+        endDate: "",
+        filterTime: "今日",
+        startDate: ""
+    });
+    const [showFilterDate, setShowFilterDate] = useState(false);                  //  线索池是否显示切换日期的弹窗
 
     usePullDownRefresh(() => {
         console.log("下拉刷新");
@@ -46,21 +57,14 @@ const Index = observer(({ store }) => {
     })
 
     useEffect(() => {
-        getDashContractsData();
-        getDashFlowChannel();
-    }, []);
-
-    useEffect(() => {
         getDashDrainageData();
-    }, [drainageDate]);
-
-    useEffect(() => {
-        getDashEmployeeData();
-    }, [employeeDate]);
-
-    useEffect(() => {
         getDashFlowChannel();
-    }, [flowDate])
+        getDashEmployeeData();
+    }, [dateObj])
+
+    useEffect(() => {
+        getDashContractsData();
+    }, []);
 
     useEffect(() => {
         const query = Taro.createSelectorQuery();
@@ -85,6 +89,11 @@ const Index = observer(({ store }) => {
                 drawProgress(ctx, width, height, percent);
             });
     }, [percent]);
+
+    const customDateSelect = (e) => {      // 选择日期的回调
+        console.log("自定义选择日期组件 customDateSelect", e);
+        setDateObj(e);
+    }
 
     const drawProgress = (ctx, width, height, percent) => {
         const centerX = width / 2;
@@ -125,7 +134,13 @@ const Index = observer(({ store }) => {
     }
 
     const getDashDrainageData = async () => {      // 获取引流与转化数据
-        const { code, data, msg } = await dashDrainageData({ companySerialCode: companyInfo.companySerialCode, dateRange: drainageDate });
+        let params = {
+            companySerialCode: companyInfo.companySerialCode,
+            dateRange: dateObj.dateRange,
+            startDate: dateObj.startDate ? dateObj.startDate + ' 00:00:00' : '',
+            endDate: dateObj.endDate ? dateObj.endDate + ' 23:59:59' : ''
+        }
+        const { code, data, msg } = await dashDrainageData(params);
         console.log("获取引流与转化数据", data);
         if (code === 200 && data) {
             setStreamData(data);
@@ -135,7 +150,13 @@ const Index = observer(({ store }) => {
     }
 
     const getDashFlowChannel = async () => {   // 获取流量渠道数据
-        const { code, data, msg } = await dashFlowChannel({ companySerialCode: companyInfo.companySerialCode, dateRange: flowDate });
+        let params = {
+            companySerialCode: companyInfo.companySerialCode,
+            dateRange: dateObj.dateRange,
+            startDate: dateObj.startDate ? dateObj.startDate + ' 00:00:00' : '',
+            endDate: dateObj.endDate ? dateObj.endDate + ' 23:59:59' : ''
+        }
+        const { code, data, msg } = await dashFlowChannel(params);
         console.log("获取流量渠道数据", data);
         if (code === 200 && data) {
             setPercent(data?.externalRate * 1);
@@ -146,7 +167,13 @@ const Index = observer(({ store }) => {
     }
 
     const getDashEmployeeData = async () => {  // 获取员工数据
-        const { code, data, msg } = await dashEmployeeData({ companySerialCode: companyInfo.companySerialCode, dateRange: employeeDate });
+        let params = {
+            companySerialCode: companyInfo.companySerialCode,
+            dateRange: dateObj.dateRange,
+            startDate: dateObj.startDate ? dateObj.startDate + ' 00:00:00' : '',
+            endDate: dateObj.endDate ? dateObj.endDate + ' 23:59:59' : ''
+        }
+        const { code, data, msg } = await dashEmployeeData(params);
         console.log("获取员工数据", data);
         if (code === 200 && data) {
             setEmployeeList(data);
@@ -183,133 +210,148 @@ const Index = observer(({ store }) => {
                 </View>
             </View>
 
-            {/* <View className='stream_wrapper'>
-                <View className='stream_title'>
-                    <View>引流与转化</View>
-                    <View className='stream_title_right'>
-                        <View onClick={() => { setDrainageDate('YESTERDAY') }} className={`title_right_item ${drainageDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
-                        <View onClick={() => { setDrainageDate('THIS_WEEK') }} className={`title_right_item ${drainageDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
-                        <View onClick={() => { setDrainageDate('THIS_MONTH') }} className={`title_right_item ${drainageDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
-                    </View>
+            <View className='data_wrapper'>
+                <View className='data_filter_wrap' onClick={() => setShowFilterDate(true)}>
+                    <View>{dateObj.filterTime ? dateObj.filterTime : dateObj.startDate.replace(/-/g, '.') + '-' + dateObj.endDate.replace(/-/g, '.')}</View>
+                    <AtIcon value='chevron-down' size='14' color='#1678FF'></AtIcon>
                 </View>
-
-                <View className='stream_content'>
-                    <View className='stream_content_item'>
-                        <View>{streamData.interviewRate}%</View>
-                        <View className='stream_content_item_label'>约面率</View>
+                <View className='stream_wrapper'>
+                    <View className='stream_title'>
+                        <View>引流与转化</View>
+                        {/* <View className='stream_title_right'>
+                            <View onClick={() => { setDrainageDate('YESTERDAY') }} className={`title_right_item ${drainageDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
+                            <View onClick={() => { setDrainageDate('THIS_WEEK') }} className={`title_right_item ${drainageDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
+                            <View onClick={() => { setDrainageDate('THIS_MONTH') }} className={`title_right_item ${drainageDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
+                            <View onClick={() => { setDrainageDate('') }} className={`title_right_item ${drainageDate === '' ? 'title_right_item_active' : ''}`}>全部</View>
+                        </View> */}
                     </View>
-                    <View className='stream_content_item'>
-                        <View>{streamData.arrivalRate}%</View>
-                        <View className='stream_content_item_label'>到面率</View>
-                    </View>
-                    <View className='stream_content_item'>
-                        <View>{streamData.employedRate}%</View>
-                        <View className='stream_content_item_label'>入职率</View>
-                    </View>
-                </View>
 
-                <View className='stream_num_wapper'>
-                    <View className='stream_num_item'>新增报名 <Text>{streamData.newSignup}</Text> 人</View>
-                    <View className='stream_num_item'>跟进联系 <Text>{streamData.followupContact}</Text> 人</View>
-                    <View className='stream_num_item'>约定面试 <Text>{streamData.newInterview}</Text> 人</View>
-                    <View className='stream_num_item'>实际到面 <Text>{streamData.actualArrival}</Text> 人</View>
-                    <View className='stream_num_item'>面试通过 <Text>{streamData.interviewPass}</Text> 人</View>
-                    <View className='stream_num_item'>最终入职 <Text>{streamData.finalEntry}</Text> 人</View>
-                </View>
-            </View> */}
-
-            <View className='flow_wrapper'>
-                <View className='stream_title'>
-                    <View>流量渠道</View>
-                    <View className='stream_title_right'>
-                        <View onClick={() => { setFlowDate('YESTERDAY') }} className={`title_right_item ${flowDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
-                        <View onClick={() => { setFlowDate('THIS_WEEK') }} className={`title_right_item ${flowDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
-                        <View onClick={() => { setFlowDate('THIS_MONTH') }} className={`title_right_item ${flowDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
-                        <View onClick={() => { setFlowDate('') }} className={`title_right_item ${flowDate === '' ? 'title_right_item_active' : ''}`}>全部</View>
-                    </View>
-                </View>
-                <View className='flow_content'>
-                    <View className='flow_left'>
-                        <View className='canvas_content'>
-                            <Canvas
-                                id={canvasId}
-                                canvasId={canvasId}
-                                style={{
-                                    width: '80px',
-                                    height: '80px',
-                                }}
-                                ref={canvasRef}
-                                type='2d'
-                            />
-                            <View className='percent_text'>{percent}%</View>
-
-                        </View>
-                        <View className='flow_left_label'>外部占比</View>
-                        <View className='flow_left_label'>（私域以外来源）</View>
-                    </View>
-                    <View className='flow_right'>
-                        <View className='flow_right_title'>
-                            <View>线索数</View>
-                            <View>入职数</View>
-                        </View>
-                        <View className='flow_item_wrapper'>
-                            {
-                                flowList.length > 0 && flowList.map((item, index) => {
-                                    return (
-                                        <View className='flow_item' key={index}>
-                                            <View className='flow_item_label'>{item.source}</View>
-                                            <View className='flow_item_num'><Text className='flow_item_num_text'>{item.newSignup}</Text><Text>人</Text></View>
-                                            <View className='flow_item_join'><Text className='flow_item_join_text'>{item.finalEntry}</Text><Text>人</Text></View>
-                                        </View>
-                                    )
-                                })
-                            }
-                        </View>
-
-                    </View>
-                </View>
-
-            </View>
-
-            <View className='employee_wrapper'>
-                <View className='stream_title'>
-                    <View>员工数据</View>
-                    <View className='stream_title_right'>
-                        <View onClick={() => { setEmployeeDate('YESTERDAY') }} className={`title_right_item ${employeeDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
-                        <View onClick={() => { setEmployeeDate('THIS_WEEK') }} className={`title_right_item ${employeeDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
-                        <View onClick={() => { setEmployeeDate('LAST_WEEK') }} className={`title_right_item ${employeeDate === 'LAST_WEEK' ? 'title_right_item_active' : ''}`}>上周</View>
-                        <View onClick={() => { setEmployeeDate('THIS_MONTH') }} className={`title_right_item ${employeeDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
-                    </View>
-                </View>
-
-                {
-                    employeeList.length > 0 && employeeList.map((item, index) => {
-                        return (
-                            <View className='employee_item' key={index}>
-                                <View className='employee_item_name'>{item.operator}</View>
-                                <View className='employee_item_datas'>
-                                    <View className='employee_item_datas_item'>
-                                        <View>{item.newSignup}</View>
-                                        <View className='employee_item_datas_item_label'>录入线索</View>
-                                    </View>
-                                    <View className='employee_item_datas_item'>
-                                        <View>{item.followupContact}</View>
-                                        <View className='employee_item_datas_item_label'>跟进客户</View>
-                                    </View>
-                                    <View className='employee_item_datas_item'>
-                                        <View>{item.newInterview}</View>
-                                        <View className='employee_item_datas_item_label'>安排面试</View>
-                                    </View>
-                                    <View className='employee_item_datas_item'>
-                                        <View>{item.finalEntry}</View>
-                                        <View className='employee_item_datas_item_label'>成功入职</View>
-                                    </View>
-                                </View>
+                    <View className='stream_content_wrap'>
+                        <View className='stream_content'>
+                            <View className='stream_content_item'>
+                                <View>{streamData.interviewRate}%</View>
+                                <View className='stream_content_item_label'>约面率</View>
                             </View>
-                        )
-                    })
-                }
+                            <View className='stream_content_item'>
+                                <View>{streamData.arrivalRate}%</View>
+                                <View className='stream_content_item_label'>到面率</View>
+                            </View>
+                            <View className='stream_content_item'>
+                                <View>{streamData.employedRate}%</View>
+                                <View className='stream_content_item_label'>入职率</View>
+                            </View>
+                        </View>
+
+                        <View className='stream_num_wapper'>
+                            <View className='stream_num_item'>新增报名 <Text>{streamData.newSignup}</Text> 人</View>
+                            <View className='stream_num_item'>跟进联系 <Text>{streamData.followupContact}</Text> 人</View>
+                            <View className='stream_num_item'>约定面试 <Text>{streamData.newInterview}</Text> 人</View>
+                            <View className='stream_num_item'>实际到面 <Text>{streamData.actualArrival}</Text> 人</View>
+                            <View className='stream_num_item'>面试通过 <Text>{streamData.interviewPass}</Text> 人</View>
+                            <View className='stream_num_item'>最终入职 <Text>{streamData.finalEntry}</Text> 人</View>
+                        </View>
+                    </View>
+                </View>
+
+                <View className='flow_wrapper'>
+                    <View className='stream_title'>
+                        <View>流量渠道</View>
+                        {/* <View className='stream_title_right'>
+                            <View onClick={() => { setFlowDate('YESTERDAY') }} className={`title_right_item ${flowDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
+                            <View onClick={() => { setFlowDate('THIS_WEEK') }} className={`title_right_item ${flowDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
+                            <View onClick={() => { setFlowDate('THIS_MONTH') }} className={`title_right_item ${flowDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
+                            <View onClick={() => { setFlowDate('') }} className={`title_right_item ${flowDate === '' ? 'title_right_item_active' : ''}`}>全部</View>
+                        </View> */}
+                    </View>
+                    <View className='flow_content'>
+                        <View className='flow_left'>
+                            <View className='canvas_content'>
+                                <Canvas
+                                    id={canvasId}
+                                    canvasId={canvasId}
+                                    style={{
+                                        width: '80px',
+                                        height: '80px',
+                                    }}
+                                    ref={canvasRef}
+                                    type='2d'
+                                />
+                                <View className='percent_text'>{percent}%</View>
+
+                            </View>
+                            <View className='flow_left_label'>外部占比</View>
+                            <View className='flow_left_label'>（私域以外来源）</View>
+                        </View>
+                        <View className='flow_right'>
+                            <View className='flow_right_title'>
+                                <View>线索数</View>
+                                <View>入职数</View>
+                            </View>
+                            <View className='flow_item_wrapper'>
+                                {
+                                    flowList.length > 0 && flowList.map((item, index) => {
+                                        return (
+                                            <View className='flow_item' key={index}>
+                                                <View className='flow_item_label'>{item.source}</View>
+                                                <View className='flow_item_num'><Text className='flow_item_num_text'>{item.newSignup}</Text><Text>人</Text></View>
+                                                <View className='flow_item_join'><Text className='flow_item_join_text'>{item.finalEntry}</Text><Text>人</Text></View>
+                                            </View>
+                                        )
+                                    })
+                                }
+                            </View>
+
+                        </View>
+                    </View>
+
+                </View>
+
+                <View className='employee_wrapper'>
+                    <View className='stream_title'>
+                        <View>员工数据</View>
+                        {/* <View className='stream_title_right'>
+                            <View onClick={() => { setEmployeeDate('YESTERDAY') }} className={`title_right_item ${employeeDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
+                            <View onClick={() => { setEmployeeDate('THIS_WEEK') }} className={`title_right_item ${employeeDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
+                            <View onClick={() => { setEmployeeDate('LAST_WEEK') }} className={`title_right_item ${employeeDate === 'LAST_WEEK' ? 'title_right_item_active' : ''}`}>上周</View>
+                            <View onClick={() => { setEmployeeDate('THIS_MONTH') }} className={`title_right_item ${employeeDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
+                        </View> */}
+                    </View>
+                    <View className='employee_list'>
+                        {
+                            employeeList.length > 0 && employeeList.map((item, index) => {
+                                return (
+                                    <View className='employee_item' key={index}>
+                                        <View className='employee_item_name'>{item.operator}</View>
+                                        <View className='employee_item_datas'>
+                                            <View className='employee_item_datas_item'>
+                                                <View>{item.newSignup}</View>
+                                                <View className='employee_item_datas_item_label'>录入线索</View>
+                                            </View>
+                                            <View className='employee_item_datas_item'>
+                                                <View>{item.followupContact}</View>
+                                                <View className='employee_item_datas_item_label'>跟进客户</View>
+                                            </View>
+                                            <View className='employee_item_datas_item'>
+                                                <View>{item.newInterview}</View>
+                                                <View className='employee_item_datas_item_label'>安排面试</View>
+                                            </View>
+                                            <View className='employee_item_datas_item'>
+                                                <View>{item.finalEntry}</View>
+                                                <View className='employee_item_datas_item_label'>成功入职</View>
+                                            </View>
+                                        </View>
+                                    </View>
+                                )
+                            })
+                        }
+                    </View>
+                </View>
             </View>
+
+            {/* 线索池筛选日期组件 */}
+            <Block>
+                <CustomDate defaultToday={true} showPicker={showFilterDate} onClose={() => { setShowFilterDate(false) }} onChange={customDateSelect}></CustomDate>
+            </Block>
         </View>
     )
 })
