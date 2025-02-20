@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-19 11:07:07
+ * @LastEditTime: 2025-02-19 18:02:21
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -381,7 +381,7 @@ const Index = observer(({ store }) => {
                 <View className='bottom_wrapper_con'>
                     <View className='' style={`height:16rpx`}></View>
                     {
-                        (clientInfos && clientInfos.seekState === 'PENDING') &&
+                        (clientInfos && (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'CONTACT')) &&
                         <View className='create_interview_pedding'>
                             <View className='inappropriate' onClick={unsuitableFunc}>不合适</View>
                             <View className='create_interview_btn' onClick={() => goInterview()}>安排面试</View>

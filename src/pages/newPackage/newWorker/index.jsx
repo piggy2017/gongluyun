@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-19 13:54:48
+ * @LastEditTime: 2025-02-19 17:56:56
  * @Description: 
  */
 
@@ -324,17 +324,17 @@ const Index = observer(({ store }) => {
                     </View>
                 </View> */}
                 {
-                    formData.agentSerialCode !== '' &&
-                    <View className='project_item project_item_border'>
-                        <View className='project_item_label'>面试日期</View>
-                        <View className='project_item_right' onClick={() => {
-                            // if (isUpdate) return;
-                            setShowDatePicker(true)
-                        }}>
-                            <Text className={`${formData.interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewDate ? formData.interviewDate : '请选择面试日期'}</Text>
-                            <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
-                        </View>
-                    </View>
+                    // formData.agentSerialCode !== '' &&
+                    // <View className='project_item project_item_border'>
+                    //     <View className='project_item_label'>面试日期</View>
+                    //     <View className='project_item_right' onClick={() => {
+                    //         // if (isUpdate) return;
+                    //         setShowDatePicker(true)
+                    //     }}>
+                    //         <Text className={`${formData.interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewDate ? formData.interviewDate : '请选择面试日期'}</Text>
+                    //         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                    //     </View>
+                    // </View>
                 }
             </View>
 
