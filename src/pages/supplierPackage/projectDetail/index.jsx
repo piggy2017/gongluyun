@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-24 11:57:46
+ * @LastEditTime: 2025-02-24 13:57:59
  * @Description: 
  */
 
@@ -124,29 +124,6 @@ const Index = observer(({ store }) => {
 
             <Block>
                 <ChoosePattern showPicker={showPatternModel} onClick={() => setShowPatternModel(false)} onchange={getChoosePattern}></ChoosePattern>
-                {/* <AtFloatLayout catchMove className='choose_pattern_layout' isOpened={showPatternModel} onClose={() => setShowPatternModel(false)}>
-                    <View className='filter_wrapper'>
-                        <View className='filter_wrapper_bg'>
-                            <View className='filter_title'>
-                                <View>选择合作模式</View>
-                                <AtIcon value='close' size='14' color='#222222' onClick={() => setShowPatternModel(false)}></AtIcon>
-                            </View>
-                            <View className='filter_content'>
-                                {
-                                    patternList.length > 0 && patternList.map((item, index) => {
-                                        return (
-                                            <View className='filter_pattern_item' key={index} >
-                                                <View className='filter_item_title'>模式{index+1}:</View>
-                                                <View className='filter_item_content'>{item.content}</View>
-                                            </View>
-                                        )
-                                    })
-                                }
-                            </View>
-                            <View className='filter_btn'>确定</View>
-                        </View>
-                    </View>
-                </AtFloatLayout> */}
             </Block>
         </View>
     )
