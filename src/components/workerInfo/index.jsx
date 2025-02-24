@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-24 13:45:27
+ * @LastEditTime: 2025-02-24 14:00:58
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -25,12 +25,12 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
     }
 
     const callUser = (obj) => {
-        if (type === 1 && interview) {
-            return Taro.showToast({
-                title: '领取后才能拨打电话',
-                icon: 'none'
-            })
-        }
+        // if (type === 1 && interview) {
+        //     return Taro.showToast({
+        //         title: '领取后才能拨打电话',
+        //         icon: 'none'
+        //     })
+        // }
         Taro.makePhoneCall({ phoneNumber: obj.phone });
         if (type === 1) {
             callUp({ uuid: obj.uuid }).then(res => {
@@ -57,10 +57,16 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
                             </View>
                         }
                     </View>
-                    <View className='userInfo_tel flex-row-items' onClick={() => callUser(info)}>
-                        <Image className='tel_img' src={`${Taro.$cdnUrl}/index/mine_icon7.webp`}></Image>
-                        <View>{info.phone}</View>
-                    </View>
+                    {
+                        type === 1 && interview &&
+                        <>
+                        </> ||
+                        <View className='userInfo_tel flex-row-items' onClick={() => callUser(info)}>
+                            <Image className='tel_img' src={`${Taro.$cdnUrl}/index/mine_icon7.webp`}></Image>
+                            <View>{info.phone}</View>
+                        </View>
+                    }
+
 
                     <View className='userInfo_item'>
                         <Image className='userInfo_item_img' src={`${Taro.$cdnUrl}/index/mine_icon8.webp`}></Image>
