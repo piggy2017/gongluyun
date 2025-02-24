@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-19 14:04:36
+ * @LastEditTime: 2025-02-24 13:45:27
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
@@ -25,6 +25,12 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
     }
 
     const callUser = (obj) => {
+        if (type === 1 && interview) {
+            return Taro.showToast({
+                title: '领取后才能拨打电话',
+                icon: 'none'
+            })
+        }
         Taro.makePhoneCall({ phoneNumber: obj.phone });
         if (type === 1) {
             callUp({ uuid: obj.uuid }).then(res => {
