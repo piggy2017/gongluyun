@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-17 17:00:46
+ * @LastEditTime: 2025-02-21 14:33:31
  * @Description: 
  */
 export default defineAppConfig({
@@ -130,6 +130,11 @@ export default defineAppConfig({
             "root": "pages/supplierPackage/",     // 供应商相关页面
             "pages":[
                 "supplierManage/index",           // 供应商管理
+                "supplierDetail/index",           // 供应商详情
+                "myPort/index",                   // 我的合作端口详情页面
+                "projectSuppliers/index",         // 项目详情中查看供应商列表
+                "setPattern/index",               // 设置合作模式
+                "projectDetail/index",            // 项目详情
             ]
         }
     ]

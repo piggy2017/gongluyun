@@ -49,7 +49,9 @@ const Navbar = observer(({ store, fixed = false, back = true, title = '', bgColo
                             }}></Image>
                         }
                     </View>
-                    <View className='navbar_title' style={`color:${titleColor ? titleColor : '#000000'}`}>{title}</View>
+                    <View className='navbar_title' style={`color:${titleColor ? titleColor : '#000000'}`}>
+                        <View>{title}</View>
+                    </View>
                 </View>
             </View>
             {

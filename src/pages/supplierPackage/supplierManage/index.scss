@@ -2,7 +2,7 @@
 
 .container {
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
     // background: linear-gradient(180deg, #E8F1FF 0%, #edf3fc00 100%) #F4F4F4;
     background: linear-gradient(180deg, #0C72FF 0%, #539bff00 89.88%) #F4F4F4;
     background-size: 100% 416rpx;
@@ -47,7 +47,7 @@
                 font-weight: 400;
                 line-height: normal;
                 margin-left: 16rpx;
-                width: 440rpx;
+                width: 500rpx;
                 @include ellipsis;
             }
         }
@@ -82,6 +82,92 @@
                 height: 48rpx;
                 flex-shrink: 0;
                 margin-right: 6rpx;
+            }
+        }
+    }
+
+    .scrollWrapper {
+        width: 100%;
+        border: 1rpx solid red;
+
+        .supplier_list {
+            width: 710rpx;
+            height: 236rpx;
+            flex-shrink: 0;
+            background-color: #FFF;
+            margin: 0 auto 20rpx auto;
+
+            .supplier_list_name {
+                @include flex-center(flex-start);
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 32rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+                padding: 26rpx 24rpx 0 24rpx;
+
+                .supplier_list_name_auth {
+                    margin-left: 4rpx;
+                    color: #ffffff;
+                    text-align: right;
+                    font-family: "PingFang SC";
+                    font-size: 21rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    padding: 4rpx 10rpx;
+                    background-color: #1678FF;
+                    border-radius: 4rpx;
+                }
+            }
+
+            .supplier_list_nums {
+                width: 602rpx;
+                height: 124rpx;
+                flex-shrink: 0;
+                border-radius: 10rpx;
+                background: #cbcbcb26;
+                margin: 18rpx auto 0 auto;
+                padding: 0 30rpx;
+                @include flex-center(space-between);
+                .supplier_list_nums_item{
+                    display: flex;
+                    flex-flow: column nowrap;
+                    align-items: center;
+                    justify-content: center;
+                    .supplier_list_nums_item_top{
+                        color: #222222;
+                        text-align: center;
+                        font-family: "D-DIN-PRO";
+                        font-size: 40rpx;
+                        font-style: normal;
+                        font-weight: 600;
+                        line-height: normal;
+                        display: flex;
+                        flex-flow: row nowrap;
+                        align-items: flex-end;
+                        .supplier_list_nums_item_top_r{
+                            color: #222222;
+                            text-align: center;
+                            font-family: "PingFang SC";
+                            font-size: 26rpx;
+                            font-style: normal;
+                            font-weight: 500;
+                            line-height: normal;
+                        }
+                    }
+                    .supplier_list_nums_item_bottom{
+                        color: #666666;
+                        text-align: center;
+                        font-family: "PingFang SC";
+                        font-size: 26rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: normal;
+                        margin-top: 8rpx;
+                    }
+                }
             }
         }
     }

@@ -1,0 +1,108 @@
+@import '@/app.scss';
+.choose_pattern_layout {
+    .at-float-layout__container {
+        height: 900rpx !important;
+        max-height: 900rpx !important;
+        overflow: hidden;
+        border-radius: 20rpx 20rpx 0 0 !important;
+
+        .layout-body {
+            max-height: 900rpx !important;
+        }
+    }
+
+    .layout-body__content {
+        max-height: 900rpx !important;
+    }
+
+    .filter_wrapper {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        background-color: #ffffff;
+
+        .filter_wrapper_bg {
+            width: 100%;
+            height: 100%;
+
+            .filter_title {
+                position: sticky;
+                left: 0;
+                top: 0;
+                right: 0;
+                @include flex-center(space-between);
+                padding: 24rpx 0 40rpx 38rpx;
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 34rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                background-color: #ffffff;
+            }
+
+            .filter_content {
+                width: 694rpx;
+                margin: 0 auto;
+                height: 560rpx;
+                overflow-y: scroll;
+
+                .filter_pattern_item {
+                    width: 694rpx;
+                    border-radius: 8rpx;
+                    background: #F2F2F2;
+                    margin-bottom: 32rpx;
+
+                    .filter_item_title {
+                        color: #222222;
+                        font-family: "PingFang SC";
+                        font-size: 32rpx;
+                        font-style: normal;
+                        font-weight: 500;
+                        padding: 18rpx 0 0 32rpx;
+                    }
+
+                    .filter_item_content {
+                        color: #222222;
+                        font-family: "PingFang SC";
+                        font-size: 30rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: normal;
+                        padding: 0 20rpx 24rpx 32rpx;
+                    }
+                }
+                .filter_pattern_item_active{
+                    background: #1678ff1a !important;
+                    .filter_item_title{
+                        color: #1678ff !important;
+                    }
+                    .filter_item_content{
+                        color: #1678ff !important;
+                    }
+                }
+            }
+
+            .filter_btn {
+                width: 694rpx;
+                height: 96rpx;
+                border-radius: 8rpx;
+                background-color: #CDE1FF;
+                color: #ffffff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 96rpx;
+                margin: 40rpx auto 0 auto;
+                transition: all 0.3s;
+            }
+            
+            .filter_btn_active{
+                background: #1678FF;
+            }
+
+        }
+    }
+}

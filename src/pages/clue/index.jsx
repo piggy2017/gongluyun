@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-18 17:55:15
+ * @LastEditTime: 2025-02-24 10:35:23
  * @Description: 
  */
 
@@ -448,6 +448,7 @@ const Index = observer(({ store }) => {
           <View className='search_total'>线索池共 <Text>{totalCount}</Text> 名求职者等待领取并跟进</View>
         }
       </View>
+
 
       {
         (!isLogin || (role === 'SEEK' && !companyVerified)) &&
