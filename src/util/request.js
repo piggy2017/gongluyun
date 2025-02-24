@@ -2,7 +2,7 @@
  * @Author: yinzhengchao yinzhengchao@apujiyu.com
  * @Date: 2024-01-24 18:11:08
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-11 17:54:13
+ * @LastEditTime: 2025-02-24 14:57:59
  * @FilePath: /apu_mini/src/util/request.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -52,6 +52,7 @@ export default function request(url, data, method, header) {
                     }
                     if (res.data.code == 7001 || res.data.code == 7002) {
                         console.log("==========================请求失效===========================", res);
+                        return
                         setIsLogin(0)
                         setToken('')
                         setRole('ADMIN')

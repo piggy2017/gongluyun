@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:02:33
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-07 14:36:32
+ * @LastEditTime: 2025-02-24 15:05:00
  * @Description: 
  */
 
@@ -87,7 +87,7 @@ const Index = observer(({ store, actCurrent }) => {
                     });
                     break;
             }
-        }else if(role === 'ON_SITE'){
+        } else if (role === 'ON_SITE') {
             switch (e) {
                 case 0:
                     Taro.switchTab({
@@ -110,6 +110,19 @@ const Index = observer(({ store, actCurrent }) => {
                     });
                     break;
             }
+        } else if (role === 'SUPPLIER') {
+            switch (e) {
+                case 0:
+                    Taro.switchTab({
+                        url: '/pages/supplierProject/index'
+                    });
+                    break;
+                case 1:
+                    Taro.switchTab({
+                        url: '/pages/mine/index'
+                    });
+                    break;
+            }
         }
     }
     const getTabList = () => {
@@ -126,6 +139,11 @@ const Index = observer(({ store, actCurrent }) => {
                 { title: '工作台', image: getdefalutIcon(1), selectedImage: getSelectIcon(1) },
                 { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
                 { title: '名单', image: getdefalutIcon(5), selectedImage: getSelectIcon(5) },
+                { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
+            ]
+        } else if (role === 'SUPPLIER') {  // 供应商 并且未开通公路云
+            return [
+                { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
                 { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
             ]
         }

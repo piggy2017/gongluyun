@@ -71,6 +71,55 @@
         }
     }
 
+    .open_gongluyun {
+        width: 694rpx;
+        height: 214rpx;
+        flex-shrink: 0;
+        background: linear-gradient(93deg, #FFE3B1 4.36%, #F6C876 94.19%);
+        // background-color: red;
+        margin: 60rpx auto 0 auto;
+        border-radius: 20rpx;
+        position: relative;
+
+        .open_gongluyun_title {
+            color: #613c1e;
+            font-family: "Alimama FangYuanTi VF";
+            font-size: 38rpx;
+            font-style: normal;
+            font-weight: Bold-Square;
+            line-height: normal;
+            padding: 32rpx 0 16rpx 30rpx;
+        }
+
+        .open_gongluyun_desc {
+            color: #4b2a10;
+            font-family: "PingFang SC";
+            font-size: 28rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            padding-left: 30rpx;
+        }
+
+        .open_gongluyun_btn {
+            width: 160rpx;
+            height: 60rpx;
+            border-radius: 8rpx;
+            background: linear-gradient(97deg, #562A1F 0%, #CA7D46 99.4%);
+            color: #ffffff;
+            text-align: center;
+            font-family: "PingFang SC";
+            font-size: 26rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 60rpx;
+            position: absolute;
+            z-index: 1;
+            right: 30rpx;
+            top: 48rpx;
+        }
+    }
+
     .section_group {
         width: 694rpx;
         background-color: #ffffff;
@@ -100,7 +149,8 @@
                     margin-right: 8rpx;
                 }
             }
-            .right_arow{
+
+            .right_arow {
                 width: 28rpx;
                 height: 28rpx;
             }
@@ -111,7 +161,7 @@
         }
     }
 
-    .loginout{
+    .loginout {
         background-color: transparent;
         font-size: 28rpx;
         text-align: center;

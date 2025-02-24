@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-21 14:33:31
+ * @LastEditTime: 2025-02-24 15:44:59
  * @Description: 
  */
 export default defineAppConfig({
@@ -14,7 +14,8 @@ export default defineAppConfig({
         'pages/clue/index',
         'pages/onSiteList/index',
         'pages/mine/index',
-        'pages/login/index'
+        'pages/login/index',
+        'pages/supplierProject/index',
     ],
     window: {
         backgroundTextStyle: 'light',
@@ -54,6 +55,10 @@ export default defineAppConfig({
             {
                 'pagePath': 'pages/mine/index',
                 "text": "我的"
+            },
+            {
+                'pagePath': 'pages/supplierProject/index',
+                "text": "项目"
             }
         ]
     },
@@ -135,6 +140,7 @@ export default defineAppConfig({
                 "projectSuppliers/index",         // 项目详情中查看供应商列表
                 "setPattern/index",               // 设置合作模式
                 "projectDetail/index",            // 项目详情
+                "collaborateBill/index",          // 合作的发单方
             ]
         }
     ]

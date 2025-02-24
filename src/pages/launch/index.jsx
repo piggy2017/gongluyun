@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-11 17:57:04
+ * @LastEditTime: 2025-02-24 15:01:40
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -21,6 +21,13 @@ const Index = observer(({ store }) => {
         console.log("启动页 当前 token:", token);
         console.log("启动页 认证状态 companyVerified:", companyVerified);
         setTimeout(() => {
+            if (role === 'SUPPLIER') {
+                Taro.switchTab({
+                    url: '/pages/supplierProject/index'
+                })
+                return
+            }
+
             if (!isLogin || !token) {  // 未登录
                 Taro.redirectTo({ url: '/pages/login/index' })
             }

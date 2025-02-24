@@ -87,6 +87,144 @@
         }
     }
 
+    .project_datas {
+        width: 710rpx;
+        height: 206rpx;
+        flex-shrink: 0;
+        border-radius: 14rpx;
+        background: #FFF;
+        margin: 20rpx auto 0 auto;
+
+        .project_title {
+            padding: 20rpx 24rpx 0 24rpx;
+            @include flex-center(space-between);
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+
+            .project_more {
+                color: #1678ff;
+                text-align: right;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                @include flex-center(flex-end);
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                    flex-shrink: 0;
+                }
+            }
+        }
+
+        .project_datas_content {
+            padding: 32rpx 42rpx 0 42rpx;
+            @include flex-center(space-between);
+
+            .project_datas_item {
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: center;
+                justify-content: center;
+                color: #333333;
+                text-align: center;
+                font-family: "D-DIN-PRO";
+                font-size: 40rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+
+                .project_datas_item_label {
+                    color: #666666;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 26rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    margin-top: 12rpx;
+                }
+            }
+        }
+    }
+
+    .collaborate_pattern {
+        width: 710rpx;
+        flex-shrink: 0;
+        border-radius: 14rpx;
+        background: #FFF;
+        margin: 20rpx auto 0 auto;
+
+        .collaborate_pattern_title {
+            padding: 32rpx 0 30rpx 24rpx;
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+        }
+    }
+
+    .project_interview {
+        width: 710rpx;
+        flex-shrink: 0;
+        border-radius: 14rpx;
+        background: #FFF;
+        margin: 20rpx auto 0 auto;
+        padding-bottom: 14rpx;
+
+        .project_interview_title {
+            padding: 32rpx 0 30rpx 24rpx;
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+        }
+
+        .project_interview_item {
+            padding: 0 24rpx;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: flex-start;
+            margin-bottom: 18rpx;
+
+            image {
+                width: 36rpx;
+                height: 36rpx;
+                flex-shrink: 0;
+            }
+
+            view {
+                width: 600rpx;
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 45rpx;
+                margin-left: 14rpx;
+
+                text {
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 45rpx;
+                }
+            }
+        }
+    }
+
     .project_desc {
         width: 710rpx;
         height: auto;
@@ -232,6 +370,39 @@
             height: 96rpx;
             border-radius: 8rpx;
             background: #1678FF;
+        }
+
+        .page_bottom_btns {
+            padding: 0 32rpx;
+            @include flex-center(space-between);
+
+            .page_bottom_btn_left {
+                width: 246rpx;
+                height: 96rpx;
+                border-radius: 8rpx;
+                background: #1678ff1c;
+                color: #1678ff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 96rpx;
+            }
+
+            .page_bottom_btn_right {
+                width: 416rpx;
+                height: 96rpx;
+                border-radius: 8rpx;
+                background: #1678FF;
+                color: #ffffff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 96rpx;
+            }
         }
     }
 }
