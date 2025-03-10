@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 14:26:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-30 10:55:49
+ * @LastEditTime: 2025-03-10 14:01:04
  * @Description: 创建项目的时候选择岗位类型
  */
 /* eslint-disable react/jsx-key */
@@ -37,7 +37,6 @@ const ChooseJob = observer(({ store, isShow, initData, onClose }) => {
                 // 默认聚焦
                 setInit(data.data)
             }
-
         }
         fetchData();
         return () => {

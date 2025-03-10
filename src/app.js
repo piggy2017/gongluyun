@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-17 17:11:45
+ * @LastEditTime: 2025-03-03 13:44:13
  * @Description: 
  */
 import { useEffect } from 'react';
@@ -11,6 +11,11 @@ import { Provider } from 'mobx-react'
 import baseStore from '@/store/base'
 import userStore from '@/store/user'
 import businessStore from '@/store/business'
+import LoginComponent from '@/components/login';
+import JoinSupplier from '@/components/joinSupplier';
+import ChoosePattern from '@/components/choosePattern';
+import LoadMore from './components/loadMore';
+import NoData from './components/noData';
 import './app.scss'
 const store = {
   baseStore,userStore,businessStore
@@ -28,6 +33,11 @@ function App({ children }) {
     Taro.$cdnBackIcon = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/mine/back_icon.webp';
     Taro.$cdnBlackBackIcon = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/supplier/supplier_5.webp';
     Taro.$baseCdnUrl = 'https://apu-mini.oss-accelerate.aliyuncs.com';
+    Taro.GlobalLogin = LoginComponent;
+    Taro.GlobalJoinSupplier = JoinSupplier;
+    Taro.ChoosePattern = ChoosePattern;
+    Taro.LoadMore = LoadMore;
+    Taro.NoData = NoData;
   },[])
 
   useEffect(() => {

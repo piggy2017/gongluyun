@@ -11,10 +11,12 @@
 
         .project_list {
             width: 710rpx;
-            height: 312rpx;
+            // height: 312rpx;
+            border-radius: 20rpx;
             flex-shrink: 0;
             background-color: #FFF;
             margin: 0 auto 20rpx auto;
+            padding-bottom: 24rpx;
 
             .supplier_list_name {
                 @include flex-center(space-between);

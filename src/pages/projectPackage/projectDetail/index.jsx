@@ -2,15 +2,15 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-01-02 15:34:00
+ * @LastEditTime: 2025-03-10 20:08:00
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
-import { View, Image, Textarea, Block } from '@tarojs/components'
+import { View, Image, Textarea, Block, RichText } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { replaceNewLinesWithBr } from '@/util/utils'
 
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
@@ -25,7 +25,7 @@ const Index = observer(({ store }) => {
   const route = useRouter();
   const {
     baseStore: { bottomSafeAreaHeight },
-    businessStore: { setEditProjectInfo, onSiteInfo, setOnSiteInfo },
+    businessStore: { setEditProjectInfo, setProjectPatternInfo },
     userStore: { myPermissions }
   } = store
 
@@ -51,16 +51,13 @@ const Index = observer(({ store }) => {
     Taro.hideLoading();
     console.log("getProjectDetail_data", data);
     if (code === 200 && data) {
-      // data.numberRecruits = numberRecruits;
-      // data.numberOnJob = numberOnJob;
-      // data.leaveRate = leaveRate;
-      // data.supplierCount = supplierCount;
       if (data.interviewAddress) {
         setAddressInt(data.interviewAddress);
       }
       if (data.interviewDate) {
         setInterviewDate(data.interviewDate);
       }
+      data.introduction = replaceNewLinesWithBr(data.introduction);
       setDetail(data);
     } else {
       Taro.showToast({ title: msg, icon: 'none' });
@@ -72,6 +69,7 @@ const Index = observer(({ store }) => {
     const { code, data, msg } = await getContractsInfoStatistics({ contractsSerialCode });
     console.log("getProjectStatistics_data", code, data);
     if (code === 200 && data) {
+
       setStatistics(data);
     } else {
       Taro.showToast({ title: msg, icon: 'none' });
@@ -232,6 +230,63 @@ const Index = observer(({ store }) => {
         </View>
       </View>
 
+      {
+        (!detail.cooperationModels || detail.cooperationModels?.length === 0) &&
+        <View className='set_supplier_wrapper'>
+          <View className='set_supplier_wrapper_left'>供应链</View>
+          <View className='set_supplier_wrapper_right' onClick={() => {
+            setProjectPatternInfo({
+              contractsSerialCode: detail.serialCode,
+              title: detail.title,
+              cooperationModels: detail.cooperationModels ? detail.cooperationModels : [],
+              settlementStandard: detail.settlementStandard ? detail.settlementStandard : '',
+            })
+            Taro.navigateTo({
+              url: `/pages/supplierPackage/setPattern/index?contractsSerialCode=${detail.serialCode}&title=${detail.title}`
+            })
+          }}>
+            <View>暂未设置合作模式，点击设置</View>
+            <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_7.webp`}></Image>
+          </View>
+        </View> ||
+        detail.cooperationModels?.length > 0 &&
+        <View className='get_supplier_wrapper'>
+          <View className='get_supplier_wrapper_title'>供应链</View>
+          <View className='get_supplier_wrapper_content'>
+            <View className='get_supplier_wrapper_content_item' onClick={() => {
+              setProjectPatternInfo({
+                contractsSerialCode: detail.serialCode,
+                title: detail.title,
+                cooperationModels: detail.cooperationModels ? detail.cooperationModels : [],
+                settlementStandard: detail.settlementStandard ? detail.settlementStandard : '',
+              })
+              Taro.navigateTo({
+                url: `/pages/supplierPackage/setPattern/index?contractsSerialCode=${detail.serialCode}&title=${detail.title}`
+              })
+            }}>
+              <View className='get_supplier_wrapper_num'>{detail.cooperationModels.length}</View>
+              <View className='get_supplier_wrapper_label'>
+                <View>合作模式</View>
+                <Image src={`${Taro.$cdnUrl}/supplier/supplier_17.webp`}></Image>
+              </View>
+            </View>
+
+            <View className='get_supplier_wrapper_content_item' onClick={()=>{
+              Taro.navigateTo({
+                url: `/pages/supplierPackage/projectSuppliers/index?contractsSerialCode=${detail.serialCode}&title=${detail.title}`
+              })
+            }}>
+              <View className='get_supplier_wrapper_num'>{basicStatistics.supplierCount}</View>
+              <View className='get_supplier_wrapper_label'>
+                <View>供应商</View>
+                <Image src={`${Taro.$cdnUrl}/supplier/supplier_17.webp`}></Image>
+              </View>
+            </View>
+          </View>
+        </View>
+      }
+
+
       <View className='interview_info'>
         <View className='project_title'>
           <View>面试信息</View>
@@ -303,7 +358,9 @@ const Index = observer(({ store }) => {
             <View> </View>
           }
         </View>
-        <View className='job_introduce'>{detail.introduction}</View>
+        <View className='job_introduce'>
+          <RichText nodes={detail.introduction}></RichText>
+        </View>
       </View>
       <View style={`height:300rpx;`}></View>
 

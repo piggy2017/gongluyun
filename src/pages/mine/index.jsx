@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-24 16:01:26
+ * @LastEditTime: 2025-03-10 15:21:09
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -228,7 +228,7 @@ const Index = observer(({ store }) => {
         }
       </View>
 
-      <TabBar actCurrent={role === 'SUPPLIER' ? 1 : 3} />
+      <TabBar actCurrent={(role === 'SUPPLIER' || role === 'SEEK') ? 1 : 3} />
 
       <AtModal
         isOpened={loginoutSure}

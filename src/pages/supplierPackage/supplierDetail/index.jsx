@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-20 14:03:57
+ * @LastEditTime: 2025-03-10 09:58:00
  * @Description: 
  */
 
@@ -12,14 +12,10 @@ import { View, Image, ScrollView, Text, Textarea, Block } from '@tarojs/componen
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 
-import { AtIcon, AtFloatLayout } from 'taro-ui'
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
-
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { } from '@/util/api';
+import { getSupplierInfo } from '@/util/api';
 
 const Index = observer(({ store }) => {
     const route = useRouter();

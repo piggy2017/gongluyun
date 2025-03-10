@@ -238,6 +238,104 @@
         }
     }
 
+    .set_supplier_wrapper {
+        width: 710rpx;
+        height: 120rpx;
+        flex-shrink: 0;
+        border-radius: 14rpx;
+        background: #FFF;
+        margin: 20rpx auto 0 auto;
+        @include flex-center(space-between);
+        color: #222222;
+        font-family: "PingFang SC";
+        font-size: 30rpx;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+
+        .set_supplier_wrapper_left {
+            margin-left: 24rpx;
+        }
+
+        .set_supplier_wrapper_right {
+            margin-right: 24rpx;
+            @include flex-center(flex-end);
+            color: #1678ff;
+            text-align: right;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+
+            image {
+                width: 40rpx;
+                height: 40rpx;
+            }
+        }
+    }
+
+    .get_supplier_wrapper {
+        width: 710rpx;
+        height: 230rpx;
+        flex-shrink: 0;
+        border-radius: 14rpx;
+        background: #FFF;
+        margin: 20rpx auto 0 auto;
+
+        .get_supplier_wrapper_title {
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            padding: 40rpx 0 24rpx 24rpx;
+        }
+
+        .get_supplier_wrapper_content {
+            @include flex-center();
+
+            .get_supplier_wrapper_content_item {
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: center;
+                justify-content: center;
+
+                .get_supplier_wrapper_num {
+                    color: #333333;
+                    text-align: center;
+                    font-family: "D-DIN-PRO";
+                    font-size: 40rpx;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: normal;
+                }
+
+                .get_supplier_wrapper_label {
+                    @include flex-center();
+                    color: #666666;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 26rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    margin-top: 8rpx;
+
+                    image {
+                        width: 40rpx;
+                        height: 40rpx;
+                        flex-shrink: 0;
+                    }
+                }
+            }
+            .get_supplier_wrapper_content_item:last-child {
+                margin-left: 192rpx;
+            }
+        }
+    }
+
 
     .project_btns {
         width: 100%;

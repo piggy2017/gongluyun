@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 10:22:06
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-24 11:53:08
+ * @LastEditTime: 2025-03-06 17:38:23
  * @Description:  申请成为供应商--输入公司名称
  */
 import React, { useState } from 'react';
@@ -14,9 +14,33 @@ import { AtFloatLayout, AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss';
+import { supplierCreate } from '@/util/api';
 
-const JoinSupplier = observer(({ showPicker, onClose, onchange, store }) => {
+const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
+    const {
+        userStore: { supplierCompanyInfo, setSupplierCompanyInfo }
+    } = store
     const [componyName, setComponyName] = useState('');
+
+    const postComponyName = async () => {
+        if (!componyName) {
+            return Taro.showToast({
+                title: '请输入公司/个人名称',
+                icon: 'none',
+                duration: 2000
+            })
+        }
+        // setSupplierCompanyInfo({ ...supplierCompanyInfo, name: componyName });
+        const { code, data, msg } = await supplierCreate({ name: componyName });
+        console.log(" 注册供应商 ", code, data, msg)
+        if (code === 200) {
+            setSupplierCompanyInfo({ ...data });
+        } else {
+            Taro.showToast({ title: msg, icon: 'none', duration: 2000 })
+        }
+        onClose();
+        // onChange();
+    }
 
     return (
         <>
@@ -39,16 +63,7 @@ const JoinSupplier = observer(({ showPicker, onClose, onchange, store }) => {
                                 onInput={(e) => setComponyName(e.detail.value)}></Input>
                         </View>
                         <View className='filter_content_hr'></View>
-                        <View className={`filter_wrapper_btn ${componyName ? 'filter_wrapper_btn_active' : ''}`} onClick={() => {
-                            if (!componyName) {
-                                return Taro.showToast({
-                                    title: '请输入公司/个人名称',
-                                    icon: 'none',
-                                    duration: 2000
-                                })
-                            }
-                            onchange(componyName);
-                        }}>确定</View>
+                        <View className={`filter_wrapper_btn ${componyName ? 'filter_wrapper_btn_active' : ''}`} onClick={() => postComponyName()}>下一步</View>
                     </View>
                 </View>
             </AtFloatLayout>

@@ -1,0 +1,261 @@
+@import '@/app.scss';
+
+.container {
+    width: 100%;
+    height: 100vh;
+    // background: linear-gradient(180deg, #E8F1FF 0%, #edf3fc00 100%) #F4F4F4;
+    background: linear-gradient(180deg, #0C72FF 0%, #539bff00 89.88%) #F4F4F4;
+    background-size: 100% 368rpx;
+    background-repeat: no-repeat;
+
+    .page_logos {
+        height: 94rpx;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: flex-end;
+        padding-left: 30rpx;
+        color: #ffffff;
+        text-align: center;
+        font-family: "Alibaba PuHuiTi 2.0";
+        font-size: 30rpx;
+        font-style: normal;
+        font-weight: 55 Regular;
+        line-height: normal;
+
+        image {
+            width: 80rpx;
+            height: 88rpx;
+            margin-right: 10rpx;
+        }
+    }
+
+    .my_port {
+        width: 716rpx;
+        height: 148rpx;
+        flex-shrink: 0;
+        border-radius: 20rpx;
+        background: #FFF;
+        margin: 46rpx auto 0 auto;
+        @include flex-center(flex-start);
+
+        .my_port_left_logo {
+            width: 100rpx;
+            height: 100rpx;
+            flex-shrink: 0;
+            border-radius: 12rpx;
+            background-color: #0C72FF;
+            margin-left: 22rpx
+        }
+
+        .my_port_left_text {
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 32rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            margin-left: 16rpx;
+            width: 530rpx;
+            @include ellipsis;
+            margin-left: 12rpx;
+        }
+    }
+
+    .supplier_title {
+        padding: 53rpx 28rpx 28rpx 28rpx;
+        @include flex-center(space-between);
+        color: #222222;
+        font-family: "PingFang SC";
+        font-size: 30rpx;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+
+        .supplier_title_right {
+            @include flex-center(flex-start);
+            color: #1678ff;
+            text-align: right;
+            font-size: 26rpx;
+            font-weight: 400;
+
+            image {
+                width: 48rpx;
+                height: 48rpx;
+                flex-shrink: 0;
+                margin-right: 6rpx;
+            }
+        }
+    }
+
+    .scrollWrapper {
+        width: 100%;
+        border: 1rpx solid red;
+        margin-top: 20rpx;
+
+        .supplier_list {
+            width: 710rpx;
+            height: 236rpx;
+            flex-shrink: 0;
+            background-color: #FFF;
+            margin: 0 auto 20rpx auto;
+
+            .supplier_list_name {
+                @include flex-center(flex-start);
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 32rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+                padding: 26rpx 24rpx 0 24rpx;
+
+                .supplier_list_name_auth {
+                    margin-left: 4rpx;
+                    color: #ffffff;
+                    text-align: right;
+                    font-family: "PingFang SC";
+                    font-size: 21rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    padding: 4rpx 10rpx;
+                    background-color: #1678FF;
+                    border-radius: 4rpx;
+                }
+            }
+
+            .supplier_list_nums {
+                width: 602rpx;
+                height: 124rpx;
+                flex-shrink: 0;
+                border-radius: 10rpx;
+                background: #cbcbcb26;
+                margin: 18rpx auto 0 auto;
+                padding: 0 30rpx;
+                @include flex-center(space-between);
+
+                .supplier_list_nums_item {
+                    display: flex;
+                    flex-flow: column nowrap;
+                    align-items: center;
+                    justify-content: center;
+
+                    .supplier_list_nums_item_top {
+                        color: #222222;
+                        text-align: center;
+                        font-family: "D-DIN-PRO";
+                        font-size: 40rpx;
+                        font-style: normal;
+                        font-weight: 600;
+                        line-height: normal;
+                        display: flex;
+                        flex-flow: row nowrap;
+                        align-items: flex-end;
+
+                        .supplier_list_nums_item_top_r {
+                            color: #222222;
+                            text-align: center;
+                            font-family: "PingFang SC";
+                            font-size: 26rpx;
+                            font-style: normal;
+                            font-weight: 500;
+                            line-height: normal;
+                        }
+                    }
+
+                    .supplier_list_nums_item_bottom {
+                        color: #666666;
+                        text-align: center;
+                        font-family: "PingFang SC";
+                        font-size: 26rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: normal;
+                        margin-top: 8rpx;
+                    }
+                }
+            }
+        }
+    }
+
+    .page_bottom {
+        width: 100%;
+        position: fixed;
+        z-index: 99;
+        left: 0;
+        bottom: 0;
+        background-color: #ffffff;
+
+        .page_bottom_content {
+            padding: 0 28rpx;
+            @include flex-center(space-between);
+
+            .page_bottom_content_l {
+                @include flex-center(flex-start);
+
+                .page_bottom_content_l_avatar {
+                    width: 88rpx;
+                    height: 88rpx;
+                    border-radius: 50%;
+                    background-color: #F4F4F4;
+                    margin-right: 8rpx;
+                }
+
+                .page_bottom_content_l_name {
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                }
+
+                .page_bottom_content_l_label {
+                    color: #666666;
+                    font-family: "PingFang SC";
+                    font-size: 26rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+            }
+
+            .page_bottom_content_r {
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: center;
+                justify-content: flex-end;
+
+                .page_bottom_btn {
+                    width: 220rpx;
+                    height: 80rpx;
+                    border-radius: 8rpx;
+                    @include flex-center;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+
+                    image {
+                        width: 48rpx;
+                        height: 48rpx;
+                        margin-right: 6rpx;
+                    }
+                }
+
+                .page_bottom_btn_call {
+                    background: #1678ff1c;
+                    color: #1678ff;
+                    margin-right: 16rpx;
+                }
+
+                .page_bottom_btn_signup{
+                    background: #1678FF;
+                    color: #ffffff;
+                }
+            }
+        }
+    }
+}

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-21 16:32:22
+ * @LastEditTime: 2025-03-07 17:21:42
  * @Description: 项目详情中查看供应商列表
  */
 
@@ -12,14 +12,10 @@ import { View, Image, ScrollView, Button, Text, Textarea, Block } from '@tarojs/
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 
-import { AtIcon, AtFloatLayout } from 'taro-ui'
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
-
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { } from '@/util/api';
+import { mySupplierListByContracts } from '@/util/api';
 
 const Index = observer(({ store }) => {
     const route = useRouter();
@@ -35,22 +31,54 @@ const Index = observer(({ store }) => {
     const [pageNo, setPageNo] = useState(1)
     const pageSize = 10;
 
-    const [connect, setConnect] = useState(true);
-
     const [list, setList] = useState([
-        { name: "龙泉驿区招物流分拣全职月结区招物流分拣全职月结", model: '模式1:在职15天400，人多+V，卡点3天,在职三十天返现', num1: 3, num2: 79, num3: 0, num4: 7 },
-        { name: "四川阿普企业管理咨询有限公司", model: '', num1: 3, num2: 79, num3: 0, num4: 7 },
+        // { name: "龙泉驿区招物流分拣全职月结区招物流分拣全职月结", model: '模式1:在职15天400，人多+V，卡点3天,在职三十天返现', num1: 3, num2: 79, num3: 0, num4: 7 },
+        // { name: "四川阿普企业管理咨询有限公司", model: '', num1: 3, num2: 79, num3: 0, num4: 7 },
     ]);
+
+    useEffect(() => {
+        const { contractsSerialCode, title } = route.params;
+        console.log('contractsSerialCode', contractsSerialCode, title);
+        getList(1);
+    }, [])
+
+    const getList = async (_pageNo) => {
+        let params = {
+            pageNo: _pageNo,
+            pageSize,
+            contractsSerialCode: route.params.contractsSerialCode,
+        }
+        setRequestState(1);
+        Taro.showLoading({ title: '加载中', mask: true });
+        const { code, data } = await mySupplierListByContracts(params);
+        Taro.hideLoading();
+        console.log("code, data", code, data);
+        setIsRefresh(false);
+        if (code === 200 && data?.responses?.length > 0) {
+            setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
+            setgoonLoad(true);
+            setPageNo(data.pageNo);
+            setRequestState(2);
+        } else {
+            setgoonLoad(false);
+            setRequestState(3);
+            if (_pageNo === 1) {
+                setList([]);
+            }
+        }
+    }
 
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
         if (goonLoad) {
+            getList(pageNo + 1);
         }
     }, 500);
 
     const handleScrollToUpper = debounce(() => {  // 滑动到最顶部,触发下拉刷新
         console.log('下拉刷新');
         setIsRefresh(true);
+        getList(1)
     }, 200);
 
     const getHeight = () => {
@@ -59,7 +87,7 @@ const Index = observer(({ store }) => {
 
     return (
         <View className='container'>
-            <Navbar fixed placeholder bgColor='#fff' title='龙泉驿区招物流分拣全职月结' titleColor='#222222'></Navbar>
+            <Navbar fixed placeholder bgColor='#fff' title={route.params.title} titleColor='#222222'></Navbar>
             <View style={`height:24rpx;`}></View>
             <ScrollView
                 scrollY
@@ -86,20 +114,28 @@ const Index = observer(({ store }) => {
                                     </View>
                                 </View>
                                 {
-                                    item.model &&
-                                    <View className='supplier_list_model'>
-                                        <Text>模式1：</Text>{item.model}
-                                    </View> ||
-                                    !item.model &&
-                                    <View className='supplier_list_goSet'>
-                                        <View>暂无合作模式，点击设置</View>
-                                        <Image src={`${Taro.$cdnUrl}/supplier/supplier_4.webp`}></Image>
-                                    </View>
+                                    // item.model &&
+                                    // <View className='supplier_list_model'>
+                                    //     <Text>模式1：</Text>{item.model}
+                                    // </View> ||
+                                    // !item.model &&
+                                    // <View className='supplier_list_goSet'>
+                                    //     <View>暂无合作模式，点击设置</View>
+                                    //     <Image src={`${Taro.$cdnUrl}/supplier/supplier_4.webp`}></Image>
+                                    // </View>
                                 }
                                 <View className='supplier_list_nums'>
                                     <View className='supplier_list_nums_item'>
                                         <View className='supplier_list_nums_item_top'>
-                                            <View className='supplier_list_nums_item_top_l'>{item.num1}</View>
+                                            <View className='supplier_list_nums_item_top_l'>{item.signUpCounts}</View>
+                                            <View className='supplier_list_nums_item_top_r'>个</View>
+                                        </View>
+                                        <View className='supplier_list_nums_item_bottom'>已上报</View>
+                                    </View>
+
+                                    <View className='supplier_list_nums_item'>
+                                        <View className='supplier_list_nums_item_top'>
+                                            <View className='supplier_list_nums_item_top_l'>{item.alreadyArrivedCounts}</View>
                                             <View className='supplier_list_nums_item_top_r'>个</View>
                                         </View>
                                         <View className='supplier_list_nums_item_bottom'>已到面</View>
@@ -107,7 +143,7 @@ const Index = observer(({ store }) => {
 
                                     <View className='supplier_list_nums_item'>
                                         <View className='supplier_list_nums_item_top'>
-                                            <View className='supplier_list_nums_item_top_l'>{item.num2}</View>
+                                            <View className='supplier_list_nums_item_top_l'>{item.deliveredCounts}</View>
                                             <View className='supplier_list_nums_item_top_r'>个</View>
                                         </View>
                                         <View className='supplier_list_nums_item_bottom'>累计入职</View>
@@ -115,18 +151,10 @@ const Index = observer(({ store }) => {
 
                                     <View className='supplier_list_nums_item'>
                                         <View className='supplier_list_nums_item_top'>
-                                            <View className='supplier_list_nums_item_top_l'>{item.num3}</View>
+                                            <View className='supplier_list_nums_item_top_l'>{item.resignCounts}</View>
                                             <View className='supplier_list_nums_item_top_r'>个</View>
                                         </View>
                                         <View className='supplier_list_nums_item_bottom'>累计离职</View>
-                                    </View>
-
-                                    <View className='supplier_list_nums_item'>
-                                        <View className='supplier_list_nums_item_top'>
-                                            <View className='supplier_list_nums_item_top_l'>{item.num4}</View>
-                                            <View className='supplier_list_nums_item_top_r'>个</View>
-                                        </View>
-                                        <View className='supplier_list_nums_item_bottom'>已结费</View>
                                     </View>
                                 </View>
                             </View>

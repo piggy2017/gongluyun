@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 17:08:48
+ * @LastEditTime: 2025-03-10 17:42:59
  * @Description: 
  */
 
@@ -547,8 +547,6 @@ const Index = observer(({ store }) => {
                     </View>
                 </AtFloatLayout>
             </Block>
-
-
         </View>
     )
 })

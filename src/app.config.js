@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-24 15:44:59
+ * @LastEditTime: 2025-03-10 19:00:15
  * @Description: 
  */
 export default defineAppConfig({
@@ -16,6 +16,7 @@ export default defineAppConfig({
         'pages/mine/index',
         'pages/login/index',
         'pages/supplierProject/index',
+        'pages/workerIndex/index',          // 求职者首页
     ],
     window: {
         backgroundTextStyle: 'light',
@@ -43,6 +44,10 @@ export default defineAppConfig({
             {
                 "pagePath": "pages/projectManage/index",
                 "text": "项目管理"
+            },
+            {
+                'pagePath': 'pages/workerIndex/index',
+                "text": "首页"
             },
             {
                 "pagePath": "pages/clue/index",
@@ -74,6 +79,19 @@ export default defineAppConfig({
                 "editTalent/index",             // 编辑人才信息
                 "talentInterview/index",        // 人才库详情安排面试
                 "clueDetail/index",             // 线索详情
+            ]
+        },
+        {
+            "root": "pages/loginPackage/",       // 登录后选择角色和添加信息
+            "pages": [
+                "chooseRole/index",              // 选择角色
+                "writeInfo/index",               // 选择角色
+            ]
+        },
+        {
+            "root": "pages/workerPackage/",      // 求职者页面子包
+            "pages": [
+                "projectDetail/index",           // 求职者查看项目详情
             ]
         },
         {
@@ -136,11 +154,14 @@ export default defineAppConfig({
             "pages":[
                 "supplierManage/index",           // 供应商管理
                 "supplierDetail/index",           // 供应商详情
+                "setContact/index",               // 我的端口设置联系人
                 "myPort/index",                   // 我的合作端口详情页面
                 "projectSuppliers/index",         // 项目详情中查看供应商列表
                 "setPattern/index",               // 设置合作模式
                 "projectDetail/index",            // 项目详情
                 "collaborateBill/index",          // 合作的发单方
+                "sharePage/index",                // 分享落地页
+                "roster/index",                   // 名单
             ]
         }
     ]

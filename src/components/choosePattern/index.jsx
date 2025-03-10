@@ -2,10 +2,10 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 10:22:06
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-24 11:50:05
+ * @LastEditTime: 2025-03-05 17:43:37
  * @Description:  申请成为供应商--输入公司名称
  */
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { observer, inject } from 'mobx-react';
 import { View, Input } from '@tarojs/components';
@@ -15,15 +15,14 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss';
 
-const ChoosePattern = observer(({ showPicker, onClose, onchange, store }) => {
-    const [patternList, setPatternList] = useState([
-        { content: '在职15天400，人多+V，卡点3天，请假旷工顺延，自离旷离无费；', id: 1 },
-        { content: '在职15天400，人多+V，卡点3天，请假旷工顺延，自离旷离无费；', id: 2 },
-        { content: '在职15天400，人多+V，卡点3天，请假旷工顺延，自离旷离无费；', id: 3 },
-        { content: '在职15天400，人多+V，卡点3天，请假旷工顺延，自离旷离无费；', id: 4 },
-        { content: '在职15天400，人多+V，卡点3天，请假旷工顺延，自离旷离无费；', id: 5 },
-    ])
-    const [chooseId, setChooseId] = useState('')
+const ChoosePattern = observer(({ list, showPicker, onClose, onchange, store }) => {
+    const [patternList, setPatternList] = useState([]);
+    const [chooseId, setChooseId] = useState('');
+    useEffect(()=>{
+        if(list && list.length > 0){
+            setPatternList(list)
+        }
+    },[list])
 
     return (
         <>
@@ -40,11 +39,11 @@ const ChoosePattern = observer(({ showPicker, onClose, onchange, store }) => {
                                     return (
                                         <View onClick={() => {
                                             setChooseId(item)
-                                            console.log("点击了模式", item.id)
+                                            console.log("点击了模式", item)
                                         }
-                                        } className={`filter_pattern_item ${chooseId.id == item.id ? 'filter_pattern_item_active' : ''}`} key={index} >
+                                        } className={`filter_pattern_item ${chooseId == item ? 'filter_pattern_item_active' : ''}`} key={index} >
                                             <View className='filter_item_title'>模式{index + 1}:</View>
-                                            <View className='filter_item_content'>{item.content}</View>
+                                            <View className='filter_item_content'>{item}</View>
                                         </View>
                                     )
                                 })

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-24 14:37:13
+ * @LastEditTime: 2025-03-05 18:20:38
  * @Description: 
  */
 
@@ -13,46 +13,87 @@ import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 
 import Navbar from '@/components/navbar';
-import JoinSupplier from '@/components/joinSupplier';
-import ChoosePattern from '@/components/choosePattern';
+// import JoinSupplier from '@/components/joinSupplier';
+// import ChoosePattern from '@/components/choosePattern';
 import './index.scss'
 
-import { } from '@/util/api';
+import { getContractsInfo, joinContracts } from '@/util/api';
 
 const Index = observer(({ store }) => {
     const route = useRouter();
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-        businessStore: { setEditProjectInfo, onSiteInfo, setOnSiteInfo },
-        userStore: { companyInfo }
+        baseStore: { bottomSafeAreaHeight },
+        userStore: { supplierCompanyInfo },
     } = store
 
-    const [isRefresh, setIsRefresh] = useState(false);
-    const [goonLoad, setgoonLoad] = useState(true);
-    const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
-    const [pageNo, setPageNo] = useState(1)
-    const pageSize = 10;
-
     const [isOpen, setIsOpen] = useState(false);
-    const [patternList, setPatternList] = useState([
-        { content: '在职15天400，人多+V，卡点3天，请假旷工顺延，自离旷离无费；', id: 1 },
-        { content: '在职15天400，人多+V，卡点3天，请假旷工顺延，自离旷离无费；', id: 2 },
-        { content: '在职15天400，人多+V，卡点3天，请假旷工顺延，自离旷离无费；', id: 3 },
-        { content: '在职15天400，人多+V，卡点3天，请假旷工顺延，自离旷离无费；', id: 4 },
-        { content: '在职15天400，人多+V，卡点3天，请假旷工顺延，自离旷离无费；', id: 5 },
-    ])
 
-    const [showJoinModel, setShowJoinModel] = useState(false);
     const [showPatternModel, setShowPatternModel] = useState(false);
 
-    const [isJoin, setIsJoin] = useState(true);     // 是否已加入
+    const [detail, setDetail] = useState('');
+    const [showJoinPicker, setShowJoinPicker] = useState(false);
 
-    const getJoinSupplier = (e) => {
-        console.log("   申请加入供应商", e);
+    useEffect(() => {
+        console.log("supplierCompanyInfo_supplierCompanyInfo", supplierCompanyInfo);
+    }, [])
+
+    useDidShow(() => {
+        getDetail();
+    })
+
+    const getChoosePattern = async (value) => {
+        console.log("   执行加入项目", value);
+        let params = {
+            companySerialCode: detail.companySerialCode,
+            contractsSerialCode: detail.serialCode,
+            supplierName: supplierCompanyInfo.name,
+            coopModel: value,
+        }
+        Taro.showLoading({
+            title: '提交中...',
+            mask: true
+        })
+        const { code, data, msg } = await joinContracts(params);
+        Taro.hideLoading();
+        console.log("加入项目", code, data, msg);
+        if (code === 200) {
+            Taro.showToast({ title: '加入成功', icon: 'none' });
+            getDetail();
+            setShowPatternModel(false);
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
+        }
     }
 
-    const getChoosePattern = (e) => {
-        console.log("   选择合作模式", e);
+    const getDetail = async () => {
+        console.log("route.params", route.params);
+        const { contractSerialCode } = route.params;
+        console.log("getDetail_contractsSerialCode", contractSerialCode);
+        Taro.showLoading({ title: '加载中...' });
+        const { code, data, msg } = await getContractsInfo({ contractsSerialCode: contractSerialCode });
+        Taro.hideLoading();
+        console.log("getProjectDetail_data", data);
+        if (code === 200 && data) {
+            setDetail(data);
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
+        }
+    }
+
+    const joinProject = () => {
+        console.log('加入项目_supplierCompanyInfo',supplierCompanyInfo);
+        if (!supplierCompanyInfo.name) {
+            setShowJoinPicker(true);
+        }else{
+            setShowPatternModel(true);
+        }
+    }
+
+    const navigateFunc = (e, url) => {
+        e.stopPropagation();
+        Taro.navigateTo({
+            url
+        })
     }
 
     return (
@@ -62,40 +103,40 @@ const Index = observer(({ store }) => {
             <View className='project_info'>
                 <View className='project_info_title'>
                     <View className='project_info_tag'>接单项目</View>
-                    <View className='project_info_name'>龙泉驿区招物流分拣全职月结</View>
+                    <View className='project_info_name'>{detail.title}</View>
                 </View>
-                <View className='project_info_detail'>龙泉驿·普工·50人</View>
+                <View className='project_info_detail'>{detail.conAreaName}·{detail.jobTypeName}·{detail.numberRecruits}人</View>
                 <View className='project_info_compony'>
                     <View className='project_info_compony_avatar'></View>
                     <View className='project_info_compony_info'>
-                        <View>成都市爱发单人力有限公司</View>
-                        <View className='project_info_compony_info_time'>5月6日发布</View>
+                        <View>{detail.company}</View>
+                        <View className='project_info_compony_info_time'>{detail.createDate}发布</View>
                     </View>
                 </View>
             </View>
 
             {
-                isJoin &&
+                detail?.joiningSuccessful &&
                 <>
                     <View className='project_datas'>
                         <View className='project_title'>
                             <View>我的交付数据</View>
-                            <View className='project_more' onClick={(e) => navigateFunc(e, `/pages/projectPackage/roster/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>
+                            <View className='project_more' onClick={(e) => navigateFunc(e, `/pages/supplierPackage/roster/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>
                                 <View>查看名单</View>
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
                             </View>
                         </View>
                         <View className='project_datas_content'>
                             <View className='project_datas_item'>
-                                <View>0</View>
+                                <View>{detail.signUpCounts}</View>
                                 <View className='project_datas_item_label'>已上报</View>
                             </View>
                             <View className='project_datas_item'>
-                                <View>0</View>
+                                <View>{detail.alreadyArrivedCounts}</View>
                                 <View className='project_datas_item_label'>已到面</View>
                             </View>
                             <View className='project_datas_item'>
-                                <View>0</View>
+                                <View>{detail.deliveredCounts}</View>
                                 <View className='project_datas_item_label'>已入职</View>
                             </View>
                             <View className='project_datas_item'>
@@ -107,6 +148,10 @@ const Index = observer(({ store }) => {
 
                     <View className='collaborate_pattern'>
                         <View className='collaborate_pattern_title'>合作模式</View>
+                        <View className='collaborate_pattern_content'>
+                            <View className='collaborate_pattern_content_dot'></View>
+                            <View className='collaborate_pattern_content_text'>{detail.cooperationModel}</View>
+                        </View>
                     </View>
 
                     <View className='project_interview'>
@@ -135,13 +180,13 @@ const Index = observer(({ store }) => {
                                 <Image src={`${Taro.$cdnUrl}/supplier/supplier_${isOpen ? 9 : 8}.webp`}></Image>
                             </View>
                         </View>
-                        <View className={`project_desc_content ${isOpen ? 'project_desc_content_open' : 'project_desc_content_close'}`}>自媒体上，杨同牛开始有点流量，但他被更多人知道是始于官媒报道。今年2月14日，《邵阳日报》以《徒步3000多公里！邵阳一对夫妻花200多天到达西藏……》为题，报道杨同牛携爱妻徒步去西藏旅游的报道，报道穿插着杨同牛塑料壳般“嘎蹦脆”的普通话</View>
+                        <View className={`project_desc_content ${isOpen ? 'project_desc_content_open' : 'project_desc_content_close'}`}>{detail.settlementStandard}</View>
                     </View>
                 </>
             }
 
             {
-                !isJoin &&
+                (detail?.joiningSuccessful == false) &&
                 <>
                     <View className='project_desc'>
                         <View className='project_desc_title'>
@@ -153,17 +198,17 @@ const Index = observer(({ store }) => {
                                 <Image src={`${Taro.$cdnUrl}/supplier/supplier_${isOpen ? 9 : 8}.webp`}></Image>
                             </View>
                         </View>
-                        <View className={`project_desc_content ${isOpen ? 'project_desc_content_open' : 'project_desc_content_close'}`}>自媒体上，杨同牛开始有点流量，但他被更多人知道是始于官媒报道。今年2月14日，《邵阳日报》以《徒步3000多公里！邵阳一对夫妻花200多天到达西藏……》为题，报道杨同牛携爱妻徒步去西藏旅游的报道，报道穿插着杨同牛塑料壳般“嘎蹦脆”的普通话</View>
+                        <View className={`project_desc_content ${isOpen ? 'project_desc_content_open' : 'project_desc_content_close'}`}>{detail.introduction}</View>
                     </View>
 
                     <View className='project_pattern'>
                         <View className='project_pattern_title'>合作模式</View>
                         {
-                            patternList.length > 0 && patternList.map((item, index) => {
+                            detail.cooperationModels?.length > 0 && detail.cooperationModels.map((item, index) => {
                                 return (
                                     <View className='project_pattern_item' key={index}>
                                         <View className='project_pattern_item_title'>模式{index + 1}:</View>
-                                        <View className='project_pattern_item_content'>{item.content}</View>
+                                        <View className='project_pattern_item_content'>{item}</View>
                                     </View>
                                 )
                             })
@@ -172,7 +217,7 @@ const Index = observer(({ store }) => {
 
                     <View className='project_pattern project_pattern_1'>
                         <View className='project_pattern_title'>结算规则</View>
-                        <View className='project_pattern_rule'>多地警方通过政务平台发布“家庭摄像头使用风险提示”，建议居民谨慎安装家用监控设备。这一建议迅速引发热议——在智能安防普及率超67%的今天，曾被奉为“家庭守护神”的摄像头 </View>
+                        <View className='project_pattern_rule'>{detail.settlementStandard}</View>
                     </View>
                 </>
             }
@@ -183,24 +228,19 @@ const Index = observer(({ store }) => {
             <View className='page_bottom'>
                 <View style={`height:20rpx;`}></View>
                 {
-                    !isJoin &&
-                    <View className='jion_btn' onClick={() => { setShowJoinModel(true); }}>加入项目</View> ||
+                    (detail?.joiningSuccessful == false) &&
+                    <View className='jion_btn' onClick={joinProject}>加入项目</View> ||
                     <View className='page_bottom_btns'>
-                        <View className='page_bottom_btn_left'>名单</View>
-                        <View className='page_bottom_btn_right'>上报求职者</View>
+                        <View className='page_bottom_btn_left' onClick={(e) => navigateFunc(e, `/pages/supplierPackage/roster/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>名单</View>
+                        <View className='page_bottom_btn_right' onClick={(e) => navigateFunc(e, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>上报求职者</View>
                     </View>
                 }
 
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 
-            <Block>
-                <JoinSupplier showPicker={showJoinModel} onClose={() => setShowJoinModel(false)} onchange={getJoinSupplier}></JoinSupplier>
-            </Block>
-
-            <Block>
-                <ChoosePattern showPicker={showPatternModel} onClick={() => setShowPatternModel(false)} onchange={getChoosePattern}></ChoosePattern>
-            </Block>
+            <Taro.GlobalJoinSupplier showPicker={showJoinPicker} onChange={() => { setShowPatternModel(true) }} onClose={() => { setShowJoinPicker(false) }}></Taro.GlobalJoinSupplier>
+            <Taro.ChoosePattern list={detail.cooperationModels} showPicker={showPatternModel} onClose={() => setShowPatternModel(false)} onchange={getChoosePattern}></Taro.ChoosePattern>
         </View>
     )
 })

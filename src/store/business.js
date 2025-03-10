@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-04 14:45:26
+ * @LastEditTime: 2025-02-28 15:21:14
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -152,6 +152,21 @@ const businessStore = observable({
     setRosterFilterSupplier(value) {
         businessStore.rosterFilterSupplier = value;
     },
+
+    projectPatternInfo: {
+        contractsSerialCode: '',
+        title: '',
+        cooperationModels: [],
+        settlementStandard: ''
+    },
+    setProjectPatternInfo(value) {
+        businessStore.projectPatternInfo = value;
+    },
+
+    billComponySerialCode:'',     // 供应商角色 首页需要加载的发单方信息的id
+    setBillComponySerialCode(value) {
+        businessStore.billComponySerialCode = value;
+    }
 });
 
 export default businessStore

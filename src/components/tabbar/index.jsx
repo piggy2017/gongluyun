@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:02:33
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-24 15:05:00
+ * @LastEditTime: 2025-03-10 15:37:33
  * @Description: 
  */
 
@@ -48,6 +48,7 @@ const Index = observer(({ store, actCurrent }) => {
             3: '/tabbar/clue_default.webp',
             4: '/tabbar/mine_default.webp',
             5: '/tabbar/list_default.webp',
+            6: '/supplier/supplier_32.webp'
         }
         return Taro.$cdnUrl + map[index]
     }
@@ -58,13 +59,14 @@ const Index = observer(({ store, actCurrent }) => {
             3: `/tabbar/clue_active.webp`,
             4: `/tabbar/mine_active.webp`,
             5: `/tabbar/list_active.webp`,
+            6: '/supplier/supplier_31.webp'
         }
         return Taro.$cdnUrl + map[index]
     }
     const changeTab = (e) => {
         console.log("点击自定义tabbar触发——changeTab", e, role)
         // setActCurrent(e)
-        if (role === 'ADMIN' || role === 'CUSTOMER' || role === 'SEEK') {
+        if (role === 'ADMIN' || role === 'CUSTOMER') {
             switch (e) {
                 case 0:
                     Taro.switchTab({
@@ -123,11 +125,24 @@ const Index = observer(({ store, actCurrent }) => {
                     });
                     break;
             }
+        }else if(role === 'SEEK'){
+            switch (e) {
+                case 0:
+                    Taro.switchTab({
+                        url: '/pages/workerIndex/index'
+                    });
+                    break;
+                case 1:
+                    Taro.switchTab({
+                        url: '/pages/mine/index'
+                    });
+                    break;
+            }
         }
     }
     const getTabList = () => {
 
-        if (role === 'ADMIN' || role === 'CUSTOMER' || role === 'SEEK') {
+        if (role === 'ADMIN' || role === 'CUSTOMER') {
             return [
                 { title: '工作台', image: getdefalutIcon(1), selectedImage: getSelectIcon(1) },
                 { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
@@ -144,6 +159,11 @@ const Index = observer(({ store, actCurrent }) => {
         } else if (role === 'SUPPLIER') {  // 供应商 并且未开通公路云
             return [
                 { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
+                { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
+            ]
+        } else if(role==='SEEK'){          // 求职者
+            return [
+                { title: '首页', image: getdefalutIcon(6), selectedImage: getSelectIcon(6) },
                 { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
             ]
         }

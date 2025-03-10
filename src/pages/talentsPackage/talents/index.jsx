@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 16:11:05
+ * @LastEditTime: 2025-03-10 16:12:53
  * @Description: 
  */
 
@@ -61,8 +61,10 @@ const Index = observer(({ store }) => {
     }, [isLogin, companyVerified])
 
     useEffect(() => {
-        console.log("filterJobTypes", filterJobTypes, filterJobTypes.length);
-    }, [filterJobTypes])
+        return () => {
+            setFilterJobTypes([]);
+        }
+    }, [])
 
     useEffect(() => {
         // getList(1);

@@ -63,11 +63,11 @@ const Index = observer(({ store }) => {
                     setToken(result.data.token);
                     Taro.setStorageSync('token', result.data.token);
                     Taro.setStorageSync('isLogin', 1);
-                    Taro.setStorageSync('role', result.data.user.userRole);
+                    // Taro.setStorageSync('role', result.data.user.userRole);
                     Taro.setStorageSync('userInfo', result.data.user);
                     setIsLogin(1);
                     setUserInfo(result.data.user);
-                    setRole(result.data.user.userRole);
+                    // setRole(result.data.user.userRole);
                     getRoleAndPermissionFunc();
                     // setTimeout(() => {
                     //     getUserRole();

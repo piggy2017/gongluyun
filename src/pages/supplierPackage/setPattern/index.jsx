@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-20 16:43:06
+ * @LastEditTime: 2025-02-28 15:28:47
  * @Description: 设置合作模式
  */
 
@@ -10,36 +10,36 @@ import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, ScrollView, Button, Text, Textarea, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
-
-import { AtIcon, AtFloatLayout } from 'taro-ui'
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
 
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { } from '@/util/api';
+import { setUpCoopModelByCompany } from '@/util/api';
 
 const Index = observer(({ store }) => {
     const route = useRouter();
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-        businessStore: { setEditProjectInfo, onSiteInfo, setOnSiteInfo },
+        baseStore: { bottomSafeAreaHeight },
+        businessStore: { projectPatternInfo },
         userStore: { companyInfo }
     } = store
-
-    const [isRefresh, setIsRefresh] = useState(false);
-    const [goonLoad, setgoonLoad] = useState(true);
-    const [requestState, setRequestState] = useState(0);    // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
-    const [pageNo, setPageNo] = useState(1)
-    const pageSize = 10;
 
     const [patternList, setPatternList] = useState([        // 合作模式列表
         { content: '' }
     ]);
 
-    const [rules, setRules] = useState('');    
+    const [rules, setRules] = useState('');
+
+    useEffect(() => {
+        console.log("projectPatternInfo", projectPatternInfo);
+        if (projectPatternInfo.cooperationModels.length > 0) {
+            let _list = projectPatternInfo.cooperationModels.map(item => {
+                return { content: item };
+            })
+            setPatternList(_list);
+        }
+        setRules(projectPatternInfo.settlementStandard);
+    }, [projectPatternInfo]);
 
     const stick = (index) => {
         Taro.getClipboardData({
@@ -53,19 +53,51 @@ const Index = observer(({ store }) => {
         })
     }
 
+    const postPattern = async () => {
+        const { contractsSerialCode } = projectPatternInfo;
+        Taro.showLoading({
+            title: '保存中',
+            mask: true
+        })
+        const { code, data, msg } = await setUpCoopModelByCompany({
+            contractsSerialCode,
+            settlementStandard: rules,
+            cooperationModels: patternList.map(item => item.content)
+        })
+        console.log('code', code, data, msg)
+        Taro.hideLoading()
+        if (code === 200) {
+            Taro.showToast({ title: '保存成功', icon: 'none' });
+            setTimeout(() => {
+                Taro.navigateBack({
+                    delta: 1
+                });
+            }, 1500);
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' })
+        }
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#fff' title='合作模式'></Navbar>
             <View className='project_wrapper'>
                 <View className='project_label'>项目名称</View>
                 <View className='project_name'>
-                    <View>龙泉驿区招物流分拣全职月结龙泉驿区招物流分拣全职月结</View>
+                    <View>{projectPatternInfo.title}</View>
                 </View>
             </View>
 
             <View className='pattern_title'>
                 <View>合作模式</View>
                 <View className='pattern_title_right' onClick={() => {
+                    const _write = patternList.every(item => item.content.length > 0);
+                    if (!_write) {
+                        return Taro.showToast({
+                            title: '请填写完整后再新增模式',
+                            icon: 'none'
+                        })
+                    }
                     setPatternList(prev => [...prev, { content: '' }])
                 }}>
                     <Image src={`${Taro.$cdnUrl}/supplier/supplier_6.webp`}></Image>
@@ -114,7 +146,7 @@ const Index = observer(({ store }) => {
 
             <View className='pattern_title'>
                 <View>结算规则</View>
-                <View className='pattern_title_right' onClick={()=>{
+                <View className='pattern_title_right' onClick={() => {
                     Taro.getClipboardData({
                         success: function (res) {
                             console.log('res')
@@ -144,7 +176,7 @@ const Index = observer(({ store }) => {
 
             <View className='page_bottom'>
                 <View style={`height:20rpx;`}></View>
-                <View className='post_btn'>提交</View>
+                <View className='post_btn' onClick={postPattern}>提交</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
         </View>
