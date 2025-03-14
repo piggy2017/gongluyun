@@ -1,9 +1,9 @@
 @import '@/app.scss';
 .join_supplier_layout {
     .at-float-layout__container {
-        height: 630rpx !important;
-        max-height: 630rpx !important;
-        min-height: 630rpx !important;
+        // height: 630rpx !important;
+        max-height: 930rpx !important;
+        min-height: 930rpx !important;
         border-radius: 20rpx 20rpx 0 0 !important;
         overflow: hidden;
     }
@@ -35,9 +35,11 @@
                 line-height: normal;
             }
 
-            .filter_content{
-                padding: 0 30rpx;
-                margin-top: 90rpx;
+            .filter_content_item{
+                width: 690rpx;
+                margin: 0 auto;
+                border-bottom: 1rpx solid #0000000a;
+                padding: 80rpx 0 26rpx 0 ;
                 @include flex-center(flex-start);
                 color: #222222;
                 font-family: "PingFang SC";
@@ -45,9 +47,11 @@
                 font-style: normal;
                 font-weight: 500;
                 line-height: normal;
+                .filter_content_item_label{
+                    width: 130rpx;
+                }
                 .filter_content_input{
-                    margin-left: 40rpx;
-                    width: 560rpx;
+                    width: 520rpx;
                 }
             }
 

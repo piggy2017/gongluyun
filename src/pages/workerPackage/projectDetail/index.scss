@@ -3,15 +3,16 @@
 .container {
     width: 100%;
     min-height: 100vh;
-    background: linear-gradient(180deg, #1678FF 0%, #17bfbe00 105.8%) #ffffff;
+    background: #ffffff ;
     // opacity: 0.1;
     // background: linear-gradient(180deg, #E8F1FF 0%, #edf3fc00 100%) #F4F4F4;
-    background-size: 100% 276rpx;
+    background-image: url($cdnUrl + '/supplier/supplier_44.webp');
+    background-size: 100% 324rpx;
     background-repeat: no-repeat;
 
     .base_info {
         width: 100%;
-        background-image: url($cdnUrl + '/supplier/supplier_40.webp');
+        background-image: url($cdnUrl + '/supplier/supplier_54.webp');
         background-size: 100% 96rpx;
         background-repeat: no-repeat;
         margin-top: 20rpx;

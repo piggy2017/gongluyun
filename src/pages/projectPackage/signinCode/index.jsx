@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 18:40:36
+ * @LastEditTime: 2025-03-13 11:45:48
  * @Description: 
  */
 
@@ -32,16 +32,16 @@ const Index = observer(({ store }) => {
     const [list, setList] = useState([]);
 
     useEffect(() => {
-        const { recruitSerialCode, title, type } = route.params;
+        const { recruitSerialCode, title, type, isAll } = route.params;
         setRecruitSerialCode(recruitSerialCode);
         setTitle(title);
         Taro.showLoading({ title: '二维码生成中...' })
         setTimeout(() => {
-            generateQrcode(recruitSerialCode, title, type);
+            generateQrcode(recruitSerialCode, title, isAll);
         }, 300);
     }, [])
 
-    const generateQrcode = async (_recruitSerialCode, _title) => {
+    const generateQrcode = async (_recruitSerialCode, _title, _isAll) => {
         try {
             const result = await new Promise((resolve, reject) => {
                 wx.createSelectorQuery()
@@ -56,6 +56,7 @@ const Index = observer(({ store }) => {
                     });
             })
             let canvas = result[0].node;
+            let _text = _isAll ? `https://sa-api.apujiyu.com/signIn?isAll=${_isAll}` : `https://sa-api.apujiyu.com/signIn?title=${_title}&recruitSerialCode=${_recruitSerialCode}`
             drawQrcode({
                 canvas: canvas,
                 canvasId: 'myCanvas',
@@ -63,7 +64,7 @@ const Index = observer(({ store }) => {
                 padding: 30,
                 background: '#ffffff',
                 foreground: '#000000',
-                text: `https://sa-api.apujiyu.com/signIn?title=${_title}&recruitSerialCode=${_recruitSerialCode}`
+                text: _text   //`https://sa-api.apujiyu.com/signIn?title=${_title}&recruitSerialCode=${_recruitSerialCode}`
             })
             Taro.hideLoading();
 

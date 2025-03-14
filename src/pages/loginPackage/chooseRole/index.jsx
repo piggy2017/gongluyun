@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 15:34:33
+ * @LastEditTime: 2025-03-11 17:04:09
  * @Description: 
  */
 
@@ -111,7 +111,6 @@ const Index = observer(({ store }) => {
                         <Image className='choose_item_right' src={`${Taro.$cdnUrl}/supplier/supplier_20.webp`}></Image>
                     </View>
                 }
-
             </View>
 
         </View>

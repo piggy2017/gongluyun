@@ -15,7 +15,7 @@ const Index = observer(({ store, onClose, isOpened }) => {
 
     const {
         baseStore: { didPrivacy, setdidPrivacy },
-        userStore: { setToken, setIsLogin, setRole, setUserInfo, getRoleAndPermissionFunc, setSupplierCompanyInfo }
+        userStore: { setToken, setIsLogin, enterParams, setRole, setUserInfo, getRoleAndPermissionFunc, setSupplierCompanyInfo }
     } = store
     useEffect(() => {
         if (isOpened) {
@@ -47,6 +47,16 @@ const Index = observer(({ store, onClose, isOpened }) => {
                     phoneCode: code,
                     loginPlatform: Taro.getSystemInfoSync().platform === 'android' ? 1 : 2
                 }
+
+                // 注册时绑定邀请人
+                const { source, agentSerialCode } = enterParams
+                if (source) {
+                    params.signUpChannel = source
+                }
+                if (agentSerialCode) {
+                    params.bindUserSerialCode = agentSerialCode
+                }
+
                 console.log("一键登录,提交的参数", params)
                 const result = await loginPhone(params);
                 console.log("手机号码登录结果", result);

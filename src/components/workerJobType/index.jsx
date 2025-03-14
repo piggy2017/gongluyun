@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-30 10:53:28
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-14 11:12:17
+ * @LastEditTime: 2025-03-13 11:01:21
  * @Description:  求职者选择求职偏好
  */
 /* eslint-disable react/jsx-key */
@@ -66,6 +66,7 @@ const WorkerJobType = observer(({ store, isShow, initData, onClose }) => {
         }
     }, [isShow])
     const setInit = (data) => {
+        console.log('页面中传递进来的initData', initData)
         if (initData.length) {
             let currentIndnx = [];
             let targetIds = initData.map(r => r.id)
@@ -203,7 +204,13 @@ const WorkerJobType = observer(({ store, isShow, initData, onClose }) => {
                             : ''
                     }
                     <View className='bottom_btn'>
-                        <View onClick={() => onClose()}>取消</View>
+                        <View onClick={() => {
+                            setChooseJob([]);
+                            fullJobTypeList.forEach((parent) => {
+                                parent.chooseNum = 0;
+                            });
+                            setFullJobTypeList([...fullJobTypeList])
+                        }}>取消</View>
                         <View onClick={() => submit()}>确定</View>
                     </View>
                     {/* <Image src={`${Taro.$cdnUrl}/index/close_popup.webp`} onClick={() => submit()}></Image> */}

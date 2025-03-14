@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-19 11:45:58
+ * @LastEditTime: 2025-03-14 17:34:08
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
         userStore: { myPermissions },
-        businessStore: { rosterFilterSupplier },
+        businessStore: { rosterFilterSupplier, setRosterFilterSupplier },
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
 
@@ -70,6 +70,17 @@ const Index = observer(({ store }) => {
         filterTime: "全部日期",
         startDate: ""
     });
+
+    useEffect(() => {
+        return () => {
+            console.log("触发 名单页面卸载")
+            setRosterFilterSupplier({
+                name: '全部供应商',
+                userSerialCode: '',
+                selected: false
+            })
+        }
+    }, [])
 
     useEffect(() => {
         const { title, recruitSerialCode } = route.params;
@@ -517,24 +528,12 @@ const Index = observer(({ store }) => {
                 }
                 {
                     list.length >= 6 &&
-                    <View className='loading_text'>
-                        {
-                            goonLoad ?
-                                <>
-                                    <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
-                                    加载中
-                                </> :
-                                "数据已经到底了"
-                        }
-                    </View>
+                    <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
                 }
 
                 {
                     list.length === 0 && requestState === 3 &&
-                    <View className='no_data'>
-                        <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
-                        <View>暂无相关数据~</View>
-                    </View>
+                    <Taro.NoData></Taro.NoData>
                 }
             </ScrollView>
 

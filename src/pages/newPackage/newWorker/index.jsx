@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-19 17:56:56
+ * @LastEditTime: 2025-03-12 17:25:41
  * @Description: 
  */
 
@@ -18,7 +18,7 @@ import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import SourcePicker from '@/components/sourcePcker';
 
-import { clueInsert, clueUpdate } from '@/util/api'
+import { clueInsert, clueUpdate, parsePerson } from '@/util/api'
 import './index.scss'
 
 
@@ -44,6 +44,8 @@ const Index = observer(({ store }) => {
     const [jobTypeNames, setJobTypeNames] = useState('');
     const [jobTypes, setJobTypes] = useState([]);
     const [isUpdate, setIsUpdate] = useState(false);
+
+    const [aiRecognize, setAiRecognize] = useState('');  // AI识别内容
 
     useEffect(() => {
         if (editClientInfos) {
@@ -72,11 +74,9 @@ const Index = observer(({ store }) => {
                 setFormData({
                     ...editClientInfos,
                     jobTypeIds: _ids,
-                    // jobTypeName: e[0].name
                 })
             }
         }
-        // console.log("sourceGroup", sourceGroup)
         return () => {
             setEditClientInfos(null);
         }
@@ -179,6 +179,30 @@ const Index = observer(({ store }) => {
         })
     }
 
+    const perseInfoFunc = async () => {
+        if (!aiRecognize) {
+            return Taro.showToast({ title: '请输入或先粘贴识别内容', icon: 'none', });
+        }
+        Taro.showLoading({ title: '识别中...', mask: true });
+        const { code, data, msg } = await parsePerson({ text: aiRecognize });
+        Taro.hideLoading();
+        console.log("识别", code, data, msg);
+        if (code === 200) {
+            if (data?.length > 0) {
+                setFormData({
+                    ...formData,
+                    name: data[0].name,
+                    age: data[0].age,
+                    phone: data[0].phone,
+                    sex: data[0].gender === '男' ? 0 : data[0].gender === '女' ? 1 : '',
+                    idCardNo: data[0].id,
+                })
+            }
+        } else {
+            Taro.showToast({ title: msg, icon: 'none', });
+        }
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#F4F4F4' title='录入求职者信息'></Navbar>
@@ -200,7 +224,28 @@ const Index = observer(({ store }) => {
                 </View>
             </View>
 
-            <View className='project_group'>
+            <View className='ai_recognize'>
+                <View className='ai_recognize_title'>示例：某某某,136XXXXXXXX,男，510XXXXXXXXXXX...</View>
+                <View className='ai_recognize_content'>
+                    <View className='ai_recognize_content_wrap'>
+                        <Textarea count={false}
+                            className='ai_recognize_input'
+                            confirmType='return'
+                            value={aiRecognize}
+                            onInput={(e) => setAiRecognize(e.detail.value)}
+                            adjustPosition={true} // 键盘弹起时，是否自动上推页面 
+                            show-confirm-bar
+                            placeholder={`粘贴识别或输入文本智能拆分求职者基本信息`}></Textarea>
+                        {
+                            aiRecognize && <Image src={`${Taro.$cdnUrl}/supplier/supplier_48.webp`} onClick={() => setAiRecognize('')}></Image>
+                        }
+                    </View>
+                    <View className='ai_recognize_btn' onClick={perseInfoFunc}>识别</View>
+                </View>
+            </View>
+
+            <View className='project_group_l'>基本信息</View>
+            <View className='project_group project_group2'>
                 <View className='project_item project_item_stick'>
                     <View className='project_item_label project_item_label_required'>手机号码</View>
                     <View className='project_item_right'>
@@ -254,8 +299,6 @@ const Index = observer(({ store }) => {
                     <View className='project_item_label'>联系地址</View>
                     <View className='project_item_right'>
                         <Input
-                            // type='number'
-                            // maxlength='18'
                             className='new_input'
                             placeholder='请输入用户联系地址'
                             placeholderStyle='color: #777777;'

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-07 16:17:18
+ * @LastEditTime: 2025-03-14 17:35:09
  * @Description: 
  */
 
@@ -35,11 +35,7 @@ const Index = observer(({ store }) => {
   const [pageNo, setPageNo] = useState(1)
   const pageSize = 10;
 
-  const [list, setList] = useState([
-    { name: "成都西红人力", isAuth: true, num1: 3, num2: 79, num3: 0, num4: 7 },
-    { name: "四川阿普企业管理咨询有限公司", isAuth: true, num1: 3, num2: 79, num3: 0, num4: 7 },
-    { name: "成都兄弟人力", isAuth: true, num1: 3, num2: 79, num3: 0, num4: 7 },
-  ]);
+  const [list, setList] = useState([]);
 
   useEffect(() => {
     console.log('供应商管理页面,companyInfo', userInfo, companyInfo);
@@ -146,7 +142,9 @@ const Index = observer(({ store }) => {
         {
           list.length > 0 && list.map((item, index) => {
             return (
-              <View className='supplier_list' key={index}>
+              <View className='supplier_list' key={index} onClick={()=>{
+                Taro.navigateTo({ url: `/pages/supplierPackage/supplierDetail/index?supplierSerialCode=${item.supplierSerialCode}` })
+              }}>
                 <View className='supplier_list_name'>
                   <View>{item.name}</View>
                   {
@@ -156,7 +154,7 @@ const Index = observer(({ store }) => {
                 <View className='supplier_list_nums'>
                   <View className='supplier_list_nums_item'>
                     <View className='supplier_list_nums_item_top'>
-                      <View className='supplier_list_nums_item_top_l'>{item.num1}</View>
+                      <View className='supplier_list_nums_item_top_l'>{item.coopContracts}</View>
                       <View className='supplier_list_nums_item_top_r'>个</View>
                     </View>
                     <View className='supplier_list_nums_item_bottom'>合作项目</View>
@@ -164,7 +162,7 @@ const Index = observer(({ store }) => {
 
                   <View className='supplier_list_nums_item'>
                     <View className='supplier_list_nums_item_top'>
-                      <View className='supplier_list_nums_item_top_l'>{item.num2}</View>
+                      <View className='supplier_list_nums_item_top_l'>{item.deliveredCounts}</View>
                       <View className='supplier_list_nums_item_top_r'>个</View>
                     </View>
                     <View className='supplier_list_nums_item_bottom'>已入职</View>
@@ -172,7 +170,7 @@ const Index = observer(({ store }) => {
 
                   <View className='supplier_list_nums_item'>
                     <View className='supplier_list_nums_item_top'>
-                      <View className='supplier_list_nums_item_top_l'>{item.num3}</View>
+                      <View className='supplier_list_nums_item_top_l'>{item.resignCounts}</View>
                       <View className='supplier_list_nums_item_top_r'>个</View>
                     </View>
                     <View className='supplier_list_nums_item_bottom'>已离职</View>
@@ -180,7 +178,7 @@ const Index = observer(({ store }) => {
 
                   <View className='supplier_list_nums_item'>
                     <View className='supplier_list_nums_item_top'>
-                      <View className='supplier_list_nums_item_top_l'>{item.num4}</View>
+                      <View className='supplier_list_nums_item_top_l'>{item.settlementCounts}</View>
                       <View className='supplier_list_nums_item_top_r'>个</View>
                     </View>
                     <View className='supplier_list_nums_item_bottom'>已结费</View>
@@ -192,23 +190,11 @@ const Index = observer(({ store }) => {
         }
         {
           list.length >= 5 &&
-          <View className='loading_text'>
-            {
-              goonLoad ?
-                <>
-                  <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
-                  加载中
-                </> :
-                "数据已经到底了"
-            }
-          </View>
+          <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
         }
         {
           list.length === 0 && requestState === 3 &&
-          <View className='no_data'>
-            <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
-            <View>暂无相关数据~</View>
-          </View>
+          <Taro.NoData></Taro.NoData>
         }
       </ScrollView>
     </View>

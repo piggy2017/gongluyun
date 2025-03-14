@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 10:22:06
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-06 17:38:23
+ * @LastEditTime: 2025-03-13 16:59:37
  * @Description:  申请成为供应商--输入公司名称
  */
 import React, { useState } from 'react';
@@ -21,6 +21,8 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
         userStore: { supplierCompanyInfo, setSupplierCompanyInfo }
     } = store
     const [componyName, setComponyName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [address, setAddress] = useState('');
 
     const postComponyName = async () => {
         if (!componyName) {
@@ -30,8 +32,15 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
                 duration: 2000
             })
         }
+        if(!phone){
+            return Taro.showToast({
+                title: '请输入手机号',
+                icon: 'none',
+                duration: 2000
+            })
+        }
         // setSupplierCompanyInfo({ ...supplierCompanyInfo, name: componyName });
-        const { code, data, msg } = await supplierCreate({ name: componyName });
+        const { code, data, msg } = await supplierCreate({ name: componyName, phone, address});
         console.log(" 注册供应商 ", code, data, msg)
         if (code === 200) {
             setSupplierCompanyInfo({ ...data });
@@ -54,16 +63,32 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
                             </View>
                             <AtIcon value='close' size='20' color='#222222' onClick={onClose}></AtIcon>
                         </View>
-                        <View className='filter_content'>
-                            <View>名称</View>
+                        <View className='filter_content_item'>
+                            <View className='filter_content_item_label'>名称</View>
                             <Input className='filter_content_input'
                                 placeholder='点击输入公司/个人名称'
                                 placeholderStyle='color: #999999;'
                                 value={componyName}
                                 onInput={(e) => setComponyName(e.detail.value)}></Input>
                         </View>
-                        <View className='filter_content_hr'></View>
-                        <View className={`filter_wrapper_btn ${componyName ? 'filter_wrapper_btn_active' : ''}`} onClick={() => postComponyName()}>下一步</View>
+                        <View className='filter_content_item'>
+                            <View className='filter_content_item_label'>手机号</View>
+                            <Input className='filter_content_input'
+                                placeholder='点击手机号码'
+                                placeholderStyle='color: #999999;'
+                                value={phone}
+                                onInput={(e) => setPhone(e.detail.value)}></Input>
+                        </View>
+                        <View className='filter_content_item'>
+                            <View className='filter_content_item_label'>地点</View>
+                            <Input className='filter_content_input'
+                                placeholder='点击地址'
+                                placeholderStyle='color: #999999;'
+                                value={address}
+                                onInput={(e) => setAddress(e.detail.value)}></Input>
+                        </View>
+
+                        <View className={`filter_wrapper_btn ${(componyName && phone) ? 'filter_wrapper_btn_active' : ''}`} onClick={() => postComponyName()}>下一步</View>
                     </View>
                 </View>
             </AtFloatLayout>

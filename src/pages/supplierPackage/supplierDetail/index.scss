@@ -18,7 +18,6 @@
                 width: 112rpx;
                 height: 112rpx;
                 border-radius: 20rpx;
-                background-color: #0C72FF;
             }
 
             .supplier_info_content {
@@ -167,10 +166,11 @@
 
         .project_list {
             width: 710rpx;
-            height: 312rpx;
+            // height: 312rpx;
             flex-shrink: 0;
             background-color: #FFF;
             margin: 0 auto 20rpx auto;
+            padding-bottom: 24rpx;
 
             .supplier_list_name {
                 @include flex-center(space-between);
@@ -264,7 +264,7 @@
                 flex-shrink: 0;
                 border-radius: 10rpx;
                 background: #cbcbcb26;
-                margin: 0 auto;
+                margin: 30rpx auto 0 auto;
                 padding: 0 30rpx;
                 @include flex-center(space-between);
 

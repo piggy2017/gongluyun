@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 19:56:08
+ * @LastEditTime: 2025-03-13 18:02:42
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -19,13 +19,12 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
 
-import { indexFeeds } from '@/util/api'
-
+import { indexFeeds, signUpAdd } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { filterJobTypes },
+        userStore: { isLogin, refreshUserInfo },
         businessStore: { jobFilterAddress, setJobFilterAddress },
     } = store
 
@@ -43,6 +42,7 @@ const Index = observer(({ store }) => {
     const [typeInfo, setTypeInfo] = useState({
         name: "", salaryType: ''
     });
+    const [isOpened, setIsOpened] = useState(false);
 
     const chooseTypeFunc = (name, salaryType) => {
         setChooseType(false);
@@ -55,6 +55,12 @@ const Index = observer(({ store }) => {
     }, [jobFilterAddress, typeInfo, jobTypes]);
 
     useEffect(() => {
+        if (isLogin) {
+            refreshUserInfo();
+        }
+    }, [isLogin]);
+
+    useEffect(() => {
         return () => {
             setJobFilterAddress({
                 init: false,
@@ -64,7 +70,7 @@ const Index = observer(({ store }) => {
                 province: '',
             })
         }
-    }, []);
+    }, [])
 
     const getList = async (_pageNo) => {
         let params = {
@@ -119,7 +125,11 @@ const Index = observer(({ store }) => {
     }
 
     const signupFunc = async (e, index, item) => {   // 点击立即报名
+        return
         e.stopPropagation();
+        if (!isLogin) {
+            return setIsOpened(true)
+        }
     }
 
     return (
@@ -187,9 +197,6 @@ const Index = observer(({ store }) => {
                             <View className='list_item' key={index} onClick={() => goDetail(item)}>
                                 <View className='list_item_title'>
                                     <View className='list_item_title_name'>{item.recruitTitle}</View>
-                                    {/* <View className='list_item_title_salary'>{item.recruitSalaryRange}
-                                        <Text>元/{item.recruitSalaryUnit === 'DAY' ? '天' : item.recruitSalaryUnit === 'WEEK' ? '周' : '月'}</Text>
-                                    </View> */}
                                     {
                                         item.recruitSalaryRange &&
                                         <View className='list_item_title_salary'>
@@ -242,6 +249,8 @@ const Index = observer(({ store }) => {
                         console.log("选择的岗位类型：", e)
                         if (e && e.length) {
                             setJobTypes(e);
+                        } else {
+                            setJobTypes([]);
                         }
                         setChooseJob(false);
                     }}
@@ -268,6 +277,7 @@ const Index = observer(({ store }) => {
                 </AtFloatLayout>
             </Block>
 
+            <Taro.GlobalLogin isOpened={isOpened} onClose={() => setIsOpened(false)} />
 
             <TabBar actCurrent={0} />
         </View>

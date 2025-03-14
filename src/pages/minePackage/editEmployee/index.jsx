@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 15:59:13
+ * @LastEditTime: 2025-03-13 10:10:21
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { bottomSafeAreaHeight },
         userStore: { companyInfo, role, permissions },
-        businessStore: { employeeInfo, setEmployeeInfo }
+        businessStore: { employeeInfo, setEmployeeInfo, onSiteProjectList, setOnSiteProjectList },
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const [formData, setFormData] = useState({});
@@ -41,6 +41,10 @@ const Index = observer(({ store }) => {
 
     useEffect(() => {
         getUserInfo();
+        () => {
+            console.log("卸载 useEffect");
+            setOnSiteProjectList([]);
+        }
     }, [])
 
     const getUserInfo = async () => {
@@ -52,6 +56,11 @@ const Index = observer(({ store }) => {
             data.permIds = data.permIds ? data.permIds.split(',') : [];
             setFormData(data);
             console.log("permissions_permissions", permissions);
+            if (data.contractsSerialCodes?.length > 0) {
+                setOnSiteProjectList(data.contractsSerialCodes);
+            }else{
+                setOnSiteProjectList([]);
+            }
 
             if (permissions.length > 0) {
                 const _list = JSON.parse(JSON.stringify(permissions));
@@ -120,6 +129,11 @@ const Index = observer(({ store }) => {
                 icon: 'none',
             })
         }
+
+        if (params.roleId == '3') {
+            params.contractsSerialCodes = onSiteProjectList;
+        }
+
         params.permissionNames = formData.authority.join(',');
         Taro.showLoading({ title: '提交中...', mask: true });
         const { code, data, msg } = await companyUpdateMember(params);
@@ -179,16 +193,30 @@ const Index = observer(({ store }) => {
                 </View>
                 <View className='employee_item'>
                     <View className='employee_item_label'>权限</View>
-                    <View className='employee_item_right' onClick={() => { 
+                    <View className='employee_item_right' onClick={() => {
                         if (formData.roleId === '1') {
                             return Taro.showToast({ title: '管理员账号不能变更权限', icon: 'none', });
                         }
                         setShowLimitModel(true)
-                     }}>
+                    }}>
                         <View className={`${(formData.authority && formData.authority.length > 0) ? 'option_item_active' : 'option_item_text'}`}>{(formData.authority && formData.authority.length > 0) ? formData.authority.join('·') : '请选择'}</View>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
+                {
+                    formData.roleId == '3' &&  // 驻场
+                    <View className='employee_item'>
+                        <View className='employee_item_label'>绑定项目</View>
+                        <View className='employee_item_right' onClick={() => {
+                            Taro.navigateTo({ url: `/pages/newPackage/onSiteProject/index` })
+                        }}>
+                            <View className={`option_item_onsite ${onSiteProjectList.length > 0 ? 'option_item_active' : 'option_item_text'} }`}>
+                                {onSiteProjectList.length === 0 ? '请选择' : '已选·' + onSiteProjectList.length}
+                            </View>
+                            <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                        </View>
+                    </View>
+                }
             </View>
 
             <View className='bottom_wrapper'>
@@ -234,7 +262,7 @@ const Index = observer(({ store }) => {
                     <View className='filter_wrapper'>
                         <View className='filter_wrapper_bg'>
                             <View className='filter_title'>
-                                <View>选择角色</View>
+                                <View>选择权限</View>
                                 <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowLimitModel(false) }}></AtIcon>
                             </View>
                             <View className='permission_wrapper_content'>

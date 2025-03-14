@@ -14,6 +14,7 @@
         flex-shrink: 0;
         background-color: #FFF;
         margin: 30rpx auto 0 auto;
+        position: relative;
 
         .project_name {
             color: #222222;
@@ -22,10 +23,19 @@
             font-style: normal;
             font-weight: 600;
             line-height: normal;
-            width: 662rpx;
+            width: 620rpx;
             margin-left: 24rpx;
             padding-top: 24rpx;
             @include ellipsis;
+        }
+
+        .edit_icon {
+            position: absolute;
+            width: 40rpx;
+            height: 40rpx;
+            flex-shrink: 0;
+            right: 20rpx;
+            top: 28rpx;
         }
 
         .project_addr {
@@ -301,6 +311,7 @@
                 flex-flow: column nowrap;
                 align-items: center;
                 justify-content: center;
+                position: relative;
 
                 .get_supplier_wrapper_num {
                     color: #333333;
@@ -329,7 +340,16 @@
                         flex-shrink: 0;
                     }
                 }
+
+                .get_supplier_wrapper_guide {
+                    width: 178rpx;
+                    height: 60rpx;
+                    position: absolute;
+                    top: -8rpx;
+                    right: -146rpx;
+                }
             }
+
             .get_supplier_wrapper_content_item:last-child {
                 margin-left: 192rpx;
             }
@@ -360,6 +380,13 @@
                 flex-flow: column nowrap;
                 align-items: center;
                 justify-content: center;
+                padding: 0;
+                background-color: transparent;
+                margin: 0;
+
+                &::after {
+                    border: none;
+                }
 
                 image {
                     width: 56rpx;
@@ -369,7 +396,7 @@
             }
 
             .add_worker {
-                width: 482rpx;
+                width: 334rpx;
                 height: 96rpx;
                 border-radius: 8rpx;
                 background: #1678FF;

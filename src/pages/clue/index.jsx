@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-24 10:35:23
+ * @LastEditTime: 2025-03-13 10:49:16
  * @Description: 
  */
 
@@ -102,7 +102,7 @@ const Index = observer(({ store }) => {
         if (type === '我的客户') {
           getClientList(1);
         } else {
-          getClueList(1);
+          // getClueList(1);
         }
       }
     }
@@ -527,23 +527,11 @@ const Index = observer(({ store }) => {
               }
               {
                 list.length >= 5 &&
-                <View className='loading_text'>
-                  {
-                    goonLoad ?
-                      <>
-                        <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
-                        加载中
-                      </> :
-                      "数据已经到底了"
-                  }
-                </View>
+                <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
               }
               {
                 list.length === 0 && requestState === 3 &&
-                <View className='no_data'>
-                  <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
-                  <View>暂无相关数据~</View>
-                </View>
+                <Taro.NoData></Taro.NoData>
               }
             </> ||
             type === '我的客户' &&
@@ -590,23 +578,11 @@ const Index = observer(({ store }) => {
 
               {
                 mylist.length >= 5 &&
-                <View className='loading_text'>
-                  {
-                    goonLoad ?
-                      <>
-                        <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
-                        加载中
-                      </> :
-                      "数据已经到底了"
-                  }
-                </View>
+                <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
               }
               {
                 mylist.length === 0 && requestState === 3 &&
-                <View className='no_data'>
-                  <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
-                  <View>暂无相关数据~</View>
-                </View>
+                <Taro.NoData></Taro.NoData>
               }
             </>
           }

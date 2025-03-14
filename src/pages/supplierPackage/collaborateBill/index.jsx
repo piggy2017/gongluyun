@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-07 10:16:32
+ * @LastEditTime: 2025-03-14 17:36:24
  * @Description: 
  */
 
@@ -31,10 +31,7 @@ const Index = observer(({ store }) => {
     const [pageNo, setPageNo] = useState(1)
     const pageSize = 10;
 
-    const [list, setList] = useState([
-        // { name: "龙泉驿区招物流分拣全职月结区招物流分拣全职月结", model: '模式1:在职15天400，人多+V，卡点3天,在职三十天返现', num1: 3, num2: 79, num3: 0, num4: 7 },
-        // { name: "四川阿普企业管理咨询有限公司", model: '', num1: 3, num2: 79, num3: 0, num4: 7 },
-    ]);
+    const [list, setList] = useState([]);
 
     useEffect(() => {
         getList(1);
@@ -115,15 +112,15 @@ const Index = observer(({ store }) => {
                                 <View className='supplier_list_nums'>
                                     <View className='supplier_list_nums_item'>
                                         <View className='supplier_list_nums_item_top'>
-                                            <View className='supplier_list_nums_item_top_l'>{item.num1}</View>
-                                            <View className='supplier_list_nums_item_top_r'>人</View>
+                                            <View className='supplier_list_nums_item_top_l'>{item.coopContracts}</View>
+                                            <View className='supplier_list_nums_item_top_r'>个</View>
                                         </View>
                                         <View className='supplier_list_nums_item_bottom'>合作项目</View>
                                     </View>
 
                                     <View className='supplier_list_nums_item'>
                                         <View className='supplier_list_nums_item_top'>
-                                            <View className='supplier_list_nums_item_top_l'>{item.num2}</View>
+                                            <View className='supplier_list_nums_item_top_l'>{item.deliveredCounts}</View>
                                             <View className='supplier_list_nums_item_top_r'>人</View>
                                         </View>
                                         <View className='supplier_list_nums_item_bottom'>已入职</View>
@@ -131,7 +128,7 @@ const Index = observer(({ store }) => {
 
                                     <View className='supplier_list_nums_item'>
                                         <View className='supplier_list_nums_item_top'>
-                                            <View className='supplier_list_nums_item_top_l'>{item.num3}</View>
+                                            <View className='supplier_list_nums_item_top_l'>{item.resignCounts}</View>
                                             <View className='supplier_list_nums_item_top_r'>人</View>
                                         </View>
                                         <View className='supplier_list_nums_item_bottom'>已离职</View>
@@ -139,7 +136,7 @@ const Index = observer(({ store }) => {
 
                                     <View className='supplier_list_nums_item'>
                                         <View className='supplier_list_nums_item_top'>
-                                            <View className='supplier_list_nums_item_top_l'>{item.num4}</View>
+                                            <View className='supplier_list_nums_item_top_l'>{item.settlementCounts}</View>
                                             <View className='supplier_list_nums_item_top_r'>人</View>
                                         </View>
                                         <View className='supplier_list_nums_item_bottom'>已结算</View>

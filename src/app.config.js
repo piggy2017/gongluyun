@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 19:00:15
+ * @LastEditTime: 2025-03-13 17:41:36
  * @Description: 
  */
 export default defineAppConfig({
@@ -92,6 +92,8 @@ export default defineAppConfig({
             "root": "pages/workerPackage/",      // 求职者页面子包
             "pages": [
                 "projectDetail/index",           // 求职者查看项目详情
+                "signupHistory/index",           // 求职者查看报名记录
+                "editProfile/index",             // 编辑用户资料
             ]
         },
         {
@@ -112,6 +114,7 @@ export default defineAppConfig({
                 "setCustom/index",               // 新增求职者选择跟进的客服
                 "newProjectWorker/index",        // 项目新增求职者
                 "newInterviewWorker/index",      // 首页 录入面试信息 新增求职者
+                "onSiteProject/index",           // 添加驻场角色 选择项目
             ]
         },
         {
@@ -125,6 +128,8 @@ export default defineAppConfig({
                 "editEmployee/index",             // 修改员工
                 "aboutUs/index",                  // 关于我们
                 "dataReport/index",               // 数据报表
+                "sourcePool/index",               // 资源池
+                "changeRole/index",               // 切换当前角色
             ]
         },
         {
@@ -147,6 +152,7 @@ export default defineAppConfig({
                 "signIn/index",                   // 签到页面
                 "signLogin/index",                // 求职者签到-登录页面
                 "signSuccess/index",              // 求职者签到-成功页面
+                "chooseJob/index",                // 求职者签到-扫码进入 选择签到岗位
             ]
         },
         {

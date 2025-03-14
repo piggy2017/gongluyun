@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-27 17:04:27
+ * @LastEditTime: 2025-03-13 16:12:13
  * @Description: 
  */
 
@@ -12,7 +12,6 @@ import { View, Image, Text, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
-import { reverseGeocoder } from '@/util/getLocation';
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
@@ -25,7 +24,7 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
         userStore: { companyInfo },
-        businessStore: { onSiteInfo, setOnSiteInfo },
+        businessStore: { setOnSiteListForProject, setSetOnSiteListForProject },
     } = store
     const [formData, setFormData] = useState({});
 
@@ -40,46 +39,43 @@ const Index = observer(({ store }) => {
     const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
 
     const [list, setList] = useState([]);
+    const [chooseList, setChooseList] = useState([]);
+
+    useEffect(() => {
+        if (setOnSiteListForProject.length > 0) {
+            setChooseList(setOnSiteListForProject);
+        }
+    }, [setOnSiteListForProject])
 
     useEffect(() => {
         getList(1);
+        return () => {
+            console.log("触发 选择驻唱 页面的卸载");
+            setSetOnSiteListForProject([]);
+        }
     }, []);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + bottomSafeAreaHeight}px - 40rpx)`;
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + bottomSafeAreaHeight}px - 160rpx)`;
     }
     const setOnSite = (obj, index) => {
+        obj.interviewContactInfo= obj.userSerialCode;
         setList(list => {
-            let _list = list.map(item => {
-                item.selected = false;
-                return item;
-            });
-            _list[index].selected = true;
-            return _list;
+            list[index].selected = !list[index].selected;
+            return [...list];
         })
-        // setOnSiteInfo(obj);
-        // setTimeout(() => {
-        //     Taro.navigateBack({
-        //         delta: 1
-        //     });
-        // }, 300);
-        const { recruitSerialCode, serialCode } = route.params;
-        let params = {
-            recruitSerialCode,
-            serialCode,
-            interviewContactInfo: obj.userSerialCode,
-            interviewContactName: obj.name,
-            interviewContactPhone: obj.phone
-        }
-        updateContracts(params).then(res => {
-            if (res.code === 200) {
-                Taro.showToast({ title: '设置成功', icon: 'none', });
-                setTimeout(() => {
-                    Taro.navigateBack({
-                        delta: 1
-                    });
-                }, 1500);
+        setChooseList(chooseList => {
+            if (chooseList.length > 0) {
+                let index = chooseList.findIndex(item => item.interviewContactInfo === obj.userSerialCode);
+                if (index > -1) {
+                    chooseList.splice(index, 1);
+                } else {
+                    chooseList.push(obj);
+                }
+            } else {
+                chooseList.push(obj);
             }
+            return [...chooseList];
         })
     }
 
@@ -98,9 +94,15 @@ const Index = observer(({ store }) => {
         Taro.hideLoading();
         setIsRefresh(false);
         if (code === 200 && data.responses?.length > 0) {
-            for (let i = 0; i < data.responses.length; i++) {
-                if (data.responses[i].userSerialCode === route.params.code) {
-                    data.responses[i].selected = true;
+            let _list = chooseList.length > 0 ? chooseList : setOnSiteListForProject.length > 0 ? setOnSiteListForProject : [];
+            console.log("chooseList_list", _list);
+            if (_list.length > 0) {
+                for (let i = 0; i < data.responses.length; i++) {
+                    for (let j = 0; j < _list.length; j++) {
+                        if (data.responses[i].userSerialCode === _list[j].interviewContactInfo) {
+                            data.responses[i].selected = true;
+                        }
+                    }
                 }
             }
             setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
@@ -128,6 +130,43 @@ const Index = observer(({ store }) => {
         setIsRefresh(true);
         getList(1);
     }, 200);
+
+    const handleConfirm = async () => {
+        if (chooseList.length === 0) {
+            Taro.showToast({ title: '请选择驻场人员', icon: 'none', });
+            return;
+        }
+        const { recruitSerialCode, serialCode } = route.params;
+        let _contactList = chooseList.map(item => {
+            let obj = {
+                interviewContactName: item.interviewContactName ? item.interviewContactName : item.name,
+                interviewContactPhone: item.interviewContactPhone ? item.interviewContactPhone : item.phone,
+                interviewContactInfo: item.interviewContactInfo ? item.interviewContactInfo : item.userSerialCode,
+            };
+            return obj
+        })
+        console.log("_contactList", _contactList);
+        let params = {
+            recruitSerialCode,
+            serialCode,
+            interviewInfos: _contactList
+            // interviewContactInfo: obj.userSerialCode,
+            // interviewContactName: obj.name,
+            // interviewContactPhone: obj.phone
+        }
+        updateContracts(params).then(res => {
+            if (res.code === 200) {
+                Taro.showToast({ title: '设置成功', icon: 'none', });
+                setTimeout(() => {
+                    Taro.navigateBack({
+                        delta: 1
+                    });
+                }, 1500);
+            } else {
+                Taro.showToast({ title: res.msg, icon: 'none', });
+            }
+        })
+    }
 
     return (
         <View className='container'>
@@ -177,26 +216,20 @@ const Index = observer(({ store }) => {
                     })
                 }
                 {
-                    list.length >= 14 &&
-                    <View className='loading_text'>
-                        {
-                            goonLoad ?
-                                <>
-                                    <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
-                                    加载中
-                                </> :
-                                "数据已经到底了"
-                        }
-                    </View>
+                    list.length >= 12 &&
+                    <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
                 }
                 {
                     list.length === 0 && requestState === 3 &&
-                    <View className='no_data'>
-                        <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
-                        <View>暂无相关数据~</View>
-                    </View>
+                    <Taro.NoData></Taro.NoData>
                 }
             </ScrollView>
+
+            <View className='bottom_wrapper'>
+                <View style={`height:20rpx;`}></View>
+                <View className={`post_btn ${chooseList.length > 0 ? 'post_btn_active' : ''}`} onClick={handleConfirm}>保存</View>
+                <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+            </View>
 
 
             <Block>

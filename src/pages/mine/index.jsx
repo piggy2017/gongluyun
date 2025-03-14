@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 15:21:09
+ * @LastEditTime: 2025-03-14 11:52:12
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -18,7 +18,7 @@ import { loginOut } from '@/util/api'
 
 const Index = observer(({ store }) => {
   const {
-    baseStore: { statusTitleHeight, contenTitleHeight },
+    baseStore: { statusTitleHeight, contenTitleHeight,tabbarHeight },
     userStore: { isLogin, setIsLogin, role, setRole, setToken, userInfo, setUserInfo, companyInfo, companyVerified, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
   } = store
 
@@ -142,24 +142,46 @@ const Index = observer(({ store }) => {
           </View>
         </View> ||
         <View className='user_info'>
-          <Image className='user_info_avatar' src={userInfo.avatar}></Image>
+          {
+            role === 'SEEK' &&
+            <View className='seek_avatar' onClick={() => {
+              Taro.navigateTo({
+                url: '/pages/workerPackage/editProfile/index'
+              })
+            }}>
+              <Image className='seek_avatar_img' src={userInfo.avatar}></Image>
+              <Image className='seek_avatar_edit' src={`${Taro.$cdnUrl}/supplier/supplier_45.webp`}></Image>
+            </View> ||
+            <Image className='user_info_avatar' src={userInfo.avatar}></Image>
+          }
           <View className='user_info_right'>
             <View className='user_info_name'>
               <Text>{userInfo.nickName}</Text>
               {
-                userInfo.userRole != 'SEEK' &&
+                (role != 'SEEK' && role != 'SUPPLIER') &&
                 <Text className='user_info_role'>{getRole(userInfo.userRole)}</Text>
               }
-
             </View>
-            <View className='user_info_compony'>{companyInfo.company}</View>
+            {
+              role != 'SEEK' &&
+              <View className='user_info_compony'>{companyInfo.company}</View>
+            }
           </View>
+          <Image className='user_info_changeRole' src={`${Taro.$cdnUrl}/supplier/supplier_18.webp`} onClick={() => {
+            Taro.navigateTo({
+              url: '/pages/minePackage/changeRole/index'
+            })
+          }}></Image>
         </View>
       }
 
       {
-        role === 'SUPPLIER' &&
-        <View className='open_gongluyun'>
+        role === 'SUPPLIER' && !companyVerified &&
+        <View className='open_gongluyun' onClick={() => {
+          Taro.navigateTo({
+            url: '/pages/minePackage/companyAuth/index'
+          })
+        }}>
           <View className='open_gongluyun_title'>开通工路云</View>
           <View className='open_gongluyun_desc'>70+人资企业的选择</View>
           <View className='open_gongluyun_desc'>劳务供应链利器，从获客到交付全方位提效！</View>
@@ -169,7 +191,7 @@ const Index = observer(({ store }) => {
 
       <View className='section_group'>
         {
-          (role === 'ADMIN' || role === 'SEEK') &&
+          (role === 'ADMIN') &&
           <>
             <View className='section_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/employeeManage/index')}>
               <View className='section_item_left'>
@@ -185,19 +207,30 @@ const Index = observer(({ store }) => {
               </View>
               <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
             </View>
+
+            <View className='section_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/sourcePool/index')}>
+              <View className='section_item_left'>
+                <Image src={`${Taro.$cdnUrl}/supplier/supplier_47.webp`}></Image>
+                <Text>资源池</Text>
+              </View>
+              <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
+            </View>
           </>
         }
 
-        {/* <View className='section_item'>
-          <View className='section_item_left'>
-            <Image src={`${Taro.$cdnUrl}/mine/mine_icon3.webp`}></Image>
-            <Text>我的套餐</Text>
-          </View>
-          <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
-        </View> */}
       </View>
 
       <View className='section_group'>
+        {
+          role === 'SEEK' &&
+          <View className='section_item' onClick={() => navigateFunc(1, '/pages/workerPackage/signupHistory/index')}>
+            <View className='section_item_left'>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_46.webp`}></Image>
+              <Text>报名记录</Text>
+            </View>
+            <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
+          </View>
+        }
         <View className='section_item' onClick={aboutFunc}>
           <View className='section_item_left'>
             <Image src={`${Taro.$cdnUrl}/mine/mine_icon4.webp`}></Image>
@@ -227,6 +260,12 @@ const Index = observer(({ store }) => {
           </View>
         }
       </View>
+
+      <View className='mine_desc_wrapper' style={`bottom:${tabbarHeight+20}px;`}>
+        <View className='mine_desc'>依托成都阿朴机遇科技有限公司的前沿技术支持</View>
+        <View className='mine_desc'>助力企业数字化转型</View>
+      </View>
+
 
       <TabBar actCurrent={(role === 'SUPPLIER' || role === 'SEEK') ? 1 : 3} />
 

@@ -2,11 +2,11 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-03 13:44:13
+ * @LastEditTime: 2025-03-13 17:51:15
  * @Description: 
  */
 import { useEffect } from 'react';
-import Taro, { useLaunch } from '@tarojs/taro'
+import Taro, { useLaunch,useRouter } from '@tarojs/taro'
 import { Provider } from 'mobx-react'
 import baseStore from '@/store/base'
 import userStore from '@/store/user'
@@ -16,14 +16,26 @@ import JoinSupplier from '@/components/joinSupplier';
 import ChoosePattern from '@/components/choosePattern';
 import LoadMore from './components/loadMore';
 import NoData from './components/noData';
+import { getQueryString } from '@/util/utils.js'
 import './app.scss'
 const store = {
   baseStore,userStore,businessStore
 }
 function App({ children }) {
-
+  const router = useRouter();
+  const { setEnterParams } = userStore;
   useLaunch(() => {
-    console.log('App launched.')
+    console.log("router.params", router.params);
+    const { source, agentSerialCode, q } = router.params
+    // 缓存进入页面的参数------》管道收益
+    if (source && agentSerialCode) {
+      setEnterParams({ source, agentSerialCode })
+    }
+    if (q) {
+      let query = getQueryString(decodeURIComponent(q));
+      console.log("query", query);
+      setEnterParams(query);
+    }
   })
 
   useEffect(()=>{

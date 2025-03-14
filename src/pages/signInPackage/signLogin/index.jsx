@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-08 16:57:55
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-08 17:02:14
+ * @LastEditTime: 2025-03-13 11:31:25
  * @Description: 
  */
 
@@ -63,15 +63,13 @@ const Index = observer(({ store }) => {
                     setToken(result.data.token);
                     Taro.setStorageSync('token', result.data.token);
                     Taro.setStorageSync('isLogin', 1);
-                    // Taro.setStorageSync('role', result.data.user.userRole);
                     Taro.setStorageSync('userInfo', result.data.user);
                     setIsLogin(1);
                     setUserInfo(result.data.user);
-                    // setRole(result.data.user.userRole);
                     getRoleAndPermissionFunc();
-                    // setTimeout(() => {
-                    //     getUserRole();
-                    // }, 50);
+
+                    setRole('SEEK');
+                    Taro.setStorageSync('role', 'SEEK');
                     setTimeout(() => {
                         Taro.navigateBack({
                             delta: 1
@@ -83,15 +81,6 @@ const Index = observer(({ store }) => {
         } catch (error) {
             console.error('获取用户手机号失败:', error);
         }
-    }
-
-    const getUserRole = async () => {
-        const result = await getRoleAndPermissionByUserId();
-        console.log("获取角色和权限", result);
-        // return;
-        Taro.navigateBack({
-            delta: 1
-        })
     }
 
     const viewPrivacy = () => {

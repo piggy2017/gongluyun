@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-05 18:20:38
+ * @LastEditTime: 2025-03-14 14:14:21
  * @Description: 
  */
 
@@ -47,7 +47,7 @@ const Index = observer(({ store }) => {
             companySerialCode: detail.companySerialCode,
             contractsSerialCode: detail.serialCode,
             supplierName: supplierCompanyInfo.name,
-            coopModel: value,
+            // coopModel: value,
         }
         Taro.showLoading({
             title: '提交中...',
@@ -59,7 +59,7 @@ const Index = observer(({ store }) => {
         if (code === 200) {
             Taro.showToast({ title: '加入成功', icon: 'none' });
             getDetail();
-            setShowPatternModel(false);
+            // setShowPatternModel(false);
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
@@ -84,9 +84,11 @@ const Index = observer(({ store }) => {
         console.log('加入项目_supplierCompanyInfo',supplierCompanyInfo);
         if (!supplierCompanyInfo.name) {
             setShowJoinPicker(true);
-        }else{
-            setShowPatternModel(true);
         }
+        getChoosePattern();
+        // else{
+        //     setShowPatternModel(true);
+        // }
     }
 
     const navigateFunc = (e, url) => {
@@ -222,7 +224,6 @@ const Index = observer(({ store }) => {
                 </>
             }
 
-
             <View style={`height:90px;`}></View>
 
             <View className='page_bottom'>
@@ -239,7 +240,7 @@ const Index = observer(({ store }) => {
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 
-            <Taro.GlobalJoinSupplier showPicker={showJoinPicker} onChange={() => { setShowPatternModel(true) }} onClose={() => { setShowJoinPicker(false) }}></Taro.GlobalJoinSupplier>
+            <Taro.GlobalJoinSupplier showPicker={showJoinPicker} onClose={() => { setShowJoinPicker(false) }}></Taro.GlobalJoinSupplier>
             <Taro.ChoosePattern list={detail.cooperationModels} showPicker={showPatternModel} onClose={() => setShowPatternModel(false)} onchange={getChoosePattern}></Taro.ChoosePattern>
         </View>
     )

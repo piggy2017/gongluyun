@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-07 17:21:42
+ * @LastEditTime: 2025-03-14 17:25:00
  * @Description: 项目详情中查看供应商列表
  */
 
@@ -21,7 +21,7 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-        businessStore: { setEditProjectInfo, onSiteInfo, setOnSiteInfo },
+        businessStore: { setRosterFilterSupplier },
         userStore: { companyInfo }
     } = store
 
@@ -107,8 +107,17 @@ const Index = observer(({ store }) => {
                         return (
                             <View className='project_list' key={index}>
                                 <View className='supplier_list_name'>
-                                    <View className='supplier_list_name_l'>{item.name}</View>
-                                    <View className='supplier_list_name_r'>
+                                    <View className='supplier_list_name_l'>{item.supplierName}</View>
+                                    <View className='supplier_list_name_r' onClick={() => {
+                                        setRosterFilterSupplier({
+                                            name: item.supplierName,
+                                            userSerialCode: item.supplierUserSerialCode,
+                                            selected: true
+                                        })
+                                        Taro.navigateTo({
+                                            url: `/pages/projectPackage/roster/index?recruitSerialCode=${route.params.recruitSerialCode}&title=${route.params.title}`
+                                        })
+                                    }}>
                                         <Image src={`${Taro.$cdnUrl}/supplier/supplier_2.webp`}></Image>
                                         <View>名单</View>
                                     </View>

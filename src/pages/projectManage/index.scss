@@ -59,7 +59,7 @@
     }
 
     .search_wrap {
-        padding: 20rpx 28rpx 20rpx 30rpx;
+        padding: 20rpx 28rpx 0 30rpx;
         @include flex-center(space-between);
 
         .search_con {
@@ -85,6 +85,12 @@
             }
         }
 
+        .sign_code_all {
+            width: 48rpx;
+            height: 48rpx;
+            flex-shrink: 0;
+        }
+
         .add_icon {
             width: 48rpx;
             height: 48rpx;
@@ -107,12 +113,33 @@
         }
     }
 
+    .filter_wrapper{
+        padding: 32rpx 100rpx 36rpx 100rpx;
+        @include flex-center(space-between);
+        color: #000000;
+        text-align: right;
+        font-family: "PingFang SC";
+        font-size: 28rpx;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        .filter_item {
+            @include flex-center(flex-start);
+
+            image {
+                width: 28rpx;
+                height: 28rpx;
+                // transform: rotate(90deg);
+            }
+        }
+    }
+
 
     .scrollWrapper {
         width: 100%;
 
         .project_item {
-            margin: 20rpx auto 0 auto;
+            margin: 0 auto 20rpx auto;
             width: 710rpx;
             flex-shrink: 0;
             background-color: #FFF;
@@ -169,7 +196,8 @@
                         margin-right: 8rpx;
                     }
                 }
-                .project_item_title_right_end{
+
+                .project_item_title_right_end {
                     color: #666666;
                     font-family: "PingFang SC";
                     font-size: 26rpx;
@@ -258,7 +286,8 @@
                 @include flex-center(space-between);
             }
         }
-        .project_item:first-child{
+
+        .project_item:first-child {
             margin-top: 0rpx;
         }
     }

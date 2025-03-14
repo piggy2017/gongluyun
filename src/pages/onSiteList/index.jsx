@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-19 11:58:26
+ * @LastEditTime: 2025-03-13 17:33:09
  * @Description: 
  */
 
@@ -569,23 +569,11 @@ const Index = observer(({ store }) => {
         }
         {
           list.length >= 5 &&
-          <View className='loading_text'>
-            {
-              goonLoad ?
-                <>
-                  <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
-                  加载中
-                </> :
-                "数据已经到底了"
-            }
-          </View>
+          <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
         }
         {
           list.length === 0 && requestState === 3 &&
-          <View className='no_data'>
-            <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
-            <View>暂无相关数据~</View>
-          </View>
+          <Taro.NoData></Taro.NoData>
         }
       </ScrollView>
 

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 20:55:39
+ * @LastEditTime: 2025-03-14 15:58:18
  * @Description: 
  */
 
@@ -11,26 +11,24 @@ import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Text, Textarea, Block, RichText } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { replaceNewLinesWithBr } from '@/util/utils'
-
-import { AtIcon, AtFloatLayout } from 'taro-ui'
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
+import { decryptData, encryptData } from '@/util/crypto'
 
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { getRecruitmentInfo } from '@/util/api';
+import { getRecruitmentInfo, signUpAdd } from '@/util/api';
 
 const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
-        businessStore: { setEditProjectInfo, setProjectPatternInfo },
-        userStore: { myPermissions }
+        businessStore: { },
+        userStore: { isLogin }
     } = store
 
 
-    const [detail, setDetail] = useState({})
+    const [detail, setDetail] = useState({});
+    const [isOpened, setIsOpened] = useState(false);
 
     useEffect(() => {
         getDetail();
@@ -42,7 +40,9 @@ const Index = observer(({ store }) => {
         Taro.hideLoading();
         console.log("getRecruitmentInfo", code, data);
         if (code === 200) {
-            data.introduction = replaceNewLinesWithBr(data.introduction);
+            if (data.introduction) {
+                data.introductionTrans = replaceNewLinesWithBr(data.introduction);
+            }
             setDetail(data);
         }
     }
@@ -53,6 +53,52 @@ const Index = observer(({ store }) => {
             current: imgSrc, // 当前显示图片的http链接
             urls: [imgSrc] // 需要预览的图片http链接列表
         })
+    }
+
+    const copyDetail = () => {
+        Taro.setClipboardData({
+            data: detail.introduction,
+            success: function (res) {
+                Taro.showToast({
+                    title: '复制成功',
+                    icon: 'success',
+                    duration: 2000
+                })
+            }
+        })
+    }
+
+    const signUpFunc = async () => {
+        if (!isLogin) {
+            return setIsOpened(true)
+        }
+        Taro.makePhoneCall({
+            phoneNumber: decryptData(detail.recruitPhone),
+        }).then(async () => {
+            console.log('拨打电话成功');
+        }).catch((err) => {
+            console.log('拨打电话失败', err);
+        });
+
+        if (!detail.signUp) {
+            let params = {
+                source: 'SIGN',
+                recruitSerialCode: detail.recruitSerialCode,
+                signUpChannel: 'IN_WECHAT_MINI'
+            }
+            const { code, data, msg } = await signUpAdd(params);
+            if (code === 200) {
+                // Taro.showToast({ title: '报名成功', icon: 'success', duration: 2000 });
+                setDetail({ ...detail, signUp: true })
+            } 
+        }
+    }
+
+    const onClose = (e) => {
+        if (e === 'success') {
+            // forceUpdate()
+        }
+        setIsOpened(false)
     }
 
 
@@ -114,13 +160,13 @@ const Index = observer(({ store }) => {
             <View className='job_desc'>
                 <View className='job_desc_title'>
                     <View>职位描述</View>
-                    <View className='job_desc_title_right'>
+                    <View className='job_desc_title_right' onClick={copyDetail}>
                         <Image src={`${Taro.$cdnUrl}/supplier/supplier_39.webp`}></Image>
                         <View>复制详情</View>
                     </View>
                 </View>
                 <View className='job_introduce'>
-                    <RichText nodes={detail.introduction}></RichText>
+                    <RichText nodes={detail.introductionTrans}></RichText>
                 </View>
                 {
                     detail.jobImages &&
@@ -141,12 +187,14 @@ const Index = observer(({ store }) => {
             <View style={`height:240rpx;`}></View>
 
             <View className='bottom_wrapper'>
-                <View className='bottom_btn' >
+                <View className='bottom_btn' onClick={signUpFunc}>
                     <Image src={`${Taro.$cdnUrl}/supplier/supplier_43.webp`}></Image>
                     <View>电话咨询</View>
                 </View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
+
+            <Taro.GlobalLogin isOpened={isOpened} onClose={onClose} />
         </View>
     )
 })

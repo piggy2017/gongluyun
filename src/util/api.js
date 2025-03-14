@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 16:53:17
+ * @LastEditTime: 2025-03-13 11:54:04
  * @Description: 
  */
 
@@ -313,4 +313,28 @@ export const indexFeeds = params => {       // 【供应商】求职者首页
 };
 export const getRecruitmentInfo = params => {       // 【供应商】求职者查看项目详情
     return http(API_BASE_URL + '/recruit/getRecruitmentInfo', params, "POST", { "Content-Type": "application/json" });
+};
+export const signUpRecruitList = params => {       // 【供应商】求职查看-用户报名招聘列表
+    return http(API_BASE_URL + '/user/signUpRecruitList', params, "POST", { "Content-Type": "application/json" });
+};
+export const signUpAdd = params => {       // 【供应商】求职者报名
+    return http(API_BASE_URL + '/signUp/add', params, "POST", { "Content-Type": "application/json" });
+};
+
+// 资源池 用户收益
+export const sharedStats = params => {                   // 分享拉新收益统计
+    return http(API_BASE_URL + '/user/revenue/sharedStats', params, "POST", { "Content-Type": "application/json" });
+};
+export const sharedList = params => {                   // 分享拉新收益列表
+    return http(API_BASE_URL + '/user/revenue/sharedList', params, "POST", { "Content-Type": "application/json" });
+};
+export const getJWSettings = params => {   //  求职设置
+    return http(API_BASE_URL + '/user/getSettings', params, "POST", { "Content-Type": "application/json" });
+};
+export const setJP = params => {           //    求职设置
+    return http(API_BASE_URL + '/user/setJp', params, "POST", { "Content-Type": "application/json" });
+};
+
+export const parsePerson = params => {     // 【供应商】录入求职者-智能识别 
+    return http(API_BASE_URL + '/clue/parsePerson', params, "POST", { "Content-Type": "application/json" });
 };

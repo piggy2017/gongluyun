@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 14:02:01
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 14:50:48
+ * @LastEditTime: 2025-03-14 14:01:22
  * @Description: 
  */
 
@@ -152,7 +152,7 @@ const Index = observer(({ store }) => {
     }
     const onClose = (e) => {
         if (e === 'success') {
-            forceUpdate()
+            // forceUpdate()
         }
         setIsOpened(false)
     }
@@ -165,21 +165,23 @@ const Index = observer(({ store }) => {
         }
         if (!supplierCompanyInfo.name) {   // 调用输入公司名字的弹窗
             return setShowJoinPicker(true);
-        } else {
-            setShowPatternModel(true);
-        }
+        } 
+        // else {
+        //     setShowPatternModel(true);
+        // }
+        getChoosePattern(item);
     }
 
     // const getComponyName = () => {
     //     setShowPatternModel(true);
     // }
-    const getChoosePattern = async (value) => {
-        console.log("---选择合作模式:", value);
+    const getChoosePattern = async (obj) => {
+        console.log("---选择合作模式:", obj);
         let params = {
             companySerialCode: billComponySerialCode,  // route.params.companySerialCode
-            contractsSerialCode: currentItem.serialCode,
+            contractsSerialCode: obj.serialCode,
             supplierName: supplierCompanyInfo.name,
-            coopModel: value,
+            // coopModel: value,
         }
         Taro.showLoading({
             title: '提交中...',
@@ -191,7 +193,7 @@ const Index = observer(({ store }) => {
         if (code === 200) {
             Taro.showToast({ title: '加入成功', icon: 'none' });
             getList(1);
-            setShowPatternModel(false);
+            // setShowPatternModel(false);
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
