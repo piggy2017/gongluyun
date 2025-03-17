@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-14 10:44:51
+ * @LastEditTime: 2025-03-17 10:24:26
  * @Description: 
  */
 
@@ -58,7 +58,7 @@ const Index = observer(({ store }) => {
       if (data.interviewDate) {
         setInterviewDate(data.interviewDate);
       }
-      data.introduction = replaceNewLinesWithBr(data.introduction);
+      data.introductions = replaceNewLinesWithBr(data.introduction);
       setDetail(data);
     } else {
       Taro.showToast({ title: msg, icon: 'none' });
@@ -383,7 +383,7 @@ const Index = observer(({ store }) => {
           }
         </View>
         <View className='job_introduce'>
-          <RichText nodes={detail.introduction}></RichText>
+          <RichText nodes={detail.introductions}></RichText>
         </View>
       </View>
       <View style={`height:300rpx;`}></View>

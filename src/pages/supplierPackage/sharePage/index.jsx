@@ -28,11 +28,7 @@ const Index = observer(({ store }) => {
     const [pageNo, setPageNo] = useState(1)
     const pageSize = 10;
 
-    const [list, setList] = useState([
-        { name: "成都西红人力", isAuth: true, num1: 3, num2: 79, num3: 0, num4: 7 },
-        { name: "四川阿普企业管理咨询有限公司", isAuth: true, num1: 3, num2: 79, num3: 0, num4: 7 },
-        { name: "成都兄弟人力", isAuth: true, num1: 3, num2: 79, num3: 0, num4: 7 },
-    ]);
+    const [list, setList] = useState([]);
 
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');

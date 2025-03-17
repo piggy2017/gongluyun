@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-14 17:25:00
+ * @LastEditTime: 2025-03-17 10:18:21
  * @Description: 项目详情中查看供应商列表
  */
 
@@ -31,10 +31,7 @@ const Index = observer(({ store }) => {
     const [pageNo, setPageNo] = useState(1)
     const pageSize = 10;
 
-    const [list, setList] = useState([
-        // { name: "龙泉驿区招物流分拣全职月结区招物流分拣全职月结", model: '模式1:在职15天400，人多+V，卡点3天,在职三十天返现', num1: 3, num2: 79, num3: 0, num4: 7 },
-        // { name: "四川阿普企业管理咨询有限公司", model: '', num1: 3, num2: 79, num3: 0, num4: 7 },
-    ]);
+    const [list, setList] = useState([]);
 
     useEffect(() => {
         const { contractsSerialCode, title } = route.params;

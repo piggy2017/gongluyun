@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 14:02:01
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-14 14:01:22
+ * @LastEditTime: 2025-03-17 10:27:47
  * @Description: 
  */
 
@@ -64,7 +64,7 @@ const Index = observer(({ store }) => {
     }, [isLogin])
 
     useEffect(() => {
-        console.log("billComponySerialCode_billComponySerialCode",billComponySerialCode);
+        console.log("billComponySerialCode_billComponySerialCode", billComponySerialCode);
         if (billComponySerialCode) {
             getList(1);
         }
@@ -165,7 +165,7 @@ const Index = observer(({ store }) => {
         }
         if (!supplierCompanyInfo.name) {   // 调用输入公司名字的弹窗
             return setShowJoinPicker(true);
-        } 
+        }
         // else {
         //     setShowPatternModel(true);
         // }
@@ -181,6 +181,7 @@ const Index = observer(({ store }) => {
             companySerialCode: billComponySerialCode,  // route.params.companySerialCode
             contractsSerialCode: obj.serialCode,
             supplierName: supplierCompanyInfo.name,
+            supplierSerialCode: supplierCompanyInfo.serialCode
             // coopModel: value,
         }
         Taro.showLoading({
@@ -204,7 +205,7 @@ const Index = observer(({ store }) => {
             <Navbar back={false} fixed placeholder bgColor='transparent' title='我的合作端口' titleColor='#FFFFFF'></Navbar>
 
             <View className='my_port'>
-                <View className='my_port_left_logo' src={componyInfo.logo}></View>
+                <Image className='my_port_left_logo' src={componyInfo?.logo}></Image>
                 <View className='my_port_right'>
                     <View className='my_port_compone_name'>{componyInfo.name}</View>
                     <View className='my_port_connect'>

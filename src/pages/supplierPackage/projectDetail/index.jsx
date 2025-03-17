@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-14 14:14:21
+ * @LastEditTime: 2025-03-17 10:28:24
  * @Description: 
  */
 
@@ -47,6 +47,7 @@ const Index = observer(({ store }) => {
             companySerialCode: detail.companySerialCode,
             contractsSerialCode: detail.serialCode,
             supplierName: supplierCompanyInfo.name,
+            supplierSerialCode: supplierCompanyInfo.serialCode
             // coopModel: value,
         }
         Taro.showLoading({
@@ -154,21 +155,21 @@ const Index = observer(({ store }) => {
                             <View className='collaborate_pattern_content_dot'></View>
                             <View className='collaborate_pattern_content_text'>{detail.cooperationModel}</View>
                         </View>
-                    </View>
-
+                    </View> 
+                    
                     <View className='project_interview'>
                         <View className='project_interview_title'>面试信息</View>
                         <View className='project_interview_item'>
                             <Image src={`${Taro.$cdnUrl}/supplier/supplier_12.webp`}></Image>
-                            <View><Text>驻场联系人：</Text>王老师 17780662488</View>
+                            <View><Text>驻场联系人：</Text>{detail.interviewInfos.length === 1 ? detail.interviewInfos[0].interviewContactName + ' ' + detail.interviewInfos[0].interviewContactPhone : detail.interviewInfos[0].interviewContactName + ` 等${detail.interviewInfos.length}人`}</View>
                         </View>
                         <View className='project_interview_item'>
                             <Image src={`${Taro.$cdnUrl}/supplier/supplier_11.webp`}></Image>
-                            <View><Text>面试地点：</Text>成都市郫都区国宁西路88号（距犀浦地铁站250米）</View>
+                            <View><Text>面试地点：</Text>{detail.interviewAddress}</View>
                         </View>
                         <View className='project_interview_item'>
                             <Image src={`${Taro.$cdnUrl}/supplier/supplier_13.webp`}></Image>
-                            <View><Text>面试时间：</Text>每周工作日早上10点-12点，下午2点-5点</View>
+                            <View><Text>面试时间：</Text>{detail.interviewDate}</View>
                         </View>
                     </View>
 
