@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-17 10:18:21
+ * @LastEditTime: 2025-03-17 11:27:47
  * @Description: 项目详情中查看供应商列表
  */
 
@@ -82,6 +82,23 @@ const Index = observer(({ store }) => {
         return `calc(100vh - ${statusTitleHeight + contenTitleHeight + bottomSafeAreaHeight}px - 140rpx)`;
     }
 
+    Taro.useShareAppMessage(res => {
+        let title = '邀请您加入我的供应商';
+        let imageUrl = `${Taro.$cdnUrl}/supplier/supplier_55.webp` // 图片 URL
+        if (res.from === 'button') {
+            // 来自页面内转发按钮
+        }
+        let par = { companySerialCode: companyInfo.companySerialCode, role: 'SUPPLIER' }
+        let path = `/pages/supplierProject/index`;
+        const params = new URLSearchParams(par);
+        path = `${path}?${params.toString()}`;
+        return {
+            title,
+            imageUrl,
+            path
+        }
+    })
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#fff' title={route.params.title} titleColor='#222222'></Navbar>
@@ -109,6 +126,7 @@ const Index = observer(({ store }) => {
                                         setRosterFilterSupplier({
                                             name: item.supplierName,
                                             userSerialCode: item.supplierUserSerialCode,
+                                            supplierSerialCode: item.supplierSerialCode,
                                             selected: true
                                         })
                                         Taro.navigateTo({
@@ -172,11 +190,11 @@ const Index = observer(({ store }) => {
             <View className='page_bottom'>
                 <View style={`height:20rpx;`}></View>
                 <View className='page_btns'>
-                    <View className='copy_btn'>邀请新供应商</View>
-                    <Button open-type='share' className='share_btn'>
+                    <Button open-type='share' className='copy_btn'>邀请新供应商</Button>
+                    {/* <Button open-type='share' className='share_btn'>
                         <Image src={`${Taro.$cdnUrl}/supplier/supplier_6.webp`}></Image>
                         <View>添加供应商</View>
-                    </Button>
+                    </Button> */}
                 </View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>

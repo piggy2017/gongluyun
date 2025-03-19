@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-14 13:37:06
+ * @LastEditTime: 2025-03-18 11:09:55
  * @Description: 用于存放用户的相关信息
  */
 
@@ -115,6 +115,7 @@ const userStore = observable({
 
     enterParams: {},    // 求职者通过岗位分享进入到小程序的岗位详情页,携带的路由参数,进行上下级绑定
     setEnterParams: (obj) => {
+        console.log("求职者通过岗位分享进入到小程序的岗位详情页,携带的路由参数,进行上下级绑定", obj);
         userStore.enterParams = obj;
     },
 });

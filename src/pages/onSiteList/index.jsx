@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 17:33:09
+ * @LastEditTime: 2025-03-18 17:37:10
  * @Description: 
  */
 
@@ -413,10 +413,10 @@ const Index = observer(({ store }) => {
             <View>{onSiteFilterJob.title}</View>
             <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
           </View>
-          <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/projectPackage/chooseSupplier/index?type=2` }) }}>
+          {/* <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/projectPackage/chooseSupplier/index?type=2` }) }}>
             <View>{onSiteFilterSUPPLIER.name}</View>
             <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
-          </View>
+          </View> */}
 
           <View className='filter_wrap_item' onClick={() => setShowFilterDate(true)}>
             <View>{dateObj.filterTime ? dateObj.filterTime : dateObj.startDate.replace(/-/g, '.') + '-' + dateObj.endDate.replace(/-/g, '.')}</View>
@@ -441,7 +441,7 @@ const Index = observer(({ store }) => {
               <Image src={`${Taro.$cdnUrl}/index/index_icon48.webp`}></Image>
               <View>新增</View>
             </View>
-            <View className='search_total_right_item' onClick={() => exportFunc()}>
+            <View className='search_total_right_item' onClick={() => exportAllFunc()}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon49.webp`}></Image>
               <View>导出</View>
             </View>

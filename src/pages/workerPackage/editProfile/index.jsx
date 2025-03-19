@@ -280,7 +280,7 @@ const Index = observer(({ store }) => {
           {
             jobTypes.length > 0 && jobTypes.map((item, index) => {
               return (
-                <Text key={index}>{item.jobTypeName}{index !== jobTypes.length - 1 && "、"}</Text>
+                <Text key={index}>{item.name}{index !== jobTypes.length - 1 && "、"}</Text>
               )
             })
           }

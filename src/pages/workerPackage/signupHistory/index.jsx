@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-14 16:52:02
+ * @LastEditTime: 2025-03-19 10:02:18
  * @Description: 
  */
 
@@ -76,6 +76,12 @@ const Index = observer(({ store }) => {
 
     const getHeight = () => {
         return `calc(100vh - ${statusTitleHeight + contenTitleHeight}px - 30rpx)`;
+    }
+
+    const goDetail = (item) => {
+        Taro.navigateTo({
+            url: `/pages/workerPackage/projectDetail/index?recruitSerialCode=${item.recruitSerialCode}`
+        })
     }
 
 

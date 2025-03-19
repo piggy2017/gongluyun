@@ -49,7 +49,8 @@ const Index = observer(({ store, onClose, isOpened }) => {
                 }
 
                 // 注册时绑定邀请人
-                const { source, agentSerialCode } = enterParams
+                const { source, agentSerialCode } = enterParams;
+                console.log("登陆注册时绑定邀请人,agentSerialCode:", agentSerialCode);
                 if (source) {
                     params.signUpChannel = source
                 }

@@ -116,7 +116,7 @@
 
     .scrollWrapper {
         width: 100%;
-        border: 1rpx solid red;
+        // border: 1rpx solid red;
 
         .supplier_list {
             width: 710rpx;
@@ -243,6 +243,9 @@
                 .supplier_list_model_content {
                     width: 508rpx;
                     @include ellipsis;
+                    text{
+                        margin-right: 8rpx;
+                    }
                 }
             }
         }

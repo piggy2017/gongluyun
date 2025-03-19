@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-14 17:34:08
+ * @LastEditTime: 2025-03-18 15:02:03
  * @Description: 
  */
 
@@ -25,7 +25,7 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-        userStore: { myPermissions },
+        userStore: { myPermissions, role },
         businessStore: { rosterFilterSupplier, setRosterFilterSupplier },
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
@@ -129,6 +129,7 @@ const Index = observer(({ store }) => {
             recruitSerialCode,
             // source: sourceObj.source,
             agentSerialCode: rosterFilterSupplier.userSerialCode,
+            supplierSerialCode: rosterFilterSupplier.supplierSerialCode,
             dateRange: dateObj.dateRange,
             startDate: dateObj.startDate,
             endDate: dateObj.endDate,
@@ -411,10 +412,14 @@ const Index = observer(({ store }) => {
                         <View>{sourceObj.name}</View>
                         <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
                     </View> */}
-                    <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/projectPackage/chooseSupplier/index?type=1` }) }}>
-                        <View>{rosterFilterSupplier.name}</View>
-                        <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
-                    </View>
+                    {
+                        role === 'ADMIN' &&
+                        <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/projectPackage/chooseSupplier/index?type=1` }) }}>
+                            <View>{rosterFilterSupplier.name}</View>
+                            <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
+                        </View>
+                    }
+
                     {/* <View className='filter_wrap_item'>
                         <View>全部岗位</View>
                         <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
@@ -449,7 +454,13 @@ const Index = observer(({ store }) => {
                             <Image src={`${Taro.$cdnUrl}/index/index_icon48.webp`}></Image>
                             <View>新增</View>
                         </View>
-                        <View className='search_total_right_item' onClick={() => exportFunc()}>
+                        <View className='search_total_right_item' onClick={() => {
+                            if (role === 'ADMIN') {
+                                exportFunc();
+                            } else {
+                                exportAllFunc();
+                            }
+                        }}>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon49.webp`}></Image>
                             <View>导出</View>
                         </View>

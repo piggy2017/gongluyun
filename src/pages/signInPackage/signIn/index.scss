@@ -65,6 +65,8 @@
                     font-weight: 400;
                     line-height: normal;
                     text-align: right;
+                    width: 480rpx;
+                    @include ellipsis;
                 }
 
                 .employee_item_right_g {

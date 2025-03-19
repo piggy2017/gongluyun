@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-14 15:58:18
+ * @LastEditTime: 2025-03-19 10:08:44
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
-import { View, Image, Text, Textarea, Block, RichText } from '@tarojs/components'
+import { View, Image, Text, Textarea, Button, RichText } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { replaceNewLinesWithBr } from '@/util/utils'
 import { decryptData, encryptData } from '@/util/crypto'
@@ -23,7 +23,7 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { bottomSafeAreaHeight },
         businessStore: { },
-        userStore: { isLogin }
+        userStore: { isLogin, userInfo, setRole, setEnterParams }
     } = store
 
 
@@ -31,6 +31,16 @@ const Index = observer(({ store }) => {
     const [isOpened, setIsOpened] = useState(false);
 
     useEffect(() => {
+        const { inviteRole, recruitSerialCode, agentSerialCode, source } = route.params;
+        console.log("进入到岗位详情页,查看携带的参数", route.params);
+        if (inviteRole === 'SEEK') {
+            setRole('SEEK');
+            Taro.setStorageSync('role', 'SEEK');
+        }
+        // 缓存进入页面的参数------》管道收益
+        if (source && agentSerialCode) {
+            setEnterParams({ source, agentSerialCode })
+        }
         getDetail();
     }, [])
 
@@ -90,7 +100,7 @@ const Index = observer(({ store }) => {
             if (code === 200) {
                 // Taro.showToast({ title: '报名成功', icon: 'success', duration: 2000 });
                 setDetail({ ...detail, signUp: true })
-            } 
+            }
         }
     }
 
@@ -101,10 +111,27 @@ const Index = observer(({ store }) => {
         setIsOpened(false)
     }
 
+    Taro.useShareAppMessage(res => {
+        console.log("求职者分享 userInfo.userSerialCode", userInfo, userInfo?.userSerialCode);
+        if (res.from === 'button') {
+            // 来自页面内转发按钮
+            console.log(res.target)
+        }
+        let url = `/pages/workerPackage/projectDetail/index?recruitSerialCode=${detail.recruitSerialCode}&inviteRole=SEEK&source=WECHAT_MINI_SHARE&agentSerialCode=${userInfo?.userSerialCode ? userInfo.userSerialCode : ''}`;
+        return {
+            title: detail.areaName + detail.recruitTitle,
+            path: url
+        }
+    })
 
     return (
         <View className='container'>
-            <Navbar fixed placeholder bgColor='transparent' title='岗位详情'></Navbar>
+            <Navbar fixed placeholder bgColor='transparent' title='岗位详情' customBack={() => {
+                console.log("1")
+                let historyPages = Taro.getCurrentPages();    // 历史页面 路由跳转数
+                if (historyPages.length === 1) Taro.switchTab({ url: "/pages/workerIndex/index" });
+                else Taro.navigateBack({ delta: 1 });         // 多页面跳转
+            }}></Navbar>
 
             <View className='base_info'>
                 <View style={`height:72rpx;`}></View>
@@ -187,10 +214,17 @@ const Index = observer(({ store }) => {
             <View style={`height:240rpx;`}></View>
 
             <View className='bottom_wrapper'>
-                <View className='bottom_btn' onClick={signUpFunc}>
-                    <Image src={`${Taro.$cdnUrl}/supplier/supplier_43.webp`}></Image>
-                    <View>电话咨询</View>
+                <View className='page_bottom_btns'>
+                    <Button className='btn_item' open-type='share'>
+                        <Image src={`${Taro.$cdnUrl}/supplier/supplier_52.webp`}></Image>
+                        <View>分享</View>
+                    </Button>
+                    <View className='bottom_btn' onClick={signUpFunc}>
+                        <Image src={`${Taro.$cdnUrl}/supplier/supplier_43.webp`}></Image>
+                        <View>电话咨询</View>
+                    </View>
                 </View>
+
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 

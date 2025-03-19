@@ -2,22 +2,22 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-17 10:28:24
+ * @LastEditTime: 2025-03-18 15:26:17
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
-import { View, Image, Block, Text } from '@tarojs/components'
+import { View, Image, Block, Text, RichText } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, replaceNewLinesWithBr } from '@/util/utils'
 
 import Navbar from '@/components/navbar';
 // import JoinSupplier from '@/components/joinSupplier';
 // import ChoosePattern from '@/components/choosePattern';
 import './index.scss'
 
-import { getContractsInfo, joinContracts } from '@/util/api';
+import { getContractsInfo, joinContracts, getContractsInfoStatistics } from '@/util/api';
 
 const Index = observer(({ store }) => {
     const route = useRouter();
@@ -29,7 +29,7 @@ const Index = observer(({ store }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const [showPatternModel, setShowPatternModel] = useState(false);
-
+    const [statistics, setStatistics] = useState({});
     const [detail, setDetail] = useState('');
     const [showJoinPicker, setShowJoinPicker] = useState(false);
 
@@ -39,6 +39,7 @@ const Index = observer(({ store }) => {
 
     useDidShow(() => {
         getDetail();
+        getProjectStatistics();
     })
 
     const getChoosePattern = async (value) => {
@@ -66,6 +67,17 @@ const Index = observer(({ store }) => {
         }
     }
 
+    const getProjectStatistics = async () => {
+        const { contractSerialCode } = route.params;
+        const { code, data, msg } = await getContractsInfoStatistics({ contractsSerialCode: contractSerialCode });
+        console.log("getProjectStatistics_data", code, data);
+        if (code === 200 && data) {
+            setStatistics(data);
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' });
+        }
+    }
+
     const getDetail = async () => {
         console.log("route.params", route.params);
         const { contractSerialCode } = route.params;
@@ -75,6 +87,15 @@ const Index = observer(({ store }) => {
         Taro.hideLoading();
         console.log("getProjectDetail_data", data);
         if (code === 200 && data) {
+            if (data.introduction) {
+                data.introduction = replaceNewLinesWithBr(data.introduction);
+            }
+            if (data.settlementStandard) {
+                data.settlementStandard = replaceNewLinesWithBr(data.settlementStandard);
+            }
+            if (data.privateIntroduction) {
+                data.privateIntroductions = replaceNewLinesWithBr(data.privateIntroduction);
+            }
             setDetail(data);
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
@@ -82,7 +103,7 @@ const Index = observer(({ store }) => {
     }
 
     const joinProject = () => {
-        console.log('加入项目_supplierCompanyInfo',supplierCompanyInfo);
+        console.log('加入项目_supplierCompanyInfo', supplierCompanyInfo);
         if (!supplierCompanyInfo.name) {
             setShowJoinPicker(true);
         }
@@ -110,7 +131,7 @@ const Index = observer(({ store }) => {
                 </View>
                 <View className='project_info_detail'>{detail.conAreaName}·{detail.jobTypeName}·{detail.numberRecruits}人</View>
                 <View className='project_info_compony'>
-                    <View className='project_info_compony_avatar'></View>
+                    <Image src={detail.companyLogo} className='project_info_compony_avatar'></Image>
                     <View className='project_info_compony_info'>
                         <View>{detail.company}</View>
                         <View className='project_info_compony_info_time'>{detail.createDate}发布</View>
@@ -131,45 +152,49 @@ const Index = observer(({ store }) => {
                         </View>
                         <View className='project_datas_content'>
                             <View className='project_datas_item'>
-                                <View>{detail.signUpCounts}</View>
+                                <View>{statistics.signUpCounts}</View>
                                 <View className='project_datas_item_label'>已上报</View>
                             </View>
                             <View className='project_datas_item'>
-                                <View>{detail.alreadyArrivedCounts}</View>
+                                <View>{statistics.alreadyArrivedCounts}</View>
                                 <View className='project_datas_item_label'>已到面</View>
                             </View>
                             <View className='project_datas_item'>
-                                <View>{detail.deliveredCounts}</View>
+                                <View>{statistics.deliveredCounts}</View>
                                 <View className='project_datas_item_label'>已入职</View>
                             </View>
                             <View className='project_datas_item'>
-                                <View>0</View>
+                                <View>{statistics.resignCounts}</View>
                                 <View className='project_datas_item_label'>已离职</View>
                             </View>
                         </View>
                     </View>
 
-                    <View className='collaborate_pattern'>
+                    {/* <View className='collaborate_pattern'>
                         <View className='collaborate_pattern_title'>合作模式</View>
                         <View className='collaborate_pattern_content'>
                             <View className='collaborate_pattern_content_dot'></View>
                             <View className='collaborate_pattern_content_text'>{detail.cooperationModel}</View>
                         </View>
-                    </View> 
-                    
+                    </View>  */}
+
                     <View className='project_interview'>
                         <View className='project_interview_title'>面试信息</View>
                         <View className='project_interview_item'>
                             <Image src={`${Taro.$cdnUrl}/supplier/supplier_12.webp`}></Image>
-                            <View><Text>驻场联系人：</Text>{detail.interviewInfos.length === 1 ? detail.interviewInfos[0].interviewContactName + ' ' + detail.interviewInfos[0].interviewContactPhone : detail.interviewInfos[0].interviewContactName + ` 等${detail.interviewInfos.length}人`}</View>
+                            {
+                                detail.interviewInfos?.length > 0 ?
+                                    <View><Text>驻场联系人：</Text>{detail.interviewInfos.length === 1 ? detail.interviewInfos[0].interviewContactName + ' ' + detail.interviewInfos[0].interviewContactPhone : detail.interviewInfos[0].interviewContactName + ` 等${detail.interviewInfos.length}人`}</View> :
+                                    <View><Text>驻场联系人：</Text>暂无</View>
+                            }
                         </View>
                         <View className='project_interview_item'>
                             <Image src={`${Taro.$cdnUrl}/supplier/supplier_11.webp`}></Image>
-                            <View><Text>面试地点：</Text>{detail.interviewAddress}</View>
+                            <View><Text>面试地点：</Text>{detail.interviewAddress ? detail.interviewAddress : '暂无'}</View>
                         </View>
                         <View className='project_interview_item'>
                             <Image src={`${Taro.$cdnUrl}/supplier/supplier_13.webp`}></Image>
-                            <View><Text>面试时间：</Text>{detail.interviewDate}</View>
+                            <View><Text>面试时间：</Text>{detail.interviewDate ? detail.interviewDate : '暂无'}</View>
                         </View>
                     </View>
 
@@ -183,7 +208,9 @@ const Index = observer(({ store }) => {
                                 <Image src={`${Taro.$cdnUrl}/supplier/supplier_${isOpen ? 9 : 8}.webp`}></Image>
                             </View>
                         </View>
-                        <View className={`project_desc_content ${isOpen ? 'project_desc_content_open' : 'project_desc_content_close'}`}>{detail.settlementStandard}</View>
+                        <View className={`project_desc_content ${isOpen ? 'project_desc_content_open' : 'project_desc_content_close'}`}>
+                            <RichText nodes={detail.introduction}></RichText>
+                        </View>
                     </View>
                 </>
             }
@@ -201,27 +228,50 @@ const Index = observer(({ store }) => {
                                 <Image src={`${Taro.$cdnUrl}/supplier/supplier_${isOpen ? 9 : 8}.webp`}></Image>
                             </View>
                         </View>
-                        <View className={`project_desc_content ${isOpen ? 'project_desc_content_open' : 'project_desc_content_close'}`}>{detail.introduction}</View>
+                        <View className={`project_desc_content ${isOpen ? 'project_desc_content_open' : 'project_desc_content_close'}`}>
+                            <RichText nodes={detail.introduction}></RichText>
+                        </View>
                     </View>
+
 
                     <View className='project_pattern'>
                         <View className='project_pattern_title'>合作模式</View>
                         {
-                            detail.cooperationModels?.length > 0 && detail.cooperationModels.map((item, index) => {
-                                return (
-                                    <View className='project_pattern_item' key={index}>
-                                        <View className='project_pattern_item_title'>模式{index + 1}:</View>
-                                        <View className='project_pattern_item_content'>{item}</View>
-                                    </View>
-                                )
-                            })
+                            detail.cooperationModels?.length > 0 &&
+                            <>
+                                {
+                                    detail.cooperationModels.map((item, index) => {
+                                        return (
+                                            <View className='project_pattern_item' key={index}>
+                                                <View className='project_pattern_item_title'>模式{index + 1}:</View>
+                                                <View className='project_pattern_item_content'>{item}</View>
+                                            </View>
+                                        )
+                                    })
+                                }
+                            </> ||
+                            <View className='project_pattern_item'>暂无合作模式</View>
                         }
                     </View>
 
                     <View className='project_pattern project_pattern_1'>
                         <View className='project_pattern_title'>结算规则</View>
-                        <View className='project_pattern_rule'>{detail.settlementStandard}</View>
+                        <View className='project_pattern_rule'>
+                            {
+                                detail.settlementStandard ? <RichText nodes={detail.settlementStandard}></RichText> : '暂无结算规则'
+                            }
+                        </View>
                     </View>
+
+                    {
+                        detail.privateIntroduction &&
+                        <View className='project_pattern project_pattern_1'>
+                            <View className='project_pattern_title'>岗位详情</View>
+                            <View className='project_pattern_rule'>
+                                <RichText nodes={detail.privateIntroductions}></RichText>
+                            </View>
+                        </View>
+                    }
                 </>
             }
 

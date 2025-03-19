@@ -89,11 +89,12 @@
 
     .scrollWrapper {
         width: 100%;
-        border: 1rpx solid red;
+        // border: 1rpx solid red;
 
         .supplier_list {
             width: 710rpx;
-            height: 212rpx;
+            // height: 212rpx;
+            padding-bottom: 28rpx;
             flex-shrink: 0;
             background-color: #FFF;
             border-radius: 20rpx;
@@ -143,6 +144,9 @@
                 .supplier_list_model_content {
                     width: 508rpx;
                     @include ellipsis;
+                    text{
+                        margin-right: 10rpx;
+                    }
                 }
             }
         }
@@ -158,7 +162,7 @@
 
         .page_btns {
             padding: 0 32rpx;
-            @include flex-center(space-between);
+            @include flex-center();
 
             .copy_btn {
                 height: 96rpx;
@@ -175,7 +179,7 @@
             }
 
             .share_btn {
-                width: 416rpx;
+                width: 690rpx;
                 height: 96rpx;
                 border-radius: 8rpx;
                 background: #1678FF;

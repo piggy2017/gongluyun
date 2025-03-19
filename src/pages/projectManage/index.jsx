@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 16:13:14
+ * @LastEditTime: 2025-03-17 14:50:09
  * @Description: 
  */
 
@@ -201,9 +201,15 @@ const Index = observer(({ store }) => {
               }}
               value={searchValue}></Input>
           </View>
-          <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`} className='sign_code_all' onClick={
-            (e) => navigateFunc(e, 1, `/pages/projectPackage/signinCode/index?isAll=1`)}
-          ></Image>
+          {
+            role != 'CUSTOMER' &&
+            <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`} className='sign_code_all' onClick={
+              (e) => navigateFunc(e, 1, `/pages/newPackage/onSiteProject/index?type=2`)}
+              // /pages/newPackage/onSiteProject/index?type=1
+              // /pages/projectPackage/signinCode/index?isAll=1
+            ></Image>
+          }
+
           {
             myPermissions.includes('4') &&
             <Image className='add_icon' src={`${Taro.$cdnUrl}/index/index_icon3.webp`} onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newProject/index')}></Image>
@@ -229,7 +235,7 @@ const Index = observer(({ store }) => {
       </View>
 
       {
-        (!isLogin || (role === 'SEEK' && !companyVerified)) &&
+        (!isLogin || !companyVerified) &&
         <View className='no_login'>
           <Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image>
           <View className='no_login_tip'>{!isLogin ? '登录后体验多项专属功能' : '认证后立即体验项目管理功能'}</View>
@@ -258,12 +264,17 @@ const Index = observer(({ store }) => {
                       <View className='project_item_title_left_name'>{item.title}</View>
                     </View>
                     {
-                      type === 'PROCESSING' &&
-                      <View className='project_item_title_right' onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/signinCode/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>
-                        <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
-                        <View>签到码</View>
-                      </View> ||
-                      <View className='project_item_title_right_end'>已结束</View>
+                      role != 'CUSTOMER' &&
+                      <>
+                        {
+                          type === 'PROCESSING' &&
+                          <View className='project_item_title_right' onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/signinCode/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>
+                            <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
+                            <View>签到码</View>
+                          </View> ||
+                          <View className='project_item_title_right_end'>已暂停</View>
+                        }
+                      </>
                     }
                   </View>
 

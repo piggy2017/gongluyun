@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-17 10:30:38
+ * @LastEditTime: 2025-03-18 11:49:00
  * @Description: 设置合作模式
  */
 
@@ -56,7 +56,7 @@ const Index = observer(({ store }) => {
     const postPattern = async () => {
         const { contractsSerialCode } = projectPatternInfo;
         let _isWrite = patternList.some(item => item.content === '');
-        if(!rules || _isWrite) {
+        if (!rules || _isWrite) {
             Taro.showToast({ title: '请填写完整', icon: 'none' })
             return;
         }
@@ -178,6 +178,8 @@ const Index = observer(({ store }) => {
 
                 </Textarea>
             </View>
+
+            <View style={`height:200rpx;`}></View>
 
             <View className='page_bottom'>
                 <View style={`height:20rpx;`}></View>

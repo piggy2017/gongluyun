@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 18:02:42
+ * @LastEditTime: 2025-03-18 11:59:51
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -171,7 +171,6 @@ const Index = observer(({ store }) => {
                     <View>{jobFilterAddress.district ? jobFilterAddress.city + "·" + jobFilterAddress.district : '工作地区'}</View>
                     <Image src={`${Taro.$cdnUrl}/supplier/supplier_33.webp`}></Image>
                 </View>
-
                 <View className='filter_item' onClick={() => setChooseType(true)}>
                     <View>{typeInfo.salaryType ? typeInfo.name : '结算类型'}</View>
                     <Image src={`${Taro.$cdnUrl}/supplier/supplier_33.webp`}></Image>

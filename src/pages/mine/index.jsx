@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-14 11:52:12
+ * @LastEditTime: 2025-03-18 14:42:14
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -18,13 +18,14 @@ import { loginOut } from '@/util/api'
 
 const Index = observer(({ store }) => {
   const {
-    baseStore: { statusTitleHeight, contenTitleHeight,tabbarHeight },
+    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
     userStore: { isLogin, setIsLogin, role, setRole, setToken, userInfo, setUserInfo, companyInfo, companyVerified, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
   } = store
 
   const [loginoutSure, setLoginoutSure] = useState(false);
 
   useEffect(() => {
+    refreshUserInfo();
     console.log("userInfo", userInfo);
     console.log("companyVerified_companyInfo", companyVerified, companyInfo);
   }, [])
@@ -207,17 +208,18 @@ const Index = observer(({ store }) => {
               </View>
               <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
             </View>
-
-            <View className='section_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/sourcePool/index')}>
-              <View className='section_item_left'>
-                <Image src={`${Taro.$cdnUrl}/supplier/supplier_47.webp`}></Image>
-                <Text>资源池</Text>
-              </View>
-              <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
-            </View>
           </>
         }
-
+        {
+          (role === 'ADMIN' || role === 'CUSTOMER' || role === 'ON_SITE') &&
+          <View className='section_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/sourcePool/index')}>
+            <View className='section_item_left'>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_47.webp`}></Image>
+              <Text>资源池</Text>
+            </View>
+            <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
+          </View>
+        }
       </View>
 
       <View className='section_group'>
@@ -261,9 +263,9 @@ const Index = observer(({ store }) => {
         }
       </View>
 
-      <View className='mine_desc_wrapper' style={`bottom:${tabbarHeight+20}px;`}>
-        <View className='mine_desc'>依托成都阿朴机遇科技有限公司的前沿技术支持</View>
-        <View className='mine_desc'>助力企业数字化转型</View>
+      <View className='mine_desc_wrapper' style={`bottom:${tabbarHeight + 30}px;`}>
+        <View className='mine_desc'>技术支持：成都阿朴机遇科技有限公司</View>
+        {/* <View className='mine_desc'>助力企业数字化转型</View> */}
       </View>
 
 

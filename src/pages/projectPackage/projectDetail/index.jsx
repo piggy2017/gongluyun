@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-17 10:24:26
+ * @LastEditTime: 2025-03-18 14:51:49
  * @Description: 
  */
 
@@ -59,6 +59,9 @@ const Index = observer(({ store }) => {
         setInterviewDate(data.interviewDate);
       }
       data.introductions = replaceNewLinesWithBr(data.introduction);
+      if (data.privateIntroduction) {
+        data.privateIntroductions = replaceNewLinesWithBr(data.privateIntroduction);
+      }
       setDetail(data);
     } else {
       Taro.showToast({ title: msg, icon: 'none' });
@@ -177,6 +180,7 @@ const Index = observer(({ store }) => {
   }
 
   Taro.useShareAppMessage(res => {
+    console.log("企业分享 userInfo.userSerialCode", userInfo, userInfo?.userSerialCode);
     if (res.from === 'button') {
       // 来自页面内转发按钮
       console.log(res.target)
@@ -386,6 +390,20 @@ const Index = observer(({ store }) => {
           <RichText nodes={detail.introductions}></RichText>
         </View>
       </View>
+
+      {
+        detail.privateIntroduction &&
+        <View className='interview_info'>
+          <View className='project_title'>
+            <View>岗位详情</View>
+            <View> </View>
+          </View>
+          <View className='job_introduce'>
+            <RichText nodes={detail.privateIntroductions}></RichText>
+          </View>
+        </View>
+      }
+
       <View style={`height:300rpx;`}></View>
 
       <View className='project_btns'>

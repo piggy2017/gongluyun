@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-14 17:35:17
+ * @LastEditTime: 2025-03-18 14:59:03
  * @Description: 
  */
 
@@ -43,7 +43,7 @@ const Index = observer(({ store }) => {
     const getDetail = async () => {
         const { supplierSerialCode } = route.params;
         Taro.showLoading({ title: '加载中...' });
-        const { code, data } = await getSupplierInfo({ supplierSerialCode });
+        const { code, data } = await getSupplierInfo({ supplierSerialCode, companySerialCode: companyInfo.companySerialCode });
         Taro.hideLoading();
         console.log("供应商详情", code, data)
         if (code == 200) {
@@ -176,6 +176,7 @@ const Index = observer(({ store }) => {
                                         setRosterFilterSupplier({
                                             name: detail.name,
                                             userSerialCode: detail.supplierUserSerialCode,
+                                            supplierSerialCode: route.params.supplierSerialCode,
                                             selected: true
                                         })
                                         Taro.navigateTo({

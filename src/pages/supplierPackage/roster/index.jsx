@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-14 17:32:33
+ * @LastEditTime: 2025-03-18 14:37:51
  * @Description: 
  */
 
@@ -25,7 +25,7 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-        userStore: { myPermissions },
+        userStore: { myPermissions, supplierCompanyInfo },
         businessStore: { rosterFilterSupplier },
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
@@ -121,7 +121,8 @@ const Index = observer(({ store }) => {
             dateRange: dateObj.dateRange,
             startDate: dateObj.startDate,
             endDate: dateObj.endDate,
-            channel: 1
+            channel: 1,
+            supplierSerialCode: supplierCompanyInfo.serialCode
         }
         const { code, data } = await contractsgetRoster(params);
         console.log("获取名单列表", code, data);
@@ -312,7 +313,7 @@ const Index = observer(({ store }) => {
         }
 
         Taro.showLoading({ title: '导出中...' });
-        let params = { ...customRequestParams };
+        let params = { ...customRequestParams, supplierSerialCode: supplierCompanyInfo.serialCode };
         const { code, data, msg } = await downloadRoster(params);
         console.log("downloadRoster", code, data, msg);
         Taro.hideLoading();
@@ -438,7 +439,7 @@ const Index = observer(({ store }) => {
                             <Image src={`${Taro.$cdnUrl}/index/index_icon48.webp`}></Image>
                             <View>新增</View>
                         </View>
-                        <View className='search_total_right_item' onClick={() => exportFunc()}>
+                        <View className='search_total_right_item' onClick={() => exportAllFunc()}>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon49.webp`}></Image>
                             <View>导出</View>
                         </View>
@@ -482,15 +483,15 @@ const Index = observer(({ store }) => {
                                 <View className='roster_item_detail'>
                                     <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.idCardNo) ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
                                     <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }} onClick={(e) => {
-                                        if (!myPermissions.includes('6')) {
-                                            return
-                                        }
-                                        showOptionFunc(e, item, index);
+                                        // if (!myPermissions.includes('6')) {
+                                        //     return
+                                        // }
+                                        // showOptionFunc(e, item, index);
                                     }}>
                                         <View>{getStatus(item.seekState)}</View>
                                         {
-                                            myPermissions.includes('6') &&
-                                            <AtIcon value='chevron-down' size='14' color={getColor(item.seekState)}></AtIcon>
+                                            // myPermissions.includes('6') &&
+                                            // <AtIcon value='chevron-down' size='14' color={getColor(item.seekState)}></AtIcon>
                                         }
                                     </View>
                                     {

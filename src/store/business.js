@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 15:09:50
+ * @LastEditTime: 2025-03-18 15:00:49
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -147,6 +147,7 @@ const businessStore = observable({
     rosterFilterSupplier: {
         name: '全部供应商',
         userSerialCode: '',
+        supplierSerialCode: '',
         selected: false
     },
     setRosterFilterSupplier(value) {
@@ -178,7 +179,7 @@ const businessStore = observable({
         businessStore.workerJobInfo = value;
     },
 
-    setOnSiteListForProject: [],       // 给项目添加驻场角色列表
+    setOnSiteListForProject: [], // 给项目添加驻场角色列表
     setSetOnSiteListForProject(value) {
         businessStore.setOnSiteListForProject = value;
     }

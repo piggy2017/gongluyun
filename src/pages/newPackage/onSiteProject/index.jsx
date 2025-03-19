@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 10:32:24
+ * @LastEditTime: 2025-03-17 16:16:32
  * @Description: 
  */
 
@@ -19,6 +19,7 @@ import { contractsList } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
+    const router = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
         businessStore: { onSiteProjectList, setOnSiteProjectList }
@@ -36,6 +37,7 @@ const Index = observer(({ store }) => {
     const [choosedList, setChoosedList] = useState([]);
 
     useEffect(() => {
+        console.log("onSiteProjectList", onSiteProjectList);
         if (onSiteProjectList.length > 0) {
             setChoosedList(onSiteProjectList);
         }
@@ -148,11 +150,30 @@ const Index = observer(({ store }) => {
     }
 
     const onConfirm = () => {  // 确定
+        const { type } = router.params;
         console.log("choosedList", choosedList);
         setOnSiteProjectList(choosedList);
-        Taro.navigateBack({
-            delta: 1
-        });
+        if (type == 1) {   // 新增驻场员工账号,选择岗位
+            Taro.navigateBack({
+                delta: 1
+            });
+        } else if (type == 2) {  // 总的签到码,选择岗位列表
+            if (choosedList.length === 0) {
+                return Taro.showToast({ title: '请选择项目', icon: 'none' });
+            }
+            let _list = list.filter(item => item.selected).map(item => {
+                let obj = {
+                    title: item.title,
+                    recruitSerialCode: item.recruitSerialCode
+                }
+                return obj
+            })
+            console.log("选择的岗位列表", _list);
+            // return
+            Taro.redirectTo({
+                url: `/pages/projectPackage/signinCode/index?isAll=1&list=${JSON.stringify(_list)}`
+            })
+        }
     }
 
     return (

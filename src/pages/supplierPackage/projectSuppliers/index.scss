@@ -7,7 +7,7 @@
     
     .scrollWrapper {
         width: 100%;
-        border: 1rpx solid red;
+        // border: 1rpx solid red;
 
         .project_list {
             width: 710rpx;
@@ -154,11 +154,11 @@
 
         .page_btns {
             padding: 0 32rpx;
-            @include flex-center(space-between);
+            @include flex-center();
 
             .copy_btn {
                 height: 96rpx;
-                width: 246rpx;
+                width: 690rpx;
                 border-radius: 8rpx;
                 background: #1678ff1c;
                 color: #1678ff;

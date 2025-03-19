@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:41:55
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 13:54:11
+ * @LastEditTime: 2025-03-18 10:18:25
  * @Description: 
  */
 /* eslint-disable react/jsx-key */
@@ -110,7 +110,7 @@ const ChooseJob = observer(({ store }) => {
         return index > -1 ? true : false
     }
     const handleInputChange = throttle(async (e) => {
-        setKeyWords(e);
+        // setKeyWords(e);
         if (!e) return setIsSearch([])
         let params = {
             job_name: e
@@ -136,10 +136,14 @@ const ChooseJob = observer(({ store }) => {
                     <AtIcon value='search' size='20' color='#666'></AtIcon>
                     <Input
                         className='info_input'
+                        confirmType='search'
                         adjustPosition
                         placeholder='输入岗位'
                         value={keyWords}
-                        onInput={(e) => handleInputChange(e.target.value)}
+                        onInput={e => setKeyWords(e.target.value)}
+                        onConfirm={(e) => {
+                            handleInputChange(e.target.value)
+                        }}
                     />
                 </View>
                 <View className='type_content'
@@ -147,7 +151,6 @@ const ChooseJob = observer(({ store }) => {
                         height: `calc(100vh - ${statusTitleHeight + contenTitleHeight + 58}PX)`,
                         paddingBottom: `${topDis}PX`
                     }}
-
                 >
 
                     <View className='full-time'>

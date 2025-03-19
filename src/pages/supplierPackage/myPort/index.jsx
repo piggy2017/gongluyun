@@ -2,14 +2,14 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 14:02:01
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-07 14:57:05
+ * @LastEditTime: 2025-03-18 10:16:40
  * @Description: 
  */
 
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
-import { View, Image, ScrollView, Button, Textarea, Block } from '@tarojs/components'
+import { View, Image, ScrollView, Button, Text, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 
@@ -113,6 +113,23 @@ const Index = observer(({ store }) => {
         })
     }
 
+    Taro.useShareAppMessage(res => {
+        let title = '邀请您加入我的供应商';
+        let imageUrl = `${Taro.$cdnUrl}/supplier/supplier_55.webp` // 图片 URL
+        if (res.from === 'button') {
+            // 来自页面内转发按钮
+        }
+        let par = { companySerialCode: companyInfo.companySerialCode, role: 'SUPPLIER' }
+        let path = `/pages/supplierProject/index`;
+        const params = new URLSearchParams(par);
+        path = `${path}?${params.toString()}`;
+        return {
+            title,
+            imageUrl,
+            path
+        }
+    })
+
     return (
         <View className='container'>
             <Navbar whiteIcon fixed placeholder bgColor='transparent' title='我的合作端口' titleColor='#FFFFFF'></Navbar>
@@ -164,7 +181,11 @@ const Index = observer(({ store }) => {
                                     item.cooperationModels &&
                                     <View className='supplier_list_model'>
                                         <View className='supplier_list_model_tag'>合作模式</View>
-                                        <View className='supplier_list_model_content'>{item.cooperationModels[0]}</View>
+                                        <View className='supplier_list_model_content'>{
+                                            item.cooperationModels.map((i, idx) => {
+                                                return <Text key={idx}>{i}</Text>
+                                            })
+                                        }</View>
                                     </View>
                                 }
                             </View>
@@ -176,10 +197,10 @@ const Index = observer(({ store }) => {
             <View className='page_bottom'>
                 <View style={`height:20rpx;`}></View>
                 <View className='page_btns'>
-                    <View className='copy_btn'>复制链接</View>
+                    {/* <View className='copy_btn'>复制链接</View> */}
                     <Button open-type='share' className='share_btn'>
                         <Image src={`${Taro.$cdnUrl}/supplier/supplier_7.webp`}></Image>
-                        <View>分享到微信</View>
+                        <View>邀请供应商</View>
                     </Button>
                 </View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>

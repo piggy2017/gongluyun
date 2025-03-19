@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 17:42:59
+ * @LastEditTime: 2025-03-18 11:41:02
  * @Description: 
  */
 
@@ -275,6 +275,15 @@ const Index = observer(({ store }) => {
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
+
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label project_item_label_required'>流量类型</View>
+                    <View className='project_item_right'>
+                        <View onClick={() => setFormData({ ...formData, trafficType: 'PUBLIC' })} className={`traffic_item ${formData.trafficType === 'PUBLIC' ? 'traffic_item_active' : ''}`}>公有流量</View>
+                        <View onClick={() => setFormData({ ...formData, trafficType: 'PRIVATE' })} className={`traffic_item ${formData.trafficType === 'PRIVATE' ? 'traffic_item_active' : ''}`}>私有流量</View>
+                    </View>
+                </View>
+
                 <View className='project_item project_item_border'>
                     <View className='project_item_label project_item_label_required'>企业名称</View>
                     <View className='project_item_right'>
@@ -398,6 +407,30 @@ const Index = observer(({ store }) => {
                             maxlength={500}
                             autoHeight
                             placeholder={`点击输入招工信息...`}
+                        />
+                    </View>
+                </View>
+            </View>
+
+            <View className='project_group_2'>
+                <View className='project_item_textarea'>
+                    <View className='project_item_textarea_title'>
+                        <View className='project_item_textarea_title_left'>岗位详情</View>
+                        <View className='project_item_stick' onClick={() => readClipData()}>粘贴</View>
+                    </View>
+                    <View className='input_box'>
+                        <Textarea
+                            count={false}
+                            className='input_text'
+                            auto-height
+                            confirmType='return'
+                            value={formData.privateIntroduction}
+                            onInput={(e) => setFormData({ ...formData, privateIntroduction: e.detail.value })}
+                            adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                            show-confirm-bar
+                            maxlength={500}
+                            autoHeight
+                            placeholder={`点击输入岗位详情...`}
                         />
                     </View>
                 </View>

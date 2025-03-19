@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 14:02:01
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-17 10:27:47
+ * @LastEditTime: 2025-03-18 09:46:55
  * @Description: 
  */
 
@@ -72,7 +72,7 @@ const Index = observer(({ store }) => {
 
     useEffect(() => {
         const { companySerialCode } = route.params;
-        if (isLogin && !companySerialCode && supplierCompanyInfo.serialCode) {  // 不是从发单方分享进入,从个人中心切换用户进入
+        if (isLogin && !companySerialCode && supplierCompanyInfo.serialCode && billComponySerialCode == '') {  // 不是从发单方分享进入,从个人中心切换用户进入
             let params = {
                 pageNo: 1,
                 pageSize: 10,
@@ -82,7 +82,10 @@ const Index = observer(({ store }) => {
             getCoopCompanyBySupplier(params).then(res => {
                 console.log("合作公司列表:", res);
                 if (res.code === 200 && res.data.responses.length > 0) {
-                    setBillComponySerialCode(res.data.responses[0].companySerialCode);
+                    if (billComponySerialCode == '') {
+                        console.log("如果没有 billComponySerialCode", billComponySerialCode);
+                        setBillComponySerialCode(res.data.responses[0].companySerialCode);
+                    }
                 } else {
                     // 提醒用户先加入供应商
                 }
@@ -300,7 +303,7 @@ const Index = observer(({ store }) => {
                                             {
                                                 item.cooperationModels.map((child, idx) => {
                                                     return (
-                                                        <Text key={idx}>{child}</Text>
+                                                        <Text key={idx}>{child} </Text>
                                                     )
                                                 })
                                             }

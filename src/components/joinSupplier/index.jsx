@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 10:22:06
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 16:59:37
+ * @LastEditTime: 2025-03-17 11:46:44
  * @Description:  申请成为供应商--输入公司名称
  */
 import React, { useState } from 'react';
@@ -59,7 +59,7 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
                         <View className='filter_title'>
                             <View>
                                 <View>要申请成为供应商</View>
-                                <View>请提供你或你所代表公司的名称</View>
+                                <View>请提供你或你所代表公司的名称(保存后不能修改)</View>
                             </View>
                             <AtIcon value='close' size='20' color='#222222' onClick={onClose}></AtIcon>
                         </View>
@@ -88,7 +88,7 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
                                 onInput={(e) => setAddress(e.detail.value)}></Input>
                         </View>
 
-                        <View className={`filter_wrapper_btn ${(componyName && phone) ? 'filter_wrapper_btn_active' : ''}`} onClick={() => postComponyName()}>下一步</View>
+                        <View className={`filter_wrapper_btn ${(componyName && phone) ? 'filter_wrapper_btn_active' : ''}`} onClick={() => postComponyName()}>保存</View>
                     </View>
                 </View>
             </AtFloatLayout>

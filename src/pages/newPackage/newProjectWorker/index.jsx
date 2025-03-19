@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-12 15:34:38
+ * @LastEditTime: 2025-03-17 15:43:02
  * @Description: 
  */
 
@@ -24,7 +24,7 @@ const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const {
         baseStore: { bottomSafeAreaHeight },
-        userStore: { userInfo: { userSerialCode } },
+        userStore: { userInfo: { userSerialCode }, role, supplierCompanyInfo },
     } = store
 
     const [chooseJob, setChooseJob] = useState(false);  // 选择岗位类型的弹窗
@@ -153,9 +153,11 @@ const Index = observer(({ store }) => {
             item.interviewArranged = true;
             item.agentSerialCode = userSerialCode;
             item.source = 'GLPK';
+            if (role === 'SUPPLIER') {
+                item.supplierSerialCode= supplierCompanyInfo.serialCode;
+            }
             return item;
         })
-        console.log("list", list);
         for (let i = 0; i < list.length; i++) {
             if (!list[i].interviewDate) {
                 Taro.showToast({ title: '请选择面试日期', icon: 'none', })
@@ -219,9 +221,9 @@ const Index = observer(({ store }) => {
                 }
                 console.log('   处理后的数据:', _list);
                 if (arrangList.length === 1) {
-                    if(arrangList[0].name && arrangList[0].phone){
+                    if (arrangList[0].name && arrangList[0].phone) {
                         setArrangList([...arrangList, ..._list]);
-                    }else{
+                    } else {
                         setArrangList(_list);
                     }
                 } else {
@@ -263,7 +265,7 @@ const Index = observer(({ store }) => {
             </View>
 
             <View className='ai_recognize'>
-            <View className='ai_recognize_title'>示例：某某某,136XXXXXXXX,男，510XXXXXXXXXXX...</View>
+                <View className='ai_recognize_title'>示例：某某某,136XXXXXXXX,男，510XXXXXXXXXXX...</View>
                 <View className='ai_recognize_content'>
                     <View className='ai_recognize_content_wrap'>
                         <Textarea count={false}

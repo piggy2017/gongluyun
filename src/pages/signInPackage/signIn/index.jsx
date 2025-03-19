@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 14:45:39
+ * @LastEditTime: 2025-03-17 15:26:29
  * @Description: 
  */
 
@@ -27,6 +27,7 @@ const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const [formData, setFormData] = useState({});
     const [fromAll, setFromAll] = useState(false);
+    const [recruitNames, setRecruitNames] = useState([]);
 
     const getQueryString = (url) => {
         url = url.replace(/\s*/g, "");
@@ -69,12 +70,14 @@ const Index = observer(({ store }) => {
         console.log("q", q);
         let _q = decodeURIComponent(q);
         console.log("q", _q);
-        const { title, recruitSerialCode, isAll } = getQueryString(_q);   // isAll 是否是项目管理中的全部岗位
+        const { title, recruitSerialCode, isAll, list } = getQueryString(_q);   // isAll 是否是项目管理中的全部岗位 list 二维码中的岗位列表
         if (isAll) {
             setFromAll(true);
+            let _list = JSON.parse(list).map(item => item.title);
+            setRecruitNames(_list);
         }
 
-        console.log("title", title, "recruitSerialCode", recruitSerialCode, "isAll");
+        console.log("title", title, "recruitSerialCode", recruitSerialCode, "isAll", "list", list);
         // setFormData({ ...formData, title, interviewDate });
         if (isLogin) {
             console.log("请求参数:phone", decryptData(userInfo.phone), "recruitSerialCode", recruitSerialCode);
@@ -109,7 +112,7 @@ const Index = observer(({ store }) => {
         console.log("q", q);
         let _q = decodeURIComponent(q);
         console.log("q", _q);
-        const { title, recruitSerialCode, isAll } = getQueryString(_q);
+        const { title, recruitSerialCode, isAll, list } = getQueryString(_q);
 
         Taro.showLoading({ title: '签到中...' });
         if (formData.idCardNo && formData.idCardNo.length != 18) {
@@ -117,7 +120,13 @@ const Index = observer(({ store }) => {
         }
         let params = {
             ...formData,
-            recruitSerialCode: isAll ? workerJobInfo.recruitSerialCode : recruitSerialCode   // isAll 是否是项目管理中的全部岗位
+            // recruitSerialCode: isAll ? workerJobInfo.recruitSerialCode : recruitSerialCode   // isAll 是否是项目管理中的全部岗位
+        }
+        if (isAll) {  // isAll 是否是项目管理中的多个岗位列表的二维码
+            let _list = JSON.parse(list).map(item => item.recruitSerialCode);
+            params.recruitSerialCodes = _list;
+        } else {
+            params.recruitSerialCode = recruitSerialCode;
         }
         console.log("signFunc_params", params);
         Taro.hideLoading();
@@ -127,18 +136,23 @@ const Index = observer(({ store }) => {
         if (code === 200) {
             Taro.showToast({ title: '签到成功', icon: 'none' });
             Taro.navigateTo({
-                url: `/pages/signInPackage/signSuccess/index?title=${isAll ? workerJobInfo.title : title}&interviewDate=${formData.interviewDate}`
+                url: `/pages/signInPackage/signSuccess/index?title=${recruitNames.length == 1 ? recruitNames[0] : recruitNames[0] + '等' + recruitNames.length + '个岗位'}&interviewDate=${formData.interviewDate}`
             })
+            if (!isAll) {
+                Taro.navigateTo({
+                    url: `/pages/signInPackage/signSuccess/index?title=${title}&interviewDate=${formData.interviewDate}`
+                })
+            }
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
     }
 
-    const goChooseJob = () => {
-        Taro.navigateTo({
-            url: `/pages/signInPackage/${isLogin ? 'chooseJob' : 'signLogin'}/index`
-        });
-    }
+    // const goChooseJob = () => {
+    //     Taro.navigateTo({
+    //         url: `/pages/signInPackage/${isLogin ? 'chooseJob' : 'signLogin'}/index`
+    //     });
+    // }
 
     return (
         <View className='container'>
@@ -206,9 +220,15 @@ const Index = observer(({ store }) => {
                     </View> ||
                     <View className='employee_item'>
                         <View className='employee_item_label'>报名岗位</View>
-                        <View className='employee_item_right' onClick={goChooseJob}>
-                            <View className={`${workerJobInfo.title ? 'employee_item_right_a' : 'employee_item_right_g'}`}>
-                                {workerJobInfo.title ? workerJobInfo.title : '请选择岗位类型'}
+                        <View className='employee_item_right'>
+                            <View className='employee_item_right_a'>
+                                {
+                                    recruitNames.map((item, index) => {
+                                        return (
+                                            <Text key={index}>{item}</Text>
+                                        )
+                                    })
+                                }
                             </View>
                             <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                         </View>
