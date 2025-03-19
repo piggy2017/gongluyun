@@ -89,7 +89,7 @@ const Index = observer(({ store }) => {
 
   Taro.useShareAppMessage(res => {
     let title = '邀请您加入我的供应商';
-    let imageUrl = `${Taro.$cdnUrl}/supplier/supplier_55.webp` // 图片 URL
+    let imageUrl = `${Taro.$cdnUrl}/supplier/supplier_56.webp` // 图片 URL
     if (res.from === 'button') {
       // 来自页面内转发按钮
     }

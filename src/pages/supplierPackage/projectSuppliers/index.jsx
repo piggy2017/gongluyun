@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-17 11:27:47
+ * @LastEditTime: 2025-03-19 17:51:12
  * @Description: 项目详情中查看供应商列表
  */
 
@@ -84,7 +84,7 @@ const Index = observer(({ store }) => {
 
     Taro.useShareAppMessage(res => {
         let title = '邀请您加入我的供应商';
-        let imageUrl = `${Taro.$cdnUrl}/supplier/supplier_55.webp` // 图片 URL
+        let imageUrl = `${Taro.$cdnUrl}/supplier/supplier_56.webp` // 图片 URL
         if (res.from === 'button') {
             // 来自页面内转发按钮
         }
