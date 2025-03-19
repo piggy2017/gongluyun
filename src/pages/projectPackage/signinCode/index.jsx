@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-19 11:50:44
+ * @LastEditTime: 2025-03-19 18:02:05
  * @Description: 
  */
 
@@ -16,7 +16,7 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import './index.scss'
-import { contractsJobSelector } from '@/util/api'
+import { contractsJobSelector, env } from '@/util/api'
 const Index = observer(({ store }) => {
     const route = useRouter();
 
@@ -57,7 +57,12 @@ const Index = observer(({ store }) => {
                     });
             })
             let canvas = result[0].node;
-            let _text = _isAll ? `https://sa-test.apujiyu.com/signInTest?isAll=${_isAll}&list=${_list}` : `https://sa-test.apujiyu.com/signIn?title=${_title}&recruitSerialCode=${_recruitSerialCode}`
+
+            // https://sa-test.apujiyu.com/signInTest 测试环境
+            // https://sa-api.apujiyu.com/signIn 正式环境
+            
+            let _url = env == 'prod' ? 'https://sa-api.apujiyu.com/signIn' : 'https://sa-test.apujiyu.com/signInTest'
+            let _text = _isAll ? `${_url}?isAll=${_isAll}&list=${_list}` : `${_url}?title=${_title}&recruitSerialCode=${_recruitSerialCode}`
             drawQrcode({
                 canvas: canvas,
                 canvasId: 'myCanvas',
