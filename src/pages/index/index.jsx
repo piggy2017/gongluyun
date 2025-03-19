@@ -336,7 +336,7 @@ const Index = observer(({ store }) => {
               {
                 showAddType &&
                 <View className='add_types_wrapper'>
-                  <View className='add_types_item' onClick={() => navigateVerifiedFunc('/pages/newPackage/newWorker/index?entryChannel=SOURCE')}>
+                  <View className='add_types_item' onClick={() => navigateVerifiedFunc(`${role === 'ON_SITE' ? '/pages/newPackage/newWorker/index?entryChannel=SOURCE&onSite=1' : '/pages/newPackage/newWorker/index?entryChannel=SOURCE'}`)}>
                     <Image src={`${Taro.$cdnUrl}/index/index_icon11.webp`}></Image>
                     <View>新增求职者线索</View>
                   </View>
@@ -400,9 +400,9 @@ const Index = observer(({ store }) => {
         }
 
         {
-          role === 'ON_SITE' &&
+          role === 'ON_SITE' &&  // /pages/talentsPackage/filterJob/index?type=6&title=选择岗位  
           <View className='enter_wrapper'>
-            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/talentsPackage/filterJob/index?type=6&title=选择岗位')}>
+            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/newPackage/onSiteProject/index?type=2')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
               <View>签到码</View>
             </View>

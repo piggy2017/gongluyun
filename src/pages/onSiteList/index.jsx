@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 17:37:10
+ * @LastEditTime: 2025-03-19 13:45:17
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro';
-import { View, Image, Button, ScrollView, Text, Block, RootPortal,Textarea } from '@tarojs/components'
+import { View, Image, Button, ScrollView, Text, Block, RootPortal, Textarea } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
@@ -70,13 +70,18 @@ const Index = observer(({ store }) => {
     startDate: ""
   });
 
+  const [dataSource, setDataSource] = useState('ONSITE_DATA');   // 由谁录入的求职者 ONSITE_DATA-他人上报数据 OWN_REPORT-由我上报数据
+  const [chooseDataSource, setChooseDataSource] = useState(false);
+
+
+
   useDidShow(() => {
     getList(1);
   })
 
   useEffect(() => {
     getList(1);
-  }, [currentTab, dateObj, onSiteFilterJob, onSiteFilterSUPPLIER])
+  }, [currentTab, dateObj, onSiteFilterJob, onSiteFilterSUPPLIER, dataSource])
 
   useEffect(() => {
     setTimeout(async () => {
@@ -119,7 +124,8 @@ const Index = observer(({ store }) => {
       source: '',
       dateRange: dateObj.dateRange,
       startDate: dateObj.startDate,
-      endDate: dateObj.endDate
+      endDate: dateObj.endDate,
+      dataType: dataSource
     }
     console.log("params", params);
     setMyClientParams({ ...params });
@@ -413,10 +419,11 @@ const Index = observer(({ store }) => {
             <View>{onSiteFilterJob.title}</View>
             <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
           </View>
-          {/* <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/projectPackage/chooseSupplier/index?type=2` }) }}>
-            <View>{onSiteFilterSUPPLIER.name}</View>
+
+          <View className='filter_wrap_item' onClick={() => setChooseDataSource(true)}>
+            <View>{dataSource == 'ONSITE_DATA' ? '他人上报数据' : '由我上报数据'}</View>
             <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
-          </View> */}
+          </View>
 
           <View className='filter_wrap_item' onClick={() => setShowFilterDate(true)}>
             <View>{dateObj.filterTime ? dateObj.filterTime : dateObj.startDate.replace(/-/g, '.') + '-' + dateObj.endDate.replace(/-/g, '.')}</View>
@@ -437,7 +444,7 @@ const Index = observer(({ store }) => {
         <View className='search_total'>
           <View className='search_total_left'>共计 <Text>{totalCount}</Text> 人</View>
           <View className='search_total_right_wrap'>
-            <View className='search_total_right_item' onClick={() => Taro.navigateTo({ url: '/pages/newPackage/newWorker/index?entryChannel=SOURCE' })}>
+            <View className='search_total_right_item' onClick={() => Taro.navigateTo({ url: '/pages/newPackage/newWorker/index?entryChannel=SOURCE&onSite=1' })}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon48.webp`}></Image>
               <View>新增</View>
             </View>
@@ -723,6 +730,30 @@ const Index = observer(({ store }) => {
           </RootPortal>
 
         }
+      </Block>
+
+      <Block>
+        <AtFloatLayout catchMove className='filterSource_init_layout' isOpened={chooseDataSource} onClose={() => { setChooseDataSource(false) }}>
+          <View className='filter_wrapper'>
+            <View className='filter_wrapper_bg'>
+              <View className='filter_title'>
+                <View>选择数据录入来源</View>
+                <AtIcon value='close' size='14' color='#222222' onClick={() => { setChooseDataSource(false) }}></AtIcon>
+              </View>
+              <View className='type_wrapper'>
+                <View onClick={() => {
+                  setDataSource('ONSITE_DATA')
+                  setChooseDataSource(false);
+                }} className={`type_item ${dataSource === 'ONSITE_DATA' ? 'type_item_active' : ''}`}>他人上报数据</View>
+                <View onClick={() => {
+                  setDataSource('OWN_REPORT');
+                  setChooseDataSource(false);
+                }} className={`type_item ${dataSource === 'OWN_REPORT' ? 'type_item_active' : ''}`}>由我上报数据</View>
+              </View>
+              <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+            </View>
+          </View>
+        </AtFloatLayout>
       </Block>
 
       <TabBar actCurrent={2} />

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 17:41:36
+ * @LastEditTime: 2025-03-19 10:29:50
  * @Description: 
  */
 export default defineAppConfig({
@@ -152,7 +152,7 @@ export default defineAppConfig({
                 "signIn/index",                   // 签到页面
                 "signLogin/index",                // 求职者签到-登录页面
                 "signSuccess/index",              // 求职者签到-成功页面
-                "chooseJob/index",                // 求职者签到-扫码进入 选择签到岗位
+                "chooseJob/index",                // 求职者签到-扫码进入 选择签到岗位   驻场-名单 添加求职者信息指定岗位
             ]
         },
         {

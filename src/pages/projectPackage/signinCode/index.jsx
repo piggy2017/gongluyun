@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 18:07:19
+ * @LastEditTime: 2025-03-19 11:50:44
  * @Description: 
  */
 
@@ -57,7 +57,7 @@ const Index = observer(({ store }) => {
                     });
             })
             let canvas = result[0].node;
-            let _text = _isAll ? `https://sa-test.apujiyu.com/signIn?isAll=${_isAll}&list=${_list}` : `https://sa-test.apujiyu.com/signIn?title=${_title}&recruitSerialCode=${_recruitSerialCode}`
+            let _text = _isAll ? `https://sa-test.apujiyu.com/signInTest?isAll=${_isAll}&list=${_list}` : `https://sa-test.apujiyu.com/signIn?title=${_title}&recruitSerialCode=${_recruitSerialCode}`
             drawQrcode({
                 canvas: canvas,
                 canvasId: 'myCanvas',

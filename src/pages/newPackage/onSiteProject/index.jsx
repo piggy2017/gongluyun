@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-17 16:16:32
+ * @LastEditTime: 2025-03-19 10:20:53
  * @Description: 
  */
 
@@ -215,7 +215,7 @@ const Index = observer(({ store }) => {
                             <View className='job_item_content'>
                                 <View className='job_item_name'>{item.title}</View>
                                 <View className='job_item_num'>总需求：{item.numberRecruits}人</View>
-                                <View className='job_item_time'>2024年5月16日发布</View>
+                                <View className='job_item_time'>{item.createDate}发布</View>
                             </View>
                         </View>
                     })

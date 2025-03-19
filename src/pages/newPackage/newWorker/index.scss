@@ -153,6 +153,9 @@
 
                 .project_item_text_active {
                     color: #222222;
+                    width: 440rpx;
+                    @include ellipsis;
+                    text-align: right;
                 }
 
                 image {

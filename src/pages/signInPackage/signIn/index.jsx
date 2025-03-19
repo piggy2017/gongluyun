@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-17 15:26:29
+ * @LastEditTime: 2025-03-19 15:22:28
  * @Description: 
  */
 
@@ -61,8 +61,9 @@ const Index = observer(({ store }) => {
         const date = new Date();
 
         const year = date.getFullYear();       // 获取当前年份
-        const month = date.getMonth() + 1;     // 获取当前月份（从 0 开始，需要 +1）
+        let month = date.getMonth() + 1;     // 获取当前月份（从 0 开始，需要 +1）
         const day = date.getDate();            // 获取当前日期
+        month = month < 10 ? `0${month}` : month;
 
         let interviewDate = `${year}-${month}-${day}`
 
@@ -99,7 +100,7 @@ const Index = observer(({ store }) => {
                 } else {
                     console.log("不存在用户信息");
                     setFormData({ ...formData, title: title, interviewDate });
-                    Taro.showToast({ title: '您未报名该岗位,无法完成签到.', icon: 'none' });
+                    // Taro.showToast({ title: '您未报名该岗位,无法完成签到.', icon: 'none' });
                 }
             })
         } else {
@@ -222,13 +223,14 @@ const Index = observer(({ store }) => {
                         <View className='employee_item_label'>报名岗位</View>
                         <View className='employee_item_right'>
                             <View className='employee_item_right_a'>
-                                {
+                                {/* {
                                     recruitNames.map((item, index) => {
                                         return (
                                             <Text key={index}>{item}</Text>
                                         )
                                     })
-                                }
+                                } */}
+                                {recruitNames.length === 1 ? recruitNames[0] : recruitNames[0] + '等' + recruitNames.length + '个岗位'}
                             </View>
                             <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                         </View>
