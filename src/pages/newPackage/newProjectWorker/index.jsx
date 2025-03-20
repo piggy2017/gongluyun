@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-18 14:29:18
+ * @LastEditTime: 2025-03-17 15:43:02
  * @Description: 
  */
 
@@ -15,7 +15,7 @@ import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 
-import { batchInsert } from '@/util/api'
+import { batchInsert, parsePerson } from '@/util/api'
 import './index.scss'
 
 
@@ -24,7 +24,7 @@ const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const {
         baseStore: { bottomSafeAreaHeight },
-        userStore: { userInfo: { userSerialCode } },
+        userStore: { userInfo: { userSerialCode }, role, supplierCompanyInfo },
     } = store
 
     const [chooseJob, setChooseJob] = useState(false);  // 选择岗位类型的弹窗
@@ -51,6 +51,8 @@ const Index = observer(({ store }) => {
     }
     const [arrangList, setArrangList] = useState([{ ...interViewTemplate }]); //安排列表
     const [allOpen, setAllOpen] = useState(true);
+
+    const [aiRecognize, setAiRecognize] = useState('');  // AI识别内容
 
     useEffect(() => {
         const { recruitSerialCode, title } = route.params;
@@ -97,8 +99,8 @@ const Index = observer(({ store }) => {
             }
         }
 
-        if (arrangList.length == 4) {
-            return Taro.showToast({ title: '一次最多安排4位求职者的面试', icon: 'none', })
+        if (arrangList.length >= 10) {
+            return Taro.showToast({ title: '一次最多安排10位求职者的面试', icon: 'none', })
         }
         let _par = {
             ...interViewTemplate,
@@ -151,9 +153,11 @@ const Index = observer(({ store }) => {
             item.interviewArranged = true;
             item.agentSerialCode = userSerialCode;
             item.source = 'GLPK';
+            if (role === 'SUPPLIER') {
+                item.supplierSerialCode= supplierCompanyInfo.serialCode;
+            }
             return item;
         })
-        console.log("list", list);
         for (let i = 0; i < list.length; i++) {
             if (!list[i].interviewDate) {
                 Taro.showToast({ title: '请选择面试日期', icon: 'none', })
@@ -194,6 +198,43 @@ const Index = observer(({ store }) => {
         })
     }
 
+    const perseInfoFunc = async () => {
+        if (!aiRecognize) {
+            return Taro.showToast({ title: '请输入或先粘贴识别内容', icon: 'none', });
+        }
+        Taro.showLoading({ title: '识别中...', mask: true });
+        const { code, data, msg } = await parsePerson({ text: aiRecognize });
+        Taro.hideLoading();
+        console.log("识别", code, data, msg);
+        if (code === 200) {
+            if (data?.length > 0) {
+                let _list = [];
+                for (let i = 0; i < data.length; i++) {
+                    _list.push({
+                        ...interViewTemplate,
+                        name: data[i].name,
+                        age: data[i].age,
+                        phone: data[i].phone,
+                        sex: data[i].gender === '男' ? 0 : data[i].gender === '女' ? 1 : '',
+                        idCardNo: data[i].id,
+                    })
+                }
+                console.log('   处理后的数据:', _list);
+                if (arrangList.length === 1) {
+                    if (arrangList[0].name && arrangList[0].phone) {
+                        setArrangList([...arrangList, ..._list]);
+                    } else {
+                        setArrangList(_list);
+                    }
+                } else {
+                    setArrangList([...arrangList, ..._list]);
+                }
+            }
+        } else {
+            Taro.showToast({ title: msg, icon: 'none', });
+        }
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#F4F4F4' title='录入求职者信息'></Navbar>
@@ -220,6 +261,26 @@ const Index = observer(({ store }) => {
                         <Text className={`${arrangList[0].interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{arrangList[0].interviewDate ? arrangList[0].interviewDate : '请选择面试日期'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
+                </View>
+            </View>
+
+            <View className='ai_recognize'>
+                <View className='ai_recognize_title'>示例：某某某,136XXXXXXXX,男，510XXXXXXXXXXX...</View>
+                <View className='ai_recognize_content'>
+                    <View className='ai_recognize_content_wrap'>
+                        <Textarea count={false}
+                            className='ai_recognize_input'
+                            confirmType='return'
+                            value={aiRecognize}
+                            onInput={(e) => setAiRecognize(e.detail.value)}
+                            adjustPosition={true} // 键盘弹起时，是否自动上推页面 
+                            show-confirm-bar
+                            placeholder={`粘贴识别或输入文本智能拆分求职者基本信息`}></Textarea>
+                        {
+                            aiRecognize && <Image src={`${Taro.$cdnUrl}/supplier/supplier_48.webp`} onClick={() => setAiRecognize('')}></Image>
+                        }
+                    </View>
+                    <View className='ai_recognize_btn' onClick={perseInfoFunc}>识别</View>
                 </View>
             </View>
 

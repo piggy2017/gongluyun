@@ -24,6 +24,30 @@
         padding: 10rpx 0 0 28rpx;
         @include flex-center(flex-start);
         margin-bottom: 60rpx;
+        position: relative;
+
+        .seek_avatar {
+            width: 118rpx;
+            height: 118rpx;
+            flex-shrink: 0;
+            background-color: #D9D9D9;
+            border-radius: 50%;
+            position: relative;
+
+            .seek_avatar_img {
+                width: 118rpx;
+                height: 118rpx;
+                border-radius: 50%;
+            }
+
+            .seek_avatar_edit {
+                width: 48rpx;
+                height: 48rpx;
+                position: absolute;
+                bottom: 2rpx;
+                right: -6rpx;
+            }
+        }
 
         .user_info_avatar {
             width: 118rpx;
@@ -34,7 +58,7 @@
         }
 
         .user_info_right {
-            margin-left: 10rpx;
+            margin-left: 12rpx;
 
             .user_info_name {
                 color: #222222;
@@ -69,6 +93,64 @@
                 line-height: normal;
             }
         }
+
+        .user_info_changeRole {
+            width: 56rpx;
+            height: 56rpx;
+            position: absolute;
+            z-index: 9;
+            right: 52rpx;
+            top: 54rpx;
+        }
+    }
+
+    .open_gongluyun {
+        width: 694rpx;
+        height: 214rpx;
+        flex-shrink: 0;
+        background: linear-gradient(93deg, #FFE3B1 4.36%, #F6C876 94.19%);
+        // background-color: red;
+        margin: 60rpx auto 0 auto;
+        border-radius: 20rpx;
+        position: relative;
+
+        .open_gongluyun_title {
+            color: #613c1e;
+            font-family: "Alimama FangYuanTi VF";
+            font-size: 38rpx;
+            font-style: normal;
+            font-weight: Bold-Square;
+            line-height: normal;
+            padding: 32rpx 0 16rpx 30rpx;
+        }
+
+        .open_gongluyun_desc {
+            color: #4b2a10;
+            font-family: "PingFang SC";
+            font-size: 28rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            padding-left: 30rpx;
+        }
+
+        .open_gongluyun_btn {
+            width: 160rpx;
+            height: 60rpx;
+            border-radius: 8rpx;
+            background: linear-gradient(97deg, #562A1F 0%, #CA7D46 99.4%);
+            color: #ffffff;
+            text-align: center;
+            font-family: "PingFang SC";
+            font-size: 26rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 60rpx;
+            position: absolute;
+            z-index: 1;
+            right: 30rpx;
+            top: 48rpx;
+        }
     }
 
     .section_group {
@@ -100,7 +182,8 @@
                     margin-right: 8rpx;
                 }
             }
-            .right_arow{
+
+            .right_arow {
                 width: 28rpx;
                 height: 28rpx;
             }
@@ -111,7 +194,31 @@
         }
     }
 
-    .loginout{
+
+    .mine_desc_wrapper {
+        position: fixed;
+        z-index: 99;
+        left: 0;
+        width: 100%;
+
+        .mine_desc {
+            color: #666666;
+            font-family: "PingFang SC";
+            font-size: 28rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 50rpx;
+            text-align: center;
+
+        }
+
+        .mine_desc:first-child {
+            margin-top: 60rpx;
+        }
+    }
+
+
+    .loginout {
         background-color: transparent;
         font-size: 28rpx;
         text-align: center;

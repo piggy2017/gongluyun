@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-04 11:24:31
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-19 10:28:07
+ * @LastEditTime: 2025-02-28 11:02:03
  * @Description: 用于存放系统的相关信息
  */
 import { observable,makeAutoObservable } from 'mobx'
@@ -36,7 +36,12 @@ const baseStore = observable({
     keyBoardHeight: 336, // 键盘高度
     setKeyBoardHeight(value) {
         baseStore.keyBoardHeight = value;
-    }
+    },
+
+    didPrivacy: false,         // 是否已经授权了隐私协议
+    setdidPrivacy(value) {
+        baseStore.didPrivacy = value;
+    },
 });
 
 export default baseStore

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:41:55
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-24 16:55:31
+ * @LastEditTime: 2025-03-20 09:17:25
  * @Description: 
  */
 /* eslint-disable react/jsx-key */
@@ -11,7 +11,6 @@ import Taro, { useRouter } from '@tarojs/taro';
 import { observer, inject } from 'mobx-react';
 import { AtIcon } from 'taro-ui'
 import { View, Text, ScrollView, Input } from '@tarojs/components';
-// import NavBar from '../../../components/nav/nav';
 import { throttle, selectorQueryDomInfo } from '@/util/utils'
 import { jobTypeList, jobAssoc } from '@/util/api'
 import './index.scss';
@@ -19,11 +18,9 @@ import './index.scss';
 const ChooseJob = observer(({ store }) => {
     const router = useRouter();
     const {
-        // JobStore: { agentChooseJob, setAgentChooseJob, examine, feedsExamine },
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
         userStore: { filterJobTypes, setFilterJobTypes }
     } = store
-    const [system, setSystem] = useState('')
     const [fullJobTypeList, setFullJobTypeList] = useState([])
     const [chooseJobItem, setChooseJob] = useState([]);
     const [isSearch, setIsSearch] = useState([]);
@@ -31,10 +28,6 @@ const ChooseJob = observer(({ store }) => {
     const [navCurrent, setNavCurrent] = useState('nav-0');
     const [keyWords, setKeyWords] = useState('')
     const [topDis, setTopDis] = useState(0)
-
-    useEffect(() => {
-        console.log("chooseJobItemchooseJobItem", chooseJobItem)
-    }, [chooseJobItem]);
 
     useEffect(() => {
         const { type } = router.params;
@@ -116,9 +109,9 @@ const ChooseJob = observer(({ store }) => {
         let index = chooseJobItem.findIndex(item => item.id === l.id)
         return index > -1 ? true : false
     }
-    const handleInputChange = throttle(async () => {
+    const handleInputChange = throttle(async (e) => {
         // setKeyWords(e);
-        if (!keyWords) return setIsSearch([])
+        if (!e) return setIsSearch([])
         let params = {
             job_name: keyWords
         }
@@ -135,9 +128,6 @@ const ChooseJob = observer(({ store }) => {
     const cleanChoose = () => {
         setChooseJob([])
         setFilterJobTypes([])
-        // Taro.navigateBack({
-        //     delta: 1
-        // })
     }
     return (
         <>
@@ -147,10 +137,10 @@ const ChooseJob = observer(({ store }) => {
                     <AtIcon value='search' size='20' color='#666'></AtIcon>
                     <Input
                         className='info_input'
+                        confirmType='search'
                         adjustPosition
                         placeholder='输入岗位'
                         value={keyWords}
-                        confirmType='search'
                         onInput={(e) => setKeyWords(e.target.value)}
                         onConfirm={() => handleInputChange()}
                     />
@@ -160,7 +150,6 @@ const ChooseJob = observer(({ store }) => {
                         height: `calc(100vh - ${statusTitleHeight + contenTitleHeight + 58}PX)`,
                         paddingBottom: `${topDis}PX`
                     }}
-
                 >
 
                     <View className='full-time'>

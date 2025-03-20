@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-18 15:55:30
+ * @LastEditTime: 2025-03-18 17:32:04
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -323,7 +323,7 @@ const Index = observer(({ store }) => {
             <View className='message_notice_dot'></View>
           </View> */}
           {
-            (role === 'ADMIN' || role === "CUSTOMER" || role === 'ON_SITE' || role === 'SEEK') &&
+            (role === 'ADMIN' || role === "CUSTOMER" || role === 'ON_SITE') &&
             <View className='add_user_icon' onClick={() => {
               if (!isLogin) {
                 Taro.navigateTo({
@@ -336,7 +336,7 @@ const Index = observer(({ store }) => {
               {
                 showAddType &&
                 <View className='add_types_wrapper'>
-                  <View className='add_types_item' onClick={() => navigateVerifiedFunc('/pages/newPackage/newWorker/index?entryChannel=SOURCE')}>
+                  <View className='add_types_item' onClick={() => navigateVerifiedFunc(`${role === 'ON_SITE' ? '/pages/newPackage/newWorker/index?entryChannel=SOURCE&onSite=1' : '/pages/newPackage/newWorker/index?entryChannel=SOURCE'}`)}>
                     <Image src={`${Taro.$cdnUrl}/index/index_icon11.webp`}></Image>
                     <View>新增求职者线索</View>
                   </View>
@@ -361,21 +361,32 @@ const Index = observer(({ store }) => {
         </View>
 
         {
-          (role === "ADMIN" || role === 'SEEK' || role === "CUSTOMER") &&
+          (role === "ADMIN" || role === "CUSTOMER") &&
           <View className='btn_wrapper'>
-            <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/talentsPackage/talents/index')}>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon4.webp`}></Image>
-              <View>人才库</View>
-            </View>
+            {
+              role === "ADMIN" &&
+              <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/talentsPackage/talents/index')}>
+                <Image src={`${Taro.$cdnUrl}/index/index_icon4.webp`}></Image>
+                <View>人才库</View>
+              </View>
+            }
+
             <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/dataReport/index')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon5.webp`}></Image>
-              <View>分析报表</View>
+              <View>员工数据</View>
             </View>
+            {
+              role === "ADMIN" &&
+              <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/supplierPackage/supplierManage/index')}>
+                <Image src={`${Taro.$cdnUrl}/supplier/supplier_1.webp`}></Image>
+                <View>供应商</View>
+              </View>
+            }
           </View>
         }
 
         {
-          (role === "ADMIN" || role === "CUSTOMER" || role === 'SEEK') &&
+          (role === "ADMIN" || role === "CUSTOMER") &&
           <View className='enter_wrapper'>
             <View className='enter_wrap_item' onClick={() => navigateVerifiedFunc('/pages/newPackage/newWorker/index?entryChannel=SOURCE')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon6.webp`}></Image>
@@ -389,9 +400,9 @@ const Index = observer(({ store }) => {
         }
 
         {
-          role === 'ON_SITE' &&
+          role === 'ON_SITE' &&  // /pages/talentsPackage/filterJob/index?type=6&title=选择岗位  
           <View className='enter_wrapper'>
-            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/talentsPackage/filterJob/index?type=6&title=选择岗位')}>
+            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/newPackage/onSiteProject/index?type=2')}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
               <View>签到码</View>
             </View>
@@ -403,7 +414,7 @@ const Index = observer(({ store }) => {
         }
 
         {
-          (role === "ADMIN" || role === 'SEEK') &&
+          role === "ADMIN" &&
           <View className='today_data_wrapper'>
             <View className='today_data_title'>数据统计</View>
             <View className='today_data_content'>
@@ -513,7 +524,7 @@ const Index = observer(({ store }) => {
         }
 
         {
-          (role === "ADMIN" || role === 'SEEK') &&
+          role === "ADMIN" &&
           <View className='clue_sea_wrapper'>
             <View className='clue_sea_left'>
               <View className='clue_sea_title'>线索公海</View>
@@ -530,7 +541,7 @@ const Index = observer(({ store }) => {
         }
 
         {
-          (role === "ADMIN" || role === "CUSTOMER" || role === 'SEEK') &&
+          (role === "ADMIN" || role === "CUSTOMER") &&
           <View className='stream_wrapper'>
             <View className='stream_title'>
               <View>引流与转化</View>

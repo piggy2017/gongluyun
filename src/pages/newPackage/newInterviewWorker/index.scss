@@ -16,6 +16,70 @@
         padding: 44rpx 0 0 28rpx;
     }
 
+    .ai_recognize {
+        width: 710rpx;
+        border-radius: 20rpx;
+        background: #e4efff;
+        margin: 28rpx auto 0 auto;
+
+        .ai_recognize_title {
+            color: #1678ff;
+            font-family: "PingFang SC";
+            font-size: 26rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            padding: 18rpx 28rpx 16rpx 30rpx;
+        }
+
+        .ai_recognize_content {
+            width: 710rpx;
+            height: 274rpx;
+            flex-shrink: 0;
+            border-radius: 20rpx;
+            background: #FFF;
+
+            .ai_recognize_content_wrap {
+                padding: 40rpx 30rpx 0 30rpx;
+                @include flex-center(space-between);
+                align-items: flex-start;
+
+                .ai_recognize_input {
+                    width: 562rpx;
+                    height: 120rpx;
+                    color: #666666;
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                    flex-shrink: 0;
+                }
+            }
+
+            .ai_recognize_btn {
+                height: 60rpx;
+                width: 120rpx;
+                border-radius: 8rpx;
+                background: #1678FF;
+                color: #ffffff;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 60rpx;
+                float: right;
+                text-align: center;
+                margin: 14rpx 32rpx 0 0;
+            }
+        }
+    }
+
     .project_title_2 {
         @extend .project_title;
         padding: 44rpx 28rpx 0 28rpx;

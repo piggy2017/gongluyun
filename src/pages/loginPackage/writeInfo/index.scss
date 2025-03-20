@@ -1,0 +1,206 @@
+@import '@/app.scss';
+
+.container {
+    width: 100%;
+    height: 100vh;
+    background: #FFF;
+    background-image: url($cdnUrl + '/supplier/supplier_29.webp');
+    background-size: 100% 362rpx;
+    background-repeat: no-repeat;
+
+    .header_desc {
+        color: #222222;
+        font-family: "PingFang SC";
+        font-size: 48rpx;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 72rpx;
+        padding-left: 40rpx;
+
+        .header_desc_label {
+            color: #999999;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 45rpx;
+        }
+    }
+
+    .write_item {
+        margin-top: 82rpx;
+
+        .write_item_label {
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 32rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            padding-left: 46rpx;
+        }
+
+        .choose_sex_content {
+            margin-top: 20rpx;
+            padding: 0 46rpx;
+            @include flex-center(space-between);
+
+            .choose_sex_item {
+                width: 316rpx;
+                height: 84rpx;
+                border-radius: 6rpx;
+                background: #F6F6F6;
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                transition: all .3s;
+                @include flex-center();
+
+                image {
+                    width: 36rpx;
+                    height: 36rpx;
+                    flex-shrink: 0;
+                    margin-right: 12rpx;
+                }
+            }
+
+            .choose_sex_item_active {
+                color: #1678FF;
+                background: #1678ff14;
+                border: 2rpx solid #1678FF;
+            }
+        }
+    }
+
+    .choose_age {
+        margin-top: 100rpx;
+
+        .choose_age_label {
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 32rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            padding-left: 46rpx;
+        }
+
+        .choose_age_wrap {
+            width: 660rpx;
+            height: 100rpx;
+            border-radius: 6rpx;
+            background: #F6F6F6;
+            margin: 20rpx 0 0 46rpx;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+
+            .age_input {
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 32rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                width: 500rpx;
+                padding-left: 52rpx;
+            }
+        }
+    }
+
+    .choose_jobTypes {
+        margin-top: 100rpx;
+
+        .choose_jobTypes_label {
+            padding: 0 46rpx;
+            @include flex-center(space-between);
+
+            .choose_jobTypes_label_left {
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 32rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+
+                Text {
+                    color: #666666;
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                }
+            }
+
+            image {
+                width: 44rpx;
+                height: 44rpx;
+                flex-shrink: 0;
+            }
+
+        }
+
+        .choose_jobTypes_content {
+            margin-top: 24rpx;
+            padding: 0 46rpx;
+            display: flex;
+            flex-flow: row wrap;
+            gap: 20rpx 20rpx;
+
+            .choose_jobTypes_item {
+                color: #1678ff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 28rpx;
+                @include flex-center();
+                padding: 18rpx 24rpx;
+                border: 2rpx solid #1678FF;
+                background: #1678ff14;
+                border-radius: 4rpx;
+
+                image {
+                    width: 32rpx;
+                    height: 32rpx;
+                    margin-left: 16rpx;
+                }
+            }
+        }
+
+        .choose_jobTypes_desc {
+            color: #999999;
+            font-family: "PingFang SC";
+            font-size: 28rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            margin: 24rpx 0 0 46rpx;
+        }
+    }
+
+    .post_btn {
+        width: 660rpx;
+        height: 96rpx;
+        flex-shrink: 0;
+        border-radius: 10rpx;
+        background: #CDE1FF;
+        color: #ffffff;
+        text-align: center;
+        font-family: "PingFang SC";
+        font-size: 32rpx;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 96rpx;
+        margin: 132rpx auto 0 auto;
+        transition: all .3s;
+    }
+    .post_btn_active{
+        background: #1678FF !important;
+    }
+}

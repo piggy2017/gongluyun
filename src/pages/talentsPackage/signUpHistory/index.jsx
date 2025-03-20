@@ -218,16 +218,17 @@ const Index = observer(({ store }) => {
                 }
                 {
                     initData.length >= 5 &&
-                    <View className='loading_text'>
-                        {
-                            goonLoad ?
-                                <>
-                                    <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
-                                    加载中
-                                </> :
-                                "数据已经到底了"
-                        }
-                    </View>
+                    <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
+                    // <View className='loading_text'>
+                    //     {
+                    //         goonLoad ?
+                    //             <>
+                    //                 <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
+                    //                 加载中
+                    //             </> :
+                    //             "数据已经到底了"
+                    //     }
+                    // </View>
                 }
                 {
                     initData.length === 0 && requestState === 3 &&

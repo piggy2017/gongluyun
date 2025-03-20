@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 14:37:38
+ * @LastEditTime: 2025-03-19 15:22:28
  * @Description: 
  */
 
@@ -21,10 +21,13 @@ const Index = observer(({ store }) => {
     const router = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
-        userStore: { isLogin, userInfo, companyInfo },
+        userStore: { isLogin, userInfo, setRole, companyInfo },
+        businessStore: { workerJobInfo, setWorkerJobInfo },
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const [formData, setFormData] = useState({});
+    const [fromAll, setFromAll] = useState(false);
+    const [recruitNames, setRecruitNames] = useState([]);
 
     const getQueryString = (url) => {
         url = url.replace(/\s*/g, "");
@@ -45,23 +48,37 @@ const Index = observer(({ store }) => {
     }
 
     useEffect(() => {
+        setRole('SEEK');
+        Taro.setStorageSync('role', 'SEEK');
+        return () => {
+            setWorkerJobInfo({});
+        }
+    }, [])
+
+    useEffect(() => {
         console.log("routerrouter", router);
         console.log("userInfo——isLogin", userInfo, isLogin);
         const date = new Date();
 
         const year = date.getFullYear();       // 获取当前年份
-        const month = date.getMonth() + 1;     // 获取当前月份（从 0 开始，需要 +1）
+        let month = date.getMonth() + 1;     // 获取当前月份（从 0 开始，需要 +1）
         const day = date.getDate();            // 获取当前日期
-        
+        month = month < 10 ? `0${month}` : month;
+
         let interviewDate = `${year}-${month}-${day}`
 
         const { q } = router.params;
         console.log("q", q);
         let _q = decodeURIComponent(q);
         console.log("q", _q);
-        const { title, recruitSerialCode } = getQueryString(_q);
+        const { title, recruitSerialCode, isAll, list } = getQueryString(_q);   // isAll 是否是项目管理中的全部岗位 list 二维码中的岗位列表
+        if (isAll) {
+            setFromAll(true);
+            let _list = JSON.parse(list).map(item => item.title);
+            setRecruitNames(_list);
+        }
 
-        console.log("title", title, "recruitSerialCode", recruitSerialCode);
+        console.log("title", title, "recruitSerialCode", recruitSerialCode, "isAll", "list", list);
         // setFormData({ ...formData, title, interviewDate });
         if (isLogin) {
             console.log("请求参数:phone", decryptData(userInfo.phone), "recruitSerialCode", recruitSerialCode);
@@ -83,7 +100,7 @@ const Index = observer(({ store }) => {
                 } else {
                     console.log("不存在用户信息");
                     setFormData({ ...formData, title: title, interviewDate });
-                    Taro.showToast({ title: '您未报名该岗位,无法完成签到.', icon: 'none' });
+                    // Taro.showToast({ title: '您未报名该岗位,无法完成签到.', icon: 'none' });
                 }
             })
         } else {
@@ -96,7 +113,7 @@ const Index = observer(({ store }) => {
         console.log("q", q);
         let _q = decodeURIComponent(q);
         console.log("q", _q);
-        const { title, recruitSerialCode } = getQueryString(_q);
+        const { title, recruitSerialCode, isAll, list } = getQueryString(_q);
 
         Taro.showLoading({ title: '签到中...' });
         if (formData.idCardNo && formData.idCardNo.length != 18) {
@@ -104,7 +121,13 @@ const Index = observer(({ store }) => {
         }
         let params = {
             ...formData,
-            recruitSerialCode
+            // recruitSerialCode: isAll ? workerJobInfo.recruitSerialCode : recruitSerialCode   // isAll 是否是项目管理中的全部岗位
+        }
+        if (isAll) {  // isAll 是否是项目管理中的多个岗位列表的二维码
+            let _list = JSON.parse(list).map(item => item.recruitSerialCode);
+            params.recruitSerialCodes = _list;
+        } else {
+            params.recruitSerialCode = recruitSerialCode;
         }
         console.log("signFunc_params", params);
         Taro.hideLoading();
@@ -114,12 +137,23 @@ const Index = observer(({ store }) => {
         if (code === 200) {
             Taro.showToast({ title: '签到成功', icon: 'none' });
             Taro.navigateTo({
-                url: `/pages/signInPackage/signSuccess/index?title=${title}&interviewDate=${formData.interviewDate}`
+                url: `/pages/signInPackage/signSuccess/index?title=${recruitNames.length == 1 ? recruitNames[0] : recruitNames[0] + '等' + recruitNames.length + '个岗位'}&interviewDate=${formData.interviewDate}`
             })
+            if (!isAll) {
+                Taro.navigateTo({
+                    url: `/pages/signInPackage/signSuccess/index?title=${title}&interviewDate=${formData.interviewDate}`
+                })
+            }
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
     }
+
+    // const goChooseJob = () => {
+    //     Taro.navigateTo({
+    //         url: `/pages/signInPackage/${isLogin ? 'chooseJob' : 'signLogin'}/index`
+    //     });
+    // }
 
     return (
         <View className='container'>
@@ -173,17 +207,36 @@ const Index = observer(({ store }) => {
                     </>
                 }
 
+                {
+                    !fromAll &&
+                    <View className='employee_item'>
+                        <View className='employee_item_label'>报名岗位</View>
+                        <Input
+                            disabled
+                            className='employee_item_input'
+                            placeholder='报名岗位'
+                            placeholderStyle='color: #999999;'
+                            value={formData.title}
+                            onInput={(e) => setFormData({ ...formData, title: e.detail.value })}></Input>
+                    </View> ||
+                    <View className='employee_item'>
+                        <View className='employee_item_label'>报名岗位</View>
+                        <View className='employee_item_right'>
+                            <View className='employee_item_right_a'>
+                                {/* {
+                                    recruitNames.map((item, index) => {
+                                        return (
+                                            <Text key={index}>{item}</Text>
+                                        )
+                                    })
+                                } */}
+                                {recruitNames.length === 1 ? recruitNames[0] : recruitNames[0] + '等' + recruitNames.length + '个岗位'}
+                            </View>
+                            <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                        </View>
+                    </View>
+                }
 
-                <View className='employee_item'>
-                    <View className='employee_item_label'>报名岗位</View>
-                    <Input
-                        disabled
-                        className='employee_item_input'
-                        placeholder='报名岗位'
-                        placeholderStyle='color: #999999;'
-                        value={formData.title}
-                        onInput={(e) => setFormData({ ...formData, title: e.detail.value })}></Input>
-                </View>
                 <View className='employee_item'>
                     <View className='employee_item_label'>面试日期</View>
                     <Input
@@ -195,7 +248,6 @@ const Index = observer(({ store }) => {
                         onInput={(e) => setFormData({ ...formData, interviewDate: e.detail.value })}></Input>
                 </View>
             </View>
-
 
             {
                 !isLogin &&

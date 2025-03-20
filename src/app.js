@@ -2,23 +2,40 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-08 15:10:24
+ * @LastEditTime: 2025-03-18 11:08:37
  * @Description: 
  */
 import { useEffect } from 'react';
-import Taro, { useLaunch } from '@tarojs/taro'
+import Taro, { useLaunch,useRouter } from '@tarojs/taro'
 import { Provider } from 'mobx-react'
 import baseStore from '@/store/base'
 import userStore from '@/store/user'
 import businessStore from '@/store/business'
+import LoginComponent from '@/components/login';
+import JoinSupplier from '@/components/joinSupplier';
+import ChoosePattern from '@/components/choosePattern';
+import LoadMore from './components/loadMore';
+import NoData from './components/noData';
+import { getQueryString } from '@/util/utils.js'
 import './app.scss'
 const store = {
   baseStore,userStore,businessStore
 }
 function App({ children }) {
-
+  const router = useRouter();
+  const { setEnterParams } = userStore;
   useLaunch(() => {
-    console.log('App launched.')
+    console.log("useLaunch--router.params", router.params);
+    const { source, agentSerialCode, q } = router.params
+    // 缓存进入页面的参数------》管道收益
+    if (source && agentSerialCode) {
+      setEnterParams({ source, agentSerialCode })
+    }
+    if (q) {
+      let query = getQueryString(decodeURIComponent(q));
+      console.log("query", query);
+      setEnterParams(query);
+    }
   })
 
   useEffect(()=>{
@@ -26,7 +43,13 @@ function App({ children }) {
     // businessStore.setSourceList();
     Taro.$cdnUrl = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject';
     Taro.$cdnBackIcon = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/mine/back_icon.webp';
+    Taro.$cdnBlackBackIcon = 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/supplier/supplier_5.webp';
     Taro.$baseCdnUrl = 'https://apu-mini.oss-accelerate.aliyuncs.com';
+    Taro.GlobalLogin = LoginComponent;
+    Taro.GlobalJoinSupplier = JoinSupplier;
+    Taro.ChoosePattern = ChoosePattern;
+    Taro.LoadMore = LoadMore;
+    Taro.NoData = NoData;
   },[])
 
   useEffect(() => {

@@ -1,0 +1,196 @@
+@import '@/app.scss';
+
+.container {
+    width: 100%;
+    height: 100vh;
+    background: #F4F4F4;
+    
+    .scrollWrapper {
+        width: 100%;
+        // border: 1rpx solid red;
+
+        .project_list {
+            width: 710rpx;
+            // height: 312rpx;
+            border-radius: 20rpx;
+            flex-shrink: 0;
+            background-color: #FFF;
+            margin: 0 auto 20rpx auto;
+            padding-bottom: 24rpx;
+
+            .supplier_list_name {
+                @include flex-center(space-between);
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 32rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+                padding: 28rpx 24rpx 0 24rpx;
+
+                .supplier_list_name_l {
+                    width: 560rpx;
+                    @include ellipsis;
+                }
+
+                .supplier_list_name_r {
+                    @include flex-center(flex-end);
+                    color: #666666;
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+
+                    image {
+                        width: 40rpx;
+                        height: 40rpx;
+                        margin-right: 2rpx;
+                    }
+                }
+            }
+
+            .supplier_list_model {
+                margin: 24rpx auto 23rpx auto;
+                width: 662rpx;
+                @include ellipsis;
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+
+                text {
+                    color: #1678ff;
+                }
+            }
+
+            .supplier_list_goSet {
+                margin: 20rpx auto 15rpx auto;
+                width: 662rpx;
+                height: 56rpx;
+                @include flex-center(flex-start);
+                color: #1678ff;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                border-radius: 8rpx;
+                background: linear-gradient(90deg, #1678ff0f 0%, #1678ff00 100%);
+
+                view {
+                    padding-left: 16rpx;
+                }
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                }
+            }
+
+            .supplier_list_nums {
+                width: 602rpx;
+                height: 124rpx;
+                flex-shrink: 0;
+                border-radius: 10rpx;
+                background: #cbcbcb26;
+                margin: 20rpx auto 0 auto;
+                padding: 0 30rpx;
+                @include flex-center(space-between);
+
+                .supplier_list_nums_item {
+                    display: flex;
+                    flex-flow: column nowrap;
+                    align-items: center;
+                    justify-content: center;
+
+                    .supplier_list_nums_item_top {
+                        color: #222222;
+                        text-align: center;
+                        font-family: "D-DIN-PRO";
+                        font-size: 40rpx;
+                        font-style: normal;
+                        font-weight: 600;
+                        line-height: normal;
+                        display: flex;
+                        flex-flow: row nowrap;
+                        align-items: flex-end;
+
+                        .supplier_list_nums_item_top_r {
+                            color: #222222;
+                            text-align: center;
+                            font-family: "PingFang SC";
+                            font-size: 26rpx;
+                            font-style: normal;
+                            font-weight: 500;
+                            line-height: normal;
+                        }
+                    }
+
+                    .supplier_list_nums_item_bottom {
+                        color: #666666;
+                        text-align: center;
+                        font-family: "PingFang SC";
+                        font-size: 26rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: normal;
+                        margin-top: 8rpx;
+                    }
+                }
+            }
+        }
+    }
+
+    .page_bottom {
+        width: 100%;
+        background-color: #FFF;
+        position: fixed;
+        z-index: 99;
+        bottom: 0;
+        left: 0;
+
+        .page_btns {
+            padding: 0 32rpx;
+            @include flex-center();
+
+            .copy_btn {
+                height: 96rpx;
+                width: 690rpx;
+                border-radius: 8rpx;
+                background: #1678ff1c;
+                color: #1678ff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 96rpx;
+            }
+
+            .share_btn {
+                width: 416rpx;
+                height: 96rpx;
+                border-radius: 8rpx;
+                background: #1678FF;
+                @include flex-center(center);
+                color: #ffffff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+
+                image {
+                    width: 44rpx;
+                    height: 44rpx;
+                    flex-shrink: 0;
+                    margin-right: 6rpx;
+                }
+            }
+        }
+    }
+}

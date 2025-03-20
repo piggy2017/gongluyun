@@ -2,15 +2,15 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-01-02 15:34:00
+ * @LastEditTime: 2025-03-18 14:51:49
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
-import { View, Image, Textarea, Block } from '@tarojs/components'
+import { View, Image, Textarea, Block, RichText, Button } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { replaceNewLinesWithBr } from '@/util/utils'
 
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
@@ -25,8 +25,8 @@ const Index = observer(({ store }) => {
   const route = useRouter();
   const {
     baseStore: { bottomSafeAreaHeight },
-    businessStore: { setEditProjectInfo, onSiteInfo, setOnSiteInfo },
-    userStore: { myPermissions }
+    businessStore: { setEditProjectInfo, setProjectPatternInfo, setSetOnSiteListForProject },
+    userStore: { role, userInfo, myPermissions }
   } = store
 
   const [detail, setDetail] = useState('');
@@ -35,31 +35,32 @@ const Index = observer(({ store }) => {
   const [showAddress, setShowAddress] = useState(false);     //  是否显示修改面试地址的弹窗
   const [addressInt, setAddressInt] = useState('');          //  面试地址
   const [showDate, setShowDate] = useState(false);           //  是否显示修改面试时间的弹窗
-  const [interviewDate, setInterviewDate] = useState('');    //  面试时间
+  const [interviewDate, setInterviewDate] = useState('');    //  面试时间˝
 
 
   useDidShow(() => {
+    console.log("userInfouserInfouserInfo", userInfo)
     getProjectDetail();
     getProjectStatistics();
     getContractsStatistics();
   })
 
   const getProjectDetail = async () => {
-    const { contractsSerialCode } = route.params;  //numberRecruits, numberOnJob, leaveRate, supplierCount
+    const { contractsSerialCode } = route.params;  // numberRecruits, numberOnJob, leaveRate, supplierCount
     Taro.showLoading({ title: '加载中...' });
     const { code, data, msg } = await getContractsInfo({ contractsSerialCode });
     Taro.hideLoading();
     console.log("getProjectDetail_data", data);
     if (code === 200 && data) {
-      // data.numberRecruits = numberRecruits;
-      // data.numberOnJob = numberOnJob;
-      // data.leaveRate = leaveRate;
-      // data.supplierCount = supplierCount;
       if (data.interviewAddress) {
         setAddressInt(data.interviewAddress);
       }
       if (data.interviewDate) {
         setInterviewDate(data.interviewDate);
+      }
+      data.introductions = replaceNewLinesWithBr(data.introduction);
+      if (data.privateIntroduction) {
+        data.privateIntroductions = replaceNewLinesWithBr(data.privateIntroduction);
       }
       setDetail(data);
     } else {
@@ -72,6 +73,7 @@ const Index = observer(({ store }) => {
     const { code, data, msg } = await getContractsInfoStatistics({ contractsSerialCode });
     console.log("getProjectStatistics_data", code, data);
     if (code === 200 && data) {
+
       setStatistics(data);
     } else {
       Taro.showToast({ title: msg, icon: 'none' });
@@ -177,12 +179,30 @@ const Index = observer(({ store }) => {
     }
   }
 
+  Taro.useShareAppMessage(res => {
+    console.log("企业分享 userInfo.userSerialCode", userInfo, userInfo?.userSerialCode);
+    if (res.from === 'button') {
+      // 来自页面内转发按钮
+      console.log(res.target)
+    }
+    let url = `/pages/workerPackage/projectDetail/index?recruitSerialCode=${detail.recruitSerialCode}&agentSerialCode=${userInfo.userSerialCode}&inviteRole=SEEK&source=WECHAT_MINI_SHARE`;
+    return {
+      title: detail.areaName + detail.title,
+      path: url
+    }
+  })
+
   return (
     <View className='container'>
       <Navbar fixed placeholder bgColor='transparent' title='项目详情'></Navbar>
 
       <View className='project_baseInfo'>
         <View className='project_name'>{detail.title}</View>
+        {
+          myPermissions.includes('5') &&
+          <Image onClick={goEditProject} className='edit_icon' src={`${Taro.$cdnUrl}/supplier/supplier_50.webp`}></Image>
+        }
+
         <View className='project_addr'>{detail.conAreaName}·{detail.jobTypeName}·{detail.createDate}发布</View>
         <View className='project_count'>
           <View className='project_count_item'>
@@ -232,6 +252,68 @@ const Index = observer(({ store }) => {
         </View>
       </View>
 
+      {
+        role != 'CUSTOMER' && role != 'ON_SITE' &&
+        <>
+          {
+            (!detail.cooperationModels || detail.cooperationModels?.length === 0) &&
+            <View className='set_supplier_wrapper'>
+              <View className='set_supplier_wrapper_left'>供应链</View>
+              <View className='set_supplier_wrapper_right' onClick={() => {
+                setProjectPatternInfo({
+                  contractsSerialCode: detail.serialCode,
+                  title: detail.title,
+                  cooperationModels: detail.cooperationModels ? detail.cooperationModels : [],
+                  settlementStandard: detail.settlementStandard ? detail.settlementStandard : '',
+                })
+                Taro.navigateTo({
+                  url: `/pages/supplierPackage/setPattern/index?contractsSerialCode=${detail.serialCode}&title=${detail.title}`
+                })
+              }}>
+                <View>暂未设置合作模式，点击设置</View>
+                <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_7.webp`}></Image>
+              </View>
+            </View> ||
+            detail.cooperationModels?.length > 0 &&
+            <View className='get_supplier_wrapper'>
+              <View className='get_supplier_wrapper_title'>供应链</View>
+              <View className='get_supplier_wrapper_content'>
+                <View className='get_supplier_wrapper_content_item' onClick={() => {
+                  setProjectPatternInfo({
+                    contractsSerialCode: detail.serialCode,
+                    title: detail.title,
+                    cooperationModels: detail.cooperationModels ? detail.cooperationModels : [],
+                    settlementStandard: detail.settlementStandard ? detail.settlementStandard : '',
+                  })
+                  Taro.navigateTo({
+                    url: `/pages/supplierPackage/setPattern/index?contractsSerialCode=${detail.serialCode}&title=${detail.title}`
+                  })
+                }}>
+                  <View className='get_supplier_wrapper_num'>{detail.cooperationModels.length}</View>
+                  <View className='get_supplier_wrapper_label'>
+                    <View>合作模式</View>
+                    <Image src={`${Taro.$cdnUrl}/supplier/supplier_17.webp`}></Image>
+                  </View>
+                  <Image className='get_supplier_wrapper_guide' src={`${Taro.$cdnUrl}/supplier/supplier_49.webp`}></Image>
+                </View>
+
+                <View className='get_supplier_wrapper_content_item' onClick={() => {
+                  Taro.navigateTo({
+                    url: `/pages/supplierPackage/projectSuppliers/index?contractsSerialCode=${detail.serialCode}&title=${detail.title}&recruitSerialCode=${detail.recruitSerialCode}`
+                  })
+                }}>
+                  <View className='get_supplier_wrapper_num'>{basicStatistics.supplierCount}</View>
+                  <View className='get_supplier_wrapper_label'>
+                    <View>供应商</View>
+                    <Image src={`${Taro.$cdnUrl}/supplier/supplier_17.webp`}></Image>
+                  </View>
+                </View>
+              </View>
+            </View>
+          }
+        </>
+      }
+
       <View className='interview_info'>
         <View className='project_title'>
           <View>面试信息</View>
@@ -243,13 +325,14 @@ const Index = observer(({ store }) => {
               return Taro.showToast({ title: '您没有权限', icon: 'none' });
             }
             Taro.navigateTo({
-              url: `/pages/newPackage/setOnsite/index?recruitSerialCode=${detail.recruitSerialCode}&serialCode=${detail.serialCode}&code=${detail.interviewContactInfo}`
+              url: `/pages/newPackage/setOnsite/index?recruitSerialCode=${detail.recruitSerialCode}&serialCode=${detail.serialCode}`
             })
+            setSetOnSiteListForProject(detail.interviewInfos?.length > 0 ? detail.interviewInfos : []);
           }}>
             {
-              !detail.interviewContactInfo &&
+              (!detail.interviewInfos || detail.interviewInfos.length === 0) &&
               <View className='interview_item_label'>设置驻场联系人</View> ||
-              <View className='interview_item_text'>{detail.interviewContactName} {detail.interviewContactPhone}</View>
+              <View className='interview_item_text'>{detail.interviewInfos.length === 1 ? detail.interviewInfos[0].interviewContactName + ' ' + detail.interviewInfos[0].interviewContactPhone : detail.interviewInfos[0].interviewContactName + ` 等${detail.interviewInfos.length}人`} </View>
             }
             <Image className='interview_item_img' src={`${Taro.$cdnUrl}/newIndex/newIndex_7.webp`}></Image>
           </View>
@@ -303,8 +386,24 @@ const Index = observer(({ store }) => {
             <View> </View>
           }
         </View>
-        <View className='job_introduce'>{detail.introduction}</View>
+        <View className='job_introduce'>
+          <RichText nodes={detail.introductions}></RichText>
+        </View>
       </View>
+
+      {
+        detail.privateIntroduction &&
+        <View className='interview_info'>
+          <View className='project_title'>
+            <View>岗位详情</View>
+            <View> </View>
+          </View>
+          <View className='job_introduce'>
+            <RichText nodes={detail.privateIntroductions}></RichText>
+          </View>
+        </View>
+      }
+
       <View style={`height:300rpx;`}></View>
 
       <View className='project_btns'>
@@ -322,15 +421,23 @@ const Index = observer(({ store }) => {
               <View>恢复面试</View>
             </View>
           }
+          <View className='btn_item' onClick={(e) => navigateFunc(e, `/pages/projectPackage/roster/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>
+            <Image src={`${Taro.$cdnUrl}/supplier/supplier_51.webp`}></Image>
+            <View>名单</View>
+          </View>
 
+          <Button className='btn_item' open-type='share'>
+            <Image src={`${Taro.$cdnUrl}/supplier/supplier_52.webp`}></Image>
+            <View>分享</View>
+          </Button>
           {
-            myPermissions.includes('5') &&
-            <View className='btn_item' onClick={goEditProject}>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon26.webp`}></Image>
-              <View>编辑</View>
-            </View>
+            // myPermissions.includes('5') &&
+            // <View className='btn_item' onClick={goEditProject}>
+            //   <Image src={`${Taro.$cdnUrl}/index/index_icon26.webp`}></Image>
+            //   <View>编辑</View>
+            // </View>
           }
-          <View className='add_worker' style={`width:${myPermissions.includes('5') ? '482rpx' : '562rpx'}`} onClick={(e) => navigateFunc(e, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>录入求职者</View>
+          <View className='add_worker' onClick={(e) => navigateFunc(e, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>录入求职者</View>
         </View>
         <View style={`height:${bottomSafeAreaHeight}px;`}></View>
       </View>

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-11 17:57:04
+ * @LastEditTime: 2025-03-10 15:55:14
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -17,15 +17,50 @@ const Index = observer(({ store }) => {
     } = store
 
     useEffect(() => {
-        console.log("启动页 当前登录状态 isLogin:", isLogin, companyVerified);
-        console.log("启动页 当前 token:", token);
-        console.log("启动页 认证状态 companyVerified:", companyVerified);
+        console.log("启动页 认证状态 role:", role);
         setTimeout(() => {
+            console.log(1)
             if (!isLogin || !token) {  // 未登录
+                console.log(2)
                 Taro.redirectTo({ url: '/pages/login/index' })
             }
+
+            if (role === 'SUPPLIER') {
+                console.log(3)
+                Taro.switchTab({
+                    url: '/pages/supplierProject/index'
+                })
+                return;
+            }
+
+            else if (role === 'SEEK') {    // 求职者
+                console.log(4)
+                Taro.switchTab({
+                    url: '/pages/workerIndex/index'
+                });
+                return
+                refreshUserInfo((res) => {
+                    console.log("auth页面res", res);
+                    if (res?.data?.userInfo) {
+                        const { sex, age, jobTypes } = res.data.userInfo;
+                        if (sex != 2 && age && jobTypes?.length > 0) {
+                            Taro.switchTab({
+                                url: '/pages/workerIndex/index'
+                            });
+                        } else {
+                            Taro.redirectTo({ url: '/pages/loginPackage/chooseRole/index' });
+                        }
+                    } else {
+                        Taro.navigateTo({ url: '/pages/loginPackage/chooseRole/index' });
+                    }
+                })
+                return
+            }
+
+
             if (isLogin && !companyVerified) {    // 已登录但没有实名认证
                 // Taro.redirectTo({ url: '/pages/auth/index' })
+                console.log(5)
                 refreshUserInfo((res) => {
                     console.log("auth页面res", res);
                     if (res?.data?.companyVerified) {
@@ -37,6 +72,7 @@ const Index = observer(({ store }) => {
                     }
                 })
             } else if (isLogin && companyVerified) {
+                console.log(6)
                 Taro.switchTab({
                     url: '/pages/index/index'
                 })

@@ -1,0 +1,25 @@
+@import '@/app.scss';
+.loading_text {
+    width: 100%;
+    text-align: center;
+    font-size: 30rpx;
+    color: #8E8E93;
+    padding-top: 20rpx;
+    padding-bottom: 40rpx;
+    @include flex-center;
+  
+    .at-icon {
+        margin-right: 19rpx;
+        animation: moveLoading 1s linear infinite;
+    }
+  
+    @keyframes moveLoading {
+        from {
+            transform: rotate(0deg);
+        }
+  
+        to {
+            transform: rotate(360deg);
+        }
+    }
+  }

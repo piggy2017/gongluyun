@@ -133,7 +133,7 @@
 
     .bottom_wrapper {
         width: 100%;
-        background-color: #FFF;
+        // background-color: #FFF;
         position: fixed;
         bottom: 0;
         left: 0;
@@ -152,6 +152,10 @@
             font-weight: 500;
             line-height: 96rpx;
             margin: 0 auto;
+        }
+
+        .post_btn_active{
+            background: #1678FF;
         }
     }
 

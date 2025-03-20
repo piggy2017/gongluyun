@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-14 14:05:07
+ * @LastEditTime: 2025-03-19 10:29:50
  * @Description: 
  */
 export default defineAppConfig({
@@ -14,7 +14,9 @@ export default defineAppConfig({
         'pages/clue/index',
         'pages/onSiteList/index',
         'pages/mine/index',
-        'pages/login/index'
+        'pages/login/index',
+        'pages/supplierProject/index',
+        'pages/workerIndex/index',          // 求职者首页
     ],
     window: {
         backgroundTextStyle: 'light',
@@ -44,6 +46,10 @@ export default defineAppConfig({
                 "text": "项目管理"
             },
             {
+                'pagePath': 'pages/workerIndex/index',
+                "text": "首页"
+            },
+            {
                 "pagePath": "pages/clue/index",
                 "text": "线索"
             },
@@ -54,6 +60,10 @@ export default defineAppConfig({
             {
                 'pagePath': 'pages/mine/index',
                 "text": "我的"
+            },
+            {
+                'pagePath': 'pages/supplierProject/index',
+                "text": "项目"
             }
         ]
     },
@@ -69,6 +79,21 @@ export default defineAppConfig({
                 "editTalent/index",             // 编辑人才信息
                 "talentInterview/index",        // 人才库详情安排面试
                 "clueDetail/index",             // 线索详情
+            ]
+        },
+        {
+            "root": "pages/loginPackage/",       // 登录后选择角色和添加信息
+            "pages": [
+                "chooseRole/index",              // 选择角色
+                "writeInfo/index",               // 选择角色
+            ]
+        },
+        {
+            "root": "pages/workerPackage/",      // 求职者页面子包
+            "pages": [
+                "projectDetail/index",           // 求职者查看项目详情
+                "signupHistory/index",           // 求职者查看报名记录
+                "editProfile/index",             // 编辑用户资料
             ]
         },
         {
@@ -89,6 +114,7 @@ export default defineAppConfig({
                 "setCustom/index",               // 新增求职者选择跟进的客服
                 "newProjectWorker/index",        // 项目新增求职者
                 "newInterviewWorker/index",      // 首页 录入面试信息 新增求职者
+                "onSiteProject/index",           // 添加驻场角色 选择项目
             ]
         },
         {
@@ -102,6 +128,8 @@ export default defineAppConfig({
                 "editEmployee/index",             // 修改员工
                 "aboutUs/index",                  // 关于我们
                 "dataReport/index",               // 数据报表
+                "sourcePool/index",               // 资源池
+                "changeRole/index",               // 切换当前角色
             ]
         },
         {
@@ -124,6 +152,22 @@ export default defineAppConfig({
                 "signIn/index",                   // 签到页面
                 "signLogin/index",                // 求职者签到-登录页面
                 "signSuccess/index",              // 求职者签到-成功页面
+                "chooseJob/index",                // 求职者签到-扫码进入 选择签到岗位   驻场-名单 添加求职者信息指定岗位
+            ]
+        },
+        {
+            "root": "pages/supplierPackage/",     // 供应商相关页面
+            "pages":[
+                "supplierManage/index",           // 供应商管理
+                "supplierDetail/index",           // 供应商详情
+                "setContact/index",               // 我的端口设置联系人
+                "myPort/index",                   // 我的合作端口详情页面
+                "projectSuppliers/index",         // 项目详情中查看供应商列表
+                "setPattern/index",               // 设置合作模式
+                "projectDetail/index",            // 项目详情
+                "collaborateBill/index",          // 合作的发单方
+                "sharePage/index",                // 分享落地页
+                "roster/index",                   // 名单
             ]
         }
     ]

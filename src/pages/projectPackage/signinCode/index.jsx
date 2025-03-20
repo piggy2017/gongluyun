@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-11 18:40:36
+ * @LastEditTime: 2025-03-19 18:02:05
  * @Description: 
  */
 
@@ -16,7 +16,7 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import './index.scss'
-import { contractsJobSelector } from '@/util/api'
+import { contractsJobSelector, env } from '@/util/api'
 const Index = observer(({ store }) => {
     const route = useRouter();
 
@@ -32,16 +32,17 @@ const Index = observer(({ store }) => {
     const [list, setList] = useState([]);
 
     useEffect(() => {
-        const { recruitSerialCode, title, type } = route.params;
+        const { recruitSerialCode, title, type, isAll, list } = route.params;
+        console.log("根据选择的岗位列表生成的二维码页面,收到的列表数据", list);
         setRecruitSerialCode(recruitSerialCode);
         setTitle(title);
         Taro.showLoading({ title: '二维码生成中...' })
         setTimeout(() => {
-            generateQrcode(recruitSerialCode, title, type);
+            generateQrcode(recruitSerialCode, title, isAll, list);
         }, 300);
     }, [])
 
-    const generateQrcode = async (_recruitSerialCode, _title) => {
+    const generateQrcode = async (_recruitSerialCode, _title, _isAll, _list) => {
         try {
             const result = await new Promise((resolve, reject) => {
                 wx.createSelectorQuery()
@@ -56,6 +57,12 @@ const Index = observer(({ store }) => {
                     });
             })
             let canvas = result[0].node;
+
+            // https://sa-test.apujiyu.com/signInTest 测试环境
+            // https://sa-api.apujiyu.com/signIn 正式环境
+            
+            let _url = env == 'prod' ? 'https://sa-api.apujiyu.com/signIn' : 'https://sa-test.apujiyu.com/signInTest'
+            let _text = _isAll ? `${_url}?isAll=${_isAll}&list=${_list}` : `${_url}?title=${_title}&recruitSerialCode=${_recruitSerialCode}`
             drawQrcode({
                 canvas: canvas,
                 canvasId: 'myCanvas',
@@ -63,7 +70,7 @@ const Index = observer(({ store }) => {
                 padding: 30,
                 background: '#ffffff',
                 foreground: '#000000',
-                text: `https://sa-api.apujiyu.com/signIn?title=${_title}&recruitSerialCode=${_recruitSerialCode}`
+                text: _text   //`https://sa-api.apujiyu.com/signIn?title=${_title}&recruitSerialCode=${_recruitSerialCode}`
             })
             Taro.hideLoading();
 

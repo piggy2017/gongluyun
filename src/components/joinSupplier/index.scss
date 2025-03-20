@@ -1,0 +1,87 @@
+@import '@/app.scss';
+.join_supplier_layout {
+    .at-float-layout__container {
+        // height: 630rpx !important;
+        max-height: 930rpx !important;
+        min-height: 930rpx !important;
+        border-radius: 20rpx 20rpx 0 0 !important;
+        overflow: hidden;
+    }
+
+    .layout-body__content {
+        max-height: 100% !important;
+        height: 100% !important;
+    }
+
+    .filter_wrapper {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        background-color: #ffffff;
+
+        .filter_wrapper_bg {
+            width: 100%;
+            height: 100%;
+
+            .filter_title {
+                @include flex-center(space-between);
+                align-items: flex-start !important;
+                padding: 36rpx 22rpx 40rpx 30rpx;
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 34rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+            }
+
+            .filter_content_item{
+                width: 690rpx;
+                margin: 0 auto;
+                border-bottom: 1rpx solid #0000000a;
+                padding: 80rpx 0 26rpx 0 ;
+                @include flex-center(flex-start);
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 32rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                .filter_content_item_label{
+                    width: 130rpx;
+                }
+                .filter_content_input{
+                    width: 520rpx;
+                }
+            }
+
+            .filter_content_hr{
+                width: 690rpx;
+                height: 2rpx;
+                background-color: #0000000a;
+                // stroke: #0000000a;
+                margin: 24rpx auto 0 auto;
+            }
+
+            .filter_wrapper_btn {
+                width: 694rpx;
+                height: 96rpx;
+                flex-shrink: 0;
+                border-radius: 10rpx;
+                background-color: #CDE1FF;
+                margin: 90rpx auto 0 auto;
+                color: #ffffff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 96rpx;
+                transition: all 0.3s;
+            }
+            .filter_wrapper_btn_active{
+                background: #1678FF !important;
+            }
+        }
+    }
+}

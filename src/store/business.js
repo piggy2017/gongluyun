@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-04 14:45:26
+ * @LastEditTime: 2025-03-18 15:00:49
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -147,11 +147,42 @@ const businessStore = observable({
     rosterFilterSupplier: {
         name: '全部供应商',
         userSerialCode: '',
+        supplierSerialCode: '',
         selected: false
     },
     setRosterFilterSupplier(value) {
         businessStore.rosterFilterSupplier = value;
     },
+
+    projectPatternInfo: {
+        contractsSerialCode: '',
+        title: '',
+        cooperationModels: [],
+        settlementStandard: ''
+    },
+    setProjectPatternInfo(value) {
+        businessStore.projectPatternInfo = value;
+    },
+
+    billComponySerialCode: '', // 供应商角色 首页需要加载的发单方信息的id
+    setBillComponySerialCode(value) {
+        businessStore.billComponySerialCode = value;
+    },
+
+    onSiteProjectList: [], // 添加驻场角色时 给驻场添加项目列表
+    setOnSiteProjectList(value) {
+        businessStore.onSiteProjectList = value;
+    },
+
+    workerJobInfo: {}, // 求职者扫码后选择的岗位信息
+    setWorkerJobInfo(value) {
+        businessStore.workerJobInfo = value;
+    },
+
+    setOnSiteListForProject: [], // 给项目添加驻场角色列表
+    setSetOnSiteListForProject(value) {
+        businessStore.setOnSiteListForProject = value;
+    }
 });
 
 export default businessStore

@@ -1,0 +1,230 @@
+@import '@/app.scss';
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+    background: #F4F4F4;
+    background-image: url($cdnUrl + '/supplier/supplier_53.webp');
+    background-size: 100% 586rpx;
+    background-repeat: no-repeat;
+
+    .search_wrapper {
+        margin: 130rpx auto 0 auto;
+        width: 694rpx;
+        height: 68rpx;
+        background-color: #FFFFFF;
+        border-radius: 34rpx;
+        @include flex-center(flex-start);
+
+        image {
+            width: 36rpx;
+            height: 36rpx;
+            flex-shrink: 0;
+            margin-left: 22rpx;
+        }
+
+        .search_input {
+            font-family: "PingFang SC";
+            font-size: 28rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            color: #222222;
+            margin-left: 16rpx;
+        }
+    }
+
+    .filter_wrapper_con {
+        padding: 48rpx 20rpx 48rpx 30rpx;
+        @include flex-center(space-between);
+
+        .filter_item {
+            @include flex-center(flex-start);
+            color: #000000;
+            text-align: right;
+            font-family: "PingFang SC";
+            font-size: 28rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+
+            image {
+                width: 28rpx;
+                height: 28rpx;
+                // transform: rotate(90deg);
+            }
+        }
+    }
+
+    .scrollWrapper {
+        width: 100%;
+        // border: 1rpx solid red;
+
+        .list_item {
+            width: 710rpx;
+            height: 236rpx;
+            flex-shrink: 0;
+            border-radius: 20rpx;
+            background: #FFF;
+            margin: 0 auto 20rpx auto;
+
+            .list_item_title {
+                padding: 24rpx 24rpx 0 24rpx;
+                @include flex-center(space-between);
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 32rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+
+                .list_item_title_name {
+                    width: 420rpx;
+                    @include ellipsis;
+                }
+
+                .list_item_title_salary {
+                    color: #ff6b17;
+                    text-align: right;
+                    font-family: "D-DIN-PRO";
+                    font-size: 36rpx;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: normal;
+
+                    text {
+                        color: #ff6b17;
+                        font-family: "PingFang SC";
+                        font-size: 24rpx;
+                        font-style: normal;
+                        font-weight: 600;
+                        line-height: normal;
+                    }
+                }
+            }
+
+            .require_req {
+                padding: 0 24rpx;
+                @include flex-center(flex-start);
+                margin-top: 16rpx;
+                flex-wrap: wrap;
+                height: 44rpx;
+                overflow-y: hidden;
+
+                >view {
+                    // width: 120rpx;
+                    padding: 0 14rpx;
+                    height: 44rpx;
+                    background: #FFF6ED;
+                    border-radius: 4rpx;
+                    @include flex-center;
+                    font-family: PingFangSC-Regular;
+                    font-weight: 400;
+                    font-size: 24rpx;
+                    color: #E35A0D;
+                    margin-right: 10rpx;
+                }
+            }
+
+            .list_item_bottom {
+                padding: 24rpx 24rpx 0 24rpx;
+                @include flex-center(space-between);
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+
+                .list_item_btn {
+                    width: 168rpx;
+                    height: 60rpx;
+                    border-radius: 8rpx;
+                    background: #1678FF;
+                    color: #ffffff;
+                    font-family: "PingFang SC";
+                    font-size: 26rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: 60rpx;
+                    text-align: center;
+                }
+
+                .did_signup {
+                    color: #666666;
+                    font-family: "PingFang SC";
+                    font-size: 26rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+            }
+        }
+    }
+
+
+
+    .salaryType_init_layout {
+        .at-float-layout__container {
+            height: auto !important;
+            min-height: auto !important;
+            overflow: hidden;
+            border-radius: 20rpx 20rpx 0 0 !important;
+
+            .layout-body {
+                min-height: auto !important;
+            }
+        }
+
+        .layout-body__content {
+            min-height: auto !important;
+        }
+
+        .filter_wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-color: #ffffff;
+
+            .filter_wrapper_bg {
+                width: 100%;
+                height: 100%;
+
+                .filter_title {
+                    @include flex-center(space-between);
+                    padding: 24rpx 30rpx 40rpx 38rpx;
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 34rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                }
+
+                .type_wrapper {
+                    @include flex-center();
+                    gap: 20rpx;
+
+                    .type_item {
+                        width: 220rpx;
+                        height: 76rpx;
+                        border-radius: 8rpx;
+                        background: #F2F2F2;
+                        color: rgb(34, 34, 34);
+                        font-family: "PingFang SC";
+                        font-size: 28rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: 76rpx;
+                        text-align: center;
+                    }
+
+                    .type_item_active {
+                        background: #1678FF;
+                        color: rgb(255, 255, 255);
+                    }
+                }
+            }
+        }
+    }
+}

@@ -30,6 +30,12 @@
             line-height: normal;
             opacity: 0.9;
             width: 630rpx;
+            @include flex-center;
+            view{
+                width: 400rpx;
+                text-align: center;
+                @include ellipsis;
+            }
         }
     }
 }

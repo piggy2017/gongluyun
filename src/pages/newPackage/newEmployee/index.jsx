@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 17:11:35
+ * @LastEditTime: 2025-03-18 17:18:15
  * @Description: 
  */
 
@@ -24,6 +24,7 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { bottomSafeAreaHeight },
         userStore: { companyInfo, roles, permissions },
+        businessStore: { onSiteProjectList, setOnSiteProjectList },
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const [formData, setFormData] = useState({});
@@ -31,6 +32,7 @@ const Index = observer(({ store }) => {
 
     const [showRoleModel, setShowRoleModel] = useState(false);
     const [roleList, setRoleList] = useState([
+        { roleId: '1', roleName: '管理员' },
         { roleId: '2', roleName: '客服' },
         { roleId: '3', roleName: '驻场' }
     ]);
@@ -38,6 +40,16 @@ const Index = observer(({ store }) => {
     const [permissionList, setPermissionList] = useState([]);
 
     const [showLimitModel, setShowLimitModel] = useState(false);
+
+    useEffect(() => {
+        console.log("主场 角色选择的岗位:", onSiteProjectList);
+    }, [onSiteProjectList])
+
+    useEffect(() => {
+        return () => {
+            setOnSiteProjectList([]);
+        }
+    }, [])
 
     useEffect(() => {
         console.log("permissions", permissions);
@@ -105,6 +117,10 @@ const Index = observer(({ store }) => {
             !params.subPassword && '请再次输入密码',
             !params.roleId && '请分配角色',
         ].filter(Boolean);
+
+        if (params.roleId == '3') {
+            params.contractsSerialCodes = onSiteProjectList;
+        }
 
         if (errorMessages.length > 0) {
             return Taro.showToast({
@@ -199,13 +215,31 @@ const Index = observer(({ store }) => {
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
-                <View className='employee_item'>
-                    <View className='employee_item_label'>权限</View>
-                    <View className='employee_item_right' onClick={() => { setShowLimitModel(true) }}>
-                        <View className={`${(formData.authority && formData.authority.length > 0) ? 'option_item_active' : 'option_item_text'}`}>{(formData.authority && formData.authority.length > 0) ? formData.authority.join('·') : '请选择'}</View>
-                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                {
+                    formData.roleId != '1' &&
+                    <View className='employee_item'>
+                        <View className='employee_item_label'>权限</View>
+                        <View className='employee_item_right' onClick={() => { setShowLimitModel(true) }}>
+                            <View className={`${(formData.authority && formData.authority.length > 0) ? 'option_item_active' : 'option_item_text'}`}>{(formData.authority && formData.authority.length > 0) ? formData.authority.join('·') : '请选择'}</View>
+                            <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                        </View>
                     </View>
-                </View>
+                }
+
+                {
+                    formData.roleId == '3' &&  // 驻场
+                    <View className='employee_item'>
+                        <View className='employee_item_label'>绑定项目</View>
+                        <View className='employee_item_right' onClick={() => {
+                            Taro.navigateTo({ url: `/pages/newPackage/onSiteProject/index?type=1` })
+                        }}>
+                            <View className={`option_item_onsite ${onSiteProjectList.length > 0 ? 'option_item_active' : 'option_item_text'} }`}>
+                                {onSiteProjectList.length === 0 ? '请选择' : '已选·' + onSiteProjectList.length}
+                            </View>
+                            <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                        </View>
+                    </View>
+                }
             </View>
 
             <View className='bottom_wrapper'>
@@ -283,7 +317,7 @@ const Index = observer(({ store }) => {
                     </View>
                 </AtFloatLayout>
             </Block>
-        </View>
+        </View >
     )
 })
 

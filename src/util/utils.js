@@ -387,3 +387,8 @@ export const getColor = (status) => {
             return '#1678FF';
     }
 }
+
+// 聊天消息的文本转换   \n  ↵  转换为 <br>
+export function replaceNewLinesWithBr(text) {
+    return text.replace(/\n/g, "<br>").replace(/↵/g, "<br>");
+}

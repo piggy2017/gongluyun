@@ -228,10 +228,7 @@ const Index = observer(({ store }) => {
 
             {
                 requestState === 2 && list.length === 0 && clueList.length === 0 && jobList.length === 0 &&
-                <View className='no_data'>
-                    <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
-                    <View>暂无相关数据~</View>
-                </View>
+                <Taro.NoData></Taro.NoData>
             }
         </View>
     )

@@ -2,18 +2,20 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-01-02 16:06:43
+ * @LastEditTime: 2025-03-19 15:54:52
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useDidShow, useDidHide } from '@tarojs/taro';
-import { View, Image, Input, ScrollView } from '@tarojs/components'
+import { View, Image, Input, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import TabBar from '@/components/tabBar';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import { AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
+
+import WorkerJobType from '@/components/workerJobType';
 import './index.scss';
 
 import { contractsList } from '@/util/api';
@@ -22,7 +24,8 @@ const Index = observer(({ store }) => {
   const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
-    userStore: { role, isLogin, companyVerified, myPermissions }
+    userStore: { role, isLogin, companyVerified, myPermissions },
+    businessStore: { jobFilterAddress, setJobFilterAddress },
   } = store
   const [searchValue, setSearchValue] = useState('');
   const [searchHeight, setSearchHeight] = useState(34);
@@ -34,21 +37,34 @@ const Index = observer(({ store }) => {
   const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
 
   const [list, setList] = useState([])
-
   const [type, setType] = useState('PROCESSING');
+
+  const [jobTypes, setJobTypes] = useState([]);          // 岗位类型
+  const [chooseJob, setChooseJob] = useState(false);     // 选择岗位类型的弹窗
 
   useDidShow(() => {
     const _projectSearchValue = Taro.getStorageSync('projectSearchValue');
     if (_projectSearchValue) {
       setSearchValue(_projectSearchValue);
     }
-
     const _acticeProject = Taro.getStorageSync('acticeProject');
-    if( _acticeProject){
+    if (_acticeProject) {
       setType('PROCESSING');
     }
     getList(1);
   })
+
+  useEffect(() => {
+    return () => {
+      setJobFilterAddress({
+        init: false,
+        adcode: '',
+        city: '',
+        district: '',
+        province: '',
+      })
+    }
+  }, []);
 
   useDidHide(() => {
     console.log("didHide");
@@ -58,7 +74,7 @@ const Index = observer(({ store }) => {
 
   useEffect(() => {
     setTimeout(async () => {
-      const _query = await selectorQueryDomInfo('.search_wrap');
+      const _query = await selectorQueryDomInfo('.search_wrapper');
       console.log("_query_query_query", _query);
       if (_query?.height) {
         setSearchHeight(_query.height)
@@ -68,7 +84,7 @@ const Index = observer(({ store }) => {
 
   useEffect(() => {
     getList(1);
-  }, [type]);
+  }, [type, jobTypes, jobFilterAddress]);
 
   const getList = async (_pageNo) => {
     setRequestState(1);
@@ -77,7 +93,9 @@ const Index = observer(({ store }) => {
       pageNo: _pageNo,
       pageSize,
       searchInfo: searchValue,
-      status: type
+      status: type,
+      areaCode: jobFilterAddress.adcode,
+      jobTypeIds: jobTypes.map(item => item.id),
     }
     const { code, data } = await contractsList(params);
     console.log("getList", code, data);
@@ -139,7 +157,7 @@ const Index = observer(({ store }) => {
         url: '/pages/minePackage/companyAuth/index'
       })
     }
-  },200)
+  }, 200)
 
   const setTypeFunc = (_type) => {
     if (_type != type) {
@@ -158,37 +176,66 @@ const Index = observer(({ store }) => {
           <View onClick={() => setTypeFunc('COMPLETED')} className={`header_item ${type === 'COMPLETED' ? 'header_item_active' : ''}`}>暂停面试</View>
         </View>
       </View>
-      <View className='search_wrap'>
-        <View className='search_con' style={`width:${myPermissions.includes('4') ? '608rpx' : '690rpx'}`} onClick={()=>{
-          if (!isLogin || !companyVerified) {
-            loginOrAuth();
-            return
+      <View className='search_wrapper'>
+        <View className='search_wrap'>
+          <View className='search_con' style={`width:${myPermissions.includes('4') ? '508rpx' : '608rpx'}`} onClick={() => {
+            if (!isLogin || !companyVerified) {
+              loginOrAuth();
+              return
+            }
+          }}>
+            <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+            <Input className='search_input'
+              placeholder='搜索关键字搜索订单'
+              confirmType='search'
+              disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
+              placeholderStyle='color: #777777;'
+              onInput={(e) => { setSearchValue(e.detail.value) }}
+              onConfirm={(e) => {
+                if (!isLogin || !companyVerified) {
+                  loginOrAuth();
+                  return
+                }
+                getList(1);
+                setgoonLoad(true);
+              }}
+              value={searchValue}></Input>
+          </View>
+          {
+            role != 'CUSTOMER' &&
+            <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`} className='sign_code_all' onClick={
+              (e) => navigateFunc(e, 1, `/pages/newPackage/onSiteProject/index?type=2`)}
+              // /pages/newPackage/onSiteProject/index?type=1
+              // /pages/projectPackage/signinCode/index?isAll=1
+            ></Image>
           }
-        }}>
-          <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
-          <Input className='search_input'
-            placeholder='搜索关键字搜索订单'
-            confirmType='search'
-            disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
-            placeholderStyle='color: #777777;'
-            onInput={(e) => { setSearchValue(e.detail.value) }}
-            onConfirm={(e) => {
-              if (!isLogin || !companyVerified) {
-                loginOrAuth();
-                return
-              }
-              getList(1);
-              setgoonLoad(true);
-            }}
-            value={searchValue}></Input>
+
+          {
+            myPermissions.includes('4') &&
+            <Image className='add_icon' src={`${Taro.$cdnUrl}/index/index_icon3.webp`} onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newProject/index')}></Image>
+          }
         </View>
-        {
-          myPermissions.includes('4') &&
-          <Image className='add_icon' src={`${Taro.$cdnUrl}/index/index_icon3.webp`} onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newProject/index')}></Image>
-        }
+        <View className='filter_wrapper'>
+          <View className='filter_item' onClick={() => {
+            setChooseJob(true);
+          }}>
+            <View>{jobTypes.length === 0 ? "岗位类型" : jobTypes.length === 1 ? jobTypes[0].name : jobTypes[0].name + '等' + jobTypes.length + "个工种"}</View>
+            <Image src={`${Taro.$cdnUrl}/supplier/supplier_33.webp`}></Image>
+          </View>
+
+          <View className='filter_item' onClick={() => {
+            Taro.navigateTo({
+              url: `/pages/selectorPackage/areaChoose/index`
+            })
+          }}>
+            <View>{jobFilterAddress.district ? jobFilterAddress.city + "·" + jobFilterAddress.district : '工作地区'}</View>
+            <Image src={`${Taro.$cdnUrl}/supplier/supplier_33.webp`}></Image>
+          </View>
+        </View>
       </View>
+
       {
-        (!isLogin || (role === 'SEEK' && !companyVerified)) &&
+        (!isLogin || !companyVerified) &&
         <View className='no_login'>
           <Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image>
           <View className='no_login_tip'>{!isLogin ? '登录后体验多项专属功能' : '认证后立即体验项目管理功能'}</View>
@@ -217,12 +264,17 @@ const Index = observer(({ store }) => {
                       <View className='project_item_title_left_name'>{item.title}</View>
                     </View>
                     {
-                      type === 'PROCESSING' &&
-                      <View className='project_item_title_right' onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/signinCode/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>
-                        <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
-                        <View>签到码</View>
-                      </View> ||
-                      <View className='project_item_title_right_end'>已结束</View>
+                      role != 'CUSTOMER' &&
+                      <>
+                        {
+                          type === 'PROCESSING' &&
+                          <View className='project_item_title_right' onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/signinCode/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>
+                            <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
+                            <View>签到码</View>
+                          </View> ||
+                          <View className='project_item_title_right_end'>已暂停</View>
+                        }
+                      </>
                     }
                   </View>
 
@@ -256,27 +308,32 @@ const Index = observer(({ store }) => {
 
           {
             list.length >= 4 &&
-            <View className='loading_text'>
-              {
-                goonLoad ?
-                  <>
-                    <AtIcon value='loading-3' size='16' color='#8E8E93'></AtIcon>
-                    加载中
-                  </> :
-                  "数据已经到底了"
-              }
-            </View>
+            <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
           }
 
           {
             list.length === 0 && requestState === 3 &&
-            <View className='no_data'>
-              <View><Image src={`${Taro.$cdnUrl}/index/no_login.webp`}></Image></View>
-              <View>暂无相关数据~</View>
-            </View>
+            <Taro.NoData></Taro.NoData>
           }
         </ScrollView>
       }
+
+      {/* 选择岗位类型 */}
+      <Block>
+        <WorkerJobType isShow={chooseJob}
+          initData={(jobTypes && jobTypes.length > 0) ? jobTypes : []}
+          multiple={true}
+          onClose={(e) => {
+            console.log("选择的岗位类型：", e)
+            if (e && e.length) {
+              setJobTypes(e);
+            } else {
+              setJobTypes([]);
+            }
+            setChooseJob(false);
+          }}
+        ></WorkerJobType>
+      </Block>
 
       <TabBar actCurrent={1} />
     </View>

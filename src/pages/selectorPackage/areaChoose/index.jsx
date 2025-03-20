@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-02-29 14:49:40
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-12 17:53:45
+ * @LastEditTime: 2025-03-18 13:42:14
  * @Description: 
  */
 /* eslint-disable import/first */
@@ -115,11 +115,11 @@ const Message = observer(({ store, system }) => {
         setDistrictcode(obj.value);
         let addr = provinceName + cityName + obj.label;
         // 根据选择的位置 获取经纬度
-        const data = await geocode(addr);
-        console.log("获取经纬度", data);
-        if (data) {
-            setLatLng(data);
-        }
+        // const data = await geocode(addr);
+        // console.log("获取经纬度", data);
+        // if (data) {
+        //     setLatLng(data);
+        // }
     }
 
     const saveAreaFunc = () => {
@@ -140,9 +140,31 @@ const Message = observer(({ store, system }) => {
         }, 300);
     }
 
+    const getLocationFn = async () => {
+        setProvinceName('');
+        setProvinceItem('');
+        setCityName('');
+        setCityItem('');
+        setDistrictName('');
+        setDistrictItem('');
+        setDistrictcode('');
+    }
+
     return (
         <View className='area_wrap'>
-            <Navbar fixed placeholder bgColor='#ffffff' title='地区选择'></Navbar>
+            <Navbar fixed placeholder bgColor='#ffffff' title='地区选择' customBack={() => {
+                if (provinceName == '') {
+                    console.log("2");
+                    setJobFilterAddress({
+                        init: false,
+                        adcode: '',
+                        city: '',
+                        district: '',
+                        province: '',
+                    });
+                    Taro.navigateBack({ delta: 1 });
+                }
+            }}></Navbar>
             <View className='content_area' style={{ height: getHeight() }}>
                 {
                     areaList &&
@@ -210,7 +232,7 @@ const Message = observer(({ store, system }) => {
             <View className='bottom_wrapper'>
                 <View style={`height:26rpx`}></View>
                 <View className='bottom_wrapper_btns'>
-                    {/* <View className='btn reset_btn' onClick={() => getLocationFn()} >重置</View> */}
+                    <View className='btn reset_btn' onClick={() => getLocationFn()} >重置</View>
                     <View className='btn save_btn' onClick={saveAreaFunc}>确定</View>
                 </View>
                 <View style={`height:${bottomSafeAreaHeight}px`}></View>

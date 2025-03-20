@@ -6,6 +6,10 @@
     background: #FFF;
     background: #F4F4F4;
 
+    .project_group{
+        // padding-left: 36rpx;
+        margin-top: 44rpx;
+    }
     .project_group {
         width: 710rpx;
         border-radius: 20rpx;
@@ -65,13 +69,14 @@
             }
         }
 
-        .project_item_job{
+        .project_item_job {
             // min-height: 140rpx;
             padding: 50rpx 20rpx 50rpx 44rpx;
             display: flex;
             flex-flow: row nowrap;
             align-items: flex-start;
             justify-content: space-between;
+
             .project_item_label {
                 color: #666666;
                 font-family: "PingFang SC";
@@ -80,7 +85,8 @@
                 font-weight: 400;
                 line-height: normal;
             }
-            .job_type_input{
+
+            .job_type_input {
                 width: 480rpx;
                 text-align: right;
                 font-family: "PingFang SC";
@@ -131,11 +137,13 @@
                 font-style: normal;
                 font-weight: 400;
                 line-height: normal;
-                .project_item_right_stick{
+
+                .project_item_right_stick {
                     color: #0483ff;
                     margin-left: 20rpx;
                 }
-                .new_input_phone{
+
+                .new_input_phone {
                     width: 380rpx !important;
                 }
 
@@ -145,6 +153,9 @@
 
                 .project_item_text_active {
                     color: #222222;
+                    width: 440rpx;
+                    @include ellipsis;
+                    text-align: right;
                 }
 
                 image {
@@ -175,10 +186,12 @@
                 line-height: 72rpx;
                 // transition: all 0.3s linear;
             }
-            .option_item:nth-child(2){
+
+            .option_item:nth-child(2) {
                 margin-left: 20rpx;
             }
-            .option_item_active{
+
+            .option_item_active {
                 background: #1678ff21;
                 color: #1678ff;
                 border: none;
@@ -245,6 +258,84 @@
                     padding-left: 4rpx;
                     min-height: 80rpx;
                 }
+            }
+        }
+    }
+
+    .project_group_l{
+        margin: 44rpx 0 0 36rpx;
+        color: #333333;
+        font-family: "PingFang SC";
+        font-size: 30rpx;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+    }
+
+    .project_group2{
+        margin-top: 16rpx !important;
+    }
+
+    .ai_recognize {
+        width: 710rpx;
+        border-radius: 20rpx;
+        background: #e4efff;
+        margin: 28rpx auto 0 auto;
+
+        .ai_recognize_title {
+            color: #1678ff;
+            font-family: "PingFang SC";
+            font-size: 26rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            padding: 18rpx 28rpx 16rpx 30rpx;
+        }
+
+        .ai_recognize_content {
+            width: 710rpx;
+            height: 274rpx;
+            flex-shrink: 0;
+            border-radius: 20rpx;
+            background: #FFF;
+
+            .ai_recognize_content_wrap {
+                padding: 40rpx 30rpx 0 30rpx;
+                @include flex-center(space-between);
+                align-items: flex-start;
+
+                .ai_recognize_input {
+                    width: 562rpx;
+                    height: 120rpx;
+                    color: #666666;
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                    flex-shrink: 0;
+                }
+            }
+
+            .ai_recognize_btn {
+                height: 60rpx;
+                width: 120rpx;
+                border-radius: 8rpx;
+                background: #1678FF;
+                color: #ffffff;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 60rpx;
+                float: right;
+                text-align: center;
+                margin: 14rpx 32rpx 0 0;
             }
         }
     }
@@ -358,7 +449,7 @@
             margin: 0 auto;
         }
 
-        .post_btn_active{
+        .post_btn_active {
             background: #1678FF;
         }
     }

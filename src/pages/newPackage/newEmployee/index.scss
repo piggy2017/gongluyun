@@ -95,6 +95,11 @@
                 .option_item_text {
                     color: #999999;
                 }
+                .option_item_onsite{
+                    width: 440rpx;
+                    @include ellipsis;
+                    text-align: right;
+                }
 
                 .option_item_active {
                     color: #222222;
@@ -141,6 +146,7 @@
         .at-float-layout__container {
             height: auto !important;
             min-height: auto !important;
+            max-height: 950rpx !important;
             overflow: hidden;
             border-radius: 20rpx 20rpx 0 0 !important;
 

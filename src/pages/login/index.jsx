@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-05 17:08:00
+ * @LastEditTime: 2025-03-10 14:58:04
  * @Description: 
  */
 
@@ -19,7 +19,7 @@ import './index.scss'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { setToken, setIsLogin, setRole, setUserInfo, getRoleAndPermissionFunc, setMyPermissions }
+        userStore: { setToken, setIsLogin, setRole, setUserInfo, getRoleAndPermissionFunc, setMyPermissions, getSupplierCompanyInfo }
     } = store
 
     const [step, setStep] = useState(1);
@@ -68,19 +68,25 @@ const Index = observer(({ store }) => {
                     setToken(result.data.token);
                     Taro.setStorageSync('token', result.data.token);
                     Taro.setStorageSync('isLogin', 1);
-                    Taro.setStorageSync('role', result.data.user.userRole);
+                    // Taro.setStorageSync('role', result.data.user.userRole);
                     Taro.setStorageSync('userInfo', result.data.user);
                     setIsLogin(1);
                     setUserInfo(result.data.user);
-                    setRole(result.data.user.userRole);
+                    // setRole(result.data.user.userRole);
                     getRoleAndPermissionFunc();
-                    if (result.data.user.companyVerified) {
-                        setTimeout(() => {
-                            getUserRole();
-                        }, 50);
-                    } else {
-                        Taro.navigateTo({ url: '/pages/auth/index' })
-                    }
+                    // if (result.data.user.companyVerified) {
+                    //     setTimeout(() => {
+                    //         getUserRole();
+                    //     }, 50);
+                    // } else {
+                    //     Taro.navigateTo({ url: '/pages/auth/index' })
+                    // }
+
+                    setMyPermissions();
+                    getSupplierCompanyInfo();      // 检查用户是否是供应商
+                    setTimeout(() => {
+                        Taro.redirectTo({ url: '/pages/loginPackage/chooseRole/index' })
+                    }, 300);
                 } else {
                     Taro.showToast({ title: result.msg, icon: "none", duration: 2000 })
                 }
@@ -117,19 +123,25 @@ const Index = observer(({ store }) => {
                 setToken(data.token);
                 Taro.setStorageSync('token', data.token);
                 Taro.setStorageSync('isLogin', 1);
-                Taro.setStorageSync('role', data.user.userRole);
+                // Taro.setStorageSync('role', data.user.userRole);
                 Taro.setStorageSync('userInfo', data.user);
                 setIsLogin(1);
                 setUserInfo(data.user);
-                setRole(data.user.userRole);
+                // setRole(data.user.userRole);
                 getRoleAndPermissionFunc();
-                if (data.user.companyVerified) {
-                    setTimeout(() => {
-                        getUserRole();
-                    }, 50);
-                } else {
-                    Taro.navigateTo({ url: '/pages/auth/index' })
-                }
+                // if (data.user.companyVerified) {
+                //     setTimeout(() => {
+                //         getUserRole();
+                //     }, 50);
+                // } else {
+                //     Taro.navigateTo({ url: '/pages/auth/index' })
+                // }
+
+                setMyPermissions();
+                getSupplierCompanyInfo();   // 检查用户是否是供应商
+                setTimeout(() => {
+                    Taro.redirectTo({ url: '/pages/loginPackage/chooseRole/index' })
+                }, 300);
             } else {
                 Taro.showToast({ title: msg, icon: "none", duration: 2000 })
             }
@@ -141,9 +153,6 @@ const Index = observer(({ store }) => {
         let historyPages = Taro.getCurrentPages();   //历史页面 路由跳转数
         if (historyPages.length === 1) Taro.switchTab({ url: `/pages/index/index` });
         else Taro.navigateBack({ delta: 1 });//多页面跳转
-        // Taro.switchTab({
-        //     url: '/pages/index/index'
-        // })
     }
 
     const changeStep = () => {
