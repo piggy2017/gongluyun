@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 15:26:17
+ * @LastEditTime: 2025-03-20 10:11:44
  * @Description: 
  */
 
@@ -212,6 +212,15 @@ const Index = observer(({ store }) => {
                             <RichText nodes={detail.introduction}></RichText>
                         </View>
                     </View>
+                    {
+                        detail.privateIntroduction &&
+                        <View className='project_pattern project_pattern_1'>
+                            <View className='project_pattern_title'>岗位详情</View>
+                            <View className='project_pattern_rule'>
+                                <RichText nodes={detail.privateIntroductions}></RichText>
+                            </View>
+                        </View>
+                    }
                 </>
             }
 
