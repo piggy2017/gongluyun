@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 11:41:02
+ * @LastEditTime: 2025-03-20 16:44:13
  * @Description: 
  */
 
@@ -170,7 +170,7 @@ const Index = observer(({ store }) => {
         }
         params.numberRecruits = Number(params.numberRecruits);
         const errorMessages = [
-            // !params.title && '岗位标题不能为空',
+            !params.title && '岗位标题不能为空',
             !params.jobTypeId && '岗位类型不能为空',
             !params.salaryType && '工作类型不能为空',
             !params.company && '企业名称不能为空',
@@ -249,7 +249,7 @@ const Index = observer(({ store }) => {
             <Navbar fixed placeholder bgColor='#F4F4F4' title='完善项目信息'></Navbar>
 
             <View className='project_group'>
-                {/* <View className='project_item'>
+                <View className='project_item'>
                     <View className='project_item_label project_item_label_required'>岗位标题</View>
                     <View className='project_item_right'>
                         <Input
@@ -260,7 +260,7 @@ const Index = observer(({ store }) => {
                             onInput={(e) => setFormData({ ...formData, title: e.detail.value })}
                         ></Input>
                     </View>
-                </View> */}
+                </View>
                 <View className='project_item project_item_border'>
                     <View className='project_item_label project_item_label_required'>岗位类型</View>
                     <View className='project_item_right' onClick={() => setChooseJob(true)}>
@@ -537,7 +537,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={postProject} className={`post_btn ${(formData.jobTypeId && formData.salaryType && formData.company && formData.numberRecruits && formData.addressDetail && formData.introduction) ? 'post_btn_active' : ''}`}>{isUpdate ? '修改' : '发布'}项目</View>
+                <View onClick={postProject} className={`post_btn ${(formData.title && formData.jobTypeId && formData.salaryType && formData.company && formData.numberRecruits && formData.addressDetail && formData.introduction) ? 'post_btn_active' : ''}`}>{isUpdate ? '修改' : '发布'}项目</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 
