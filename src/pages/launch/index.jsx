@@ -83,7 +83,7 @@ const Index = observer(({ store }) => {
 
     return (
         <View className='container'>
-            <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_18.webp`}></Image>
+            <Image src={`${Taro.$cdnUrl}/supplier/supplier_59.webp`}></Image>
         </View>
     )
 })

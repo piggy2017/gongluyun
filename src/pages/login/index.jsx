@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 14:58:04
+ * @LastEditTime: 2025-03-20 09:45:35
  * @Description: 
  */
 
@@ -194,7 +194,7 @@ const Index = observer(({ store }) => {
             {
                 step === 1 &&
                 <>
-                    <Image className='logo1' src={`${Taro.$cdnUrl}/index/index_icon55.webp`}></Image>
+                    <Image className='logo1' src={`${Taro.$cdnUrl}/supplier/supplier_59.webp`}></Image>
 
                     <View className='login_bottom'>
                         {
@@ -205,14 +205,14 @@ const Index = observer(({ store }) => {
                         <View className='logn_policy'>
                             <Image onClick={() => setChecked(!checked)} src={`${Taro.$cdnUrl}/index/index_icon2${checked ? 7 : 8}.webp`}></Image>
                             <View onClick={() => setChecked(!checked)} >已阅读并同意</View>
-                            <View className='webview_link' onClick={() => viewPrivacy()}>《公路云小程序隐私保护指引》</View>
+                            <View className='webview_link' onClick={() => viewPrivacy()}>《千职万职小程序隐私保护指引》</View>
                         </View>
                         <View style={`height:${bottomSafeAreaHeight * 2}px`}></View>
                     </View>
                 </> ||
                 step === 2 &&
                 <>
-                    <Image className='logo2' src={`${Taro.$cdnUrl}/index/index_icon56.webp`}></Image>
+                    <Image className='logo2' src={`${Taro.$cdnUrl}/supplier/supplier_59.webp`}></Image>
                     <View className='input_wrap'>
                         <Image className='input_icon' src={`${Taro.$cdnUrl}/index/index_icon45.webp`}></Image>
                         <Input
@@ -241,7 +241,7 @@ const Index = observer(({ store }) => {
                     <View className='logn_policy_2'>
                         <Image onClick={() => setChecked(!checked)} src={`${Taro.$cdnUrl}/index/index_icon2${checked ? 7 : 8}.webp`}></Image>
                         <View onClick={() => setChecked(!checked)} >已阅读并同意</View>
-                        <View className='webview_link' onClick={() => viewPrivacy()}>《公路云小程序隐私保护指引》</View>
+                        <View className='webview_link' onClick={() => viewPrivacy()}>《千职万职小程序隐私保护指引》</View>
                     </View>
 
                     <Button onClick={() => btnLogin()} className={`account_login_btn ${account && password && checked ? 'account_login_btn_active' : ''}`}>登录</Button>

@@ -156,7 +156,7 @@ const Index = observer(({ store, actCurrent }) => {
                 { title: '名单', image: getdefalutIcon(5), selectedImage: getSelectIcon(5) },
                 { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
             ]
-        } else if (role === 'SUPPLIER') {  // 供应商 并且未开通公路云
+        } else if (role === 'SUPPLIER') {  // 供应商 并且未开通千职万职
             return [
                 { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
                 { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },

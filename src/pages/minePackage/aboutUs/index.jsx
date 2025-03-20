@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 11:28:46
+ * @LastEditTime: 2025-03-20 09:54:31
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -50,29 +50,29 @@ const Index = observer(({ store }) => {
             <Navbar fixed placeholder bgColor='#FFFFFF' title='关于我们'></Navbar>
 
             <View className='content'>
-                <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_10.webp`}></Image>
-                <View className='version'>版本号: v{version}</View>
+                <Image src={`${Taro.$cdnUrl}/supplier/supplier_59.webp`}></Image>
+                {/* <View className='version'>版本号: v{version}</View> */}
             </View>
 
             <View className='section_group'>
-                <View className='section_item' onClick={() => contactServer()}>
+                {/* <View className='section_item' onClick={() => contactServer()}>
                     <View className='section_item_left'>
                         <Image src={`${Taro.$cdnUrl}/mine/mine_icon4.webp`}></Image>
                         <Text>企业微信</Text>
                     </View>
                     <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
-                </View>
+                </View> */}
                 <View className='section_item'>
                     <View className='section_item_left'>
                         <Image src={`${Taro.$cdnUrl}/mine/mine_icon5.webp`}></Image>
-                        <Text onClick={() => Taro.makePhoneCall({ phoneNumber: '028-85222840' })}>公司电话： 028-85222840</Text>
+                        <Text onClick={() => Taro.makePhoneCall({ phoneNumber: '19934299791' })}>公司电话： 19934299791</Text>
                     </View>
                     {/* <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image> */}
                 </View>
                 <View className='section_item' >
                     <View className='section_item_left'>
                         <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_9.webp`}></Image>
-                        <Text>企业邮箱：contact@apujiyu.com</Text>
+                        <Text>企业邮箱：hanting@createhr.com</Text>
                     </View>
                     {/* <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image> */}
                 </View>

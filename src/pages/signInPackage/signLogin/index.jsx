@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-08 16:57:55
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 11:31:25
+ * @LastEditTime: 2025-03-20 09:50:11
  * @Description: 
  */
 
@@ -107,7 +107,7 @@ const Index = observer(({ store }) => {
                 </View>
             </View>
 
-            <Image className='logo1' src={`${Taro.$cdnUrl}/index/index_icon55.webp`}></Image>
+            <Image className='logo1' src={`${Taro.$cdnUrl}/supplier/supplier_59.webp`}></Image>
 
             <View className='login_bottom'>
                 {
@@ -117,7 +117,7 @@ const Index = observer(({ store }) => {
                 <View className='logn_policy'>
                     <Image onClick={() => setChecked(!checked)} src={`${Taro.$cdnUrl}/index/index_icon2${checked ? 7 : 8}.webp`}></Image>
                     <View onClick={() => setChecked(!checked)} >已阅读并同意</View>
-                    <View className='webview_link' onClick={() => viewPrivacy()}>《公路云小程序隐私保护指引》</View>
+                    <View className='webview_link' onClick={() => viewPrivacy()}>《千职万职小程序隐私保护指引》</View>
                 </View>
                 <View style={`height:${bottomSafeAreaHeight * 2}px`}></View>
             </View>

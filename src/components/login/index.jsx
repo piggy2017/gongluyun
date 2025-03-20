@@ -139,9 +139,9 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
                             <View className='privacy_wrapper_title'>用户隐私保护提示</View>
                             <View className='privacy_wrapper_content'>
                                 在你使用
-                                <Text className='privacy_wrapper_name'>公路云</Text>
+                                <Text className='privacy_wrapper_name'>千职万职</Text>
                                 服务之前，请阅读
-                                <Text className='privacy_wrapper_link' onClick={() => viewPrivacy()}>《公路云小程序隐私保护指引》</Text>
+                                <Text className='privacy_wrapper_link' onClick={() => viewPrivacy()}>《千职万职小程序隐私保护指引》</Text>
                                 如你同意该指引，请点击“同意并继续”开始使用本小程序。
                             </View>
 
