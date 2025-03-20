@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 14:02:01
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 09:46:55
+ * @LastEditTime: 2025-03-19 19:45:06
  * @Description: 
  */
 
@@ -17,7 +17,7 @@ import TabBar from '@/components/tabBar';
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { getCoopCompanyBySupplier, getContractsByCompany, joinContracts } from '@/util/api';
+import { getCoopCompanyBySupplier, getContractsByCompany, joinContracts, switchRoles } from '@/util/api';
 
 const Index = observer(({ store }) => {
     const route = useRouter();
@@ -53,13 +53,25 @@ const Index = observer(({ store }) => {
         const { role, companySerialCode } = route.params;
         if (role === 'SUPPLIER') {
             setRole('SUPPLIER');
+            Taro.setStorageSync('role', 'SUPPLIER');
         }
     }, [])
 
     useEffect(() => {
+        console.log("isLogin", isLogin)
         const { role, companySerialCode } = route.params;
         if (companySerialCode) {
             setBillComponySerialCode(companySerialCode);
+        }
+        console.log("role, companySerialCode", role, companySerialCode);
+
+        if (isLogin && role === 'SUPPLIER') {
+            switchRoles({ userRole: 'SUPPLIER' }).then(res => {
+                console.log("首页 供应商登录后,调接口切换到供应商__", res);
+                if (res.code === 200) {
+
+                }
+            })
         }
     }, [isLogin])
 
@@ -318,7 +330,7 @@ const Index = observer(({ store }) => {
 
             <TabBar actCurrent={0} />
 
-            <Taro.GlobalLogin isOpened={isOpened} onClose={onClose} />
+            <Taro.GlobalLogin isOpened={isOpened} onClose={onClose} isSupplier={true} />
             <Taro.GlobalJoinSupplier showPicker={showJoinPicker} onClose={() => { setShowJoinPicker(false) }}></Taro.GlobalJoinSupplier>
             <Taro.ChoosePattern list={currentItem?.cooperationModels} showPicker={showPatternModel} onClose={() => setShowPatternModel(false)} onchange={getChoosePattern}></Taro.ChoosePattern>
         </View>

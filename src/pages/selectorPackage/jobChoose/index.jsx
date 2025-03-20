@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:41:55
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 10:18:25
+ * @LastEditTime: 2025-03-20 09:17:25
  * @Description: 
  */
 /* eslint-disable react/jsx-key */
@@ -113,9 +113,10 @@ const ChooseJob = observer(({ store }) => {
         // setKeyWords(e);
         if (!e) return setIsSearch([])
         let params = {
-            job_name: e
+            job_name: keyWords
         }
         let res = await jobAssoc(params)
+        console.log("搜索结果:", res);
         if (res.code === 200) {
             console.log(res.data)
             setIsSearch(res.data)
@@ -140,10 +141,8 @@ const ChooseJob = observer(({ store }) => {
                         adjustPosition
                         placeholder='输入岗位'
                         value={keyWords}
-                        onInput={e => setKeyWords(e.target.value)}
-                        onConfirm={(e) => {
-                            handleInputChange(e.target.value)
-                        }}
+                        onInput={(e) => setKeyWords(e.target.value)}
+                        onConfirm={() => handleInputChange()}
                     />
                 </View>
                 <View className='type_content'

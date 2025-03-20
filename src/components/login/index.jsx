@@ -7,9 +7,9 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import { observer, inject } from 'mobx-react';
 import './index.scss';
 
-import { loginPhone, checkSupplier } from '@/util/api';
+import { loginPhone, checkSupplier, switchRoles } from '@/util/api';
 
-const Index = observer(({ store, onClose, isOpened }) => {
+const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
     const [isShow, setIsOpened] = useState(false);
     const [isNornalLogin, setIsNornalLogin] = useState(1);
 
@@ -74,6 +74,15 @@ const Index = observer(({ store, onClose, isOpened }) => {
                     // setRole(result.data.user.userRole);
                     getRoleAndPermissionFunc();
                     handleClose();
+                    if (isSupplier) {
+                        console.log("供应商登录后,调接口切换到供应商")
+                        switchRoles({ userRole: 'SUPPLIER' }).then(res => {
+                            console.log("供应商登录后,调接口切换到供应商__", res);
+                            if (res.code === 200) {
+                                
+                            }
+                        })
+                    }
                     setTimeout(() => {
                         checkIssuppier();
                     }, 100);
