@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-19 17:59:50
+ * @LastEditTime: 2025-03-20 15:20:04
  * @Description: 
  */
 
@@ -256,10 +256,10 @@ export const getFeedbackObjectsByCustomer = params => {   //  客服获取反馈
 
 
 
-export const getAreaJson = params => { //获取地域信息
-    return http(CDN_BASE_URL + '/china/data.json', params, "GET", { "Content-Type": "application/json" });
+export const getAreaJson = params => {    //  获取地域信息
+    return http(CDN_BASE_URL + '/china/cx_data.json', params, "GET", { "Content-Type": "application/json" });
 };
-export const getCityJson = params => { //获取地区信息
+export const getCityJson = params => {    //获取地区信息
     return http(CDN_BASE_URL + '/china/all_cities.json', params, "GET", { "Content-Type": "application/json" });
 };
 

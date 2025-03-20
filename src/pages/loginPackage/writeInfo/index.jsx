@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 15:46:25
+ * @LastEditTime: 2025-03-20 15:23:01
  * @Description: 
  */
 
@@ -47,9 +47,9 @@ const Index = observer(({ store }) => {
         else if (age === '') {
             return Taro.showToast({ title: '请输入年龄', icon: 'none' });
         }
-        else if (filterJobTypes.length === 0) {
-            return Taro.showToast({ title: '请选择意向职位', icon: 'none' });
-        }
+        // else if (filterJobTypes.length === 0) {
+        //     return Taro.showToast({ title: '请选择意向职位', icon: 'none' });
+        // }
         const params = {
             sex,
             age,
@@ -137,7 +137,7 @@ const Index = observer(({ store }) => {
                 }
             </View>
 
-            <View className={`post_btn ${(sex != 2 && age && filterJobTypes.length > 0) ? 'post_btn_active' : ''}`} onClick={postWrite}>去求职</View>
+            <View className={`post_btn ${(sex != 2 && age) ? 'post_btn_active' : ''}`} onClick={postWrite}>去求职</View>
 
 
 

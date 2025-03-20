@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 14:21:41
+ * @LastEditTime: 2025-03-20 15:26:35
  * @Description: 
  */
 
@@ -34,10 +34,7 @@ const Index = observer(({ store }) => {
                 // Taro.setStorageSync('role', 'SEEK');
                 if (res?.data?.userInfo) {
                     const { sex, age, jobTypes } = res.data.userInfo;
-                    if (sex != 2 && age && jobTypes?.length > 0) {
-                        // Taro.switchTab({
-                        //     url: '/pages/workerIndex/index'
-                        // });
+                    if (sex != 2 && age ) {   // && jobTypes?.length > 0
                         chooseRoleFunc(1, () => {
                             // Taro.navigateTo({ url: '/pages/loginPackage/writeInfo/index' })
                             setRole('SEEK');
@@ -55,7 +52,6 @@ const Index = observer(({ store }) => {
                         })
                     }
                 } else {
-                    // Taro.navigateTo({ url: '/pages/loginPackage/writeInfo/index' })
                     chooseRoleFunc(1, () => {
                         setRole('SEEK');
                         Taro.setStorageSync('role', 'SEEK');
@@ -69,11 +65,6 @@ const Index = observer(({ store }) => {
                 console.log("auth页面res", res);
                 Taro.hideLoading();
                 if (res?.data?.companyVerified) {
-                    // Taro.setStorageSync('role', res.data.userInfo.userRole);
-                    // setRole(res.data.userInfo.userRole);
-                    // Taro.switchTab({
-                    //     url: '/pages/index/index'
-                    // })
                     chooseRoleFunc(2, (data) => {
                         console.log("切换到企业,查看当前用户的角色,data:", data);
                         Taro.setStorageSync('role', data);
@@ -93,11 +84,6 @@ const Index = observer(({ store }) => {
                 }
             })
         } else if (type === 3) {  // 供应商
-            // setRole('SUPPLIER');
-            // Taro.setStorageSync('role', 'SUPPLIER')
-            // Taro.switchTab({
-            //     url: '/pages/supplierProject/index'
-            // })
             chooseRoleFunc(3, () => {
                 Taro.setStorageSync('role', 'SUPPLIER')
                 setRole('SUPPLIER');

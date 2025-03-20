@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-02-29 14:49:40
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 13:42:14
+ * @LastEditTime: 2025-03-20 14:58:38
  * @Description: 
  */
 /* eslint-disable import/first */
@@ -42,6 +42,7 @@ const Message = observer(({ store, system }) => {
     useEffect(() => {
         const getAreaList = async () => {
             let _getAreaJson = await getAreaJson();
+            console.log("_getAreaJson", _getAreaJson)
             let newArr = utils.convertDataToTree(_getAreaJson);
             let arr = newArr.filter(r => r.value !== '710000' && r.value !== '810000' && r.value !== '820000');
             console.log("arr", arr)

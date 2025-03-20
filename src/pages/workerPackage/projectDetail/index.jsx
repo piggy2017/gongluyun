@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-19 10:08:44
+ * @LastEditTime: 2025-03-20 14:55:38
  * @Description: 
  */
 
@@ -205,11 +205,11 @@ const Index = observer(({ store }) => {
                         <View onClick={() => previewImg()} className='job_desc_images_i'></View>
                     </View>
                 }
-                <View className='line_hr'></View>
+                {/* <View className='line_hr'></View>
                 <View className='job_desc_compony'>
                     <View>公司名称</View>
                     <View className='job_desc_compony_name'>{detail.company}</View>
-                </View>
+                </View> */}
             </View>
             <View style={`height:240rpx;`}></View>
 
