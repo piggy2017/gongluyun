@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:41:55
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-20 09:17:25
+ * @LastEditTime: 2025-03-20 15:47:50
  * @Description: 
  */
 /* eslint-disable react/jsx-key */
@@ -109,9 +109,10 @@ const ChooseJob = observer(({ store }) => {
         let index = chooseJobItem.findIndex(item => item.id === l.id)
         return index > -1 ? true : false
     }
-    const handleInputChange = throttle(async (e) => {
+    const handleInputChange = throttle(async () => {
         // setKeyWords(e);
-        if (!e) return setIsSearch([])
+        // if (!e) return setIsSearch([])
+        if(!keyWords) return setIsSearch([])
         let params = {
             job_name: keyWords
         }
