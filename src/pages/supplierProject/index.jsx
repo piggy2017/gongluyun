@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 14:02:01
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-19 19:45:06
+ * @LastEditTime: 2025-03-24 16:42:56
  * @Description: 
  */
 
@@ -119,7 +119,7 @@ const Index = observer(({ store }) => {
         Taro.hideLoading();
         setIsRefresh(false);
         console.log("合同列表_getContractsByCompany:", code, data)
-        if (code === 200) {
+        if (code === 200 && data.responses?.length > 0) {
             setComponyInfo(data.company);
             if (data.responses?.length > 0) {
                 setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
