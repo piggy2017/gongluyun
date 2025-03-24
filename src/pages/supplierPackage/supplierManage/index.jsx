@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-14 17:35:09
+ * @LastEditTime: 2025-03-24 14:32:59
  * @Description: 
  */
 
@@ -148,7 +148,7 @@ const Index = observer(({ store }) => {
                 <View className='supplier_list_name'>
                   <View>{item.name}</View>
                   {
-                    item.isAuth ? <View className='supplier_list_name_auth'>已认证</View> : ''
+                    item.companyVerified ? <View className='supplier_list_name_auth'>已认证</View> : ''
                   }
                 </View>
                 <View className='supplier_list_nums'>
