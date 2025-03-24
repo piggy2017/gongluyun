@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-19 10:29:50
+ * @LastEditTime: 2025-03-24 13:50:19
  * @Description: 
  */
 export default defineAppConfig({
@@ -16,7 +16,8 @@ export default defineAppConfig({
         'pages/mine/index',
         'pages/login/index',
         'pages/supplierProject/index',
-        'pages/workerIndex/index',          // 求职者首页
+        'pages/workerIndex/index',           // 求职者首页
+        'pages/channelIndex/index',          // 渠道首页
     ],
     window: {
         backgroundTextStyle: 'light',
@@ -48,6 +49,10 @@ export default defineAppConfig({
             {
                 'pagePath': 'pages/workerIndex/index',
                 "text": "首页"
+            },
+            {
+                'pagePath': 'pages/channelIndex/index',
+                "text": "供应商"
             },
             {
                 "pagePath": "pages/clue/index",

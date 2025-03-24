@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:02:33
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 15:37:33
+ * @LastEditTime: 2025-03-24 14:13:57
  * @Description: 
  */
 
@@ -48,7 +48,8 @@ const Index = observer(({ store, actCurrent }) => {
             3: '/tabbar/clue_default.webp',
             4: '/tabbar/mine_default.webp',
             5: '/tabbar/list_default.webp',
-            6: '/supplier/supplier_32.webp'
+            6: '/supplier/supplier_32.webp',
+            7: '/supplier/supplier_72.png'
         }
         return Taro.$cdnUrl + map[index]
     }
@@ -59,7 +60,8 @@ const Index = observer(({ store, actCurrent }) => {
             3: `/tabbar/clue_active.webp`,
             4: `/tabbar/mine_active.webp`,
             5: `/tabbar/list_active.webp`,
-            6: '/supplier/supplier_31.webp'
+            6: '/supplier/supplier_31.webp',
+            7: '/supplier/supplier_73.png'
         }
         return Taro.$cdnUrl + map[index]
     }
@@ -112,6 +114,19 @@ const Index = observer(({ store, actCurrent }) => {
                     });
                     break;
             }
+        } else if (role === 'CHANNEL') {    // 渠道
+            switch (e) {
+                case 0:
+                    Taro.switchTab({
+                        url: '/pages/channelIndex/index'
+                    });
+                    break;
+                case 1:
+                    Taro.switchTab({
+                        url: '/pages/mine/index'
+                    });
+                    break;
+            }
         } else if (role === 'SUPPLIER') {
             switch (e) {
                 case 0:
@@ -141,7 +156,6 @@ const Index = observer(({ store, actCurrent }) => {
         }
     }
     const getTabList = () => {
-
         if (role === 'ADMIN' || role === 'CUSTOMER') {
             return [
                 { title: '工作台', image: getdefalutIcon(1), selectedImage: getSelectIcon(1) },
@@ -156,7 +170,13 @@ const Index = observer(({ store, actCurrent }) => {
                 { title: '名单', image: getdefalutIcon(5), selectedImage: getSelectIcon(5) },
                 { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
             ]
-        } else if (role === 'SUPPLIER') {  // 供应商 并且未开通公路云
+        } else if (role === 'CHANNEL') {  // 渠道
+            return [
+                { title: '供应商', image: getdefalutIcon(7), selectedImage: getSelectIcon(7) },
+                { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
+            ]
+        }
+        else if (role === 'SUPPLIER') {  // 供应商 并且未开通公路云
             return [
                 { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
                 { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
