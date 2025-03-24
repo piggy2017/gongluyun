@@ -164,7 +164,10 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
                     </View> ||
                     didPrivacy && isNornalLogin === 1 &&
                     <View className='login_box'>
-                        <View className='login_title'><Image src={`${Taro.$baseCdnUrl}/index/guide_logo.webp`}></Image></View>
+                        <View className='login_title'>
+                            <Image src={`${Taro.$cdnUrl}/supplier/supplier_59.webp`}></Image>
+                            <View>千职万职</View>
+                        </View>
                         <View className='login_slogn'>登录后更方便使用小程序</View>
                         <Button className='logn_btn' openType='getPhoneNumber' onGetPhoneNumber={handleGetPhoneNumber}>一键登录</Button>
                         {/* <View className='other_login' onClick={() => setIsNornalLogin(2)}>其他手机号登录</View> */}

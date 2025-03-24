@@ -2,12 +2,12 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 11:59:51
+ * @LastEditTime: 2025-03-24 11:01:47
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
-import Taro, { usePullDownRefresh, useDidShow } from '@tarojs/taro';
-import { View, Text, Input, Picker, Image, Block, ScrollView } from '@tarojs/components'
+import Taro, {  } from '@tarojs/taro';
+import { View, Text, Input, Image, Block, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { debounce } from '@/util/utils'
 
@@ -19,7 +19,7 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
 
-import { indexFeeds, signUpAdd } from '@/util/api'
+import { indexFeeds } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const {
