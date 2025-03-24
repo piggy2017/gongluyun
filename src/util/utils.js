@@ -102,6 +102,7 @@ export const throttle = function (fn, delay) {
         }, delay);
     };
 };
+
 export const getTimeDetail = function (time) {
     let date = new Date(time);
     const today = new Date();
@@ -133,6 +134,8 @@ export const getTimeDetail = function (time) {
         return `${year}-${padding(month, 2)}-${padding(day, 2)}`;
     }
 }
+
+
 export const getTimeMH = function (time) {
     let date = new Date(time);
     const today = new Date();
@@ -195,6 +198,95 @@ export const selectorQueryDomInfo = (selector) => new Promise(resolve => {
         resolve(res);
     }).exec();
 });
+
+export const loadImage = async (canvas, src) => {
+    return new Promise((resolve, reject) => {
+        const img = canvas.createImage();
+        img.src = src;
+        img.onload = () => resolve(img);
+        img.onerror = (err) => reject(err);
+    });
+};
+
+export const getImageInfo = async (_src) => { // 获取图片信息
+    return new Promise((resolve, reject) => {
+        Taro.getImageInfo({
+            src: _src,
+            success: res => {
+                resolve(res.path);
+            },
+            fail: err => {
+                reject(err);
+            }
+        })
+    })
+}
+
+/**该方法用来绘制一个有填充色的圆角矩形
+ *@param cxt:canvas的上下文环境
+ *@param x:左上角x轴坐标
+ *@param y:左上角y轴坐标
+ *@param width:矩形的宽度
+ *@param height:矩形的高度
+ *@param radius:圆的半径
+ *@param fillColor:填充颜色
+ **/
+export function canvasDrawFillRoundRect(canvas, params = {
+    xx: 0,
+    yy: 0,
+    ww: 0,
+    hh: 0,
+    radius: 0,
+    fillColor: 'red'
+}) {
+    let x = params.xx;
+    let y = params.yy;
+    let width = params.ww;
+    let height = params.hh;
+    let radius = params.radius;
+    let fillColor = params.fillColor;
+
+    // 圆的直径必然要小于矩形的宽高
+    if (2 * radius > width || 2 * radius > height) {
+        return false;
+    }
+
+    canvas.save();
+    canvas.translate(x, y);
+    // 绘制圆角矩形的各个边
+    drawRoundRectPath(canvas, width, height, radius);
+    canvas.fillStyle = fillColor || "#000"; //若是给定了值就用给定的值否则给予默认值
+    canvas.fill();
+    canvas.restore();
+}
+
+function drawRoundRectPath(canvas, width, height, radius) {
+    canvas.beginPath(0);
+    // 从右下角顺时针绘制，弧度从0到1/2PI
+    canvas.arc(width - radius, height - radius, radius, 0, Math.PI / 2);
+
+    // 矩形下边线
+    canvas.lineTo(radius, height);
+
+    // 左下角圆弧，弧度从1/2PI到PI
+    canvas.arc(radius, height - radius, radius, Math.PI / 2, Math.PI);
+
+    // 矩形左边线
+    canvas.lineTo(0, radius);
+
+    // 左上角圆弧，弧度从PI到3/2PI
+    canvas.arc(radius, radius, radius, Math.PI, Math.PI * 3 / 2);
+
+    // 上边线
+    canvas.lineTo(width - radius, 0);
+
+    // 右上角圆弧
+    canvas.arc(width - radius, radius, radius, Math.PI * 3 / 2, Math.PI * 2);
+
+    // 右边线
+    canvas.lineTo(width, height - radius);
+    canvas.closePath();
+}
 
 
 //将字符串转换为对象

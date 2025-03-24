@@ -3,7 +3,7 @@
 .container {
     width: 100%;
     min-height: 100vh;
-    background: #ffffff ;
+    background: #ffffff;
     // opacity: 0.1;
     // background: linear-gradient(180deg, #E8F1FF 0%, #edf3fc00 100%) #F4F4F4;
     background-image: url($cdnUrl + '/supplier/supplier_44.webp');
@@ -191,13 +191,14 @@
         }
     }
 
-    .bottom_wrapper{
+    .bottom_wrapper {
         width: 100%;
         background-color: #FFF;
         position: fixed;
         z-index: 9;
         left: 0;
         bottom: 0;
+
         .page_bottom_btns {
             padding: 0 32rpx;
             @include flex-center(space-between);
@@ -230,6 +231,7 @@
             }
         }
     }
+
     .bottom_btn {
         width: 600rpx;
         height: 96rpx;
@@ -243,10 +245,151 @@
         font-weight: 500;
         line-height: normal;
         @include flex-center();
-        image{
+
+        image {
             width: 48rpx;
             height: 48rpx;
             margin-right: 6rpx;
+        }
+    }
+
+    .share_modal {
+        background: #00000099;
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 999;
+
+        .share_modal_wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+
+            .share_modal_swiper {
+                width: 520rpx;
+                height: 924rpx;
+                position: absolute;
+                left: 115rpx;
+                bottom: 448rpx;
+
+                .swiper_wrap_mySwiper {
+                    width: 100%;
+                    height: 100%;
+
+                    .swiper_wrap_item {
+                        width: 100%;
+                        height: 100%;
+
+                        image {
+                            width: 100%;
+                            height: 100%;
+                            border-radius: 12rpx;
+                        }
+                    }
+                }
+            }
+
+            .swiper_dots {
+                position: absolute;
+                left: 0;
+                width: 100%;
+                bottom: 396rpx;
+                @include flex-center;
+                gap: 12rpx;
+
+                .swiper_dot {
+                    width: 8rpx;
+                    height: 8rpx;
+                    flex-shrink: 0;
+                    background: #eaeaea66;
+                }
+
+                .swiper_dot_active {
+                    width: 38rpx;
+                    height: 8rpx;
+                    flex-shrink: 0;
+                    background: #EAEAEA;
+                    border-radius: 2rpx;
+                }
+            }
+
+            .share_modal_area {
+                width: 750rpx;
+                height: 346rpx;
+                border-radius: 20rpx 20rpx 0 0;
+                background: #ffffff;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+
+                .share_modal_title {
+                    padding: 38rpx 28rpx 0 28rpx;
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 34rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                    @include flex-center(space-between);
+
+                    image {
+                        width: 48rpx;
+                        height: 48rpx;
+                        flex-shrink: 0;
+                    }
+                }
+
+                .share_modal_list {
+                    margin-top: 20rpx;
+                    padding-left: 60rpx;
+                    gap: 70rpx;
+                    @include flex-center(flex-start);
+
+                    .share_modal_item {
+                        background-color: #FFF;
+                        display: flex;
+                        flex-flow: column nowrap;
+                        align-items: center;
+                        justify-content: center;
+                        border: none;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                        color: #222222;
+                        text-align: center;
+                        font-family: "PingFang SC";
+                        font-size: 28rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: normal;
+
+                        &::after {
+                            border: none;
+                        }
+
+                        image {
+                            width: 100rpx;
+                            height: 100rpx;
+                            margin-bottom: 16rpx;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .Canvas_wrapper {
+        position: absolute;
+        z-index: -10;
+        width: 750px;
+        // height: 1334px;
+        background-color: #ffffff;
+        left: -10000px;
+        top: -10000px;
+
+        .canvas_item {
+            width: 750px;
+            height: 1334px;
         }
     }
 }

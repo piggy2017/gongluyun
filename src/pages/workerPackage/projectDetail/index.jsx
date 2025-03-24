@@ -2,21 +2,22 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-19 10:08:44
+ * @LastEditTime: 2025-03-24 10:05:28
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
-import { View, Image, Text, Textarea, Button, RichText } from '@tarojs/components'
+import { View, Image, Text, Button, RichText, Block, Canvas, Swiper, SwiperItem } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { replaceNewLinesWithBr } from '@/util/utils'
+import { replaceNewLinesWithBr, getQueryString, getImageInfo, canvasDrawFillRoundRect, loadImage } from '@/util/utils'
 import { decryptData, encryptData } from '@/util/crypto'
+import drawQrcode from '@/util/drawQrcode.js'
 
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { getRecruitmentInfo, signUpAdd } from '@/util/api';
+import { getRecruitmentInfo, signUpAdd, env, bgImages } from '@/util/api';
 
 const Index = observer(({ store }) => {
     const route = useRouter();
@@ -30,23 +31,64 @@ const Index = observer(({ store }) => {
     const [detail, setDetail] = useState({});
     const [isOpened, setIsOpened] = useState(false);
 
+    const [showShareModel, setShowShareModel] = useState(false);   //  是否显示分享弹窗
+    const [showSwiper, setShowSwiper] = useState(false);           //  是否显示海报swiper
+    const [canvasBg, setCanvasBg] = useState([]);                  //  canvas背景图
+    const [codesrc, setCodesrc] = useState('');                    //  二维码图片
+    const [swiperImages, setSwiperImages] = useState([]);          //  绘制的海报swiper图片
+    const [currentSwiper, setcurrentSwiper] = useState(0);         //  当前swiper下标
+
     useEffect(() => {
-        const { inviteRole, recruitSerialCode, agentSerialCode, source } = route.params;
+        const allCanvsBgs = bgImages.map(item => getImageInfo(item));
+        Promise.all(allCanvsBgs).then(res => {
+            console.log("allCanvsBgs", res);
+            setCanvasBg(res);
+        }).catch(err => {
+            console.error("allCanvsBgs_err", err)
+        })
+    }, []);
+
+    useEffect(() => {
+        if (codesrc && canvasBg.length === 4) {
+            console.log("开始绘制最终图片", detail);
+            const swiperList = canvasBg.map((i, index) => toDrawPhoto(`canvas${index + 1}`, codesrc, i));
+            Promise.all(swiperList).then(res => {
+                console.log("swiperList", res);
+                setSwiperImages(res);
+            }).catch(err => {
+                console.error("swiperList_err", err)
+            })
+        }
+    }, [codesrc, canvasBg]);
+
+    useEffect(() => {
+        const { inviteRole, recruitSerialCode, agentSerialCode, source, q } = route.params;
         console.log("进入到岗位详情页,查看携带的参数", route.params);
         if (inviteRole === 'SEEK') {
             setRole('SEEK');
             Taro.setStorageSync('role', 'SEEK');
         }
+        if(recruitSerialCode){
+            getDetail(recruitSerialCode);
+        }
         // 缓存进入页面的参数------》管道收益
         if (source && agentSerialCode) {
             setEnterParams({ source, agentSerialCode })
         }
-        getDetail();
+        if (q) {
+            let query = getQueryString(decodeURIComponent(q));
+            console.log("项目详情解析出的二维码参数", query);
+            setEnterParams(query);
+            getDetail(query.recruitSerialCode);
+            setRole('SEEK');
+            Taro.setStorageSync('role', 'SEEK');
+          }
+        
     }, [])
 
-    const getDetail = async () => {
+    const getDetail = async (recruitSerialCode) => {
         Taro.showLoading({ title: '加载中...' });
-        const { code, data, msg } = await getRecruitmentInfo({ recruitSerialCode: route.params.recruitSerialCode });
+        const { code, data, msg } = await getRecruitmentInfo({ recruitSerialCode });
         Taro.hideLoading();
         console.log("getRecruitmentInfo", code, data);
         if (code === 200) {
@@ -54,15 +96,11 @@ const Index = observer(({ store }) => {
                 data.introductionTrans = replaceNewLinesWithBr(data.introduction);
             }
             setDetail(data);
+            if (!codesrc) {  // 如果还没绘制过二维码，则绘制
+                const res = await generateQrcode(data.recruitSerialCode);
+                setCodesrc(res);
+            }
         }
-    }
-
-    const previewImg = (e) => {
-        e.stopPropagation();
-        Taro.previewImage({
-            current: imgSrc, // 当前显示图片的http链接
-            urls: [imgSrc] // 需要预览的图片http链接列表
-        })
     }
 
     const copyDetail = () => {
@@ -123,6 +161,191 @@ const Index = observer(({ store }) => {
             path: url
         }
     })
+
+    Taro.useShareTimeline(() => {   // 分享到朋友圈
+        return {
+            title: detail.areaName + detail.recruitTitle,
+            query: `recruitSerialCode=${detail.recruitSerialCode}&inviteRole=SEEK&source=WECHAT_MINI_SHARE&agentSerialCode=${userInfo?.userSerialCode ? userInfo.userSerialCode : ''}`
+        }
+    })
+
+    const generateQrcode = async (_recruitSerialCode) => {  // 获取二维码图片
+        try {
+            const result = await new Promise((resolve, reject) => {
+                wx.createSelectorQuery()
+                    .select('#codeCanvas')
+                    .fields({ node: true, size: true })
+                    .exec(res => {
+                        if (res && res[0] && res[0].node) {
+                            resolve(res);
+                        } else {
+                            reject(new Error('Failed to get canvas node!!'));
+                        }
+                    });
+            })
+            let canvas = result[0].node;
+            let _url = env == 'prod' ? 'https://sa-test.apujiyu.com/projectDetail' : 'https://sa-test.apujiyu.com/projectDetail';
+            let _text = `${_url}?recruitSerialCode=${_recruitSerialCode}&agentSerialCode=${userInfo.userSerialCode}&inviteRole=SEEK&source=WECHAT_MINI_SHARE`;
+            drawQrcode({
+                canvas: canvas,
+                canvasId: 'codeCanvas',
+                width: 520,
+                padding: 30,
+                background: '#ffffff',
+                foreground: '#000000',
+                text: _text   //`https://sa-api.apujiyu.com/signIn?title=${_title}&recruitSerialCode=${_recruitSerialCode}`
+            })
+            Taro.hideLoading();
+
+            const _tempFilePath = await new Promise((resolve, reject) => {
+                Taro.canvasToTempFilePath({
+                    canvasId: 'codeCanvas',
+                    canvas: canvas,
+                    x: 0,
+                    y: 0,
+                    width: 520,
+                    height: 520,
+                    destWidth: 520,
+                    destHeight: 520,
+                    success(res) {
+                        resolve(res.tempFilePath);
+                    },
+                    fail(err) {
+                        reject(err);
+                    }
+                })
+            })
+            console.log('获取到的二维码地址', _tempFilePath);
+            return _tempFilePath;
+        } catch (error) {
+            console.error('Error generating QR code:', error);
+        }
+    }
+
+    const toDrawPhoto = async (canvasId, _codeSrc, _canvasBg) => {
+        try {
+            const res = await new Promise((resolve) => {
+                wx.createSelectorQuery()
+                    .select(`#${canvasId}`)
+                    .fields({ node: true, size: true })
+                    .exec(resolve);
+            });
+            console.log("res", res);
+
+            const canvas = res[0].node;
+            // 初始化画布大小
+            canvas.width = 750;
+            canvas.height = 1334;
+
+            const context = canvas.getContext('2d');
+
+            // 绘制背景图片
+            const bgImg = await loadImage(canvas, _canvasBg);
+            context.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+
+            // 绘制岗位标题
+            context.font = '43px PingFang SC';          // 设置字体大小和样式
+            context.fillStyle = '#222222';              // 设置文字颜色
+            context.textAlign = 'left';                 // 设置文本对齐方式
+            context.textBaseline = 'top';               // 设置文本基线
+            context.fillText(detail.recruitTitle.length > 14 ? detail.recruitTitle.slice(0, 14) + '...' : detail.recruitTitle, 54, 864);
+
+            // 绘制岗位薪资  
+            let metricsWidth = context.measureText(detail.recruitSalaryRange.split('元/')[0]).width;
+            context.font = '49px D-DIN-PRO';
+            context.fillStyle = '#FF5C00';
+            context.fillText(detail.recruitSalaryRange.split('元/')[0], 54, 933);
+            if (detail.recruitSalaryRange.split('元/')[1]) {
+                context.font = '28px PingFang SC';
+                context.fillStyle = '#FF5C00';
+                context.fillText('元/' + detail.recruitSalaryRange.split('元/')[1], 75 + metricsWidth, 946);
+            }
+
+            // 绘制岗位标签
+            let _tags = detail.tags ? [...detail.jobReq, ...detail.tags] : [...detail.jobReq];
+            let tagObjs = [];
+            let tagsWidth = 642;
+            let startX = 54;
+            let gap = 11;
+            for (let i = 0; i < _tags.length; i++) {
+                let obj = {
+                    text: _tags[i],
+                    textWidth: _tags[i].length * 28,
+                    boxWidth: _tags[i].length * 28 + 36,
+                }
+                tagObjs.push(obj);
+            }
+            let _tagObjswitdh = 0;
+            let finishTag = [];                                 // 最终需要绘制的tags
+            for (let i = 0; i < tagObjs.length; i++) {
+                _tagObjswitdh += tagObjs[i].boxWidth + gap;     // 计算所有标签的宽度总和
+                if (_tagObjswitdh < tagsWidth) {
+                    finishTag.push(tagObjs[i]);
+                } else {
+                    break;
+                }
+            }
+            console.log("最终需要绘制的标签finishTag:", finishTag);
+            let currentX = startX;                              // 标签矩形初始化起始位置
+            let currentTextX = startX + 18;                     // 标签文字初始化起始位置
+
+            for (let i = 0; i < finishTag.length; i++) {
+                canvasDrawFillRoundRect(context, {              // 绘制带有圆角的矩形
+                    fillColor: "#FFF6ED",
+                    radius: 4,
+                    xx: currentX, yy: 1003,
+                    ww: finishTag[i].boxWidth, hh: 45
+                });
+                currentX += finishTag[i].boxWidth + gap;        // 更新下一个标签的X坐标
+                context.font = '28px PingFang SC';
+                context.fillStyle = '#E35A0D';
+                context.fillText(finishTag[i].text, currentTextX, 1010);
+                currentTextX += finishTag[i].boxWidth + gap;    // 更新下一个文字的X坐标
+            }
+
+            // 绘制项目地区
+            context.font = '32px PingFang SC';
+            context.fillStyle = '#333333';
+            context.fillText(detail.areaName, 56, 1070);
+
+            // 绘制二维码图片
+            const codeImg = await loadImage(canvas, _codeSrc);
+            Taro.hideLoading();
+            context.drawImage(codeImg, 539, 1126, 148, 148);
+
+            // 将 canvas 绘制的图片导出为临时文件路径
+            const tempFilePath = await new Promise((resolve, reject) => {
+                Taro.canvasToTempFilePath({
+                    canvas: canvas,
+                    success: (res) => resolve(res.tempFilePath),
+                    fail: (err) => reject(err)
+                });
+            });
+            console.log("导出的图片路径tempFilePath:", tempFilePath);
+            return tempFilePath;
+        } catch (error) {
+            console.error('Error in toDrawPhoto:', error);
+        }
+    };
+
+    const previewImg = (imgSrc) => {
+        Taro.previewImage({
+            current: imgSrc,            // 当前显示图片的链接
+            urls: swiperImages          // 需要预览的图片列表
+        })
+    }
+
+    const savePhoto = (src) => {    // 保存海报
+        Taro.saveImageToPhotosAlbum({
+            filePath: src,
+            success(res) {
+                Taro.showToast({ title: '保存成功', icon: 'success', duration: 2000 })
+            },
+            fail(res) {
+                Taro.showToast({ title: res, icon: 'none', duration: 2000 })
+            }
+        })
+    }
 
     return (
         <View className='container'>
@@ -196,14 +419,14 @@ const Index = observer(({ store }) => {
                     <RichText nodes={detail.introductionTrans}></RichText>
                 </View>
                 {
-                    detail.jobImages &&
-                    <View className='job_desc_images'>
-                        <View onClick={() => previewImg()} className='job_desc_images_i'></View>
-                        <View onClick={() => previewImg()} className='job_desc_images_i'></View>
-                        <View onClick={() => previewImg()} className='job_desc_images_i'></View>
-                        <View onClick={() => previewImg()} className='job_desc_images_i'></View>
-                        <View onClick={() => previewImg()} className='job_desc_images_i'></View>
-                    </View>
+                    // detail.jobImages &&
+                    // <View className='job_desc_images'>
+                    //     <View onClick={() => previewImg()} className='job_desc_images_i'></View>
+                    //     <View onClick={() => previewImg()} className='job_desc_images_i'></View>
+                    //     <View onClick={() => previewImg()} className='job_desc_images_i'></View>
+                    //     <View onClick={() => previewImg()} className='job_desc_images_i'></View>
+                    //     <View onClick={() => previewImg()} className='job_desc_images_i'></View>
+                    // </View>
                 }
                 <View className='line_hr'></View>
                 <View className='job_desc_compony'>
@@ -215,10 +438,14 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View className='page_bottom_btns'>
-                    <Button className='btn_item' open-type='share'>
+                    {/* <Button className='btn_item' open-type='share'>
                         <Image src={`${Taro.$cdnUrl}/supplier/supplier_52.webp`}></Image>
                         <View>分享</View>
-                    </Button>
+                    </Button> */}
+                    <View className='btn_item' onClick={() => setShowShareModel(true)}>
+                        <Image src={`${Taro.$cdnUrl}/supplier/supplier_52.webp`}></Image>
+                        <View>分享</View>
+                    </View>
                     <View className='bottom_btn' onClick={signUpFunc}>
                         <Image src={`${Taro.$cdnUrl}/supplier/supplier_43.webp`}></Image>
                         <View>电话咨询</View>
@@ -227,6 +454,90 @@ const Index = observer(({ store }) => {
 
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
+
+            <Block>
+                {
+                    showShareModel &&
+                    <View className='share_modal'>
+                        <View className='share_modal_wrapper'>
+                            {
+                                showSwiper && swiperImages.length > 0 &&
+                                <>
+                                    <View className='share_modal_swiper'>
+                                        <Swiper
+                                            className='swiper_wrap_mySwiper'
+                                            circular
+                                            current={currentSwiper} onChange={(e) => setcurrentSwiper(e.detail.current)}
+                                        >
+                                            {
+                                                swiperImages.map((item, index) => {
+                                                    return (
+                                                        <SwiperItem className='swiper_wrap_item' key={index} onClick={() => previewImg(item)}>
+                                                            <Image src={item}></Image>
+                                                        </SwiperItem>
+                                                    )
+                                                })
+                                            }
+                                        </Swiper>
+                                    </View>
+                                    <View className='swiper_dots'>
+                                        {
+                                            swiperImages.map((item, index) => {
+                                                return (
+                                                    <View className={currentSwiper === index ? 'swiper_dot swiper_dot_active' : 'swiper_dot'} key={index}></View>
+                                                )
+                                            })
+                                        }
+                                    </View>
+                                </>
+                            }
+
+                            <View className='share_modal_area'>
+                                <View className='share_modal_title'>
+                                    <View>分享至</View>
+                                    <Image src={`${Taro.$cdnUrl}/supplier/supplier_66.webp`} onClick={() => {
+                                        setShowShareModel(false);
+                                        setShowSwiper(false);
+                                    }}></Image>
+                                </View>
+                                <View className='share_modal_list'>
+                                    <Button className='share_modal_item' open-type='share'>
+                                        <Image src={`${Taro.$cdnUrl}/supplier/supplier_63.webp`}></Image>
+                                        <View>微信好友</View>
+                                    </Button>
+                                    <View className='share_modal_item' onClick={() => {
+                                        Taro.showModal({ title: '提示', content: '请点击右上角“...”选择分享到朋友圈', showCancel: false });
+                                    }}>
+                                        <Image src={`${Taro.$cdnUrl}/supplier/supplier_64.webp`}></Image>
+                                        <View>朋友圈</View>
+                                    </View>
+                                    {
+                                        showSwiper && swiperImages.length > 0 &&
+                                        <View className='share_modal_item' onClick={() => savePhoto(swiperImages[currentSwiper])}>
+                                            <Image src={`${Taro.$cdnUrl}/supplier/supplier_65.webp`}></Image>
+                                            <View>保存图片</View>
+                                        </View> ||
+                                        <View className='share_modal_item' onClick={() => setShowSwiper(true)}>
+                                            <Image src={`${Taro.$cdnUrl}/supplier/supplier_67.webp`}></Image>
+                                            <View>生成海报</View>
+                                        </View>
+                                    }
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                }
+            </Block>
+
+            <Block>
+                <View className='Canvas_wrapper'>
+                    <Canvas style="width: 520px; height: 520px;" className='codeCanvas' id='codeCanvas' type='2d'></Canvas>
+                    <Canvas type='2d' id='canvas1' className='canvas_item'></Canvas>
+                    <Canvas type='2d' id='canvas2' className='canvas_item'></Canvas>
+                    <Canvas type='2d' id='canvas3' className='canvas_item'></Canvas>
+                    <Canvas type='2d' id='canvas4' className='canvas_item'></Canvas>
+                </View>
+            </Block>
 
             <Taro.GlobalLogin isOpened={isOpened} onClose={onClose} />
         </View>
