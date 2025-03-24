@@ -356,6 +356,21 @@
         }
     }
 
+    .job_desc_images {
+        margin-top: 20rpx;
+        width: 720rpx;
+        margin-left: 30rpx;
+        overflow-x: scroll;
+        white-space: nowrap;
+        height: 200rpx;
+
+        .job_desc_images_i {
+            width: 200rpx;
+            height: 200rpx;
+            display: inline-block;
+            margin-right: 16rpx;
+        }
+    }
 
     .project_btns {
         width: 100%;

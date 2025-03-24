@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-24 13:53:53
+ * @LastEditTime: 2025-03-24 15:03:11
  * @Description: 
  */
 
@@ -85,13 +85,13 @@ const Index = observer(({ store }) => {
                     setMyPermissions();
                     getSupplierCompanyInfo();      // 检查用户是否是供应商
                     setTimeout(() => {
-                        // Taro.redirectTo({ url: '/pages/loginPackage/chooseRole/index' })
+                        Taro.redirectTo({ url: '/pages/loginPackage/chooseRole/index' })
 
-                        Taro.setStorageSync('role', 'CHANNEL');
-                        setRole('CHANNEL');
-                        Taro.switchTab({
-                            url: '/pages/channelIndex/index'
-                        })
+                        // Taro.setStorageSync('role', 'CHANNEL');
+                        // setRole('CHANNEL');
+                        // Taro.switchTab({
+                        //     url: '/pages/channelIndex/index'
+                        // })
                     }, 300);
                 } else {
                     Taro.showToast({ title: result.msg, icon: "none", duration: 2000 })

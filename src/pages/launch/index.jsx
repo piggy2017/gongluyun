@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-24 14:15:16
+ * @LastEditTime: 2025-03-24 15:03:01
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -19,12 +19,12 @@ const Index = observer(({ store }) => {
     useEffect(() => {
         console.log("启动页 认证状态 role:", role);
         setTimeout(() => {
-            Taro.setStorageSync('role', 'CHANNEL');
-            setRole('CHANNEL');
-            Taro.switchTab({
-                url: '/pages/channelIndex/index'
-            })
-            return;
+            // Taro.setStorageSync('role', 'CHANNEL');
+            // setRole('CHANNEL');
+            // Taro.switchTab({
+            //     url: '/pages/channelIndex/index'
+            // })
+            // return;
 
             console.log(1)
             if (!isLogin || !token) {  // 未登录

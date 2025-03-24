@@ -3,7 +3,6 @@
 .container {
     width: 100%;
     min-height: 100vh;
-    background: #FFF;
     background: #F4F4F4;
 
     .project_group {
@@ -63,7 +62,7 @@
                     text-align: right;
                 }
 
-                
+
             }
         }
 
@@ -569,6 +568,69 @@
 
     }
 
+    .project_group_imgs {
+        width: 710rpx;
+        flex-shrink: 0;
+        border-radius: 20rpx;
+        background: #FFF;
+        margin: 20rpx auto 0 auto;
+        padding-bottom: 50rpx;
+
+        .project_group_imgs_title {
+            color: #666666;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            padding: 50rpx 0 0 44rpx;
+        }
+
+        .project_group_imgs_wrap {
+            
+            padding: 23rpx 28rpx 0 34rpx;
+            display: flex;
+            flex-flow: row wrap;
+            gap: 44rpx 12rpx;
+
+            .add_img {
+                width: 208rpx;
+                height: 208rpx;
+                background: #F4F4F4;
+                border-radius: 12rpx;
+                @include flex-center;
+
+                image {
+                    width: 48rpx;
+                    height: 48rpx;
+                }
+            }
+
+            .add_img_wrap {
+                width: 208rpx;
+                height: 208rpx;
+                border-radius: 12rpx;
+                overflow: hidden;
+                position: relative;
+                @include flex-center;
+
+                .add_img_item {
+                    width: 208rpx;
+                    height: 208rpx;
+                }
+
+                .add_img_delete {
+                    width: 40rpx;
+                    height: 40rpx;
+                    flex-shrink: 0;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                }
+            }
+        }
+    }
+
     .project_item_border {
         position: relative;
 
@@ -611,7 +673,6 @@
             background-color: #1678FF;
         }
     }
-
 
     .role_init_layout {
         .at-float-layout__container {

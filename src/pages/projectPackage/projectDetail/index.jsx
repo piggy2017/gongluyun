@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-21 17:54:54
+ * @LastEditTime: 2025-03-24 15:49:46
  * @Description: 
  */
 
@@ -396,8 +396,8 @@ const Index = observer(({ store }) => {
 
   const previewImg = (imgSrc) => {
     Taro.previewImage({
-      current: imgSrc,            // 当前显示图片的链接
-      urls: swiperImages          // 需要预览的图片列表
+      current: imgSrc,                // 当前显示图片的链接
+      urls: detail.jobImages          // 需要预览的图片列表
     })
   }
 
@@ -622,6 +622,19 @@ const Index = observer(({ store }) => {
           <View className='job_introduce'>
             <RichText nodes={detail.privateIntroductions}></RichText>
           </View>
+        </View>
+      }
+
+      {
+        detail.jobImages?.length > 0 &&
+        <View className='job_desc_images'>
+          {
+            detail.jobImages.map((item, index) => {
+              return (
+                <Image onClick={() => previewImg(item)} className='job_desc_images_i' key={index}></Image>
+              )
+            })
+          }
         </View>
       }
 

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-24 10:05:28
+ * @LastEditTime: 2025-03-24 15:56:58
  * @Description: 
  */
 
@@ -68,7 +68,7 @@ const Index = observer(({ store }) => {
             setRole('SEEK');
             Taro.setStorageSync('role', 'SEEK');
         }
-        if(recruitSerialCode){
+        if (recruitSerialCode) {
             getDetail(recruitSerialCode);
         }
         // 缓存进入页面的参数------》管道收益
@@ -82,8 +82,8 @@ const Index = observer(({ store }) => {
             getDetail(query.recruitSerialCode);
             setRole('SEEK');
             Taro.setStorageSync('role', 'SEEK');
-          }
-        
+        }
+
     }, [])
 
     const getDetail = async (recruitSerialCode) => {
@@ -328,10 +328,10 @@ const Index = observer(({ store }) => {
         }
     };
 
-    const previewImg = (imgSrc) => {
+    const previewImg = (imgSrc, list) => {
         Taro.previewImage({
             current: imgSrc,            // 当前显示图片的链接
-            urls: swiperImages          // 需要预览的图片列表
+            urls: list          // 需要预览的图片列表
         })
     }
 
@@ -419,14 +419,16 @@ const Index = observer(({ store }) => {
                     <RichText nodes={detail.introductionTrans}></RichText>
                 </View>
                 {
-                    // detail.jobImages &&
-                    // <View className='job_desc_images'>
-                    //     <View onClick={() => previewImg()} className='job_desc_images_i'></View>
-                    //     <View onClick={() => previewImg()} className='job_desc_images_i'></View>
-                    //     <View onClick={() => previewImg()} className='job_desc_images_i'></View>
-                    //     <View onClick={() => previewImg()} className='job_desc_images_i'></View>
-                    //     <View onClick={() => previewImg()} className='job_desc_images_i'></View>
-                    // </View>
+                    detail.jobImages &&
+                    <View className='job_desc_images'>
+                        {
+                            detail.jobImages.map((item, index) => {
+                                return (
+                                    <Image onClick={() => previewImg(item, detail.jobImages)} className='job_desc_images_i' key={index}></Image>
+                                )
+                            })
+                        }
+                    </View>
                 }
                 <View className='line_hr'></View>
                 <View className='job_desc_compony'>
@@ -472,7 +474,7 @@ const Index = observer(({ store }) => {
                                             {
                                                 swiperImages.map((item, index) => {
                                                     return (
-                                                        <SwiperItem className='swiper_wrap_item' key={index} onClick={() => previewImg(item)}>
+                                                        <SwiperItem className='swiper_wrap_item' key={index} onClick={() => previewImg(item, swiperImages)}>
                                                             <Image src={item}></Image>
                                                         </SwiperItem>
                                                     )

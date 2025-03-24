@@ -120,6 +120,13 @@ const Index = observer(({ store }) => {
         })
     }
 
+    const previewImg = (imgSrc) => {
+        Taro.previewImage({
+            current: imgSrc,                // 当前显示图片的链接
+            urls: detail.jobImages          // 需要预览的图片列表
+        })
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='transparent' title='项目详情'></Navbar>
@@ -282,6 +289,19 @@ const Index = observer(({ store }) => {
                         </View>
                     }
                 </>
+            }
+
+            {
+                detail.jobImages?.length > 0 &&
+                <View className='job_desc_images'>
+                    {
+                        detail.jobImages.map((item, index) => {
+                            return (
+                                <Image onClick={() => previewImg(item)} className='job_desc_images_i' key={index}></Image>
+                            )
+                        })
+                    }
+                </View>
             }
 
             <View style={`height:90px;`}></View>
