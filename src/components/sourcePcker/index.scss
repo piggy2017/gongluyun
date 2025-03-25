@@ -3,6 +3,7 @@
     .at-float-layout__container {
         height: auto !important;
         min-height: auto !important;
+        max-height: 900rpx !important;
         overflow: hidden;
         border-radius: 20rpx 20rpx 0 0 !important;
 
@@ -27,7 +28,7 @@
 
             .filter_title {
                 @include flex-center(space-between);
-                padding: 24rpx 0 40rpx 38rpx;
+                padding: 24rpx 28rpx 40rpx 38rpx;
                 color: #222222;
                 font-family: "PingFang SC";
                 font-size: 34rpx;

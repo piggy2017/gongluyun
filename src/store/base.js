@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-04 11:24:31
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-28 11:02:03
+ * @LastEditTime: 2025-03-25 11:21:22
  * @Description: 用于存放系统的相关信息
  */
 import { observable,makeAutoObservable } from 'mobx'
@@ -13,7 +13,7 @@ const baseStore = observable({
     statusTitleHeight: 0,      // 导航栏中状态栏的高度
     contenTitleHeight: 0,      // 导航栏中内容区域的高度
     tabbarHeight: 0,           // 底部tabbar的高度
-    bottomSafeAreaHeight: 0,   // 底部安全区域高度
+    bottomSafeAreaHeight: 20,  // 底部安全区域高度
     windowWidth: 0,
     platform: '',              // 平台类型  ios=iOS微信（包含 iPhone、iPad）  android=Android微信  windows=Windows微信  mac=macOS微信  devtools=微信开发者工具
     setSystemInfo() {          // 在小程序的app.jsx调用
@@ -21,7 +21,7 @@ const baseStore = observable({
         let res = Taro.getSystemInfoSync();
         console.log("获取系统信息", res);
         this.systemInfo = res;
-        this.bottomSafeAreaHeight = res.screenHeight - res.safeArea.bottom;
+        this.bottomSafeAreaHeight = res.screenHeight - res.safeArea.bottom >= 20 ? res.screenHeight - res.safeArea.bottom : 20;
         this.windowWidth = res.windowWidth;
         this.platform = (res.platform === 'windows' || res.platform === 'mac' || res.platform === 'devtools') ? 'pc' : 'ph'
 
