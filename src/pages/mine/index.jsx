@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 14:58:52
+ * @LastEditTime: 2025-03-27 15:03:21
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -149,16 +149,13 @@ const Index = observer(({ store }) => {
       return;
     }
     setCurrentRoles(currentRoles.map((item, i) => {
-      if (i === index) {
-        item.isSelected = true;
-      } else {
-        item.isSelected = false;
-      }
+      item.isSelected = i === index ? true : false;
       return item;
     }))
 
-
+    Taro.showLoading({ title: '切换中...', mask: true });
     const { code, data, msg } = await switchRoles({ userRole: obj.roleName });
+    Taro.hideLoading();
     console.log("切换角色:", code, data, msg);
     if (code === 200) {
       setRole(data);
@@ -167,10 +164,7 @@ const Index = observer(({ store }) => {
         url: data === 'CHANNEL' ? '/pages/channelIndex/index' : '/pages/index/index'
       })
     } else {
-      Taro.showToast({
-        title: msg,
-        icon: 'none'
-      })
+      Taro.showToast({ title: msg, icon: 'none' })
     }
     setShowRoleModel(false);
   }
