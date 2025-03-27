@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 15:03:21
+ * @LastEditTime: 2025-03-27 17:58:27
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -119,16 +119,16 @@ const Index = observer(({ store }) => {
       })
       setToken('')
       setIsLogin(0)
-      setRole('SEEK');
+      setRole('');
       setUserInfo('');
       setCompanyVerified(false);
       setLoginoutSure(false);
       Taro.setStorageSync('token', '');
       Taro.setStorageSync('isLogin', 0);
-      Taro.setStorageSync('role', 'SEEK');
+      Taro.setStorageSync('role', '');
       Taro.setStorageSync('userInfo', '');
       Taro.setStorageSync('companyInfo', '');
-      Taro.redirectTo({ url: '/pages/login/index' })
+      Taro.redirectTo({ url: '/pages/launch/index' })
     }
   }
 
