@@ -356,6 +356,21 @@
         }
     }
 
+    .job_desc_images {
+        margin-top: 20rpx;
+        width: 720rpx;
+        margin-left: 30rpx;
+        overflow-x: scroll;
+        white-space: nowrap;
+        height: 200rpx;
+
+        .job_desc_images_i {
+            width: 200rpx;
+            height: 200rpx;
+            display: inline-block;
+            margin-right: 16rpx;
+        }
+    }
 
     .project_btns {
         width: 100%;
@@ -485,6 +500,147 @@
                     font-weight: 400;
                 }
             }
+        }
+    }
+
+    .share_modal {
+        background: #00000099;
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 999;
+
+        .share_modal_wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+
+            .share_modal_swiper {
+                width: 520rpx;
+                height: 924rpx;
+                position: absolute;
+                left: 115rpx;
+                bottom: 448rpx;
+
+                .swiper_wrap_mySwiper {
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 12rpx;
+
+                    .swiper_wrap_item {
+                        width: 100%;
+                        height: 100%;
+                        border-radius: 12rpx;
+
+                        image {
+                            width: 100%;
+                            height: 100%;
+                            border-radius: 12rpx;
+                        }
+                    }
+                }
+            }
+
+            .swiper_dots {
+                position: absolute;
+                left: 0;
+                width: 100%;
+                bottom: 396rpx;
+                @include flex-center;
+                gap: 12rpx;
+
+                .swiper_dot {
+                    width: 8rpx;
+                    height: 8rpx;
+                    flex-shrink: 0;
+                    background: #eaeaea66;
+                }
+
+                .swiper_dot_active {
+                    width: 38rpx;
+                    height: 8rpx;
+                    flex-shrink: 0;
+                    background: #EAEAEA;
+                }
+            }
+
+            .share_modal_area {
+                width: 750rpx;
+                height: 346rpx;
+                border-radius: 20rpx 20rpx 0 0;
+                background: #ffffff;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+
+                .share_modal_title {
+                    padding: 38rpx 28rpx 0 28rpx;
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 34rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                    @include flex-center(space-between);
+
+                    image {
+                        width: 48rpx;
+                        height: 48rpx;
+                        flex-shrink: 0;
+                    }
+                }
+
+                .share_modal_list {
+                    margin-top: 20rpx;
+                    padding-left: 60rpx;
+                    gap: 70rpx;
+                    @include flex-center(flex-start);
+
+                    .share_modal_item {
+                        background-color: #FFF;
+                        display: flex;
+                        flex-flow: column nowrap;
+                        align-items: center;
+                        justify-content: center;
+                        border: none;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                        color: #222222;
+                        text-align: center;
+                        font-family: "PingFang SC";
+                        font-size: 28rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: normal;
+
+                        &::after {
+                            border: none;
+                        }
+
+                        image {
+                            width: 100rpx;
+                            height: 100rpx;
+                            margin-bottom: 16rpx;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .Canvas_wrapper {
+        position: absolute;
+        z-index: -10;
+        width: 750px;
+        // height: 1334px;
+        background-color: #ffffff;
+        left: -10000px;
+        top: -10000px;
+
+        .canvas_item {
+            width: 750px;
+            height: 1334px;
         }
     }
 }

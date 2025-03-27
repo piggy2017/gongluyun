@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 10:51:21
+ * @LastEditTime: 2025-03-27 16:25:53
  * @Description: 
  */
 
@@ -27,7 +27,7 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { isLogin, companyVerified, filterJobTypes, setFilterJobTypes },
+        userStore: { isLogin, companyVerified, filterJobTypes, setFilterJobTypes, myPermissions },
     } = store
 
     const [searchValue, setSearchValue] = useState('');
@@ -157,7 +157,10 @@ const Index = observer(({ store }) => {
                             }}
                             value={searchValue}></Input>
                     </View>
-                    <Image className='add_icon' onClick={() => Taro.navigateTo({ url: '/pages/newPackage/newWorker/index?entryChannel=TALENT_POOL' })} src={`${Taro.$cdnUrl}/index/index_icon3.webp`}></Image>
+                    {
+                        myPermissions.includes('6') && 
+                        <Image className='add_icon' onClick={() => Taro.navigateTo({ url: '/pages/newPackage/newWorker/index?entryChannel=TALENT_POOL' })} src={`${Taro.$cdnUrl}/index/index_icon3.webp`}></Image>
+                    }
                 </View>
             </View>
 

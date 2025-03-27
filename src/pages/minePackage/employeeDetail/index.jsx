@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 15:57:20
+ * @LastEditTime: 2025-03-27 11:08:35
  * @Description: 
  */
 
@@ -10,7 +10,7 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Block, Text, Input } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { getRoleName } from '@/util/utils'
 import { encryptData } from '@/util/crypto'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
@@ -117,7 +117,6 @@ const Index = observer(({ store }) => {
         Taro.navigateTo({ url: `/pages/minePackage/editEmployee/index?userSerialCode=${userSerialCode}` });
     }
 
-
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='transparent' title=''></Navbar>
@@ -133,12 +132,31 @@ const Index = observer(({ store }) => {
                     <View className='info_item'>
                         <Image src={`${Taro.$cdnUrl}/index/index_icon17.webp`}></Image>
                         <View className='info_item_label'>手机号码</View>
-                        <View className='info_item_value'>{currentInfo.phone}</View>
+                        <View className='info_item_value info_item_value_phone' onClick={() => {
+                            Taro.makePhoneCall({ phoneNumber: currentInfo.phone })
+                        }}>{currentInfo.phone}</View>
                     </View>
+                    {
+                        currentInfo.deptIds &&
+                        <View className='info_item'>
+                            <Image src={`${Taro.$cdnUrl}/supplier/supplier_78.webp`}></Image>
+                            <View className='info_item_label'>站点</View>
+                            <View className='info_item_value'>已选{currentInfo.deptIds.length}个站点</View>
+                        </View>
+                    }
+
                     <View className='info_item'>
                         <Image src={`${Taro.$cdnUrl}/index/index_icon18.webp`}></Image>
                         <View className='info_item_label'>角色</View>
-                        <View className='info_item_value'>{currentInfo.roleName}</View>
+                        <View className='info_item_value'>
+                            {
+                                currentInfo?.roles?.map((item, index) => {
+                                    return (
+                                        <Text key={index}>{getRoleName(item.roleId)}{index == currentInfo.roles.length - 1 ? '' : '、'}</Text>
+                                    )
+                                })
+                            }
+                        </View>
                     </View>
                     <View className='info_item'>
                         <Image src={`${Taro.$cdnUrl}/index/index_icon19.webp`}></Image>
@@ -159,7 +177,6 @@ const Index = observer(({ store }) => {
                 </View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
-
 
             <Block>
                 <AtFloatLayout catchMove className='role_init_layout' isOpened={showEditModel} onClose={() => { setShowEditModel(false) }}>

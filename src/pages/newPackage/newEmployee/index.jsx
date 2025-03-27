@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 17:18:15
+ * @LastEditTime: 2025-03-27 14:31:57
  * @Description: 
  */
 
@@ -24,30 +24,43 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { bottomSafeAreaHeight },
         userStore: { companyInfo, roles, permissions },
-        businessStore: { onSiteProjectList, setOnSiteProjectList },
+        businessStore: { onSiteProjectList, setOnSiteProjectList, siteObj, setSiteObj },
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const [formData, setFormData] = useState({});
     const [ispassword, setIsPassword] = useState(true);
 
     const [showRoleModel, setShowRoleModel] = useState(false);
-    const [roleList, setRoleList] = useState([
-        { roleId: '1', roleName: '管理员' },
-        { roleId: '2', roleName: '客服' },
-        { roleId: '3', roleName: '驻场' }
-    ]);
+    const [roleList, setRoleList] = useState([]);
+
+    const [chooseRoles, setChooseRoles] = useState([]);       // 当前选中的角色id
 
     const [permissionList, setPermissionList] = useState([]);
 
     const [showLimitModel, setShowLimitModel] = useState(false);
 
     useEffect(() => {
-        console.log("主场 角色选择的岗位:", onSiteProjectList);
-    }, [onSiteProjectList])
+        console.log("permissionList发生改变,自动计算权限:", permissionList);
+        submitPermission();
+    }, [permissionList])
+
+
+    useEffect(() => {
+        console.log("rolesrolesroles", roles);
+        if (roles?.length > 0) {
+            setRoleList(roles);
+            let _list = JSON.parse(JSON.stringify(roles));
+            for (let i = 0; i < _list.length; i++) {
+                _list[i].isSelected = false;
+            }
+            setRoleList(_list);
+        }
+    }, [roles])
 
     useEffect(() => {
         return () => {
             setOnSiteProjectList([]);
+            setSiteObj([]);
         }
     }, [])
 
@@ -86,16 +99,16 @@ const Index = observer(({ store }) => {
 
     const submitPermission = () => {
         let _permIds = [];
-        let _permNames = [];
+        // let _permNames = [];
         for (let i = 0; i < permissionList.length; i++) {
             for (let j = 0; j < permissionList[i].childPerms.length; j++) {
                 if (permissionList[i].childPerms[j].selected) {
                     _permIds.push(permissionList[i].childPerms[j].permId);
-                    _permNames.push(permissionList[i].childPerms[j].permName);
+                    // _permNames.push(permissionList[i].childPerms[j].permName);
                 }
             }
         }
-        setFormData({ ...formData, authority: _permNames, permIds: _permIds });
+        setFormData({ ...formData, permIds: _permIds });  // authority: _permNames, 
         setShowLimitModel(false);
     }
 
@@ -105,9 +118,14 @@ const Index = observer(({ store }) => {
     }
 
     const submitFunc = throttle(async () => {
+        console.log("chooseRoles", chooseRoles);
+        console.log("roleList", roleList);
+
         let params = {
             ...formData,
-            companySerialCode: companyInfo.companySerialCode
+            companySerialCode: companyInfo.companySerialCode,
+            roleIds: chooseRoles.map(item => item.roleId),
+            deptIds: siteObj.length > 0 ? siteObj : [],
         }
         console.log("params", params);
         const errorMessages = [
@@ -115,19 +133,19 @@ const Index = observer(({ store }) => {
             !params.phone && '手机号码不能为空',
             !params.password && '密码不能为空',
             !params.subPassword && '请再次输入密码',
-            !params.roleId && '请分配角色',
+            !params.roleIds.length && '请分配角色',
         ].filter(Boolean);
-
-        if (params.roleId == '3') {
-            params.contractsSerialCodes = onSiteProjectList;
-        }
-
         if (errorMessages.length > 0) {
             return Taro.showToast({
                 title: errorMessages[0],
                 icon: 'none',
             })
         }
+
+        if (params.roleIds.includes('3')) {  // 驻场
+            params.contractsSerialCodes = onSiteProjectList;
+        }
+
         if (params.phone.length != 11) {
             return Taro.showToast({ title: '无效手机号码', icon: 'none', })
         }
@@ -137,6 +155,8 @@ const Index = observer(({ store }) => {
         if (params.password !== params.subPassword) {
             return Taro.showToast({ title: '两次密码输入不一致', icon: 'none', })
         }
+        console.log("params        return_", params);
+        // return
         Taro.showLoading({ title: '提交中...', mask: true });
         params.password = encryptData(params.password);
         if (formData.authority?.length > 0) {
@@ -144,6 +164,7 @@ const Index = observer(({ store }) => {
         } else {
             params.permissionNames = '';
         }
+
         const { code, data, msg } = await companyAddAccount(params);
         Taro.hideLoading();
         console.log("companyAddAccount", code, data);
@@ -156,6 +177,45 @@ const Index = observer(({ store }) => {
             Taro.showToast({ title: msg, icon: 'none' });
         }
     }, 200)
+
+    const chooseRoleFunc = (obj, index) => {
+        console.log("选择角色:", obj);
+        if (obj.isSelected) {   // 取消选中
+            setChooseRoles(chooseRoles => {
+                let list = chooseRoles.filter(item => item.roleId !== obj.roleId);
+                return list
+            })
+        } else {
+            if (chooseRoles.length > 0) {
+                let _hasAdmin = chooseRoles.some(item => item.roleId == '1');
+                if (_hasAdmin || obj.roleId == '1') {
+                    return Taro.showToast({ title: '管理员角色不能和其他角色一起选', icon: 'none', });
+                }
+            }
+            if (obj.roleId != '1') {  // 非管理员角色,默认的权限模板
+                setPermissionList(permissionList => {
+                    for (let i = 0; i < permissionList.length; i++) {
+                        for (let j = 0; j < permissionList[i].childPerms.length; j++) {
+                            if (obj.defaultPermissions.includes(permissionList[i].childPerms[j].permId)) {
+                                permissionList[i].childPerms[j].selected = true;
+                            }
+                        }
+                    }
+                    console.log("permissionList", permissionList);
+                    submitPermission();
+                    return permissionList;
+                })
+            }
+
+            setChooseRoles(chooseRoles => {
+                return [...chooseRoles, obj];
+            })
+        }
+        setRoleList(list => {
+            list[index].isSelected = !list[index].isSelected;
+            return [...list];
+        })
+    }
 
     return (
         <View className='container'>
@@ -209,25 +269,44 @@ const Index = observer(({ store }) => {
             <View className='add_title'>账号权限</View>
             <View className='employee_group_2'>
                 <View className='employee_item'>
+                    <View className='employee_item_label'>站点</View>
+                    <View className='employee_item_right' onClick={() => {
+                        Taro.navigateTo({ url: '/pages/newPackage/setSite/index' })
+                    }}>
+                        <View className={`${siteObj.length > 0 ? 'option_item_active' : 'option_item_text'}`}>
+                            {siteObj.length > 0 ? `已选${siteObj.length}个站点` : '请选择站点'}
+                        </View>
+                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                    </View>
+                </View>
+
+                <View className='employee_item'>
                     <View className='employee_item_label'>角色</View>
                     <View className='employee_item_right' onClick={() => { setShowRoleModel(true) }}>
-                        <View className={`${formData.roleId ? 'option_item_active' : 'option_item_text'}`}>{formData.roleId ? formData.roleName : '请选择'}</View>
+                        <View className={`${chooseRoles.length > 0 ? 'option_item_active' : 'option_item_text'}`}>
+                            {
+                                chooseRoles.length === 0 && '请选择角色' ||
+                                chooseRoles.map((item, index) => {
+                                    return <Text key={index}>{item.roleName}{index == chooseRoles.length - 1 ? '' : ' '}</Text>
+                                })
+                            }
+                        </View>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
                 {
-                    formData.roleId != '1' &&
+                    !chooseRoles.some(item => item.roleId == '1') &&  // 非管理员账号才能选择权限
                     <View className='employee_item'>
                         <View className='employee_item_label'>权限</View>
                         <View className='employee_item_right' onClick={() => { setShowLimitModel(true) }}>
-                            <View className={`${(formData.authority && formData.authority.length > 0) ? 'option_item_active' : 'option_item_text'}`}>{(formData.authority && formData.authority.length > 0) ? formData.authority.join('·') : '请选择'}</View>
+                            <View className={`${(formData.permIds?.length > 0) ? 'option_item_active' : 'option_item_text'}`}>{(formData.permIds && formData.permIds.length > 0) ? `已选${formData.permIds.length}个权限` : '请选择权限'}</View>
                             <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                         </View>
                     </View>
                 }
 
                 {
-                    formData.roleId == '3' &&  // 驻场
+                    chooseRoles.length > 0 && chooseRoles.some(item => item.roleId == '3') &&  // 驻场
                     <View className='employee_item'>
                         <View className='employee_item_label'>绑定项目</View>
                         <View className='employee_item_right' onClick={() => {
@@ -244,7 +323,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={() => submitFunc()} className={`post_btn ${(formData.name && formData.phone && formData.password && formData.subPassword && formData.roleId) ? 'post_btn_active' : ''}`}>保存</View>
+                <View onClick={() => submitFunc()} className={`post_btn ${(formData.name && formData.phone && formData.password && formData.subPassword && chooseRoles.length > 0) ? 'post_btn_active' : ''}`}>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 
@@ -262,13 +341,8 @@ const Index = observer(({ store }) => {
                                         return (
                                             <View
                                                 key={index}
-                                                className={`filter_wrapper_item ${item.roleId === formData.roleId ? 'filter_wrapper_item_active' : ''}`}
-                                                onClick={() => {
-                                                    setFormData({ ...formData, roleId: item.roleId, roleName: item.roleName });
-                                                    setTimeout(() => {
-                                                        setShowRoleModel(false)
-                                                    }, 300);
-                                                }}
+                                                className={`filter_wrapper_item ${item.isSelected ? 'filter_wrapper_item_active' : ''}`}
+                                                onClick={() => chooseRoleFunc(item, index)}
                                             >{item.roleName}</View>
                                         )
                                     })

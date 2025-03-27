@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 15:02:03
+ * @LastEditTime: 2025-03-27 16:24:18
  * @Description: 
  */
 
@@ -450,20 +450,30 @@ const Index = observer(({ store }) => {
                 <View className='search_total'>
                     <View className='search_total_left'>共计 <Text>{totalCount}</Text> 人</View>
                     <View className='search_total_right_wrap'>
-                        <View className='search_total_right_item' onClick={goAddWorker}>
-                            <Image src={`${Taro.$cdnUrl}/index/index_icon48.webp`}></Image>
-                            <View>新增</View>
-                        </View>
-                        <View className='search_total_right_item' onClick={() => {
-                            if (role === 'ADMIN') {
-                                exportFunc();
-                            } else {
-                                exportAllFunc();
-                            }
-                        }}>
-                            <Image src={`${Taro.$cdnUrl}/index/index_icon49.webp`}></Image>
-                            <View>导出</View>
-                        </View>
+
+                        {
+                            myPermissions.includes('12') &&
+                            <View className='search_total_right_item' onClick={goAddWorker}>
+                                <Image src={`${Taro.$cdnUrl}/index/index_icon48.webp`}></Image>
+                                <View>新增</View>
+                            </View>
+                        }
+                        {
+                            myPermissions.includes('20') &&
+                            <>
+                                <View className='search_total_right_item' onClick={() => {
+                                    if (role === 'ADMIN') {
+                                        exportFunc();
+                                    } else {
+                                        exportAllFunc();
+                                    }
+                                }}>
+                                    <Image src={`${Taro.$cdnUrl}/index/index_icon49.webp`}></Image>
+                                    <View>导出</View>
+                                </View>
+                            </>
+                        }
+
                         {
                             batchOperations ?
                                 <View className='search_total_right_t' onClick={() => doneBtn()}>完成</View> :
@@ -504,14 +514,14 @@ const Index = observer(({ store }) => {
                                 <View className='roster_item_detail'>
                                     <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.idCardNo) ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
                                     <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }} onClick={(e) => {
-                                        if (!myPermissions.includes('6')) {
+                                        if (!myPermissions.includes('14')) {
                                             return
                                         }
                                         showOptionFunc(e, item, index);
                                     }}>
                                         <View>{getStatus(item.seekState)}</View>
                                         {
-                                            myPermissions.includes('6') &&
+                                            myPermissions.includes('14') &&
                                             <AtIcon value='chevron-down' size='14' color={getColor(item.seekState)}></AtIcon>
                                         }
                                     </View>
@@ -598,7 +608,14 @@ const Index = observer(({ store }) => {
                             </View>
                             <View
                                 className={`footer_btn ${chooseList.length > 0 ? 'footer_btn_active' : ''}`}
-                                onClick={() => editBtnFunc()}>修改状态 {chooseList.length > 0 ? chooseList.length : ''}</View>
+                                onClick={() => {
+                                    if (myPermissions.includes('14')) {
+                                        editBtnFunc();
+                                    } else {
+                                        Taro.showToast({ title: '暂无权限', icon: 'none' });
+                                    }
+
+                                }}>修改状态 {chooseList.length > 0 ? chooseList.length : ''}</View>
                         </View>
                         <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                     </View>

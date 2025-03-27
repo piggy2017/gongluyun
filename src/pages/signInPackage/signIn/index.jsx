@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-20 10:23:51
+ * @LastEditTime: 2025-03-27 19:33:53
  * @Description: 
  */
 
@@ -140,7 +140,7 @@ const Index = observer(({ store }) => {
                 Taro.navigateTo({
                     url: `/pages/signInPackage/signSuccess/index?title=${title}&interviewDate=${formData.interviewDate}`
                 })
-            }else{
+            } else {
                 Taro.navigateTo({
                     url: `/pages/signInPackage/signSuccess/index?title=${recruitNames.length == 1 ? recruitNames[0] : recruitNames[0] + '等' + recruitNames.length + '个岗位'}&interviewDate=${formData.interviewDate}`
                 })

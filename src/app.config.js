@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-19 10:29:50
+ * @LastEditTime: 2025-03-26 17:08:09
  * @Description: 
  */
 export default defineAppConfig({
@@ -16,7 +16,8 @@ export default defineAppConfig({
         'pages/mine/index',
         'pages/login/index',
         'pages/supplierProject/index',
-        'pages/workerIndex/index',          // 求职者首页
+        'pages/workerIndex/index',           // 求职者首页
+        'pages/channelIndex/index',          // 渠道首页
     ],
     window: {
         backgroundTextStyle: 'light',
@@ -50,6 +51,10 @@ export default defineAppConfig({
                 "text": "首页"
             },
             {
+                'pagePath': 'pages/channelIndex/index',
+                "text": "供应商"
+            },
+            {
                 "pagePath": "pages/clue/index",
                 "text": "线索"
             },
@@ -79,6 +84,7 @@ export default defineAppConfig({
                 "editTalent/index",             // 编辑人才信息
                 "talentInterview/index",        // 人才库详情安排面试
                 "clueDetail/index",             // 线索详情
+                "interceptionFeedback/index",   // 接待未反馈名单
             ]
         },
         {
@@ -115,6 +121,7 @@ export default defineAppConfig({
                 "newProjectWorker/index",        // 项目新增求职者
                 "newInterviewWorker/index",      // 首页 录入面试信息 新增求职者
                 "onSiteProject/index",           // 添加驻场角色 选择项目
+                "setSite/index",                 // 添加、修改账号,设置站点
             ]
         },
         {

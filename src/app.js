@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 11:08:37
+ * @LastEditTime: 2025-03-24 09:54:23
  * @Description: 
  */
 import { useEffect } from 'react';
@@ -53,8 +53,19 @@ function App({ children }) {
   },[])
 
   useEffect(() => {
+    const { scene } = Taro.getLaunchOptionsSync();
+    if(scene === 1154){  //  1154是朋友圈单页模式场景值
+      console.log('朋友圈单页模式场景值,不进行更新检查');
+      return
+    }      
+
     if (Taro.canIUse('getUpdateManager')) {
-      const updateManager = Taro.getUpdateManager()
+      const updateManager = Taro.getUpdateManager();
+      // 重点：增加对象存在性判断
+      if (!updateManager) {
+        console.warn('UpdateManager is unavailable in current context')
+        return
+      }
       updateManager.onCheckForUpdate(function (res) {
         // 请求完新版本信息的回调
         if (res.hasUpdate) {

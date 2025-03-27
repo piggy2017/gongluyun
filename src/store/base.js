@@ -2,10 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-04 11:24:31
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-25 11:21:22
+ * @LastEditTime: 2025-03-25 10:23:24
  * @Description: 用于存放系统的相关信息
  */
-import { observable,makeAutoObservable } from 'mobx'
+import {
+    observable,
+    makeAutoObservable
+} from 'mobx'
 import Taro from '@tarojs/taro';
 const baseStore = observable({
     systemInfo: {},            // 系统信息
@@ -15,9 +18,9 @@ const baseStore = observable({
     tabbarHeight: 0,           // 底部tabbar的高度
     bottomSafeAreaHeight: 20,  // 底部安全区域高度
     windowWidth: 0,
-    platform: '',              // 平台类型  ios=iOS微信（包含 iPhone、iPad）  android=Android微信  windows=Windows微信  mac=macOS微信  devtools=微信开发者工具
-    setSystemInfo() {          // 在小程序的app.jsx调用
-        console.log("获取系统信息xxx",this.tabbarHeight);
+    platform: '', // 平台类型  ios=iOS微信（包含 iPhone、iPad）  android=Android微信  windows=Windows微信  mac=macOS微信  devtools=微信开发者工具
+    setSystemInfo() { // 在小程序的app.jsx调用
+        console.log("获取系统信息xxx", this.tabbarHeight);
         let res = Taro.getSystemInfoSync();
         console.log("获取系统信息", res);
         this.systemInfo = res;
@@ -30,7 +33,7 @@ const baseStore = observable({
         this.statusTitleHeight = res.statusBarHeight;
         this.contenTitleHeight = buttonInfo.height + (buttonInfo.top - res.statusBarHeight) * 2;
     },
-    setTabbarHeight(value){    // 获取底部tabbar的高度 (进入小程序或者切换角色后会自动计算)
+    setTabbarHeight(value) { // 获取底部tabbar的高度 (进入小程序或者切换角色后会自动计算)
         baseStore.tabbarHeight = value;
     },
     keyBoardHeight: 336, // 键盘高度
@@ -38,7 +41,7 @@ const baseStore = observable({
         baseStore.keyBoardHeight = value;
     },
 
-    didPrivacy: false,         // 是否已经授权了隐私协议
+    didPrivacy: false, // 是否已经授权了隐私协议
     setdidPrivacy(value) {
         baseStore.didPrivacy = value;
     },

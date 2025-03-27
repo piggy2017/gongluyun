@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-19 15:54:52
+ * @LastEditTime: 2025-03-27 16:21:41
  * @Description: 
  */
 
@@ -202,16 +202,16 @@ const Index = observer(({ store }) => {
               value={searchValue}></Input>
           </View>
           {
-            role != 'CUSTOMER' &&
+            myPermissions.includes('8') &&
             <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`} className='sign_code_all' onClick={
               (e) => navigateFunc(e, 1, `/pages/newPackage/onSiteProject/index?type=2`)}
-              // /pages/newPackage/onSiteProject/index?type=1
-              // /pages/projectPackage/signinCode/index?isAll=1
+            // /pages/newPackage/onSiteProject/index?type=1
+            // /pages/projectPackage/signinCode/index?isAll=1
             ></Image>
           }
 
           {
-            myPermissions.includes('4') &&
+            myPermissions.includes('9') &&
             <Image className='add_icon' src={`${Taro.$cdnUrl}/index/index_icon3.webp`} onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newProject/index')}></Image>
           }
         </View>
@@ -267,11 +267,12 @@ const Index = observer(({ store }) => {
                       role != 'CUSTOMER' &&
                       <>
                         {
-                          type === 'PROCESSING' &&
+                          type === 'PROCESSING' && myPermissions.includes('8') &&
                           <View className='project_item_title_right' onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/signinCode/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
                             <View>签到码</View>
                           </View> ||
+                          type != 'PROCESSING' &&
                           <View className='project_item_title_right_end'>已暂停</View>
                         }
                       </>
@@ -298,8 +299,22 @@ const Index = observer(({ store }) => {
                   </View>
 
                   <View className='project_item_bottom'>
-                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>名单</View>
-                    <View className='project_item_bottom_item' onClick={(e) => navigateFunc(e, 1, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>录入求职者</View>
+                    <View className={`project_item_bottom_item ${myPermissions.includes('11') ? '' : 'project_item_bottom_item_g'}`} onClick={(e) => {
+                      if (myPermissions.includes('11')) {
+                        navigateFunc(e, 1, `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)
+                      } else {
+                        e.stopPropagation();
+                        Taro.showToast({ title: '暂无权限', icon: 'none' })
+                      }
+                    }}>名单</View>
+                    <View className={`project_item_bottom_item ${myPermissions.includes('12') ? '' : 'project_item_bottom_item_g'}`} onClick={(e) => {
+                      if (myPermissions.includes('12')) {
+                        navigateFunc(e, 1, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)
+                      }else {
+                        e.stopPropagation();
+                        Taro.showToast({ title: '暂无权限', icon: 'none' })
+                      }
+                    }}>录入求职者</View>
                   </View>
                 </View>
               )

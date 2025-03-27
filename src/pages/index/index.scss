@@ -185,6 +185,35 @@
         }
     }
 
+    .entry_wrapper {
+        padding: 0 44rpx;
+        margin-top: 44rpx;
+        display: flex;
+        flex-flow: row wrap;
+        gap: 28rpx 82rpx;
+
+        .entry_item {
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: center;
+            justify-content: center;
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 26rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            width: 104rpx;
+
+            image {
+                width: 84rpx;
+                height: 84rpx;
+                flex-shrink: 0;
+                margin-bottom: 4rpx;
+            }
+        }
+    }
+
     .btn_wrapper {
         @include flex-center(space-between);
         padding: 0 66rpx;
@@ -280,6 +309,36 @@
                 }
 
                 .today_data_laber {
+                    color: #666666;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 26rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    margin-top: 8rpx;
+                }
+            }
+        }
+
+        .today_data_feedback {
+            padding: 0 148rpx;
+            @include flex-center(space-between);
+
+            .today_data_feedback_item {
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: center;
+                justify-content: center;
+                color: #333333;
+                text-align: center;
+                font-family: "D-DIN-PRO";
+                font-size: 40rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+
+                .feedback_item_label {
                     color: #666666;
                     text-align: center;
                     font-family: "PingFang SC";

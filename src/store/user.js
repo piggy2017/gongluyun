@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 11:09:55
+ * @LastEditTime: 2025-03-27 14:46:02
  * @Description: 用于存放用户的相关信息
  */
 
@@ -17,13 +17,14 @@ import {
 } from '@/util/api'
 import Taro from '@tarojs/taro';
 const userStore = observable({
-    role: Taro.getStorageSync('role') ? Taro.getStorageSync('role') : '', // SUPPLIER   SEEK    // 管理员:1-ADMIN  客服:2-CUSTOMER  驻场:3-ON_SITE  SEEK:5-求职者 SUPPLIER:4-供应商
+    role: Taro.getStorageSync('role') ? Taro.getStorageSync('role') : '', // SUPPLIER   SEEK    // 管理员:1-ADMIN  客服:2-CUSTOMER  驻场:3-ON_SITE  SEEK:5-求职者 SUPPLIER:4-供应商  6-CHANNEL 渠道
     token: Taro.getStorageSync('token') ? Taro.getStorageSync('token') : '',
     //token: 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTgwMzEzMzQ0NyIsInVzZXJfa2V5IjoiNzgzMWRkYjUtNTg3Zi00YTZmLWI1ZDItNmUyYTU2ODg2YmQ3IiwiZXhwIjoxNzMzODE0Nzk4fQ.oZQl--OZIcqUbjmqvrIZpCsOfmKWL6X5Xe5b_aJUQfA',    // Taro.getStorageSync('token') ? Taro.getStorageSync('token') : '',
     isLogin: Taro.getStorageSync('isLogin') ? Taro.getStorageSync('isLogin') : 0, // 1已登陆 0未登陆,         // 1 已登陆   0 未登陆
     companyVerified: false, // true 已实名认证  false 未实名认证
     userInfo: Taro.getStorageSync('userInfo') ? Taro.getStorageSync('userInfo') : '',
     companyInfo: Taro.getStorageSync('companyInfo') ? Taro.getStorageSync('companyInfo') : '',
+    userRoles: Taro.getStorageSync('userRoles') ? Taro.getStorageSync('userRoles') : [],   // 用户所拥有的公司下面的所有角色列表
     refreshUserInfo(callback) { // 统一刷新用户信息
         userCenter({}).then(res => {
             console.log("refreshUserInfo用户信息res:", res);
@@ -35,6 +36,19 @@ const userStore = observable({
                 // userStore.role = res?.data?.userInfo.userRole;
                 // Taro.setStorageSync('role', res?.data?.userInfo.userRole);
                 Taro.setStorageSync('companyInfo', res.data);
+                userStore.userRoles = res?.data?.userInfo.roles.map(item=>{
+                    if(item.roleName==='ADMIN'){
+                        item.name='管理员'
+                    }else if(item.roleName==='CUSTOMER'){
+                        item.name='客服'
+                    }else  if(item.roleName==='ON_SITE'){
+                        item.name='驻场'
+                    }else  if(item.roleName==='CHANNEL'){
+                        item.name='渠道'
+                    }
+                    return item
+                })
+                Taro.setStorageSync('userRoles', res?.data?.userInfo.roles);
                 if (callback) {
                     callback(res);
                 }
@@ -42,7 +56,30 @@ const userStore = observable({
         })
     },
 
-    roles: [], // 角色和角色id的对应关系
+    setUserRoles(value) {
+        userStore.userRoles = value
+    },
+
+
+
+    roles: [ // 角色和角色id的对应关系
+        {
+            roleId: '1',
+            roleName: '管理员',
+        },
+        {
+            roleId: '2',
+            roleName: '客服',
+        },
+        {
+            roleId: '3',
+            roleName: '驻场',
+        },
+        {
+            roleId: '6',
+            roleName: '渠道',
+        },
+    ],
     permissions: [], // 角色和权限的对应关系
     getRoleAndPermissionFunc() {
         getRoleAndPermission({}).then(res => {
@@ -55,7 +92,10 @@ const userStore = observable({
                 }
             } = res;
             if (code === 200) {
-                userStore.roles = roles;
+                userStore.roles = roles.map(item => {
+                    item.isSelected = false;
+                    return item;
+                })
                 userStore.permissions = permissions;
             }
         })
@@ -113,7 +153,7 @@ const userStore = observable({
         userStore.supplierCompanyInfo = value
     },
 
-    enterParams: {},    // 求职者通过岗位分享进入到小程序的岗位详情页,携带的路由参数,进行上下级绑定
+    enterParams: {}, // 求职者通过岗位分享进入到小程序的岗位详情页,携带的路由参数,进行上下级绑定
     setEnterParams: (obj) => {
         console.log("求职者通过岗位分享进入到小程序的岗位详情页,携带的路由参数,进行上下级绑定", obj);
         userStore.enterParams = obj;

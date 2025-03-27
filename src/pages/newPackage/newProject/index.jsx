@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-20 16:44:13
+ * @LastEditTime: 2025-03-27 17:45:55
  * @Description: 
  */
 
@@ -12,14 +12,17 @@ import { View, Image, Text, Input, Textarea, Block, Picker } from '@tarojs/compo
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce, throttle } from '@/util/utils'
 import { reverseGeocoder } from '@/util/getLocation';
-import { AtIcon, AtFloatLayout } from 'taro-ui'
+import { AtIcon, AtFloatLayout, AtActionSheet, AtActionSheetItem } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
+import "taro-ui/dist/style/components/action-sheet.scss";
+import Base64 from '@/util/base64';
+import crypto from 'crypto-js';
 
 import Navbar from '@/components/navbar';
 import ChooseJobType from '@/components/chooseJobType';
 import DatePicker from '@/components/datePicker'
-import { contractsCreate, updateContracts } from '@/util/api'
+import { contractsCreate, updateContracts, fetchOssConfig } from '@/util/api'
 import './index.scss'
 
 
@@ -54,6 +57,19 @@ const Index = observer(({ store }) => {
     const [rangeLeft, setRangeLeft] = useState('');
     const [rangeRight, setRangeRight] = useState('');
 
+    const [openAction, setOpenAction] = useState(false);           // 是否打开选择照片弹窗
+    const [images, setImages] = useState([
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/add_clue.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon1.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon2.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon3.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon4.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon5.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon6.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon7.webp',
+        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon8.webp'
+    ]);                      // 选择的照片
+
     useEffect(() => {
         console.log("jobFilterAddress", formData, jobFilterAddress);
         if (jobFilterAddress.province && !jobFilterAddress.init) {
@@ -71,6 +87,10 @@ const Index = observer(({ store }) => {
             console.log("修改项目信息---editProjectInfo", editProjectInfo);
             let _editProjectInfo = JSON.parse(JSON.stringify(editProjectInfo));
             setIsUpdate(true);
+
+            if(_editProjectInfo.jobImages){
+                setImages(_editProjectInfo.jobImages);
+            }
 
             if (_editProjectInfo.salaryType) {
                 let _jobTypeText = _editProjectInfo.salaryType === 'FIXED' ? '全职' : _editProjectInfo.salaryType === 'DAY' ? '兼职' : '全职/兼职';
@@ -95,7 +115,6 @@ const Index = observer(({ store }) => {
                     district: _areaName[2],
                     province: _areaName[0],
                 })
-
             }
             setFormData({
                 ..._editProjectInfo,
@@ -158,6 +177,106 @@ const Index = observer(({ store }) => {
         }
     }
 
+    const handlePhotoClick = async (type) => {
+        let sourceType = {
+            1: 'album',
+            2: 'camera'
+        }
+        // 用户同意授权
+        try {
+            Taro.chooseImage({
+                count: 6 - images.length, // 最多可选择的图片数量
+                sourceType: [sourceType[type]], // 图片来源，可选值：album（相册），camera（相机）
+                sizeType: ['original', 'compressed'], // 图片尺寸类型，可选值：original（原图），compressed（压缩图）
+                success(res) {
+                    setOpenAction(false);
+                    // 获取到用户选择的照片信息
+                    console.log('选择的照片路径：', res);
+                    const { tempFilePaths } = res;
+                    getOssSrc(tempFilePaths);
+                },
+            });
+        } catch (err) {
+            console.log('选择照片失败：', err);
+        }
+    }
+
+    const getOssSrc = async (arr) => {
+        Taro.showLoading({
+            title: '上传中',
+            mask: true
+        })
+        try {
+            const result = await fetchOssConfig({ type: "AVATAR", bucket: 'apu-mini' });
+            console.log(result, "result")
+            if (result.code === 200) {
+                let { ossServiceDomain, accessKeyId, urlPath, accessKeySecret, securityToken } = result.data;
+                const date = new Date();
+                date.setHours(date.getHours() + 1);
+                const policyText = {
+                    expiration: date.toISOString(),
+                    conditions: [
+                        ["content-length-range", 0, 1024 * 1024 * 1024],
+                    ],
+                };
+                const policy = Base64.encode(JSON.stringify(policyText));
+                const signature = computeSignature(accessKeySecret, policy);
+
+                console.log("arrarrarrarr", arr);
+                // 返回 Promise 对象
+                const uploadPromises = arr.map(r => {
+                    const params = {
+                        'key': `${urlPath}${Date.now()}-${Math.random() * 1000000}.jpg`,
+                        'policy': policy,
+                        'OSSAccessKeyId': accessKeyId,
+                        'success_action_status': '200',
+                        'Signature': signature,
+                        'x-oss-security-token': securityToken,
+                    };
+
+                    // 返回 Promise 对象
+                    return new Promise((resolve, reject) => {
+                        Taro.uploadFile({
+                            url: ossServiceDomain,
+                            filePath: r,
+                            name: 'file',
+                            formData: params,
+                            success(res) {
+                                let imgUrl = ossServiceDomain + '/' + params.key;
+                                resolve(imgUrl);
+                            },
+                            fail(err) {
+                                reject(err);
+                            }
+                        });
+                    });
+                });
+
+                // 等待所有异步操作完成
+                Promise.all(uploadPromises)
+                    .then(results => {
+                        Taro.hideLoading();
+                        setImages([...images, ...results]);
+                    })
+                    .catch(error => {
+                        Taro.hideLoading();
+                        console.error(error);
+                    });
+            } else {
+                Taro.hideLoading();
+            }
+        } catch (e) {
+        }
+    }
+
+    const computeSignature = (accessKeySecret, canonicalString) => {
+        return crypto.enc.Base64.stringify(crypto.HmacSHA1(canonicalString, accessKeySecret));
+    }
+
+    const deleteImg = (index) => {
+        setImages([...images.slice(0, index), ...images.slice(index + 1)])
+    }
+
     const datePickerSelect = (e) => {
         console.log("seleceDate", e);
         setFormData({ ...formData, interviewDate: e })
@@ -166,6 +285,7 @@ const Index = observer(({ store }) => {
     const postProject = throttle(async () => {
         let params = {
             ...formData,
+            jobImages: images,
             // addressDetail: formData.areaName + formData.addressDetail,
         }
         params.numberRecruits = Number(params.numberRecruits);
@@ -241,6 +361,13 @@ const Index = observer(({ store }) => {
             success: function (res) {
                 setFormData({ ...formData, introduction: res.data })
             }
+        })
+    }
+
+    const previewImg = (imgSrc) => {
+        Taro.previewImage({
+            current: imgSrc,            // 当前显示图片的链接
+            urls: images          // 需要预览的图片列表
         })
     }
 
@@ -436,6 +563,28 @@ const Index = observer(({ store }) => {
                 </View>
             </View>
 
+            {/* <View className='project_group_imgs'>
+                <View className='project_group_imgs_title'>上传厂区照片（{images.length}/6）</View>
+                <View className='project_group_imgs_wrap'>
+                    {
+                        images.length < 6 &&
+                        <View className='add_img' onClick={() => {
+                            setOpenAction(true);
+                        }}>
+                            <Image src={`${Taro.$cdnUrl}/index/index_icon14.webp`}></Image>
+                        </View>
+                    }
+                    {
+                        images.length > 0 && images.map((item, index) => {
+                            return <View className='add_img_wrap' key={index}>
+                                <Image src={item} className='add_img_item' onClick={() => previewImg(item)}></Image>
+                                <Image onClick={() => deleteImg(index)} src={`${Taro.$cdnUrl}/index/index_icon15.webp`} className='add_img_delete'></Image>
+                            </View>
+                        })
+                    }
+                </View>
+            </View> */}
+
             {/* <View className='pay_setting'>
                 <View className='pay_setting_title'>
                     <View>岗位薪资</View>
@@ -579,6 +728,17 @@ const Index = observer(({ store }) => {
                         </View>
                     </View>
                 </AtFloatLayout>
+            </Block>
+
+            <Block>
+                <AtActionSheet isOpened={openAction} cancelText='取消' onCancel={() => setOpenAction(false)} onClose={() => setOpenAction(false)}>
+                    <AtActionSheetItem onClick={() => handlePhotoClick(1)}>
+                        选择照片
+                    </AtActionSheetItem>
+                    <AtActionSheetItem onClick={() => handlePhotoClick(2)}>
+                        相机拍照
+                    </AtActionSheetItem>
+                </AtActionSheet>
             </Block>
         </View>
     )

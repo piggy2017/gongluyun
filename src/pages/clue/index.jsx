@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 10:49:16
+ * @LastEditTime: 2025-03-27 15:47:06
  * @Description: 
  */
 
@@ -25,7 +25,7 @@ import { cluePool, cluemyClients, clueReceive, callUp } from '@/util/api'
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-    userStore: { isLogin, role, companyVerified },
+    userStore: { isLogin, role, companyVerified, myPermissions },
     businessStore: { poorJobId, myClientJobId, setMyClientParams, sourceList }
   } = store
   const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
@@ -107,12 +107,12 @@ const Index = observer(({ store }) => {
       }
     }
 
-    if(_myClient){
+    if (_myClient) {
       setType('我的客户');
       getClientList(1);
     }
   })
-  
+
 
   useDidHide(() => {
     Taro.removeStorageSync('clueSearchValue');
@@ -310,7 +310,7 @@ const Index = observer(({ store }) => {
     setFilterState(e);
   }
 
-  const getClient = async (e,obj, idx) => {   // 领取客户
+  const getClient = async (e, obj, idx) => {   // 领取客户
     console.log("getClient obj, idx", obj, idx);
     e.stopPropagation();
 
@@ -505,6 +505,9 @@ const Index = observer(({ store }) => {
                             <View className='clue_item_info'>{item.age ? item.age + '岁' : ''}{((item.sex === 0 || item.sex === 1) && item.age) ? '·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}</View>
                           }
                           {
+                            item.company ? <View className='clue_item_info'>{item.company}</View> : ''
+                          }
+                          {
                             item.recruitTitle ? <View className='clue_item_info'>{item.recruitTitle}</View> : ''
                           }
                           {
@@ -518,7 +521,7 @@ const Index = observer(({ store }) => {
                         {
                           item.isGet &&
                           <View className='clue_item_wrap_right_done'>已领取</View> ||
-                          <View className='clue_item_wrap_right' onClick={(e) => getClient(e,item, index)}>立即领取</View>
+                          <View className='clue_item_wrap_right' onClick={(e) => getClient(e, item, index)}>立即领取</View>
                         }
                       </View>
                     </View>
@@ -556,6 +559,9 @@ const Index = observer(({ store }) => {
                           </View>
                         </View>
                         <View className='roster_item_infos'>{item.detailInfo}</View>
+                        {
+                          item.company ? <View className='roster_item_jobName'>{item.company}</View> : ''
+                        }
 
                         {
                           item.recruitTitle &&
@@ -589,8 +595,12 @@ const Index = observer(({ store }) => {
         </ScrollView>
       }
 
-      <Image onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newWorker/index?entryChannel=SOURCE')}
-        style={{ bottom: getBottom() }} className='add_clue_btn' src={`${Taro.$cdnUrl}/index/add_clue.webp`}></Image>
+      {
+        myPermissions.includes('6') &&
+        <Image onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newWorker/index?entryChannel=SOURCE')}
+          style={{ bottom: getBottom() }} className='add_clue_btn' src={`${Taro.$cdnUrl}/index/add_clue.webp`}></Image>
+      }
+
 
       {/* 线索池筛选日期组件 */}
       <Block>
