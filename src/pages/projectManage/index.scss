@@ -284,6 +284,9 @@
                 font-weight: 500;
                 line-height: normal;
                 @include flex-center(space-between);
+                .project_item_bottom_item_g{
+                    color: #777777;
+                }
             }
         }
 

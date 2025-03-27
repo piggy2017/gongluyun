@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 14:05:50
+ * @LastEditTime: 2025-03-27 15:48:06
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -13,7 +13,7 @@ import TabBar from '@/components/tabBar';
 import './index.scss'
 
 import {
-  workbenchtodayData, workbenchcluePool, workbenchdrainageData, workbenchconvertData, todo, onSiteTodayData, customerTodo, dashDrainageData, feedBackInfoSta
+  workbenchtodayData, workbenchcluePool, todo, onSiteTodayData, customerTodo, dashDrainageData, feedBackInfoSta
 } from '@/util/api'
 
 
@@ -207,22 +207,6 @@ const Index = observer(({ store }) => {
     }
   }
 
-  // const getDashDrainageData = async () => {    // 获取引流数据
-  //   const { code, data } = await workbenchdrainageData({ companySerialCode: companyInfo.companySerialCode, dateRange: drainageDate });
-  //   console.log("获取引流数据", data);
-  //   if (code === 200) {
-  //     setDrainageInfo(data);
-  //   }
-  // }
-  // const getconvertData = async () => {    // 获取转化数据
-  //   const { code, data } = await workbenchconvertData({ companySerialCode: companyInfo.companySerialCode, dateRange: transformDate });
-  //   console.log("获取转化数据", data);
-  //   if (code === 200) {
-  //     setConvertInfo(data);
-  //   }
-  // }
-
-
   const getHeight = () => {              // 获取scrollview的高度  statusTitleHeight, contenTitleHeight
     // return `calc(100vh - ${system.navBarHeight + system.navBarExtendHeight + tabHeight + topDis + 15}px)`;
     return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px)`;
@@ -337,7 +321,7 @@ const Index = observer(({ store }) => {
             <View className='message_notice_dot'></View>
           </View> */}
           {
-            (role === 'ADMIN' || role === "CUSTOMER" || role === 'ON_SITE') &&
+            (role === 'ADMIN' || role === "CUSTOMER" || role === 'ON_SITE' || role === 'CHANNEL') &&
             <View className='add_user_icon' onClick={() => {
               if (!isLogin) {
                 Taro.navigateTo({
@@ -350,12 +334,15 @@ const Index = observer(({ store }) => {
               {
                 showAddType &&
                 <View className='add_types_wrapper'>
-                  <View className='add_types_item' onClick={() => navigateVerifiedFunc(`${role === 'ON_SITE' ? '/pages/newPackage/newWorker/index?entryChannel=SOURCE&onSite=1' : '/pages/newPackage/newWorker/index?entryChannel=SOURCE'}`)}>
-                    <Image src={`${Taro.$cdnUrl}/index/index_icon11.webp`}></Image>
-                    <View>新增求职者线索</View>
-                  </View>
                   {
-                    myPermissions.includes('4') &&
+                    myPermissions.includes('6') &&
+                    <View className='add_types_item' onClick={() => navigateVerifiedFunc(`${role === 'ON_SITE' ? '/pages/newPackage/newWorker/index?entryChannel=SOURCE&onSite=1' : '/pages/newPackage/newWorker/index?entryChannel=SOURCE'}`)}>
+                      <Image src={`${Taro.$cdnUrl}/index/index_icon11.webp`}></Image>
+                      <View>新增求职者线索</View>
+                    </View>
+                  }
+                  {
+                    myPermissions.includes('9') &&
                     <View className='add_types_item' onClick={() => navigateVerifiedFunc('/pages/newPackage/newProject/index')}>
                       <Image src={`${Taro.$cdnUrl}/index/index_icon10.webp`}></Image>
                       <View>新增招聘项目</View>
@@ -374,113 +361,172 @@ const Index = observer(({ store }) => {
           }
         </View>
 
-        {
-          (role === "ADMIN" || role === "CUSTOMER") &&
-          <View className='btn_wrapper'>
-            {
-              role === "ADMIN" &&
-              <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/talentsPackage/talents/index')}>
-                <Image src={`${Taro.$cdnUrl}/index/index_icon4.webp`}></Image>
-                <View>人才库</View>
-              </View>
-            }
-
-            <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/dataReport/index')}>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon5.webp`}></Image>
+        <View className='entry_wrapper'>
+          {
+            myPermissions.includes('4') &&
+            <View className='entry_item' onClick={() => navigateVerifiedFunc('/pages/talentsPackage/talents/index')}>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_index_1.webp`}></Image>
+              <View>人才库</View>
+            </View>
+          }
+          {
+            myPermissions.includes('5') &&
+            <View className='entry_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/dataReport/index')}>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_index_2.webp`}></Image>
               <View>员工数据</View>
             </View>
-            {
-              role === "ADMIN" &&
-              <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/supplierPackage/supplierManage/index')}>
-                <Image src={`${Taro.$cdnUrl}/supplier/supplier_1.webp`}></Image>
-                <View>供应商</View>
-              </View>
-            }
-          </View>
-        }
-
-        {
-          (role === "ADMIN" || role === "CUSTOMER") &&
-          <View className='enter_wrapper'>
-            <View className='enter_wrap_item' onClick={() => navigateVerifiedFunc('/pages/newPackage/newWorker/index?entryChannel=SOURCE')}>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon6.webp`}></Image>
-              <View>录入求职线索</View>
+          }
+          {
+            myPermissions.includes('18') &&
+            <View className='entry_item' onClick={() => navigateVerifiedFunc('/pages/supplierPackage/supplierManage/index')}>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_index_3.webp`}></Image>
+              <View>供应商</View>
             </View>
-            <View className='enter_wrap_item' style={`margin-left:190rpx;`} onClick={feedBackList}>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
-              <View>录入面试信息</View>
+          }
+          {
+            myPermissions.includes('6') &&
+            <View className='entry_item' onClick={() => navigateVerifiedFunc('/pages/newPackage/newWorker/index?entryChannel=SOURCE')}>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_index_4.webp`}></Image>
+              <View>求职登记</View>
             </View>
-          </View>
-        }
-
-        {
-          role === 'ON_SITE' &&  // /pages/talentsPackage/filterJob/index?type=6&title=选择岗位  
-          <View className='enter_wrapper'>
-            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/newPackage/onSiteProject/index?type=2')}>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
+          }
+          {
+            myPermissions.includes('7') &&
+            <View className='entry_item' onClick={feedBackList}>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_index_5.webp`}></Image>
+              <View>面试录入</View>
+            </View>
+          }
+          {
+            myPermissions.includes('8') &&
+            <View className='entry_item' onClick={() => navigateFunc(1, '/pages/newPackage/onSiteProject/index?type=2')}>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_index_6.webp`}></Image>
               <View>签到码</View>
             </View>
-            <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/onSiteList/index', 2)}>
-              <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
+          }
+          {
+            myPermissions.includes('20') && role === 'ON_SITE' &&
+            <View className='entry_item' onClick={() => navigateFunc(1, '/pages/onSiteList/index', 2)}>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_index_7.webp`}></Image>
               <View>导出名单</View>
             </View>
-          </View>
+          }
+          {
+            myPermissions.includes('9') &&
+            <View className='entry_item' onClick={() => navigateVerifiedFunc('/pages/newPackage/newProject/index')}>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_index_8.webp`}></Image>
+              <View>新增招聘</View>
+            </View>
+          }
+        </View>
+
+        {
+          // (role === "ADMIN" || role === "CUSTOMER") &&
+          // <View className='btn_wrapper'>
+          //   {
+          //     role === "ADMIN" &&
+          //     <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/talentsPackage/talents/index')}>
+          //       <Image src={`${Taro.$cdnUrl}/index/index_icon4.webp`}></Image>
+          //       <View>人才库</View>
+          //     </View>
+          //   }
+
+          //   <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/dataReport/index')}>
+          //     <Image src={`${Taro.$cdnUrl}/index/index_icon5.webp`}></Image>
+          //     <View>员工数据</View>
+          //   </View>
+          //   {
+          //     role === "ADMIN" &&
+          //     <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/supplierPackage/supplierManage/index')}>
+          //       <Image src={`${Taro.$cdnUrl}/supplier/supplier_1.webp`}></Image>
+          //       <View>供应商</View>
+          //     </View>
+          //   }
+          // </View>
+        }
+
+        {
+          // (role === "ADMIN" || role === "CUSTOMER") &&
+          // <View className='enter_wrapper'>
+          //   <View className='enter_wrap_item' onClick={() => navigateVerifiedFunc('/pages/newPackage/newWorker/index?entryChannel=SOURCE')}>
+          //     <Image src={`${Taro.$cdnUrl}/index/index_icon6.webp`}></Image>
+          //     <View>录入求职线索</View>
+          //   </View>
+          //   <View className='enter_wrap_item' style={`margin-left:190rpx;`} onClick={feedBackList}>
+          //     <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
+          //     <View>录入面试信息</View>
+          //   </View>
+          // </View>
+        }
+
+        {
+          // role === 'ON_SITE' &&  // /pages/talentsPackage/filterJob/index?type=6&title=选择岗位  
+          // <View className='enter_wrapper'>
+          //   <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/newPackage/onSiteProject/index?type=2')}>
+          //     <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
+          //     <View>签到码</View>
+          //   </View>
+          //   <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/onSiteList/index', 2)}>
+          //     <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
+          //     <View>导出名单</View>
+          //   </View>
+          // </View>
         }
 
         {
           role === "ADMIN" &&
-          <View className='today_data_wrapper'>
-            <View className='today_data_title'>数据统计</View>
-            <View className='today_data_content'>
-              <View className='today_data_item' onClick={() => {
-                Taro.setStorageSync("acticeProject", true);
-                Taro.switchTab({
-                  url: '/pages/projectManage/index'
-                })
-              }}>
-                <View className='today_data_number'>{todayData ? todayData.newRecruit : '0'}</View>
-                <View className='today_data_laber'>在招岗位</View>
-              </View>
-              <View className='today_data_item'>
-                <View className='today_data_number'>{todayData ? todayData.newEntry : '0'}</View>
-                <View className='today_data_laber'>今日入职</View>
-              </View>
-              <View className='today_data_item'>
-                <View className='today_data_number'>{todayData ? todayData.newExit : '0'}</View>
-                <View className='today_data_laber'>今日离职</View>
-              </View>
-              <View className='today_data_item' onClick={() => {
-                Taro.setStorageSync("poor", true);
-                Taro.switchTab({
-                  url: '/pages/clue/index'
-                })
-              }}>
-                <View className='today_data_number'>{todayData ? todayData.newClue : '0'}</View>
-                <View className='today_data_laber'>今日线索</View>
+          <>
+            <View className='today_data_wrapper'>
+              <View className='today_data_title'>数据统计</View>
+              <View className='today_data_content'>
+                <View className='today_data_item' onClick={() => {
+                  Taro.setStorageSync("acticeProject", true);
+                  Taro.switchTab({
+                    url: '/pages/projectManage/index'
+                  })
+                }}>
+                  <View className='today_data_number'>{todayData ? todayData.newRecruit : '0'}</View>
+                  <View className='today_data_laber'>在招岗位</View>
+                </View>
+                <View className='today_data_item'>
+                  <View className='today_data_number'>{todayData ? todayData.newEntry : '0'}</View>
+                  <View className='today_data_laber'>今日入职</View>
+                </View>
+                <View className='today_data_item'>
+                  <View className='today_data_number'>{todayData ? todayData.newExit : '0'}</View>
+                  <View className='today_data_laber'>今日离职</View>
+                </View>
+                <View className='today_data_item' onClick={() => {
+                  Taro.setStorageSync("poor", true);
+                  Taro.switchTab({
+                    url: '/pages/clue/index'
+                  })
+                }}>
+                  <View className='today_data_number'>{todayData ? todayData.newClue : '0'}</View>
+                  <View className='today_data_laber'>今日线索</View>
+                </View>
               </View>
             </View>
-          </View>
+            <View className='today_data_wrapper'>
+              <View className='today_data_title'>求职者反馈</View>
+              <View className='today_data_feedback' onClick={() => {
+                Taro.navigateTo({
+                  url: '/pages/talentsPackage/interceptionFeedback/index'
+                })
+              }}>
+                <View className='today_data_feedback_item'>
+                  <View>{feedbackInfo.noFeedBackMemberCount}</View>
+                  <View className='feedback_item_label'>员工总数</View>
+                </View>
+                <View className='today_data_feedback_item'>
+                  <View>{feedbackInfo.feedbackCount}</View>
+                  <View className='feedback_item_label'>接待未反馈</View>
+                </View>
+              </View>
+            </View>
+          </>
         }
 
-        {
-          <View className='today_data_wrapper'>
-            <View className='today_data_title'>求职者反馈</View>
-            <View className='today_data_feedback' onClick={()=>{
-              Taro.navigateTo({
-                url: '/pages/talentsPackage/interceptionFeedback/index'
-              })
-            }}>
-              <View className='today_data_feedback_item'>
-                <View>{feedbackInfo.noFeedBackMemberCount}</View>
-                <View className='feedback_item_label'>员工总数</View>
-              </View>
-              <View className='today_data_feedback_item'>
-                <View>{feedbackInfo.feedbackCount}</View>
-                <View className='feedback_item_label'>接待未反馈</View>
-              </View>
-            </View>
-          </View>
-        }
         {
           role === "CUSTOMER" &&
           <View className='today_data_wrapper'>
@@ -612,60 +658,7 @@ const Index = observer(({ store }) => {
             </View>
           </View>
         }
-
         <View style={`height:50rpx;`}></View>
-
-        {
-          // (role === "ADMIN" || role === "CUSTOMER" || role === 'SEEK') &&
-          // <View className='drainage_data_wrapper'>
-          //   <View className='drainage_data_title'>
-          //     <View className='drainage_data_title_left'>引流数据</View>
-          //     <View className='drainage_data_title_right'>
-          //       <View onClick={() => { setDrainageDate('YESTERDAY') }} className={`title_right_item ${drainageDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
-          //       <View onClick={() => { setDrainageDate('THIS_WEEK') }} className={`title_right_item ${drainageDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
-          //       <View onClick={() => { setDrainageDate('THIS_MONTH') }} className={`title_right_item ${drainageDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
-          //     </View>
-          //   </View>
-          //   <View className='drainage_data_content'>
-          //     <View className='drainage_data_content_left'>
-          //       <View className='drainage_data_content_left_data'>{drainageInfo ? drainageInfo.interviewRate : '0'}%</View>
-          //       <View className='drainage_data_content_left_laber'>约面率</View>
-          //     </View>
-          //     <Image className='drainage_data_content_img' src={`${Taro.$cdnUrl}/index/index_icon8.webp`}></Image>
-          //     <View className='drainage_data_content_right'>
-          //       <View className='drainage_right_item'>新增报名 <Text>{drainageInfo ? drainageInfo.newSignup : '0'}</Text> 人</View>
-          //       <View className='drainage_right_item'>跟进联系 <Text>{drainageInfo ? drainageInfo.followupContact : '0'}</Text> 人</View>
-          //       <View className='drainage_right_item'>约定面试 <Text>{drainageInfo ? drainageInfo.newInterview : '0'}</Text> 人</View>
-          //     </View>
-          //   </View>
-          // </View>
-        }
-
-        {
-          // (role === "ADMIN" || role === 'SEEK') &&
-          // <View className='drainage_data_wrapper'>
-          //   <View className='drainage_data_title'>
-          //     <View className='drainage_data_title_left'>转化数据</View>
-          //     <View className='drainage_data_title_right'>
-          //       <View onClick={() => { setTransformDate('YESTERDAY') }} className={`title_right_item ${transformDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
-          //       <View onClick={() => { setTransformDate('THIS_WEEK') }} className={`title_right_item ${transformDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
-          //       <View onClick={() => { setTransformDate('THIS_MONTH') }} className={`title_right_item ${transformDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
-          //     </View>
-          //   </View>
-          //   <View className='drainage_data_content'>
-          //     <View className='drainage_data_content_left'>
-          //       <View className='drainage_data_content_left_data'>{convertInfo ? convertInfo.arrivalRate : '0'}%</View>
-          //       <View className='drainage_data_content_left_laber'>到面率</View>
-          //     </View>
-          //     <Image className='drainage_data_content_img' src={`${Taro.$cdnUrl}/index/index_icon8.webp`}></Image>
-          //     <View className='drainage_data_content_right'>
-          //       <View className='drainage_right_item'>实际到面 <Text>{convertInfo ? convertInfo.actualArrival : '0'}</Text> 人</View>
-          //       <View className='drainage_right_item'>面试通过 <Text>{convertInfo ? convertInfo.interviewPass : '0'}</Text> 人</View>
-          //       <View className='drainage_right_item'>最终入职 <Text>{convertInfo ? convertInfo.finalEntry : '0'}</Text> 人</View>
-          //     </View>
-          //   </View>
-          // </View>
-        }
       </View>
       <TabBar actCurrent={0} />
     </View>

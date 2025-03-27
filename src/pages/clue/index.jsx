@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 10:49:16
+ * @LastEditTime: 2025-03-27 15:47:06
  * @Description: 
  */
 
@@ -25,7 +25,7 @@ import { cluePool, cluemyClients, clueReceive, callUp } from '@/util/api'
 const Index = observer(({ store }) => {
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-    userStore: { isLogin, role, companyVerified },
+    userStore: { isLogin, role, companyVerified, myPermissions },
     businessStore: { poorJobId, myClientJobId, setMyClientParams, sourceList }
   } = store
   const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
@@ -595,8 +595,12 @@ const Index = observer(({ store }) => {
         </ScrollView>
       }
 
-      <Image onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newWorker/index?entryChannel=SOURCE')}
-        style={{ bottom: getBottom() }} className='add_clue_btn' src={`${Taro.$cdnUrl}/index/add_clue.webp`}></Image>
+      {
+        myPermissions.includes('6') &&
+        <Image onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newWorker/index?entryChannel=SOURCE')}
+          style={{ bottom: getBottom() }} className='add_clue_btn' src={`${Taro.$cdnUrl}/index/add_clue.webp`}></Image>
+      }
+
 
       {/* 线索池筛选日期组件 */}
       <Block>
