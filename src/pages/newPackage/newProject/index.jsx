@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-24 15:45:24
+ * @LastEditTime: 2025-03-27 17:45:55
  * @Description: 
  */
 
@@ -563,7 +563,7 @@ const Index = observer(({ store }) => {
                 </View>
             </View>
 
-            <View className='project_group_imgs'>
+            {/* <View className='project_group_imgs'>
                 <View className='project_group_imgs_title'>上传厂区照片（{images.length}/6）</View>
                 <View className='project_group_imgs_wrap'>
                     {
@@ -583,7 +583,7 @@ const Index = observer(({ store }) => {
                         })
                     }
                 </View>
-            </View>
+            </View> */}
 
             {/* <View className='pay_setting'>
                 <View className='pay_setting_title'>

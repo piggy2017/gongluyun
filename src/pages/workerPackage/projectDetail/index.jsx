@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 17:16:26
+ * @LastEditTime: 2025-03-27 17:47:33
  * @Description: 
  */
 
@@ -419,7 +419,7 @@ const Index = observer(({ store }) => {
                     <RichText nodes={detail.introductionTrans}></RichText>
                 </View>
                 {
-                    detail.jobImages &&
+                    detail.jobImages?.length>0 &&
                     <View className='job_desc_images'>
                         {
                             detail.jobImages.map((item, index) => {
