@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-19 18:02:21
+ * @LastEditTime: 2025-03-26 15:35:35
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -172,6 +172,7 @@ const Index = observer(({ store }) => {
         }
     }
 
+    
     const getOherClient = async (_current) => {
         const { type } = route.params;   // type=1 驻场-名单进入
         let _params = {

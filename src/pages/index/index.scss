@@ -291,6 +291,36 @@
                 }
             }
         }
+
+        .today_data_feedback {
+            padding: 0 148rpx;
+            @include flex-center(space-between);
+
+            .today_data_feedback_item {
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: center;
+                justify-content: center;
+                color: #333333;
+                text-align: center;
+                font-family: "D-DIN-PRO";
+                font-size: 40rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+
+                .feedback_item_label {
+                    color: #666666;
+                    text-align: center;
+                    font-family: "PingFang SC";
+                    font-size: 26rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    margin-top: 8rpx;
+                }
+            }
+        }
     }
 
     .clue_sea_wrapper {

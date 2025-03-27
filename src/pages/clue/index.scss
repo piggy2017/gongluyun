@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:52
  * @LastEditors: 孙林
- * @LastEditTime: 2025-01-21 17:01:03
+ * @LastEditTime: 2025-03-27 11:58:19
  * @Description: 
  */
 @import '@/app.scss';
@@ -143,9 +143,10 @@
         .roster_item {
             // border-radius: 20rpx;
             width: 750rpx;
-            height: 236rpx;
+            // height: 236rpx;
             flex-shrink: 0;
             background-color: #FFF;
+            padding-bottom: 24rpx;
             // margin: 20rpx auto 0 auto;
             border-bottom: 1rpx solid #0000000a;
             @include flex-center(space-between);

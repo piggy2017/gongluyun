@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-21 10:21:54
+ * @LastEditTime: 2025-03-27 13:44:10
  * @Description: 
  */
 
@@ -533,3 +533,21 @@ export const bgImages = [    // 岗位详情绘制海报的canvas背景图列表
     'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/supplier/supplier_bg3.png',
     'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/supplier/supplier_bg4.png',
 ]
+
+export const getDepartment = params => {    // 【角色版本】查询公司下的部门
+    return http(API_BASE_URL + '/company/getDepartment', params, "POST", {
+        "Content-Type": "application/json"
+    });
+};
+
+export const feedBackInfoSta = params => {    // 【未接待】展示接待成员反馈统计
+    return http(API_BASE_URL + '/workbench/feedBackInfoSta', params, "POST", {
+        "Content-Type": "application/json"
+    });
+};
+export const feedBackInfo = params => {       // 【未接待】展示接待成员反馈列表
+    return http(API_BASE_URL + '/workbench/feedBackInfo', params, "POST", {
+        "Content-Type": "application/json"
+    });
+};
+

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 17:32:04
+ * @LastEditTime: 2025-03-27 14:05:50
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -13,7 +13,7 @@ import TabBar from '@/components/tabBar';
 import './index.scss'
 
 import {
-  workbenchtodayData, workbenchcluePool, workbenchdrainageData, workbenchconvertData, userCenter, todo, onSiteTodayData, customerTodo, dashDrainageData
+  workbenchtodayData, workbenchcluePool, workbenchdrainageData, workbenchconvertData, todo, onSiteTodayData, customerTodo, dashDrainageData, feedBackInfoSta
 } from '@/util/api'
 
 
@@ -39,12 +39,16 @@ const Index = observer(({ store }) => {
   const [customerTodoData, setCustomerTodoData] = useState('');          //  客户待办
   const [streamData, setStreamData] = useState('');
 
+  const [feedbackInfo, setFeedbackInfo] = useState({
+    feedbackCount: 0,
+    noFeedBackMemberCount: 0
+  });          //  【未接待】展示接待成员反馈统计
+
   useEffect(() => {
     console.log("首页 监听 是否登录isLogin:companyVerified", companyVerified, isLogin);
     console.log("首页 监听 当前角色role:", role);
     console.log("首页 监听 当前用户信息userInfo:", userInfo);
     getRoleAndPermissionFunc();
-
   }, [isLogin, role, userInfo]);
 
   usePullDownRefresh(() => {
@@ -109,6 +113,8 @@ const Index = observer(({ store }) => {
       // getUserRole();
       setMyPermissions();
       setSourceList();
+
+      getfeedbackData();
     }
   }, [isLogin])
 
@@ -141,6 +147,14 @@ const Index = observer(({ store }) => {
       // getconvertData();
     }
   }, [transformDate])
+
+  const getfeedbackData = async () => {
+    const { code, data } = await feedBackInfoSta({});
+    console.log("获取反馈数据-getfeedbackData:", code, data);
+    if (code === 200) {
+      setFeedbackInfo(data);
+    }
+  }
 
 
   const getDashDrainageData = async () => {      // 获取引流与转化数据
@@ -448,6 +462,25 @@ const Index = observer(({ store }) => {
           </View>
         }
 
+        {
+          <View className='today_data_wrapper'>
+            <View className='today_data_title'>求职者反馈</View>
+            <View className='today_data_feedback' onClick={()=>{
+              Taro.navigateTo({
+                url: '/pages/talentsPackage/interceptionFeedback/index'
+              })
+            }}>
+              <View className='today_data_feedback_item'>
+                <View>{feedbackInfo.noFeedBackMemberCount}</View>
+                <View className='feedback_item_label'>员工总数</View>
+              </View>
+              <View className='today_data_feedback_item'>
+                <View>{feedbackInfo.feedbackCount}</View>
+                <View className='feedback_item_label'>接待未反馈</View>
+              </View>
+            </View>
+          </View>
+        }
         {
           role === "CUSTOMER" &&
           <View className='today_data_wrapper'>

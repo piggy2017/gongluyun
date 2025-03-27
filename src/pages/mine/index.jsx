@@ -2,33 +2,51 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-24 13:47:18
+ * @LastEditTime: 2025-03-27 14:58:52
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
-import Taro, { usePullDownRefresh } from '@tarojs/taro';
-import { AtModal } from 'taro-ui';
+import Taro, { usePullDownRefresh, useDidShow } from '@tarojs/taro';
+import { AtModal, AtFloatLayout, AtIcon } from 'taro-ui';
 import "taro-ui/dist/style/components/modal.scss";
-import { View, Text, Image } from '@tarojs/components'
+import "taro-ui/dist/style/components/float-layout.scss";
+import "taro-ui/dist/style/components/icon.scss";
+import { View, Text, Image, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import TabBar from '@/components/tabBar';
 import './index.scss'
 
-import { loginOut } from '@/util/api'
+import { loginOut, switchRoles } from '@/util/api'
 
 const Index = observer(({ store }) => {
   const {
-    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
-    userStore: { isLogin, setIsLogin, role, setRole, setToken, userInfo, setUserInfo, companyInfo, companyVerified, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
+    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+    userStore: { isLogin, setIsLogin, role, setRole, userRoles, setUserRoles, setToken, userInfo, setUserInfo, companyInfo, companyVerified, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
   } = store
 
   const [loginoutSure, setLoginoutSure] = useState(false);
+  const [showRoleModel, setShowRoleModel] = useState(false);
+  const [currentRoles, setCurrentRoles] = useState([]);
 
   useEffect(() => {
-    refreshUserInfo();
+    let _list = userRoles.map((item, index) => {
+      item.isSelected = false;
+      if (item.roleName === role) {
+        item.isSelected = true;
+      }
+      return item;
+    })
+    setCurrentRoles(_list);
+  }, [userRoles, role])
+
+  useEffect(() => {
     console.log("userInfo", userInfo);
     console.log("companyVerified_companyInfo", companyVerified, companyInfo);
   }, [])
+
+  useDidShow(() => {
+    refreshUserInfo();
+  })
 
   usePullDownRefresh(() => {
     Taro.showLoading({
@@ -53,6 +71,8 @@ const Index = observer(({ store }) => {
       return '驻厂'
     } else if (type === 'SUPPLIER') {
       return '供应商'
+    } else if (type === 'CHANNEL') {
+      return '渠道'
     }
   }
 
@@ -121,6 +141,38 @@ const Index = observer(({ store }) => {
     } else {
       Taro.navigateTo({ url: '/pages/minePackage/aboutUs/index' })
     }
+  }
+
+  const chooseRoleFunc = async (obj, index) => {
+    console.log("当前点击:", obj, index);
+    if (obj.roleName === role) {
+      return;
+    }
+    setCurrentRoles(currentRoles.map((item, i) => {
+      if (i === index) {
+        item.isSelected = true;
+      } else {
+        item.isSelected = false;
+      }
+      return item;
+    }))
+
+
+    const { code, data, msg } = await switchRoles({ userRole: obj.roleName });
+    console.log("切换角色:", code, data, msg);
+    if (code === 200) {
+      setRole(data);
+      Taro.setStorageSync('role', data);
+      Taro.switchTab({
+        url: data === 'CHANNEL' ? '/pages/channelIndex/index' : '/pages/index/index'
+      })
+    } else {
+      Taro.showToast({
+        title: msg,
+        icon: 'none'
+      })
+    }
+    setShowRoleModel(false);
   }
 
   return (
@@ -220,6 +272,20 @@ const Index = observer(({ store }) => {
             <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
           </View>
         }
+
+        {
+          userRoles.length >= 2 && isLogin && role != 'SEEK' && role != 'SUPPLIER' &&
+          <View className='section_item' onClick={() => setShowRoleModel(true)}>
+            <View className='section_item_left'>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_79.webp`}></Image>
+              <Text>切换角色</Text>
+            </View>
+            <View className='section_item_right'>
+              <View>{getRole(role)}</View>
+              <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
+            </View>
+          </View>
+        }
       </View>
 
       <View className='section_group'>
@@ -268,7 +334,6 @@ const Index = observer(({ store }) => {
         {/* <View className='mine_desc'>助力企业数字化转型</View> */}
       </View>
 
-
       <TabBar actCurrent={(role === 'SUPPLIER' || role === 'SEEK' || role === 'CHANNEL') ? 1 : 3} />
 
       <AtModal
@@ -287,6 +352,33 @@ const Index = observer(({ store }) => {
           </View>
         </View>
       </AtModal>
+
+      <Block>
+        <AtFloatLayout catchMove className='mine_role_init_layout' isOpened={showRoleModel} onClose={() => { setShowRoleModel(false) }}>
+          <View className='filter_wrapper'>
+            <View className='filter_wrapper_bg'>
+              <View className='filter_title'>
+                <View>选择角色</View>
+                <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowRoleModel(false) }}></AtIcon>
+              </View>
+              <View className='filter_wrapper_content'>
+                {
+                  currentRoles.map((item, index) => {
+                    return (
+                      <View
+                        key={index}
+                        className={`filter_wrapper_item ${item.isSelected ? 'filter_wrapper_item_active' : ''}`}
+                        onClick={() => chooseRoleFunc(item, index)}
+                      >{item.name}</View>
+                    )
+                  })
+                }
+              </View>
+              <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+            </View>
+          </View>
+        </AtFloatLayout>
+      </Block>
     </View>
   )
 })

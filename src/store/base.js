@@ -16,7 +16,7 @@ const baseStore = observable({
     statusTitleHeight: 0, // 导航栏中状态栏的高度
     contenTitleHeight: 0, // 导航栏中内容区域的高度
     tabbarHeight: 0, // 底部tabbar的高度
-    bottomSafeAreaHeight: 0, // 底部安全区域高度
+    bottomSafeAreaHeight: 20, // 底部安全区域高度
     windowWidth: 0,
     platform: '', // 平台类型  ios=iOS微信（包含 iPhone、iPad）  android=Android微信  windows=Windows微信  mac=macOS微信  devtools=微信开发者工具
     setSystemInfo() { // 在小程序的app.jsx调用

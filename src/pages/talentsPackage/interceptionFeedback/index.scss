@@ -1,0 +1,68 @@
+@import '@/app.scss';
+
+.container {
+    width: 100%;
+    height: 100vh;
+    // background: linear-gradient(180deg, #E8F1FF 0%, #edf3fc00 100%);
+    background: linear-gradient(180deg, #E8F1FF 0%, #edf3fc00 100%) #F4F4F4;
+    background-size: 100% 1158rpx;
+    background-repeat: no-repeat;
+
+    .scrollWrapper {
+        width: 100%;
+        // border: 1rpx solid red;
+
+        .list_item {
+            width: 710rpx;
+            height: 154rpx;
+            flex-shrink: 0;
+            border-radius: 20rpx;
+            background: #FFF;
+            margin: 0 auto 20rpx auto;
+
+            .list_item_title {
+                padding: 24rpx 24rpx 0 24rpx;
+                @include flex-center(flex-start);
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                    flex-shrink: 0;
+                    margin: 0 10rpx 0 18rpx;
+                }
+                .list_item_title_phone{
+                    color: #1678ff;
+                    font-family: "D-DIN-PRO";
+                    font-size: 32rpx;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: 46rpx;
+                }
+            }
+
+            .list_item_nums{
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                padding: 22rpx 0 0 24rpx;
+                text{
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+            }
+        }
+    }
+}

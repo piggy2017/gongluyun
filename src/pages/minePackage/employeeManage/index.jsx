@@ -2,15 +2,15 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 21:02:42
+ * @LastEditTime: 2025-03-26 10:30:34
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
-import Taro,{useDidShow} from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import { View, Image, Text, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, getRoleName } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -23,7 +23,7 @@ import { companyMemberList } from '@/util/api'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { companyInfo },
+        userStore: { companyInfo, roles },
         businessStore: { setEmployeeInfo }
     } = store
 
@@ -176,7 +176,14 @@ const Index = observer(({ store }) => {
                                     <View className='employee_item_info'>
                                         <View className='employee_item_name'>
                                             <View>{item.name}</View>
-                                            <View className='employee_item_role'>{item.roleName}</View>
+                                            {
+                                                item.roles.map((i, idx) => {
+                                                    return (
+                                                        <View className='employee_item_role' key={idx}>{getRoleName(i.roleId)}</View>
+                                                    )
+                                                })
+                                            }
+                                            {/* <View className='employee_item_role'>{item.roleName}</View> */}
                                         </View>
                                         <View className='employee_item_phone'>{item.phone}</View>
                                     </View>
@@ -240,10 +247,17 @@ const Index = observer(({ store }) => {
                             <View className='filter_wrapper_content'>
                                 <View className={`filter_wrapper_item ${roleId === '' ? 'filter_wrapper_item_active' : ''}`}
                                     onClick={() => setRoleIdFunc('')}>全部角色</View>
-                                <View className={`filter_wrapper_item ${roleId == '2' ? 'filter_wrapper_item_active' : ''}`}
+                                {/* <View className={`filter_wrapper_item ${roleId == '2' ? 'filter_wrapper_item_active' : ''}`}
                                     onClick={() => setRoleIdFunc('2')}>客服</View>
                                 <View className={`filter_wrapper_item ${roleId == '3' ? 'filter_wrapper_item_active' : ''}`}
-                                    onClick={() => setRoleIdFunc('3')}>驻场</View>
+                                    onClick={() => setRoleIdFunc('3')}>驻场</View> */}
+                                {
+                                    roles.map((item, index) => {
+                                        return (
+                                            <View className={`filter_wrapper_item ${roleId == item.roleId ? 'filter_wrapper_item_active' : ''}`} onClick={() => setRoleIdFunc(item.roleId)} key={index}>{item.roleName}</View>
+                                        )
+                                    })
+                                }
                             </View>
                             <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                         </View>

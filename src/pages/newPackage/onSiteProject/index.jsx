@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-19 10:20:53
+ * @LastEditTime: 2025-03-27 09:44:16
  * @Description: 
  */
 
@@ -122,7 +122,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const chooseItem = (obj, index) => {
-        if (obj.selected) {
+        if (obj.selected) {  
             setChoosedList(choosedList => {
                 let list = choosedList.filter(item => item !== obj.serialCode)
                 return list

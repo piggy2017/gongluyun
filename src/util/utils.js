@@ -288,6 +288,27 @@ function drawRoundRectPath(canvas, width, height, radius) {
     canvas.closePath();
 }
 
+export const getRoleName = (role) => {
+    let name = '';
+    switch (role) {
+        case '1':
+            name = '管理员';
+            break;
+        case '2':
+            name = '客服';
+            break;
+        case '3':
+            name = '驻场';
+            break;
+        case '6':
+            name = '渠道';
+            break;
+        default:
+            name = '未知';
+            break;
+    }
+    return name;
+}
 
 //将字符串转换为对象
 export const getQueryString = (url) => {
