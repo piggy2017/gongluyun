@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 17:47:33
+ * @LastEditTime: 2025-03-27 20:00:20
  * @Description: 
  */
 
@@ -184,7 +184,7 @@ const Index = observer(({ store }) => {
                     });
             })
             let canvas = result[0].node;
-            let _url = env == 'prod' ? 'https://sa-api.apujiyu.com/projectDetail' : 'https://sa-test.apujiyu.com/projectDetail';
+            let _url = env == 'prod' ? 'https://sa-api.apujiyu.com/projectDetailQZWZ' : 'https://sa-test.apujiyu.com/projectDetail';
             let _text = `${_url}?recruitSerialCode=${_recruitSerialCode}&agentSerialCode=${userInfo.userSerialCode}&inviteRole=SEEK&source=WECHAT_MINI_SHARE`;
             drawQrcode({
                 canvas: canvas,
