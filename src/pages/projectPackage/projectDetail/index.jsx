@@ -394,10 +394,10 @@ const Index = observer(({ store }) => {
     }
   };
 
-  const previewImg = (imgSrc) => {
+  const previewImg = (imgSrc, list) => {
     Taro.previewImage({
-      current: imgSrc,                // 当前显示图片的链接
-      urls: detail.jobImages          // 需要预览的图片列表
+      current: imgSrc,            // 当前显示图片的链接
+      urls: list          // 需要预览的图片列表
     })
   }
 
@@ -664,7 +664,7 @@ const Index = observer(({ store }) => {
           {
             detail.jobImages.map((item, index) => {
               return (
-                <Image onClick={() => previewImg(item)} className='job_desc_images_i' key={index}></Image>
+                <Image onClick={() => previewImg(item, detail.jobImages)} className='job_desc_images_i' key={index}></Image>
               )
             })
           }
@@ -678,10 +678,10 @@ const Index = observer(({ store }) => {
         <View className='btn_wrap'>
           {
             detail.status === 'PROCESSING' &&
-            <View className='btn_item' onClick={()=>{
-              if(myPermissions.includes('15')){
+            <View className='btn_item' onClick={() => {
+              if (myPermissions.includes('15')) {
                 stopJob();
-              }else{
+              } else {
                 Taro.showToast({ title: '暂无权限', icon: 'none' });
               }
             }}>
@@ -689,10 +689,10 @@ const Index = observer(({ store }) => {
               <View>暂停面试</View>
             </View> ||
             detail.status === 'COMPLETED' &&
-            <View className='btn_item' onClick={()=>{
-              if(myPermissions.includes('15')){
+            <View className='btn_item' onClick={() => {
+              if (myPermissions.includes('15')) {
                 startJob();
-              }else{
+              } else {
                 Taro.showToast({ title: '暂无权限', icon: 'none' });
               }
             }}>
@@ -753,7 +753,7 @@ const Index = observer(({ store }) => {
                       {
                         swiperImages.map((item, index) => {
                           return (
-                            <SwiperItem className='swiper_wrap_item' key={index} onClick={() => previewImg(item)}>
+                            <SwiperItem className='swiper_wrap_item' key={index} onClick={() => previewImg(item, swiperImages)}>
                               <Image src={item}></Image>
                             </SwiperItem>
                           )
