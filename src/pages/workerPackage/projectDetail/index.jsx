@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-02 09:58:12
+ * @LastEditTime: 2025-04-02 11:22:19
  * @Description: 
  */
 
@@ -383,8 +383,6 @@ const Index = observer(({ store }) => {
         // }).catch(e => {
         //     console.log("文字消息发送成功: 失败 ", e);
         // });
-
-        
         // return
 
         let params = {
@@ -398,12 +396,12 @@ const Index = observer(({ store }) => {
             userAvatar: detail.userAvatar,
             areaName: detail.areaName,
             createDate: detail.createDate,
-            serialCode: detail.contractsSerialCode,       // 发送岗位卡片消息后,企业端需要用serialCode查询岗位详情
+            serialCode: detail.contractsSerialCode ? detail.contractsSerialCode : '',       // 发送岗位卡片消息后,企业端需要用serialCode查询岗位详情
             distance: detail.distance ? detail.distance : '',
             recruitPhone: decryptData(detail.recruitPhone),
             userNickName: detail.userNickName,
         }
-        let customExts = { ...params, source: 'IN_WECHAT_MINI' };
+        let _customExts = { ...params, source: 'IN_WECHAT_MINI' };
         let option = {
             canGroupId: 'apujiyu303957430',                                          //`apujiyu${detail.userSerialCode}`,   // + coverSerialCode
             chatType: "singleChat",
@@ -412,13 +410,22 @@ const Index = observer(({ store }) => {
             from: `apujiyu${userInfo.userSerialCode}`,                               //`apujiyu${userInfo.userSerialCode}`,    // userInfo.userSerialCode
             customEvent: "job",
             ext: {
+                ...params,
                 applyDate: "",
-                ...params
             },
-            customExts,
+            customExts: _customExts
         }
         let msg = Taro.WebIM.message.create(option);
         console.log("发送自定义消息体", msg)
+        Taro.setClipboardData({
+            data: JSON.stringify(msg),
+            success: () => {
+                Taro.showToast({
+                    title: '复制成功',
+                    icon: 'none'
+                })
+            }
+        })
         Taro.WebIM.conn.send(msg).then(res => {
             console.log("自定义岗位卡片发送成功: 成功", res);
         }).catch(e => {
