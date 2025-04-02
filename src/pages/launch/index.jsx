@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-02 13:43:49
+ * @LastEditTime: 2025-04-02 15:16:04
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -54,43 +54,11 @@ const Index = observer(({ store }) => {
                     url: '/pages/workerIndex/index'
                 });
                 return
-                refreshUserInfo((res) => {
-                    console.log("auth页面res", res);
-                    if (res?.data?.userInfo) {
-                        const { sex, age, jobTypes } = res.data.userInfo;
-                        if (sex != 2 && age && jobTypes?.length > 0) {
-                            Taro.switchTab({
-                                url: '/pages/workerIndex/index'
-                            });
-                        } else {
-                            Taro.redirectTo({ url: '/pages/loginPackage/chooseRole/index' });
-                        }
-                    } else {
-                        Taro.navigateTo({ url: '/pages/loginPackage/chooseRole/index' });
-                    }
-                })
-                return
             }
-
-
-            if (isLogin && !companyVerified) {    // 已登录但没有实名认证
-                // Taro.redirectTo({ url: '/pages/auth/index' })
-                console.log(5)
-                refreshUserInfo((res) => {
-                    console.log("auth页面res", res);
-                    if (res?.data?.companyVerified) {
-                        Taro.switchTab({
-                            url: '/pages/index/index'
-                        })
-                    } else {
-                        Taro.redirectTo({ url: '/pages/auth/index' })
-                    }
-                })
-            } else if (isLogin && companyVerified) {
-                console.log(6)
-                Taro.switchTab({
-                    url: '/pages/index/index'
-                })
+            else {
+                console.log('已经登陆但是还没有角色,前往选择角色');
+                Taro.redirectTo({ url: '/pages/loginPackage/chooseRole/index' });
+                return
             }
         }, 200);
     }, [])
