@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-02 10:10:27
+ * @LastEditTime: 2025-04-02 11:34:49
  * @Description: 
  */
 
@@ -61,6 +61,7 @@ const Index = observer(({ store }) => {
         }
     }, [codesrc, canvasBg]);
 
+    
     useEffect(() => {
         const { inviteRole, recruitSerialCode, agentSerialCode, source, q } = route.params;
         console.log("进入到岗位详情页,查看携带的参数", route.params);

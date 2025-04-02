@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 14:46:02
+ * @LastEditTime: 2025-04-02 13:37:02
  * @Description: 用于存放用户的相关信息
  */
 
@@ -36,19 +36,21 @@ const userStore = observable({
                 // userStore.role = res?.data?.userInfo.userRole;
                 // Taro.setStorageSync('role', res?.data?.userInfo.userRole);
                 Taro.setStorageSync('companyInfo', res.data);
-                userStore.userRoles = res?.data?.userInfo.roles.map(item=>{
-                    if(item.roleName==='ADMIN'){
-                        item.name='管理员'
-                    }else if(item.roleName==='CUSTOMER'){
-                        item.name='客服'
-                    }else  if(item.roleName==='ON_SITE'){
-                        item.name='驻场'
-                    }else  if(item.roleName==='CHANNEL'){
-                        item.name='渠道'
-                    }
-                    return item
-                })
-                Taro.setStorageSync('userRoles', res?.data?.userInfo.roles);
+                if(res.data.userInfo.roles){
+                    userStore.userRoles = res?.data?.userInfo.roles.map(item=>{
+                        if(item.roleName==='ADMIN'){
+                            item.name='管理员'
+                        }else if(item.roleName==='CUSTOMER'){
+                            item.name='客服'
+                        }else  if(item.roleName==='ON_SITE'){
+                            item.name='驻场'
+                        }else  if(item.roleName==='CHANNEL'){
+                            item.name='渠道'
+                        }
+                        return item
+                    })
+                    Taro.setStorageSync('userRoles', res?.data?.userInfo.roles);
+                }
                 if (callback) {
                     callback(res);
                 }
