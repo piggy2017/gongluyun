@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 20:00:20
+ * @LastEditTime: 2025-04-02 14:00:45
  * @Description: 
  */
 
@@ -158,6 +158,7 @@ const Index = observer(({ store }) => {
         let url = `/pages/workerPackage/projectDetail/index?recruitSerialCode=${detail.recruitSerialCode}&inviteRole=SEEK&source=WECHAT_MINI_SHARE&agentSerialCode=${userInfo?.userSerialCode ? userInfo.userSerialCode : ''}`;
         return {
             title: detail.areaName + detail.recruitTitle,
+            imageUrl: `${Taro.$cdnUrl}/supplier/supplier_81.webp`, // 图片 URL
             path: url
         }
     })
