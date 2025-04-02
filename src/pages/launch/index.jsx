@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-02 15:16:04
+ * @LastEditTime: 2025-04-02 16:11:25
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -31,6 +31,13 @@ const Index = observer(({ store }) => {
                 console.log(2)
                 Taro.redirectTo({ url: '/pages/login/index' })
                 return
+            }
+
+            if (role === 'ADMIN' || role === 'CUSTOMER' || role === 'ON_SITE') {    // 管理员
+                Taro.switchTab({
+                    url: '/pages/index/index'
+                })
+                return;
             }
 
             if (role === 'CHANNEL') {    // 渠道
