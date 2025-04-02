@@ -19,7 +19,8 @@ import './index.scss'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { setToken, setIsLogin, setRole, setUserInfo, getRoleAndPermissionFunc, setMyPermissions, getSupplierCompanyInfo }
+        ChatStore: { setSessionList, setCursor, setHxUser },
+        userStore: { setToken, setIsLogin, setUserInfo, getRoleAndPermissionFunc, setMyPermissions, getSupplierCompanyInfo }
     } = store
 
     const [step, setStep] = useState(1);
@@ -70,6 +71,7 @@ const Index = observer(({ store }) => {
                     Taro.setStorageSync('isLogin', 1);
                     // Taro.setStorageSync('role', result.data.user.userRole);
                     Taro.setStorageSync('userInfo', result.data.user);
+                    setHxUser(result.data.hxUser);
                     setIsLogin(1);
                     setUserInfo(result.data.user);
                     // setRole(result.data.user.userRole);

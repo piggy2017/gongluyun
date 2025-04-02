@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 14:36:18
+ * @LastEditTime: 2025-03-31 11:02:54
  * @Description: 
  */
 
@@ -16,7 +16,7 @@ import './index.scss'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight },
-        userStore: { supplierCompanyInfo, getSupplierCompanyInfo, refreshUserInfo, setRole }
+        userStore: { supplierCompanyInfo, getSupplierCompanyInfo, refreshUserInfo, setRole, getSubTemplates }
     } = store
 
     useEffect(() => {
@@ -62,17 +62,6 @@ const Index = observer(({ store }) => {
                 console.log("auth页面res", res);
                 Taro.hideLoading();
                 if (res?.data?.companyVerified) {
-                    // switchRoles({ userRole: 'ADMIN' }).then(res => {
-                    //     if (res.code === 200) {
-                    //         console.log('切换角色成功')
-                    //         Taro.setStorageSync('role', res.data.userInfo.userRole);
-                    //         setRole(res.data.userInfo.userRole);
-                    //         Taro.switchTab({
-                    //             url: '/pages/index/index'
-                    //         })
-                    //     }
-                    // })
-
                     chooseRoleFunc(2, (data) => {
                         Taro.setStorageSync('role', data);
                         setRole(data);
@@ -91,15 +80,6 @@ const Index = observer(({ store }) => {
                 }
             })
         } else if (type === 3) {  // 供应商
-            // switchRoles({ userRole: 'SUPPLIER' }).then(res => {
-            //     if (res.code === 200) {
-            //         setRole('SUPPLIER');
-            //         Taro.setStorageSync('role', 'SUPPLIER')
-            //         Taro.switchTab({
-            //             url: '/pages/supplierProject/index'
-            //         })
-            //     }
-            // })
             chooseRoleFunc(3, () => {
                 Taro.setStorageSync('role', 'SUPPLIER')
                 setRole('SUPPLIER');
@@ -113,6 +93,7 @@ const Index = observer(({ store }) => {
     const chooseRoleFunc = async (type, calback) => {
         const { code, data, msg } = await switchRoles({ userRole: type === 1 ? 'SEEK' : type === 2 ? 'ADMIN' : 'SUPPLIER' });
         if (code === 200) {
+            getSubTemplates();
             if (calback) calback(data);
         } else {
             Taro.showToast({

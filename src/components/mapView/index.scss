@@ -1,0 +1,35 @@
+@import '../../app.scss';
+
+
+.location-card {
+  width: 500rpx;
+  background-color: #fff;
+  position: relative;
+  .info{
+    width: 100%;
+    padding: 10rpx;
+    .title{
+      width: 100%;
+      font-size: 28rpx;
+      color: #ccc;
+    }
+    .address{
+      width: 100%;
+      font-size: 24rpx;
+      color: #ccc;
+    }
+  }
+  .map{
+    width: 100%;
+    height: 300rpx;
+  }
+  .top_view{
+    width: 100%;
+    height: 300rpx;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: transparent;
+    pointer-events: none;
+  }
+}

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-28 10:23:08
+ * @LastEditTime: 2025-04-02 09:58:12
  * @Description: 
  */
 
@@ -24,7 +24,8 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { bottomSafeAreaHeight },
         businessStore: { },
-        userStore: { isLogin, userInfo, setRole, setEnterParams }
+        userStore: { isLogin, userInfo, setRole, setEnterParams },
+        ChatStore: { sessionList, setSessionList },
     } = store
 
 
@@ -41,7 +42,7 @@ const Index = observer(({ store }) => {
     useEffect(() => {
         const allCanvsBgs = bgImages.map(item => getImageInfo(item));
         Promise.all(allCanvsBgs).then(res => {
-            console.log("allCanvsBgs", res);
+            // console.log("allCanvsBgs", res);
             setCanvasBg(res);
         }).catch(err => {
             console.error("allCanvsBgs_err", err)
@@ -50,7 +51,6 @@ const Index = observer(({ store }) => {
 
     useEffect(() => {
         if (codesrc && canvasBg.length === 4) {
-            console.log("开始绘制最终图片", detail);
             const swiperList = canvasBg.map((i, index) => toDrawPhoto(`canvas${index + 1}`, codesrc, i));
             Promise.all(swiperList).then(res => {
                 console.log("swiperList", res);
@@ -116,7 +116,27 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const signUpFunc = async () => {
+    const signUpFunc = async () => {    // 报名
+        if (!isLogin) {
+            return setIsOpened(true)
+        }
+        if (!detail.signUp) {
+            let params = {
+                source: 'SIGN',
+                recruitSerialCode: detail.recruitSerialCode,
+                signUpChannel: 'IN_WECHAT_MINI'
+            }
+            Taro.showLoading({ title: '报名中...' });
+            const { code, data, msg } = await signUpAdd(params);
+            Taro.hideLoading();
+            if (code === 200) {
+                // Taro.showToast({ title: '报名成功', icon: 'success', duration: 2000 });
+                setDetail({ ...detail, signUp: true })
+            }
+        }
+    }
+
+    const callFunc = () => {   // 拨打电话
         if (!isLogin) {
             return setIsOpened(true)
         }
@@ -127,19 +147,6 @@ const Index = observer(({ store }) => {
         }).catch((err) => {
             console.log('拨打电话失败', err);
         });
-
-        if (!detail.signUp) {
-            let params = {
-                source: 'SIGN',
-                recruitSerialCode: detail.recruitSerialCode,
-                signUpChannel: 'IN_WECHAT_MINI'
-            }
-            const { code, data, msg } = await signUpAdd(params);
-            if (code === 200) {
-                // Taro.showToast({ title: '报名成功', icon: 'success', duration: 2000 });
-                setDetail({ ...detail, signUp: true })
-            }
-        }
     }
 
     const onClose = (e) => {
@@ -230,7 +237,6 @@ const Index = observer(({ store }) => {
                     .fields({ node: true, size: true })
                     .exec(resolve);
             });
-            console.log("res", res);
 
             const canvas = res[0].node;
             // 初始化画布大小
@@ -285,7 +291,7 @@ const Index = observer(({ store }) => {
                     break;
                 }
             }
-            console.log("最终需要绘制的标签finishTag:", finishTag);
+            // console.log("最终需要绘制的标签finishTag:", finishTag);
             let currentX = startX;                              // 标签矩形初始化起始位置
             let currentTextX = startX + 18;                     // 标签文字初始化起始位置
 
@@ -321,10 +327,10 @@ const Index = observer(({ store }) => {
                     fail: (err) => reject(err)
                 });
             });
-            console.log("导出的图片路径tempFilePath:", tempFilePath);
+            // console.log("导出的图片路径tempFilePath:", tempFilePath);
             return tempFilePath;
         } catch (error) {
-            console.error('Error in toDrawPhoto:', error);
+            // console.error('Error in toDrawPhoto:', error);
         }
     };
 
@@ -345,6 +351,114 @@ const Index = observer(({ store }) => {
                 Taro.showToast({ title: res, icon: 'none', duration: 2000 })
             }
         })
+    }
+
+    const goChat = () => {
+        // let options = {
+        //     canGroupId: "apujiyu303957430",
+        //     chatType: "singleChat",
+        //     ext: {
+        //         applyDate: "",
+        //         avatar: "https://jm-com.oss-accelerate.aliyuncs.com/defaultAvatars/seek_man.png",
+        //         nickName: "用户1627",
+        //         recruitSalaryRange: "",
+        //         recruitSerialCode: "",
+        //         title: ""
+        //     },
+        //     extDiy: {
+        //         applyDate: "",
+        //         recruitSalaryRange: "",
+        //         recruitSerialCode: "",
+        //         title: ""
+        //     },
+        //     from: "apujiyu1543558281",
+        //     msg: "测试发送文字消息",
+        //     to: "apujiyu303957430",
+        //     type: "txt"
+        // }
+        // let msg = Taro.WebIM.message.create(options);
+        // console.log("发送的消息体为:", msg);
+        // Taro.WebIM.conn.send(msg).then(res => {
+        //     console.log("文字消息发送成功: 成功", res);
+        // }).catch(e => {
+        //     console.log("文字消息发送成功: 失败 ", e);
+        // });
+
+        
+        // return
+
+        let params = {
+            recruitSerialCode: detail.recruitSerialCode,
+            realUser: detail.realUser,
+            title: detail.recruitTitle,
+            recruitTitle: detail.recruitTitle,
+            recruitSalaryRange: detail.recruitSalaryRange,
+            jobReq: detail.jobReq,
+            tags: detail.tags,
+            userAvatar: detail.userAvatar,
+            areaName: detail.areaName,
+            createDate: detail.createDate,
+            serialCode: detail.contractsSerialCode,       // 发送岗位卡片消息后,企业端需要用serialCode查询岗位详情
+            distance: detail.distance ? detail.distance : '',
+            recruitPhone: decryptData(detail.recruitPhone),
+            userNickName: detail.userNickName,
+        }
+        let customExts = { ...params, source: 'IN_WECHAT_MINI' };
+        let option = {
+            canGroupId: 'apujiyu303957430',                                          //`apujiyu${detail.userSerialCode}`,   // + coverSerialCode
+            chatType: "singleChat",
+            type: "custom",
+            to: 'apujiyu303957430',                                                  //  `apujiyu${detail.userSerialCode}`,
+            from: `apujiyu${userInfo.userSerialCode}`,                               //`apujiyu${userInfo.userSerialCode}`,    // userInfo.userSerialCode
+            customEvent: "job",
+            ext: {
+                applyDate: "",
+                ...params
+            },
+            customExts,
+        }
+        let msg = Taro.WebIM.message.create(option);
+        console.log("发送自定义消息体", msg)
+        Taro.WebIM.conn.send(msg).then(res => {
+            console.log("自定义岗位卡片发送成功: 成功", res);
+        }).catch(e => {
+            console.log("自定义岗位卡片发送成功: 失败 ", e);
+        });
+
+
+
+        // setTimeout(() => {
+        //     let _phone = decryptData(detail.recruitPhone);
+        //     let url = `/pages/messagePackage/consult/index?recruitSerialCode=${detail.recruitSerialCode}&conversationId=${'apujiyu' + detail.userSerialCode}&userSerialCode=${detail.userSerialCode}&nickname=${detail.userNickName}&phone=${_phone}`
+        //     Taro.navigateTo({
+        //         url: url
+        //     })
+        // }, 1000);
+        // storageMessage(option);
+    }
+
+    const storageMessage = (option) => {
+        let list = [...sessionList]
+        let chatInfo = {
+            ...option,
+            time: new Date().getTime(),
+        }
+        let inx = list.findIndex(r => r.conversationId === option.to)
+        if (inx > -1) {
+            list[inx].lastMessage = chatInfo
+        } else {
+            let obj = {
+                conversationId: option.to,
+                conversationType: option.chatType,
+                isPinned: false,
+                lastMessage: chatInfo,
+                pinnedTime: 0,
+                unReadCount: 0,
+            }
+            list = [obj, ...list]
+        }
+        console.log("发送岗位卡片过后更新 本地 消息列表", list);
+        setSessionList([...list])
     }
 
     return (
@@ -419,7 +533,7 @@ const Index = observer(({ store }) => {
                     <RichText nodes={detail.introductionTrans}></RichText>
                 </View>
                 {
-                    detail.jobImages?.length>0 &&
+                    detail.jobImages?.length > 0 &&
                     <View className='job_desc_images'>
                         {
                             detail.jobImages.map((item, index) => {
@@ -439,19 +553,29 @@ const Index = observer(({ store }) => {
             <View style={`height:240rpx;`}></View>
 
             <View className='bottom_wrapper'>
+                <View style={`height:20rpx;`}></View>
                 <View className='page_bottom_btns'>
-                    {/* <Button className='btn_item' open-type='share'>
-                        <Image src={`${Taro.$cdnUrl}/supplier/supplier_52.webp`}></Image>
-                        <View>分享</View>
-                    </Button> */}
                     <View className='btn_item' onClick={() => setShowShareModel(true)}>
                         <Image src={`${Taro.$cdnUrl}/supplier/supplier_52.webp`}></Image>
                         <View>分享</View>
                     </View>
-                    <View className='bottom_btn' onClick={signUpFunc}>
-                        <Image src={`${Taro.$cdnUrl}/supplier/supplier_43.webp`}></Image>
+                    <View className='btn_item' onClick={goChat}>
+                        <Image src={`${Taro.$cdnUrl}/message/message_1.webp`}></Image>
+                        <View>私信</View>
+                    </View>
+                    <View className='bottom_btn' style={`background:rgba(22, 120, 255, 0.11);color:#1678FF`} onClick={callFunc}>
                         <View>电话咨询</View>
                     </View>
+                    {
+                        detail.signUp ?
+                            <View className='bottom_btn' style={`background:#F6F6F6;color:#666`}>
+                                <View>已报名</View>
+                            </View> :
+                            <View className='bottom_btn' style={`background:#1678FF;color:#ffffff`} onClick={signUpFunc}>
+                                <View>立即报名</View>
+                            </View>
+                    }
+
                 </View>
 
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-26 17:08:09
+ * @LastEditTime: 2025-04-01 14:34:38
  * @Description: 
  */
 export default defineAppConfig({
@@ -18,6 +18,7 @@ export default defineAppConfig({
         'pages/supplierProject/index',
         'pages/workerIndex/index',           // 求职者首页
         'pages/channelIndex/index',          // 渠道首页
+        'pages/message/index',
     ],
     window: {
         backgroundTextStyle: 'light',
@@ -26,15 +27,15 @@ export default defineAppConfig({
         navigationBarTextStyle: 'black'
     },
     permission: {
-    //   "scope.userLocation": {
-    //     "desc": "你的位置信息将用于小程序位置接口的效果展示"
-    //   },
-    //   "scope.userFuzzyLocation": {
-    //     "desc": "你的位置信息将用于小程序位置接口的效果展示"
-    //   }
+      "scope.userLocation": {
+        "desc": "你的位置信息将用于小程序位置接口的效果展示"
+      },
+      "scope.userFuzzyLocation": {
+        "desc": "你的位置信息将用于小程序位置接口的效果展示"
+      }
     },
     requiredPrivateInfos: [
-    //   "getLocation", "chooseLocation",
+      "getLocation", "chooseLocation",
     ],
     tabBar: {
         custom: true,
@@ -59,6 +60,10 @@ export default defineAppConfig({
                 "text": "线索"
             },
             {
+                'pagePath': 'pages/message/index',
+                "text": "消息"
+            },
+            {
                 "pagePath": "pages/onSiteList/index",
                 "text": "名单"
             },
@@ -69,7 +74,7 @@ export default defineAppConfig({
             {
                 'pagePath': 'pages/supplierProject/index',
                 "text": "项目"
-            }
+            },
         ]
     },
     subPackages: [{
@@ -92,6 +97,12 @@ export default defineAppConfig({
             "pages": [
                 "chooseRole/index",              // 选择角色
                 "writeInfo/index",               // 选择角色
+            ]
+        },
+        {
+            "root": "pages/messagePackage/",     // 聊天相关
+            "pages": [
+                "consult/index",                 // 单聊聊天页面
             ]
         },
         {
