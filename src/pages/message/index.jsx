@@ -219,7 +219,7 @@ const Message = observer(({ store }) => {
                                             type === 'loc' && <View className='detail_cont'>[位置]</View>
                                         }
                                         {
-                                            type === "custom" && customEvent === 'job' && <View className='detail_cont'>[推荐岗位]</View>
+                                            type === "custom" && customEvent === 'job' && <View className='detail_cont'>[岗位]</View>
                                         }
                                         {
                                             type === "custom" && customEvent === 'interview' && <View className='detail_cont'>{ext.interviewType == 1 ? '[面试通知]' : '面试结果通知'}</View>

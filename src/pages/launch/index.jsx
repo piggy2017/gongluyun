@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-02 15:10:32
+ * @LastEditTime: 2025-04-02 15:25:31
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -58,6 +58,7 @@ const Index = observer(({ store }) => {
                 return
             }
             else{
+                console.log('已经登陆但是还没有角色,前往选择角色');
                 Taro.redirectTo({ url: '/pages/loginPackage/chooseRole/index' });
                 return
             }
