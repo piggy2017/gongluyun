@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 14:55:22
+ * @LastEditTime: 2025-04-02 13:43:49
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -30,6 +30,7 @@ const Index = observer(({ store }) => {
             if (!isLogin || !token) {  // 未登录
                 console.log(2)
                 Taro.redirectTo({ url: '/pages/login/index' })
+                return
             }
 
             if (role === 'CHANNEL') {    // 渠道
