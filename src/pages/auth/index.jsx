@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-10 11:20:53
+ * @LastEditTime: 2025-04-02 13:50:16
  * @Description: 
  */
 import React, { useState, useEffect, useReducer } from 'react'
@@ -63,7 +63,7 @@ const Index = observer(({ store }) => {
             <View className='img_wrapper'>
                 <View className='go_auth' onClick={() => Taro.navigateTo({ url: '/pages/minePackage/companyAuth/index' })}>立即认证</View>
             </View>
-            <Image className='bottom_logo' src={`${Taro.$cdnUrl}/newIndex/newIndex_21.webp`}></Image>
+            <Image className='bottom_logo' src={`${Taro.$cdnUrl}/supplier/supplier_60.webp`}></Image>
         </View>
     )
 })
