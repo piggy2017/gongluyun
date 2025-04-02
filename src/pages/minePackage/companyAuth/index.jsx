@@ -24,7 +24,7 @@ const Index = observer(({ store }) => {
 
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-    userStore: { setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions }
+    userStore: { setRole, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, getSubTemplates }
   } = store
 
   const getHeight = () => {
@@ -153,8 +153,17 @@ const Index = observer(({ store }) => {
         Taro.showToast({ title: '认证成功', icon: 'none', duration: 2000 });
         setTimeout(() => {
           // Taro.navigateBack({ delta: 1 })
-          Taro.switchTab({ url: '/pages/index/index' })
-        }, 1500);
+          switchRoles({ userRole: 'ADMIN' }).then(result => {
+            if (result.code === 200) {
+              getSubTemplates();
+              Taro.setStorageSync('role', result.data);
+              setRole(result.data);
+              Taro.switchTab({
+                url: '/pages/index/index'
+              })
+            }
+          })
+        }, 1000);
       } else {
         Taro.showToast({ title: res.msg, icon: 'none', duration: 2000 });
         refreshUserInfo();

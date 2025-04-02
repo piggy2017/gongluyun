@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-02 11:34:49
+ * @LastEditTime: 2025-04-02 14:26:21
  * @Description: 
  */
 
@@ -61,7 +61,7 @@ const Index = observer(({ store }) => {
         }
     }, [codesrc, canvasBg]);
 
-    
+
     useEffect(() => {
         const { inviteRole, recruitSerialCode, agentSerialCode, source, q } = route.params;
         console.log("进入到岗位详情页,查看携带的参数", route.params);
@@ -356,37 +356,6 @@ const Index = observer(({ store }) => {
     }
 
     const goChat = () => {
-        // let options = {
-        //     canGroupId: "apujiyu303957430",
-        //     chatType: "singleChat",
-        //     ext: {
-        //         applyDate: "",
-        //         avatar: "https://jm-com.oss-accelerate.aliyuncs.com/defaultAvatars/seek_man.png",
-        //         nickName: "用户1627",
-        //         recruitSalaryRange: "",
-        //         recruitSerialCode: "",
-        //         title: ""
-        //     },
-        //     extDiy: {
-        //         applyDate: "",
-        //         recruitSalaryRange: "",
-        //         recruitSerialCode: "",
-        //         title: ""
-        //     },
-        //     from: "apujiyu1543558281",
-        //     msg: "测试发送文字消息",
-        //     to: "apujiyu303957430",
-        //     type: "txt"
-        // }
-        // let msg = Taro.WebIM.message.create(options);
-        // console.log("发送的消息体为:", msg);
-        // Taro.WebIM.conn.send(msg).then(res => {
-        //     console.log("文字消息发送成功: 成功", res);
-        // }).catch(e => {
-        //     console.log("文字消息发送成功: 失败 ", e);
-        // });
-        // return
-
         let params = {
             recruitSerialCode: detail.recruitSerialCode,
             realUser: detail.realUser,
@@ -395,20 +364,20 @@ const Index = observer(({ store }) => {
             recruitSalaryRange: detail.recruitSalaryRange,
             jobReq: detail.jobReq,
             tags: detail.tags,
-            userAvatar: detail.userAvatar,
+            userAvatar: detail.userAvatar? detail.userAvatar : '',
             areaName: detail.areaName,
             createDate: detail.createDate,
             serialCode: detail.contractsSerialCode ? detail.contractsSerialCode : '',       // 发送岗位卡片消息后,企业端需要用serialCode查询岗位详情
             distance: detail.distance ? detail.distance : '',
-            recruitPhone: decryptData(detail.recruitPhone),
-            userNickName: detail.userNickName,
+            phone: decryptData(detail.recruitPhone),
+            userNickName: detail.userNickName? detail.userNickName : '',
         }
         let _customExts = { ...params, source: 'IN_WECHAT_MINI' };
         let option = {
-            canGroupId: 'apujiyu303957430',                                          //`apujiyu${detail.userSerialCode}`,   // + coverSerialCode
+            canGroupId: `apujiyu${detail.userSerialCode}`,                                          //`apujiyu${detail.userSerialCode}`,   // + coverSerialCode
             chatType: "singleChat",
             type: "custom",
-            to: 'apujiyu303957430',                                                  //  `apujiyu${detail.userSerialCode}`,
+            to: `apujiyu${detail.userSerialCode}`,                                                  //  `apujiyu${detail.userSerialCode}`,
             from: `apujiyu${userInfo.userSerialCode}`,                               //`apujiyu${userInfo.userSerialCode}`,    // userInfo.userSerialCode
             customEvent: "job",
             ext: {
@@ -419,31 +388,19 @@ const Index = observer(({ store }) => {
         }
         let msg = Taro.WebIM.message.create(option);
         console.log("发送自定义消息体", msg)
-        Taro.setClipboardData({
-            data: JSON.stringify(msg),
-            success: () => {
-                Taro.showToast({
-                    title: '复制成功',
-                    icon: 'none'
-                })
-            }
-        })
         Taro.WebIM.conn.send(msg).then(res => {
             console.log("自定义岗位卡片发送成功: 成功", res);
+            setTimeout(() => {
+                let _phone = decryptData(detail.recruitPhone);
+                let url = `/pages/messagePackage/consult/index?recruitSerialCode=${detail.recruitSerialCode}&conversationId=${'apujiyu' + detail.userSerialCode}&userSerialCode=${detail.userSerialCode}&nickname=${detail.userNickName}&phone=${_phone}`
+                Taro.navigateTo({
+                    url: url
+                })
+            }, 1000);
+            storageMessage(option);
         }).catch(e => {
             console.log("自定义岗位卡片发送成功: 失败 ", e);
         });
-
-
-
-        // setTimeout(() => {
-        //     let _phone = decryptData(detail.recruitPhone);
-        //     let url = `/pages/messagePackage/consult/index?recruitSerialCode=${detail.recruitSerialCode}&conversationId=${'apujiyu' + detail.userSerialCode}&userSerialCode=${detail.userSerialCode}&nickname=${detail.userNickName}&phone=${_phone}`
-        //     Taro.navigateTo({
-        //         url: url
-        //     })
-        // }, 1000);
-        // storageMessage(option);
     }
 
     const storageMessage = (option) => {
