@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-31 10:58:52
+ * @LastEditTime: 2025-04-02 14:07:08
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -29,7 +29,7 @@ const Index = observer(({ store }) => {
             console.log(1)
             if (!isLogin || !token) {  // 未登录
                 console.log(2)
-                Taro.redirectTo({ url: '/pages/login/index' })
+                Taro.redirectTo({ url: '/pages/login/index' });
                 return
             }
 
