@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 16:12:13
+ * @LastEditTime: 2025-04-03 14:22:18
  * @Description: 
  */
 
@@ -205,7 +205,7 @@ const Index = observer(({ store }) => {
                                     <View className='item_infos'>
                                         <View className='item_name'>
                                             <View>{item.name}</View>
-                                            <View className='item_role'>{item.roleName}</View>
+                                            <View className='item_role'>驻场</View>
                                         </View>
                                         <View className='item_phone'>{item.phone}</View>
                                     </View>

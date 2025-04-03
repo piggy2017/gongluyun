@@ -27,7 +27,7 @@ const Index = observer(({ store }) => {
     const [longPress, setLongPress] = useState(false);
 
     const {
-        
+
     } = store;
     const entryChannel = router.params.entryChannel || 'RECRUITMENT'
     const [chatUserInfo, setChatUserInfo] = useState({});
@@ -171,7 +171,7 @@ const Index = observer(({ store }) => {
 
     return (
         <View className='consult_box' onClick={closeModal}>
-            <Navbar fixed placeholder bgColor='#FFF' title='消息'></Navbar>
+            <Navbar fixed placeholder bgColor='#FFF' title={router.params.nickname}></Navbar>
 
             {
                 <ChatArea

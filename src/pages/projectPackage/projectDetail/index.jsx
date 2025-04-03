@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-03 13:41:39
+ * @LastEditTime: 2025-04-03 14:12:16
  * @Description: 
  */
 
@@ -588,7 +588,10 @@ const Index = observer(({ store }) => {
       <View className='interview_info'>
         <View className='project_title'>
           <View>面试信息</View>
-          <View className='project_title_copy' onClick={() => copyFunc(detail, 1)}>一键复制</View>
+          {
+            (detail.interviewInfos?.length > 0 || detail.interviewAddress || detail.interviewDate) &&
+            <View className='project_title_copy' onClick={() => copyFunc(detail, 1)}>一键复制</View>
+          }
         </View>
         <View className='interview_item'>
           <View className='interview_item_title'>驻场联系人</View>

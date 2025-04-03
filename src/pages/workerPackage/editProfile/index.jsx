@@ -265,7 +265,7 @@ const Index = observer(({ store }) => {
 
   const submit = async () => {
     let params = {
-      name,
+      nickName:name,
       age,
       sex,
       education,
