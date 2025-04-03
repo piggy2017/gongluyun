@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 14:52:32
+ * @LastEditTime: 2025-03-31 11:03:57
  * @Description: 
  */
 
@@ -16,7 +16,7 @@ import './index.scss'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight },
-        userStore: { supplierCompanyInfo, getSupplierCompanyInfo, refreshUserInfo, setRole, userInfo, role, companyInfo, companyVerified, setCompanyVerified, }
+        userStore: { supplierCompanyInfo, getSupplierCompanyInfo, refreshUserInfo, setRole, role, getSubTemplates }
     } = store
 
     useEffect(() => {
@@ -30,13 +30,10 @@ const Index = observer(({ store }) => {
             refreshUserInfo((res) => {
                 console.log("auth页面res", res);
                 Taro.hideLoading();
-                // setRole('SEEK');
-                // Taro.setStorageSync('role', 'SEEK');
                 if (res?.data?.userInfo) {
                     const { sex, age, jobTypes } = res.data.userInfo;
                     if (sex != 2 && age ) {   // && jobTypes?.length > 0
                         chooseRoleFunc(1, () => {
-                            // Taro.navigateTo({ url: '/pages/loginPackage/writeInfo/index' })
                             setRole('SEEK');
                             Taro.setStorageSync('role', 'SEEK');
                             Taro.switchTab({
@@ -44,7 +41,6 @@ const Index = observer(({ store }) => {
                             });
                         })
                     } else {
-                        // Taro.navigateTo({ url: '/pages/loginPackage/writeInfo/index' })
                         chooseRoleFunc(1, () => {
                             setRole('SEEK');
                             Taro.setStorageSync('role', 'SEEK');
@@ -97,6 +93,7 @@ const Index = observer(({ store }) => {
     const chooseRoleFunc = async (type, calback) => {
         const { code, data, msg } = await switchRoles({ userRole: type === 1 ? 'SEEK' : type === 2 ? 'ADMIN' : 'SUPPLIER' });
         if (code === 200) {
+            getSubTemplates();
             if (calback) calback(data);
         } else {
             Taro.showToast({

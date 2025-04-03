@@ -12,6 +12,9 @@ page{
   overflow-x: hidden; /* 横向内容超出时隐藏 */
   overflow-y: inherit !important; /* 纵向内容超出时显示 */
 }
+View{
+  box-sizing: border-box;
+}
 ::-webkit-scrollbar {
   width: 0 !important;
   height: 0 !important;

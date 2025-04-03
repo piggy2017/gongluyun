@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 15:48:06
+ * @LastEditTime: 2025-04-01 15:47:00
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -39,10 +39,10 @@ const Index = observer(({ store }) => {
   const [customerTodoData, setCustomerTodoData] = useState('');          //  客户待办
   const [streamData, setStreamData] = useState('');
 
-  const [feedbackInfo, setFeedbackInfo] = useState({
+  const [feedbackInfo, setFeedbackInfo] = useState({       //  【未接待】展示接待成员反馈统计
     feedbackCount: 0,
     noFeedBackMemberCount: 0
-  });          //  【未接待】展示接待成员反馈统计
+  });          
 
   useEffect(() => {
     console.log("首页 监听 是否登录isLogin:companyVerified", companyVerified, isLogin);
@@ -281,7 +281,6 @@ const Index = observer(({ store }) => {
       url: `/pages/newPackage/newInterviewWorker/index`
     })
   }
-
 
   return (
     <View className='container'>
@@ -660,6 +659,9 @@ const Index = observer(({ store }) => {
         }
         <View style={`height:50rpx;`}></View>
       </View>
+
+      <Taro.SubscribeMsg></Taro.SubscribeMsg>
+
       <TabBar actCurrent={0} />
     </View>
   )

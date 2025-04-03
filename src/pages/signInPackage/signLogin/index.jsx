@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-08 16:57:55
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-20 09:50:11
+ * @LastEditTime: 2025-03-31 14:41:21
  * @Description: 
  */
 
@@ -22,6 +22,7 @@ import './index.scss'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+        ChatStore: { setSessionList, setCursor, setHxUser },
         userStore: { setToken, setIsLogin, setRole, setUserInfo, getRoleAndPermissionFunc }
     } = store
     const [checked, setChecked] = useState(false);
@@ -65,6 +66,7 @@ const Index = observer(({ store }) => {
                     Taro.setStorageSync('isLogin', 1);
                     Taro.setStorageSync('userInfo', result.data.user);
                     setIsLogin(1);
+                    setHxUser(result.data.hxUser);
                     setUserInfo(result.data.user);
                     getRoleAndPermissionFunc();
 

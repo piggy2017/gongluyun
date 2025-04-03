@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-20 15:26:49
+ * @LastEditTime: 2025-04-03 16:13:09
  * @Description: 
  */
 
@@ -16,7 +16,7 @@ import './index.scss'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight },
-        userStore: { supplierCompanyInfo, getSupplierCompanyInfo, refreshUserInfo, setRole }
+        userStore: { supplierCompanyInfo, getSupplierCompanyInfo, refreshUserInfo, setRole, getSubTemplates }
     } = store
 
     useEffect(() => {
@@ -34,7 +34,6 @@ const Index = observer(({ store }) => {
                     const { sex, age, jobTypes } = res.data.userInfo;
                     if (sex != 2 && age) {  // && jobTypes?.length > 0
                         chooseRoleFunc(1, () => {
-                            // Taro.navigateTo({ url: '/pages/loginPackage/writeInfo/index' })
                             setRole('SEEK');
                             Taro.setStorageSync('role', 'SEEK');
                             Taro.switchTab({
@@ -62,7 +61,6 @@ const Index = observer(({ store }) => {
                 console.log("auth页面res", res);
                 Taro.hideLoading();
                 if (res?.data?.companyVerified) {
-
                     chooseRoleFunc(2, (data) => {
                         Taro.setStorageSync('role', data);
                         setRole(data);
@@ -93,7 +91,9 @@ const Index = observer(({ store }) => {
 
     const chooseRoleFunc = async (type, calback) => {
         const { code, data, msg } = await switchRoles({ userRole: type === 1 ? 'SEEK' : type === 2 ? 'ADMIN' : 'SUPPLIER' });
+        console.log("选择角色", code, data, msg)
         if (code === 200) {
+            getSubTemplates();
             if (calback) calback(data);
         } else {
             Taro.showToast({

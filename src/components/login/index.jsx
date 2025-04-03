@@ -5,6 +5,7 @@ import { View, Button, Input, Image, Text } from '@tarojs/components';
 import { AtFloatLayout } from 'taro-ui';
 import "taro-ui/dist/style/components/float-layout.scss";
 import { observer, inject } from 'mobx-react';
+import { decryptData, encryptData } from '@/util/crypto'
 import './index.scss';
 
 import { loginPhone, checkSupplier, switchRoles } from '@/util/api';
@@ -15,7 +16,8 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
 
     const {
         baseStore: { didPrivacy, setdidPrivacy },
-        userStore: { setToken, setIsLogin, enterParams, setRole, setUserInfo, getRoleAndPermissionFunc, setSupplierCompanyInfo }
+        ChatStore: { setSessionList, setCursor, setHxUser },
+        userStore: { setToken, setIsLogin, enterParams, setUserInfo, getRoleAndPermissionFunc, setSupplierCompanyInfo }
     } = store
     useEffect(() => {
         if (isOpened) {
@@ -70,6 +72,8 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
                     // Taro.setStorageSync('role', result.data.user.userRole);
                     Taro.setStorageSync('userInfo', result.data.user);
                     setIsLogin(1);
+                    setHxUser(result.data.hxUser);
+                    // loginhxIM(result.data.hxUser);
                     setUserInfo(result.data.user);
                     // setRole(result.data.user.userRole);
                     getRoleAndPermissionFunc();
@@ -79,7 +83,7 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
                         switchRoles({ userRole: 'SUPPLIER' }).then(res => {
                             console.log("供应商登录后,调接口切换到供应商__", res);
                             if (res.code === 200) {
-                                
+
                             }
                         })
                     }
@@ -107,6 +111,30 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
         console.log("checkIssuppier", code, data, msg)
         setSupplierCompanyInfo(data);
     }
+
+    // const loginhxIM = (hxUser) => {
+    //     let { username, password } = hxUser
+    //     console.log(decryptData(password))
+    //     Taro.WebIM.conn.open({
+    //         user: username,
+    //         pwd: decryptData(password),
+    //     }).then(() => {
+    //         console.log("login success");
+    //         getMessageList()
+    //     }).catch((reason) => {
+    //         console.log("login fail", reason);
+    //     });
+    // }
+
+    // const getMessageList = () => {
+    //     Taro.WebIM.conn.getServerConversations({ pageSize: 20, cursor: '' }).then((res) => {
+    //         setSessionList(res.data.conversations)
+    //         const { cursor } = res.data
+    //         if (cursor) {
+    //             setCursor(cursor)
+    //         }
+    //     })
+    // }
 
 
     const viewPrivacy = () => {

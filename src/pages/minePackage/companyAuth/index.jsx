@@ -8,7 +8,7 @@ import crypto from 'crypto-js';
 import { decryptData, encryptData } from '@/util/crypto'
 import 'taro-ui/dist/style/components/icon.scss';
 import {
-  authLicense, fetchOssConfig, companySettled
+  authLicense, fetchOssConfig, companySettled,switchRoles
 } from '@/util/api'
 import { debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
@@ -24,7 +24,7 @@ const Index = observer(({ store }) => {
 
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-    userStore: { setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions }  // getSubTemplates
+    userStore: { setRole, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, getSubTemplates }
   } = store
 
   const getHeight = () => {
@@ -155,7 +155,7 @@ const Index = observer(({ store }) => {
           // Taro.navigateBack({ delta: 1 })
           switchRoles({ userRole: 'ADMIN' }).then(result => {
             if (result.code === 200) {
-              // getSubTemplates();
+              getSubTemplates();
               Taro.setStorageSync('role', result.data);
               setRole(result.data);
               Taro.switchTab({

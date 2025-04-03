@@ -1,0 +1,567 @@
+@import '@/app.scss';
+
+.chat-content {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  background-color: #f3f3f3;
+
+  .chat-message {
+    width: 100%;
+    // padding: 10rpx;
+    margin-bottom: 30rpx;
+
+    &:last-child {
+      padding-bottom: 20rpx;
+    }
+
+    &:first-child {
+      padding-top: 10rpx;
+    }
+
+    .is_my {
+      width: 100%;
+      @include flex-center(flex-end);
+      align-items: flex-start;
+      position: relative;
+
+      .avatar_box {
+        width: 80rpx;
+        height: 80rpx;
+        flex-shrink: 0;
+        margin: 0 28rpx 0 14rpx;
+
+        image {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+        }
+      }
+
+      .txt_view {
+        max-width: 70%;
+        padding: 18rpx 24rpx;
+        font-weight: 400;
+        font-size: 30rpx;
+        color: #FFFFFF;
+        background: #1678FF;
+        border-radius: 10rpx;
+        font-family: "PingFang SC";
+        font-size: 30rpx;
+        font-style: normal;
+        line-height: 46rpx;
+        letter-spacing: 1rpx;
+      }
+
+      .menu_longPress {
+        padding: 15rpx 20rpx;
+        font-size: 28rpx;
+        border-radius: 10rpx;
+        background-color: #666666;
+        color: #fff;
+        position: absolute;
+        top: -80rpx;
+        right: 122rpx;
+        @include flex-center;
+
+        >view {
+          margin-right: 50rpx;
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+
+        // 在伪类写一个向下的三角形
+        &::after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 0;
+          border-left: 10rpx solid transparent;
+          border-right: 10rpx solid transparent;
+          border-top: 10rpx solid #666666;
+          bottom: -10rpx;
+          right: 50rpx;
+        }
+      }
+    }
+
+    .loc {
+      >view:nth-child(1) {
+        padding: 0 !important;
+        background-color: transparent;
+      }
+
+    }
+
+    .boss_color {
+      >view:nth-child(1) {
+        background: #D9F2F4;
+        color: #222222;
+      }
+    }
+
+    .is_other {
+      width: 100%;
+      @include flex-center(flex-start);
+      align-items: flex-start;
+
+      .avatar_box {
+        width: 80rpx;
+        height: 80rpx;
+        flex-shrink: 0;
+        margin: 0 14rpx 0 28rpx;
+
+
+        image {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+        }
+      }
+
+      .other_box {
+        max-width: 70%;
+        font-family: PingFangSC-Regular;
+        font-weight: 400;
+        font-size: 30rpx;
+        color: #222222;
+
+        .name {
+          margin-bottom: 10rpx;
+
+          .nickname {
+            font-family: PingFangSC-SNaNrpxibold;
+            font-weight: 600;
+            font-size: 24rpx;
+            color: #666666;
+            margin-right: 10rpx;
+            @include flex-center(flex-start);
+
+            >text {
+              // width: 64rpx;
+              padding: 0 8rpx;
+              height: 30rpx;
+              background: #EEF1FF;
+              @include flex-center;
+              font-family: PingFangSC-Regular;
+              font-weight: 400;
+              font-size: 16rpx;
+              color: #3696FF;
+            }
+          }
+
+          .product {
+            font-family: PingFangSC-Regular;
+            font-weight: 400;
+            font-size: 20rpx;
+            color: #666666;
+          }
+        }
+
+        .msg {
+          max-width: 100%;
+          // width: 474rpx;
+          padding: 18rpx 24rpx;
+          border-radius: 10rpx;
+          background: #fff;
+          white-space: pre-wrap;
+          color: #333333;
+          font-family: "PingFang SC";
+          font-size: 28rpx;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 36rpx;
+        }
+      }
+    }
+  }
+}
+
+.full_image {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #000;
+  z-index: 99999;
+  @include flex-center;
+
+  >image {
+    width: 100%;
+    // height: inherit;
+  }
+}
+
+.nont_box {
+  display: none;
+}
+
+.time_box {
+  width: 100%;
+  @include flex-center;
+  font-size: 28rpx;
+  color: #333;
+  padding: 10rpx 0;
+}
+
+
+
+.custom_interview {
+  width: 722rpx;
+  border-radius: 18rpx;
+  background: #FFF;
+  margin: 0 auto 30rpx auto;
+  padding-bottom: 28rpx;
+
+  .custom_interview_title {
+    color: #222222;
+    font-family: "PingFang SC";
+    font-size: 32rpx;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    padding: 24rpx 0 0 32rpx;
+  }
+
+  .custom_interview_subtitle {
+    padding: 0 32rpx;
+    color: #777777;
+    font-family: "PingFang SC";
+    font-size: 28rpx;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 42rpx;
+    margin-top: 8rpx;
+  }
+
+  .custom_interview_hr {
+    width: 656rpx;
+    height: 1rpx;
+    background-color: #f4f4f4;
+    margin: 16rpx auto;
+  }
+
+  .custom_interview_jobName {
+    color: #333333;
+    font-family: "PingFang SC";
+    font-size: 28rpx;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 42rpx;
+    width: 656rpx;
+    margin: 0 auto 4rpx auto;
+  }
+  .custom_interview_item{
+    width: 656rpx;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin:0 auto 4rpx auto;
+    .custom_interview_item_label{
+      color: #999999;
+      font-family: "PingFang SC";
+      font-size: 28rpx;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 42rpx;
+      width: 84rpx;
+    }
+    .custom_interview_item_con{
+      color: #666666;
+      font-family: "PingFang SC";
+      font-size: 28rpx;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 42rpx;
+      width: 572rpx;
+    }
+  }
+
+  .custom_interview_view_detail{
+    width: 658rpx;
+    margin: 0 auto 0 auto;
+    @include flex-center(flex-end);
+    color: #0483ff;
+    font-family: "PingFang SC";
+    font-size: 26rpx;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 39rpx;
+    .interview_view_detail_icon{
+      width: 36rpx;
+      height: 36rpx;
+    }
+  }
+}
+
+.every_box_custom {
+  width: 100%;
+  .date_top {
+    width: 100%;
+    text-align: center;
+    font-size: 22rpx;
+    color: #AAAAAA;
+    margin-bottom: 34rpx;
+    margin-top: 28rpx;
+  }
+
+  .info {
+    // padding: 0 24rpx 0 24rpx;
+    @include flex-center(space-between);
+    align-items: flex-start;
+    margin-bottom: 24rpx;
+
+    &:first-child {
+      margin-top: 20rpx;
+    }
+
+    .left_box {
+      width: 82rpx;
+      height: 82rpx;
+      image {
+        width: 100%;
+        height: 100%;
+        border-radius: 12rpx;
+      }
+    }
+
+    .right_box {
+      width: 722rpx;
+      margin: 0 auto;
+
+      .bottom_info {
+        width: 100%;
+        overflow: hidden;
+        background-color: #FFFFFF;
+        border-radius: 24rpx;
+        padding: 24rpx 24rpx 22rpx;
+        font-family: PingFangSC-Regular;
+        font-weight: 400;
+        font-size: 30rpx;
+        color: #222222;
+        position: relative;
+        box-sizing: border-box;
+
+        .back_mask {
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 1;
+          width: 272rpx;
+          height: 270rpx;
+
+          >image {
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        .require {
+          width: 100%;
+          position: relative;
+
+          .require_title {
+            width: 100%;
+            @include flex-center(space-between);
+            >view:nth-child(1) {
+              font-weight: 400;
+              font-size: 34rpx;
+              color: rgba(34, 34, 34, 1);
+              @include ellipsis;
+              // margin-bottom: 10rpx;
+              font-weight: bolder;
+              >image {
+                width: 88rpx;
+                height: 30rpx;
+                position: relative;
+                top: 5rpx;
+              }
+            }
+
+            >view:nth-child(2) {
+              flex-shrink: 0;
+              color: $words-color;
+              font-weight: 600;
+              font-size: 34rpx;
+              font-family: 'SemiBold';
+
+              >text {
+                font-size: 24rpx;
+                font-style: normal;
+                font-weight: 600;
+              }
+            }
+
+          }
+
+          .faker_user{
+            >view:nth-child(1) {
+              @include ellipsisMore(2)
+            }
+          }
+
+          .require_sub_title {
+            width: 100%;
+            font-family: PingFangSC-Regular;
+            @include flex-center(space-between);
+
+            >view:nth-child(1) {
+              color: $words-color;
+              font-family: PingFangSC-SNaNrpxibold;
+              font-weight: 600;
+              font-size: 34rpx;
+
+              >text {
+                font-family: PingFangSC-Regular;
+                font-weight: 400;
+                font-size: 24rpx;
+                color: #444444;
+              }
+            }
+
+            >view:nth-child(2) {
+              font-family: PingFangSC-Regular;
+              font-weight: 400;
+              font-size: 24rpx;
+              color: #444444;
+            }
+          }
+
+          .require_introduction {
+            @include ellipsisMore(2);
+            white-space: pre-wrap;
+            font-size: 30rpx;
+            color: #555555;
+          }
+
+          .require_req {
+            width: 100%;
+            @include flex-center(flex-start);
+            margin: 12rpx 0 4rpx;
+            flex-wrap: wrap;
+
+            >view {
+              // width: 120rpx;
+              padding: 0 14rpx;
+              height: 44rpx;
+              background: #F6F7F9;
+              border-radius: 4rpx;
+              @include flex-center;
+              font-family: PingFangSC-Regular;
+              font-weight: 400;
+              font-size: 24rpx;
+              color: #666666;
+              margin-right: 8rpx;
+              margin-bottom: 8rpx;
+            }
+          }
+
+          .require_avatar {
+            width: 100%;
+            @include flex-center(flex-start);
+            margin-top: 18rpx;
+
+            >view:nth-child(1) {
+              position: relative;
+              height: 30rpx;
+
+              >image {
+                position: absolute;
+                top: 0;
+                width: 30rpx;
+                height: 30rpx;
+                border-radius: 15rpx;
+
+              }
+            }
+
+            >view:nth-child(2) {
+              font-family: PingFangSC-Regular;
+              font-weight: 400;
+              font-size: 28rpx;
+              color: #666666;
+            }
+          }
+
+          .require_detail {
+            width: 100%;
+            @include flex-center;
+
+            .left_info {
+              width: 100%;
+              @include flex-center(flex-start);
+
+              .avatar_box {
+                width: 48rpx;
+                height: 48rpx;
+                margin-right: 16rpx;
+
+                >image {
+                  width: 100%;
+                  height: 100%;
+                  border-radius: 100%;
+                }
+              }
+
+              .addr_date {
+                >view:nth-child(1) {
+                  font-size: 22rpx;
+                  color: #222222;
+                }
+
+                >view:nth-child(2) {
+                  font-weight: 400;
+                  font-size: 20rpx;
+                  color: #888888;
+                }
+              }
+            }
+
+            .right_btn {
+              width: 200rpx;
+              height: 56rpx;
+              @include flex-center;
+              background-color: rgba(4, 131, 255, 0.12);
+              border-radius: 16rpx;
+              font-weight: 600;
+              font-size: 24rpx;
+              color: rgba(4, 131, 255, 1);
+              flex-shrink: 0;
+            }
+
+            .right_btn_gray {
+              background-color: rgba(153, 153, 153, 0.12) !important;
+              color: rgb(153, 153, 153) !important;
+            }
+          }
+        }
+
+      }
+
+      .is_full {
+        background-image: linear-gradient(0deg, rgba(255, 255, 255, 0.2) 66%, rgba(34, 34, 34, 0.06) 100%);
+
+        .require {
+          color: rgba(102, 102, 102, 1);
+        }
+
+        .check_detail {
+          >view:nth-child(1) {
+            >text {
+              color: rgba(119, 119, 119, 1);
+              font-size: 28rpx;
+            }
+          }
+
+          >view:nth-child(2) {
+            color: rgba(119, 119, 119, 1);
+          }
+        }
+      }
+    }
+  }
+}

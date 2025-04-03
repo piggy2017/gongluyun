@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 15:47:06
+ * @LastEditTime: 2025-03-31 14:00:39
  * @Description: 
  */
 
@@ -623,6 +623,7 @@ const Index = observer(({ store }) => {
       </Block>
 
       <TabBar actCurrent={2} />
+      <Taro.SubscribeMsg></Taro.SubscribeMsg>
     </View>
   )
 })

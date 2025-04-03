@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 16:21:41
+ * @LastEditTime: 2025-04-03 13:34:26
  * @Description: 
  */
 
@@ -278,8 +278,11 @@ const Index = observer(({ store }) => {
                       </>
                     }
                   </View>
+                  {
+                    item.company && <View className='project_item_compony'>{item.company}</View>
+                  }
 
-                  <View className='data_wrapper' style={`margin-top:${item.compony ? '10rpx' : '18rpx'}`}>
+                  <View className='data_wrapper' style={`margin-top:${item.company ? '10rpx' : '18rpx'}`}>
                     <View className='data_item'>
                       <View className='data_item_value'>{item.numberRecruits}</View>
                       <View className='data_item_label'>总需求</View>
@@ -351,6 +354,7 @@ const Index = observer(({ store }) => {
       </Block>
 
       <TabBar actCurrent={1} />
+      <Taro.SubscribeMsg></Taro.SubscribeMsg>
     </View>
   )
 })

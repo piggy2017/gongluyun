@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 17:58:27
+ * @LastEditTime: 2025-04-02 15:55:05
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -325,10 +325,11 @@ const Index = observer(({ store }) => {
 
       <View className='mine_desc_wrapper' style={`bottom:${tabbarHeight + 30}px;`}>
         <View className='mine_desc'>技术支持：成都阿朴机遇科技有限公司</View>
-        {/* <View className='mine_desc'>助力企业数字化转型</View> */}
+        {/* <View className='mine_desc'>助力企业数字化转型</View> role === 'SUPPLIER' ||  */}
       </View>
 
-      <TabBar actCurrent={(role === 'SUPPLIER' || role === 'SEEK' || role === 'CHANNEL') ? 1 : 3} />
+      <TabBar actCurrent={(role === 'SEEK' || role === 'CHANNEL') ? 2 : role === 'SUPPLIER' ? 1 : 4} />
+      <Taro.SubscribeMsg></Taro.SubscribeMsg>
 
       <AtModal
         isOpened={loginoutSure}
