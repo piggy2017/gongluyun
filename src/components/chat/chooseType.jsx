@@ -128,7 +128,7 @@ const ChatInput = observer(({ onPost, store, isType = 'groupChat' }) => {
             <View className='bottom_dom'>
                 <View onClick={() => handlePhotoClick(1)}> <Image src={`${Taro.$baseCdnUrl}/chatRoom/chat_icon_photo.png`}></Image><View>照片</View></View>
                 <View onClick={() => handlePhotoClick(2)}> <Image src={`${Taro.$baseCdnUrl}/chatRoom/camera_back.webp`}></Image><View>相机</View></View>
-                <View onClick={handleButtonClick}> <Image src={`${Taro.$baseCdnUrl}/chatRoom/chat_icon_address.png`}></Image><View>定位</View></View>
+                {/* <View onClick={handleButtonClick}> <Image src={`${Taro.$baseCdnUrl}/chatRoom/chat_icon_address.png`}></Image><View>定位</View></View> */}
             </View>
         </>
 
