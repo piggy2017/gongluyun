@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-02 16:08:25
+ * @LastEditTime: 2025-04-03 16:09:55
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -13,7 +13,7 @@ import './index.scss'
 
 const Index = observer(({ store }) => {
     const {
-        userStore: { isLogin, setRole, token, role, companyVerified, refreshUserInfo },
+        userStore: { isLogin, setRole, token,getSubTemplates, role, companyVerified, refreshUserInfo },
     } = store
 
     useEffect(() => {
@@ -47,7 +47,7 @@ const Index = observer(({ store }) => {
                 return;
             }
 
-            if (role === 'SUPPLIER') {
+            if (role === 'SUPPLIER') {  // 供应商
                 console.log(3)
                 Taro.switchTab({
                     url: '/pages/supplierProject/index'
@@ -62,7 +62,7 @@ const Index = observer(({ store }) => {
                 });
                 return
             }
-            else {
+            else{
                 console.log('已经登陆但是还没有角色,前往选择角色');
                 Taro.redirectTo({ url: '/pages/loginPackage/chooseRole/index' });
                 return

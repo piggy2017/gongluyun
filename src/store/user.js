@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-02 13:37:02
+ * @LastEditTime: 2025-04-02 16:06:57
  * @Description: 用于存放用户的相关信息
  */
 
@@ -13,7 +13,8 @@ import {
     userCenter,
     getRoleAndPermission,
     getRoleAndPermissionByUserId,
-    checkSupplier
+    checkSupplier,
+    getTemplateIds
 } from '@/util/api'
 import Taro from '@tarojs/taro';
 const userStore = observable({
@@ -24,7 +25,8 @@ const userStore = observable({
     companyVerified: false, // true 已实名认证  false 未实名认证
     userInfo: Taro.getStorageSync('userInfo') ? Taro.getStorageSync('userInfo') : '',
     companyInfo: Taro.getStorageSync('companyInfo') ? Taro.getStorageSync('companyInfo') : '',
-    userRoles: Taro.getStorageSync('userRoles') ? Taro.getStorageSync('userRoles') : [],   // 用户所拥有的公司下面的所有角色列表
+    userRoles: Taro.getStorageSync('userRoles') ? Taro.getStorageSync('userRoles') : [], // 用户所拥有的公司下面的所有角色列表
+    
     refreshUserInfo(callback) { // 统一刷新用户信息
         userCenter({}).then(res => {
             console.log("refreshUserInfo用户信息res:", res);
@@ -62,6 +64,15 @@ const userStore = observable({
         userStore.userRoles = value
     },
 
+    subTemplates: [], // 用户的可订阅消息模板列表
+    getSubTemplates() {
+        getTemplateIds({}).then(res => {
+            console.log("用户的可订阅消息模板列表getSubTemplates:", res)
+            if (res.code === 200) {
+                userStore.subTemplates = res.data;
+            }
+        })
+    },
 
 
     roles: [ // 角色和角色id的对应关系

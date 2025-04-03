@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 17:45:55
+ * @LastEditTime: 2025-04-03 10:17:42
  * @Description: 
  */
 
@@ -16,6 +16,7 @@ import { AtIcon, AtFloatLayout, AtActionSheet, AtActionSheetItem } from 'taro-ui
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import "taro-ui/dist/style/components/action-sheet.scss";
+
 import Base64 from '@/util/base64';
 import crypto from 'crypto-js';
 
@@ -58,17 +59,7 @@ const Index = observer(({ store }) => {
     const [rangeRight, setRangeRight] = useState('');
 
     const [openAction, setOpenAction] = useState(false);           // 是否打开选择照片弹窗
-    const [images, setImages] = useState([
-        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/add_clue.webp',
-        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon1.webp',
-        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon2.webp',
-        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon3.webp',
-        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon4.webp',
-        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon5.webp',
-        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon6.webp',
-        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon7.webp',
-        // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon8.webp'
-    ]);                      // 选择的照片
+    const [images, setImages] = useState([]);                      // 选择的照片
 
     useEffect(() => {
         console.log("jobFilterAddress", formData, jobFilterAddress);

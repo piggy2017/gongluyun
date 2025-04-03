@@ -1,6 +1,6 @@
 import { useEffect, useState, useReducer } from "react";
 import Taro from "@tarojs/taro";
-import { View, Text, Image, Button, Block } from "@tarojs/components";
+import { View, Text, Image, Button, Input, Textarea, Block } from "@tarojs/components";
 import { observer, inject } from "mobx-react";
 import crypto from 'crypto-js';
 import { AtActionSheet, AtActionSheetItem } from 'taro-ui'
@@ -10,6 +10,7 @@ import utils from "@/util/utils";
 import WorkerJobType from '@/components/workerJobType';
 import Navbar from '@/components/navbar';
 import Base64 from '@/util/base64'
+
 import {
   updateUserInfo,
   fetchOssConfig,
@@ -20,6 +21,7 @@ import "./index.scss";
 const Index = observer(({ store }) => {
   const {
     userStore: { userInfo, refreshUserInfo },
+    baseStore: { bottomSafeAreaHeight },
   } = store
   const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
   const myRole = store.userStore.role;
@@ -27,17 +29,21 @@ const Index = observer(({ store }) => {
   const [avatar, setAvatar] = useState(
     "https://apu-mini.oss-accelerate.aliyuncs.com/boss/publish_success.webp"
   );
+  const [imageUrls, setImageUrls] = useState([]);      // 技能图片
+  const [education, setEducation] = useState('');    // 学历
+  const [userExps, setUserExps] = useState('');      // 工作经验
   const [age, setAge] = useState(0);
   const [ageRange, setAgeRange] = useState([]);
   const [sex, setSex] = useState(2);
   const [sexStr, setSexStr] = useState("");
 
   const [jobTypes, setJobTypes] = useState([]);
-  const [chooseJob, setChooseJob] = useState(false);     // 选择岗位类型的弹窗
+  const [chooseJob, setChooseJob] = useState(false);             // 选择岗位类型的弹窗
 
   const [showPicker, setShowPicker] = useState(false);
   const [options, setOption] = useState({});
   const [openAction, setOpenAction] = useState(false);           // 是否打开选择照片弹窗
+  const [updateType, setUpdateType] = useState(1);               // 上传图片类型  1=上传头像  2=上传技能图片
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,6 +51,15 @@ const Index = observer(({ store }) => {
       setAvatar(userInfo.avatar);
       setSex(userInfo.sex);
       setAge(userInfo.age);
+      if (userInfo.imageUrls) {
+        setImageUrls(userInfo.imageUrls);
+      }
+      if (userInfo.education) {
+        setEducation(userInfo.education);
+      }
+      if (userInfo.userExps) {
+        setUserExps(userInfo.userExps);
+      }
       if (userInfo.jobTypes) {
         let _types = userInfo.jobTypes.map((item) => {
           item.name = item.jobTypeName;
@@ -100,7 +115,7 @@ const Index = observer(({ store }) => {
     // 用户同意授权
     try {
       Taro.chooseImage({
-        count: 1, // 最多可选择的图片数量
+        count: updateType === 1 ? 1 : 6 - imageUrls.length, // 最多可选择的图片数量
         sourceType: [sourceType[type]], // 图片来源，可选值：album（相册），camera（相机）
         sizeType: ['original', 'compressed'], // 图片尺寸类型，可选值：original（原图），compressed（压缩图）
         success(res) {
@@ -114,11 +129,11 @@ const Index = observer(({ store }) => {
     } catch (err) {
       console.log('选择照片失败：', err);
     }
-
   }
 
   const openModel = async (type) => {
     setOpenAction(true);
+    setUpdateType(1);
   };
 
   const getOssSrc = async (arr) => {
@@ -144,33 +159,78 @@ const Index = observer(({ store }) => {
         console.log(policy, "policy")
         const signature = computeSignature(accessKeySecret, policy);
         console.log(signature, "signature")
-        const params = {
-          'key': `${urlPath}${Date.now()}-${Math.random() * 1000000}.jpg`,
-          'policy': policy,
-          'OSSAccessKeyId': accessKeyId,
-          'success_action_status': '200',
-          'Signature': signature,
-          'x-oss-security-token': securityToken,
-        };
-        console.log(arr[0], "arr[0]")
-        // 返回 Promise 对象
-        Taro.uploadFile({
-          url: ossServiceDomain,
-          filePath: arr[0],
-          name: 'file',
-          formData: params,
-          success(res) {
-            // let info = { ...res, url: params.key }
-            Taro.hideLoading();
-            let imgUrl = ossServiceDomain + '/' + params.key;
-            // setImgSrc(imgUrl);
-            console.log('上传成功 --  oss地址为', imgUrl);
-            setAvatar(ossServiceDomain + '/' + params.key)
-          },
-          fail(err) {
-            console.log(err)
-          }
-        });
+        if (updateType === 1) {    // 上传头像
+          const params = {
+            'key': `${urlPath}${Date.now()}-${Math.random() * 1000000}.jpg`,
+            'policy': policy,
+            'OSSAccessKeyId': accessKeyId,
+            'success_action_status': '200',
+            'Signature': signature,
+            'x-oss-security-token': securityToken,
+          };
+          console.log(arr[0], "arr[0]")
+          // 返回 Promise 对象
+          Taro.uploadFile({
+            url: ossServiceDomain,
+            filePath: arr[0],
+            name: 'file',
+            formData: params,
+            success(res) {
+              // let info = { ...res, url: params.key }
+              Taro.hideLoading();
+              let imgUrl = ossServiceDomain + '/' + params.key;
+              // setImgSrc(imgUrl);
+              console.log('上传成功 --  oss地址为', imgUrl);
+              setAvatar(ossServiceDomain + '/' + params.key)
+            },
+            fail(err) {
+              console.log(err)
+            }
+          });
+        } else {
+          console.log("arrarrarrarr", arr);
+          // 返回 Promise 对象
+          const uploadPromises = arr.map(r => {
+            const params = {
+              'key': `${urlPath}${Date.now()}-${Math.random() * 1000000}.jpg`,
+              'policy': policy,
+              'OSSAccessKeyId': accessKeyId,
+              'success_action_status': '200',
+              'Signature': signature,
+              'x-oss-security-token': securityToken,
+            };
+
+            // 返回 Promise 对象
+            return new Promise((resolve, reject) => {
+              Taro.uploadFile({
+                url: ossServiceDomain,
+                filePath: r,
+                name: 'file',
+                formData: params,
+                success(res) {
+                  let imgUrl = ossServiceDomain + '/' + params.key;
+                  resolve(imgUrl);
+                },
+                fail(err) {
+                  reject(err);
+                }
+              });
+            });
+          });
+
+          // 等待所有异步操作完成
+          Promise.all(uploadPromises)
+            .then(results => {
+              Taro.hideLoading();
+              console.log("上传 技能 成功 --  oss地址为", results);
+              setImageUrls([...imageUrls, ...results]);
+            })
+            .catch(error => {
+              Taro.hideLoading();
+              console.error(error);
+            });
+        }
+
       }
     } catch (e) { }
   };
@@ -205,12 +265,16 @@ const Index = observer(({ store }) => {
 
   const submit = async () => {
     let params = {
+      nickName:name,
       age,
       sex,
+      education,
       jobTypeIds: jobTypes.map(item => item.id),
       avatar,
+      userExps,
+      imageUrls
     };
-    console.log("params", params)
+    console.log("params", params);
     Taro.showLoading({
       title: "提交中",
       mask: true
@@ -230,6 +294,17 @@ const Index = observer(({ store }) => {
     }
   };
 
+  const deleteImg = (index) => {  // imageUrls, setImageUrls
+    setImageUrls([...imageUrls.slice(0, index), ...imageUrls.slice(index + 1)])
+  }
+
+  const previewImg = (imgSrc) => {
+    Taro.previewImage({
+      current: imgSrc,            // 当前显示图片的链接
+      urls: imageUrls              // 需要预览的图片列表
+    })
+  }
+
   return (
     <View className='body'>
       <Image src={`${Taro.$baseCdnUrl}/personal/edit_bg.webp`} className='header_bg'></Image>
@@ -243,7 +318,14 @@ const Index = observer(({ store }) => {
       <View className='menu'>
         <Text className='menu_name'>名字</Text>
         <View className='left_box'>
-          <Text className='menu_value'>{name}</Text>
+          {/* <Text className='menu_value'>{name}</Text> */}
+          <Input
+            className='menu_input'
+            placeholder='请输入姓名(必填)'
+            placeholderStyle='color: #999999;'
+            value={name}
+            onInput={(e) => setName(e.detail.value)}
+          ></Input>
         </View>
       </View>
 
@@ -268,13 +350,25 @@ const Index = observer(({ store }) => {
         </View>
       </View>
 
+      <View className='menu'>
+        <Text className='menu_name'>学历</Text>
+        <View className='left_box'>
+          <Input
+            className='menu_input'
+            placeholder='请输入学历'
+            placeholderStyle='color: #999999;'
+            value={education}
+            onInput={(e) => setEducation(e.detail.value)}
+          ></Input>
+        </View>
+      </View>
+
       <View className='menu' onClick={() => setChooseJob(true)}>
         <Text className='menu_name'>求职意向</Text>
         <Text className={`menu_tips ${myRole === "boss" ? "menu_tips_boss" : "menu_tips_personal"}`}>
           编辑
         </Text>
       </View>
-
       <View className='jw_section'>
         <Text className='jobs_name'>
           {
@@ -287,7 +381,53 @@ const Index = observer(({ store }) => {
         </Text>
       </View>
 
-      <Button className='submit_btn' onClick={submit}>提交</Button>
+      <View className='project_group_imgs'>
+        <View className='project_group_imgs_title'>上传证书照片（{imageUrls.length}/6）</View>
+        <View className='project_group_imgs_wrap'>
+          {
+            imageUrls.length < 6 &&
+            <View className='add_img' onClick={() => {
+              setUpdateType(2);
+              setOpenAction(true);
+            }}>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon14.webp`}></Image>
+            </View>
+          }
+          {
+            imageUrls.length > 0 && imageUrls.map((item, index) => {
+              return <View className='add_img_wrap' key={index}>
+                <Image src={item} className='add_img_item' onClick={() => previewImg(item)}></Image>
+                <Image onClick={() => deleteImg(index)} src={`${Taro.$cdnUrl}/index/index_icon15.webp`} className='add_img_delete'></Image>
+              </View>
+            })
+          }
+        </View>
+      </View>
+
+      <View className="item_title">工作经验</View>
+      <Textarea
+        count={false}
+        className='input_text'
+        auto-height
+        confirmType='return'
+        value={userExps}
+        onInput={(e) => setUserExps(e.detail.value)}
+        adjustPosition={true} //键盘弹起时，是否自动上推页面 
+        show-confirm-bar
+        maxlength={500}
+        autoHeight
+        placeholder={`输入工作经验...`}
+      />
+
+
+      <View style={`height:100px;`}></View>
+
+      <View className="bottom_wrapper">
+        <View style={`height:20rpx;`}></View>
+        <Button className='submit_btn' onClick={submit}>提交</Button>
+        <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+      </View>
+
       {showPicker && (
         <Picker
           {...options}

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 19:15:40
+ * @LastEditTime: 2025-04-03 14:48:03
  * @Description: 
  */
 
@@ -550,4 +550,19 @@ export const feedBackInfo = params => {       // 【未接待】展示接待成�
         "Content-Type": "application/json"
     });
 };
-
+export const getTemplateIds = params => {       // 【供应商】获取用户可订阅的模板
+    return http(API_BASE_URL + '/user/getTemplateIds', params, "POST", {
+        "Content-Type": "application/json"
+    });
+};
+export const subscribeMessage = params => {       // 【供应商】用户订阅微信消息
+    return http(API_BASE_URL + '/user/subscribeMessage', params, "POST", {
+        "Content-Type": "application/json"
+    });
+};
+export const sendHx = params => { //发送hx的时候再次调用记录
+    return http(API_BASE_URL + '/message/sendHx', params, "POST", { "Content-Type": "application/json" });
+};
+export const getUserInfo = params => { //获取用户的详情信息
+    return http(API_BASE_URL + '/user/getUserInfo', params, "POST", { "Content-Type": "application/json" });
+};

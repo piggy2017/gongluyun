@@ -24,7 +24,7 @@ const Index = observer(({ store }) => {
 
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-    userStore: { setRole, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions }   // getSubTemplates,
+    userStore: { setRole, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, getSubTemplates }
   } = store
 
   const getHeight = () => {
@@ -155,7 +155,7 @@ const Index = observer(({ store }) => {
           // Taro.navigateBack({ delta: 1 })
           switchRoles({ userRole: 'ADMIN' }).then(result => {
             if (result.code === 200) {
-              // getSubTemplates();
+              getSubTemplates();
               Taro.setStorageSync('role', result.data);
               setRole(result.data);
               Taro.switchTab({

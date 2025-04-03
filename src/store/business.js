@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-26 17:57:40
+ * @LastEditTime: 2025-04-01 15:55:19
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -187,7 +187,12 @@ const businessStore = observable({
     siteObj: [],          // 添加、修改账号,设置站点
     setSiteObj(value) {
         businessStore.siteObj = value;
-    }
+    },
+
+    showSubscribe: false, // 是否显示订阅
+    setShowSubscribe(value) {
+        businessStore.showSubscribe = value;
+    },
 
 });
 

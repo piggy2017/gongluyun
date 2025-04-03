@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-02 10:11:22
+ * @LastEditTime: 2025-04-03 14:12:16
  * @Description: 
  */
 
@@ -395,10 +395,10 @@ const Index = observer(({ store }) => {
     }
   };
 
-  const previewImg = (imgSrc) => {
+  const previewImg = (imgSrc, list) => {
     Taro.previewImage({
-      current: imgSrc,                // 当前显示图片的链接
-      urls: detail.jobImages          // 需要预览的图片列表
+      current: imgSrc,            // 当前显示图片的链接
+      urls: list          // 需要预览的图片列表
     })
   }
 
@@ -410,6 +410,35 @@ const Index = observer(({ store }) => {
       },
       fail(res) {
         Taro.showToast({ title: res, icon: 'none', duration: 2000 })
+      }
+    })
+  }
+
+  const copyFunc = (text, type) => {
+    let _text = '';
+    if (type) {    // 复制面试相关信息
+      if (detail.interviewInfos?.length > 0) {
+        detail.interviewInfos.forEach(element => {
+          _text += element.interviewContactName + ' ' + element.interviewContactPhone + '\n'
+        });
+      }
+      if (detail.interviewAddress) {
+        _text += detail.interviewAddress + '\n'
+      }
+      if (detail.interviewDate) {
+        _text += detail.interviewDate + '\n'
+      }
+    } else {
+      _text = text;
+    }
+    console.log("复制的内容:", _text);
+    Taro.setClipboardData({
+      data: _text,
+      success: () => {
+        Taro.showToast({
+          title: '复制成功',
+          icon: 'none'
+        })
       }
     })
   }
@@ -559,6 +588,10 @@ const Index = observer(({ store }) => {
       <View className='interview_info'>
         <View className='project_title'>
           <View>面试信息</View>
+          {
+            (detail.interviewInfos?.length > 0 || detail.interviewAddress || detail.interviewDate) &&
+            <View className='project_title_copy' onClick={() => copyFunc(detail, 1)}>一键复制</View>
+          }
         </View>
         <View className='interview_item'>
           <View className='interview_item_title'>驻场联系人</View>
@@ -617,16 +650,17 @@ const Index = observer(({ store }) => {
       <View className='interview_info'>
         <View className='project_title'>
           <View>招聘简章</View>
-          {
+          {/* {
             myPermissions.includes('10') &&
             <View className='project_more' onClick={() => {
               goEditProject()
             }}>
-              <View>修改</View>
+              
               <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
             </View> ||
             <View> </View>
-          }
+          } */}
+          <View className='project_title_copy' onClick={() => copyFunc(detail.introduction)}>一键复制</View>
         </View>
         <View className='job_introduce'>
           <RichText nodes={detail.introductions}></RichText>
@@ -638,7 +672,7 @@ const Index = observer(({ store }) => {
         <View className='interview_info'>
           <View className='project_title'>
             <View>岗位详情</View>
-            <View> </View>
+            <View className='project_title_copy' onClick={() => copyFunc(detail.privateIntroduction)}>一键复制</View>
           </View>
           <View className='job_introduce'>
             <RichText nodes={detail.privateIntroductions}></RichText>
@@ -651,7 +685,7 @@ const Index = observer(({ store }) => {
         <View className='interview_info'>
           <View className='project_title'>
             <View>所属公司</View>
-            <View> </View>
+            <View className='project_title_copy' onClick={() => copyFunc(detail.company)}>一键复制</View>
           </View>
           <View className='job_introduce'>
             {detail.company}
@@ -665,7 +699,7 @@ const Index = observer(({ store }) => {
           {
             detail.jobImages.map((item, index) => {
               return (
-                <Image onClick={() => previewImg(item)} className='job_desc_images_i' key={index}></Image>
+                <Image onClick={() => previewImg(item, detail.jobImages)} className='job_desc_images_i' key={index}></Image>
               )
             })
           }
@@ -679,10 +713,10 @@ const Index = observer(({ store }) => {
         <View className='btn_wrap'>
           {
             detail.status === 'PROCESSING' &&
-            <View className='btn_item' onClick={()=>{
-              if(myPermissions.includes('15')){
+            <View className='btn_item' onClick={() => {
+              if (myPermissions.includes('15')) {
                 stopJob();
-              }else{
+              } else {
                 Taro.showToast({ title: '暂无权限', icon: 'none' });
               }
             }}>
@@ -690,10 +724,10 @@ const Index = observer(({ store }) => {
               <View>暂停面试</View>
             </View> ||
             detail.status === 'COMPLETED' &&
-            <View className='btn_item' onClick={()=>{
-              if(myPermissions.includes('15')){
+            <View className='btn_item' onClick={() => {
+              if (myPermissions.includes('15')) {
                 startJob();
-              }else{
+              } else {
                 Taro.showToast({ title: '暂无权限', icon: 'none' });
               }
             }}>
@@ -754,7 +788,7 @@ const Index = observer(({ store }) => {
                       {
                         swiperImages.map((item, index) => {
                           return (
-                            <SwiperItem className='swiper_wrap_item' key={index} onClick={() => previewImg(item)}>
+                            <SwiperItem className='swiper_wrap_item' key={index} onClick={() => previewImg(item, swiperImages)}>
                               <Image src={item}></Image>
                             </SwiperItem>
                           )

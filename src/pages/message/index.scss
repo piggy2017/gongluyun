@@ -1,0 +1,340 @@
+@import '@/app.scss';
+
+.message_box {
+  width: 100%;
+  min-height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  // background-color: #f3f3f3;
+  background-color: #fff;
+
+  .my_agent {
+    width: 694rpx;
+    height: 234rpx;
+    border-radius: 14rpx;
+    background: #F2F9FF;
+    padding: 0 24rpx;
+    margin-bottom: 30rpx;
+    // @include flex-center(space-between);
+
+    .base_info {
+      @include flex-center(flex-start);
+      color: #000000;
+      font-family: "PingFang SC";
+      font-size: 30rpx;
+      padding: 28rpx 0 24rpx 0;
+
+      >image {
+        width: 72rpx;
+        height: 72rpx;
+        border-radius: 50%;
+        margin-right: 12rpx;
+        flex-shrink: 0
+      }
+
+      >view {
+        color: #000000;
+        font-family: "PingFang SC";
+        font-size: 30rpx;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+      }
+    }
+
+    .click_area {
+      @include flex-center(space-between);
+
+      .click_area_call {
+        color: #666666;
+        text-align: center;
+        font-family: "PingFang SC";
+        font-size: 26rpx;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        justify-content: center;
+
+        >Image {
+          width: 44rpx;
+          height: 44rpx;
+          flex-shrink: 0;
+        }
+      }
+
+      .group_chat_btn {
+        width: 388rpx;
+        height: 88rpx;
+        border-radius: 8rpx;
+        background: #FFFFFF;
+        @include flex-center;
+        color: #0483ff;
+        text-align: center;
+        font-family: "PingFang SC";
+        font-size: 26rpx;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+
+        >Image {
+          width: 48rpx;
+          height: 48rpx;
+          flex-shrink: 0;
+          margin-right: 8rpx;
+        }
+      }
+    }
+
+    .link_type {
+      @include flex-center;
+      flex-shrink: 0;
+
+      >view {
+        width: 180rpx;
+        height: 64rpx;
+        @include flex-center;
+        color: #0483ff;
+        font-size: 26rpx;
+        border-radius: 8rpx;
+        border: 1rpx solid #0483FF;
+        background: #FFF;
+
+        >image {
+          width: 36rpx;
+          height: 36rpx;
+        }
+
+        &:last-child {
+          background: #DAEDFF;
+          border: 0;
+          margin-left: 16rpx;
+        }
+      }
+    }
+  }
+
+  .login_area {
+    width: 100%;
+    height: 74vh;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+
+    .login_area_img {
+      width: 400rpx;
+      height: 400rpx;
+    }
+
+    .login_area_title {
+      color: #222222;
+      text-align: center;
+      font-family: "PingFang SC";
+      font-size: 38rpx;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 28rpx;
+      margin: 44rpx 0 40rpx 0;
+    }
+
+    .login_area_desc {
+      color: #999999;
+      text-align: center;
+      font-family: "PingFang SC";
+      font-size: 30rpx;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 28rpx;
+    }
+
+    .login_area_btn {
+      margin-top: 48rpx;
+      width: 312rpx;
+      height: 80rpx;
+      border-radius: 10rpx;
+      background: #0483FF;
+      text-align: center;
+      line-height: 80rpx;
+      color: #fefefe;
+      text-align: center;
+      font-family: "PingFang SC";
+      font-size: 28rpx;
+      font-style: normal;
+      font-weight: 500;
+    }
+  }
+
+  .my_message {
+    padding: 0 40rpx;
+
+    .every_box {
+      width: 100%;
+      @include flex-center(space-between);
+      margin-bottom: 30rpx;
+
+      .at-badge__num {
+        right: 10PX;
+        top: 0PX;
+        border-radius: 14rpx;
+      }
+
+      &:first-child {
+        margin-top: 10rpx;
+      }
+
+      .head_box {
+        width: 92rpx;
+        height: 92rpx;
+        // border-radius: 12rpx;
+        // background: red;
+        flex-shrink: 0;
+
+        image {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+        }
+
+      }
+
+      .content {
+        flex: 1;
+        margin-left: 24rpx;
+
+        .top_cont {
+          width: 100%;
+          @include flex-center(space-between);
+
+          >view:nth-child(1) {
+            width: 425rpx;
+            font-family: PingFangSC-SNaNrpxibold;
+            font-weight: 600;
+            font-size: 32rpx;
+            color: #222222;
+            @include ellipsis;
+          }
+
+          >view:nth-child(2) {
+            font-family: PingFangSC-Regular;
+            font-weight: 400;
+            font-size: 24rpx;
+            color: #999999;
+            flex-shrink: 0;
+          }
+        }
+
+        .detail_cont {
+          margin-top: 12rpx;
+          font-family: PingFangSC-Regular;
+          font-weight: 400;
+          font-size: 28rpx;
+          color: #777777;
+          width: 554rpx;
+          @include ellipsis;
+        }
+      }
+    }
+
+  }
+
+  .skeleton1 {
+    height: auto;
+    // @include flex-center(flex-start);
+    // align-items: flex-start;
+    // padding: 0;
+    margin: 20rpx auto;
+    // background-color: #f9f9f9;
+    border-radius: 8rpx;
+  }
+
+  .skeleton1-avatar {
+    width: 82rpx;
+    height: 82rpx;
+    background-image: linear-gradient(270deg, #FFFFFF 0%, #ffffff80 100%);
+    border-radius: 5rpx;
+    // animation: skeleton1-loading 1s infinite 0.2s;
+  }
+
+  .skeleton1-content {
+    width: 100%;
+    margin-bottom: 20rpx;
+  }
+
+  .skeleton1-line {
+    width: 100%;
+    height: 20rpx;
+    // background-color: #ccc;
+    margin-bottom: 8rpx;
+  }
+
+
+  /* 添加动画效果 */
+  @keyframes skeleton1-loading {
+    0% {
+      opacity: 0.6;
+    }
+
+    50% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0.6;
+    }
+  }
+
+  .skeleton1-line:nth-child(1) {
+    // height: 304rpx;
+    background: #FFFFFF;
+    animation: skeleton1-loading 0.5s infinite;
+    border-radius: 10rpx;
+    display: table;
+    padding: 0rpx 0;
+
+    .skeleton1-line-child {
+      // padding: 0 20rpx;
+      border-radius: 6rpx;
+      @include flex-center(space-between);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      >view:nth-child(1) {
+        width: 92rpx;
+        height: 92rpx;
+        flex-shrink: 0;
+        border-radius: 100%;
+        margin-right: 20rpx;
+        background-image: linear-gradient(269deg, #F9F9F9 0%, #F6F6F6 100%);
+      }
+
+      >view:nth-child(2) {
+        width: 100%;
+        >view:nth-child(1) {
+          width: 40%;
+          height: 34rpx;
+          margin-bottom: 5rpx;
+          background-image: linear-gradient(269deg, #F9F9F9 0%, #F6F6F6 100%);
+        }
+        >view:nth-child(2) {
+          width: 10%;
+          height: 34rpx;
+          background-image: linear-gradient(269deg, #F9F9F9 0%, #F6F6F6 100%);
+        }
+
+      }
+      >view:nth-child(3) {
+        flex-shrink: 0;
+        width: 100rpx;
+        height: 34rpx;
+        background-image: linear-gradient(269deg, #F9F9F9 0%, #F6F6F6 100%);
+      }
+    }
+
+  }
+}
