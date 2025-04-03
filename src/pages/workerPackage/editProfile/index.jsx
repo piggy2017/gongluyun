@@ -29,7 +29,7 @@ const Index = observer(({ store }) => {
   const [avatar, setAvatar] = useState(
     "https://apu-mini.oss-accelerate.aliyuncs.com/boss/publish_success.webp"
   );
-  const [imageUrl, setImageUrl] = useState([]);      // 技能图片
+  const [imageUrls, setImageUrls] = useState([]);      // 技能图片
   const [education, setEducation] = useState('');    // 学历
   const [userExps, setUserExps] = useState('');      // 工作经验
   const [age, setAge] = useState(0);
@@ -51,8 +51,8 @@ const Index = observer(({ store }) => {
       setAvatar(userInfo.avatar);
       setSex(userInfo.sex);
       setAge(userInfo.age);
-      if (userInfo.imageUrl) {
-        setImageUrl(userInfo.imageUrl);
+      if (userInfo.imageUrls) {
+        setImageUrls(userInfo.imageUrls);
       }
       if (userInfo.education) {
         setEducation(userInfo.education);
@@ -115,7 +115,7 @@ const Index = observer(({ store }) => {
     // 用户同意授权
     try {
       Taro.chooseImage({
-        count: updateType === 1 ? 1 : 6 - imageUrl.length, // 最多可选择的图片数量
+        count: updateType === 1 ? 1 : 6 - imageUrls.length, // 最多可选择的图片数量
         sourceType: [sourceType[type]], // 图片来源，可选值：album（相册），camera（相机）
         sizeType: ['original', 'compressed'], // 图片尺寸类型，可选值：original（原图），compressed（压缩图）
         success(res) {
@@ -223,7 +223,7 @@ const Index = observer(({ store }) => {
             .then(results => {
               Taro.hideLoading();
               console.log("上传 技能 成功 --  oss地址为", results);
-              setImageUrl([...imageUrl, ...results]);
+              setImageUrls([...imageUrls, ...results]);
             })
             .catch(error => {
               Taro.hideLoading();
@@ -272,7 +272,7 @@ const Index = observer(({ store }) => {
       jobTypeIds: jobTypes.map(item => item.id),
       avatar,
       userExps,
-      imageUrl
+      imageUrls
     };
     console.log("params", params);
     Taro.showLoading({
@@ -294,14 +294,14 @@ const Index = observer(({ store }) => {
     }
   };
 
-  const deleteImg = (index) => {  // imageUrl, setImageUrl
-    setImageUrl([...imageUrl.slice(0, index), ...imageUrl.slice(index + 1)])
+  const deleteImg = (index) => {  // imageUrls, setImageUrls
+    setImageUrls([...imageUrls.slice(0, index), ...imageUrls.slice(index + 1)])
   }
 
   const previewImg = (imgSrc) => {
     Taro.previewImage({
       current: imgSrc,            // 当前显示图片的链接
-      urls: imageUrl              // 需要预览的图片列表
+      urls: imageUrls              // 需要预览的图片列表
     })
   }
 
@@ -382,10 +382,10 @@ const Index = observer(({ store }) => {
       </View>
 
       <View className='project_group_imgs'>
-        <View className='project_group_imgs_title'>上传证书照片（{imageUrl.length}/6）</View>
+        <View className='project_group_imgs_title'>上传证书照片（{imageUrls.length}/6）</View>
         <View className='project_group_imgs_wrap'>
           {
-            imageUrl.length < 6 &&
+            imageUrls.length < 6 &&
             <View className='add_img' onClick={() => {
               setUpdateType(2);
               setOpenAction(true);
@@ -394,7 +394,7 @@ const Index = observer(({ store }) => {
             </View>
           }
           {
-            imageUrl.length > 0 && imageUrl.map((item, index) => {
+            imageUrls.length > 0 && imageUrls.map((item, index) => {
               return <View className='add_img_wrap' key={index}>
                 <Image src={item} className='add_img_item' onClick={() => previewImg(item)}></Image>
                 <Image onClick={() => deleteImg(index)} src={`${Taro.$cdnUrl}/index/index_icon15.webp`} className='add_img_delete'></Image>
