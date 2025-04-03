@@ -46,7 +46,9 @@ const Index = observer(({ store }) => {
             getUserInfo({ userSerialCode }).then(res => {
                 console.log("getUserInfo", res);
                 if (res.code === 200) {
-                    setChatUserInfo({ userSerialCode, conversationId, nickname, phone: res.data.phone })
+                    let info = JSON.parse(decryptData(res.data));
+                    console.log('info', info);
+                    setChatUserInfo({ userSerialCode, conversationId, nickname, phone: info.phone })
                 }
             })
         } else {

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-02 10:11:22
+ * @LastEditTime: 2025-04-03 13:41:39
  * @Description: 
  */
 
@@ -414,6 +414,35 @@ const Index = observer(({ store }) => {
     })
   }
 
+  const copyFunc = (text, type) => {
+    let _text = '';
+    if (type) {    // 复制面试相关信息
+      if (detail.interviewInfos?.length > 0) {
+        detail.interviewInfos.forEach(element => {
+          _text += element.interviewContactName + ' ' + element.interviewContactPhone + '\n'
+        });
+      }
+      if (detail.interviewAddress) {
+        _text += detail.interviewAddress + '\n'
+      }
+      if (detail.interviewDate) {
+        _text += detail.interviewDate + '\n'
+      }
+    } else {
+      _text = text;
+    }
+    console.log("复制的内容:", _text);
+    Taro.setClipboardData({
+      data: _text,
+      success: () => {
+        Taro.showToast({
+          title: '复制成功',
+          icon: 'none'
+        })
+      }
+    })
+  }
+
   return (
     <View className='container'>
       <Navbar fixed placeholder bgColor='transparent' title='项目详情'></Navbar>
@@ -559,6 +588,7 @@ const Index = observer(({ store }) => {
       <View className='interview_info'>
         <View className='project_title'>
           <View>面试信息</View>
+          <View className='project_title_copy' onClick={() => copyFunc(detail, 1)}>一键复制</View>
         </View>
         <View className='interview_item'>
           <View className='interview_item_title'>驻场联系人</View>
@@ -617,16 +647,17 @@ const Index = observer(({ store }) => {
       <View className='interview_info'>
         <View className='project_title'>
           <View>招聘简章</View>
-          {
+          {/* {
             myPermissions.includes('10') &&
             <View className='project_more' onClick={() => {
               goEditProject()
             }}>
-              <View>修改</View>
+              
               <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
             </View> ||
             <View> </View>
-          }
+          } */}
+          <View className='project_title_copy' onClick={() => copyFunc(detail.introduction)}>一键复制</View>
         </View>
         <View className='job_introduce'>
           <RichText nodes={detail.introductions}></RichText>
@@ -638,7 +669,7 @@ const Index = observer(({ store }) => {
         <View className='interview_info'>
           <View className='project_title'>
             <View>岗位详情</View>
-            <View> </View>
+            <View className='project_title_copy' onClick={() => copyFunc(detail.privateIntroduction)}>一键复制</View>
           </View>
           <View className='job_introduce'>
             <RichText nodes={detail.privateIntroductions}></RichText>
@@ -651,7 +682,7 @@ const Index = observer(({ store }) => {
         <View className='interview_info'>
           <View className='project_title'>
             <View>所属公司</View>
-            <View> </View>
+            <View className='project_title_copy' onClick={() => copyFunc(detail.company)}>一键复制</View>
           </View>
           <View className='job_introduce'>
             {detail.company}
