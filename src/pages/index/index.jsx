@@ -48,7 +48,10 @@ const Index = observer(({ store }) => {
     console.log("首页 监听 是否登录isLogin:companyVerified", companyVerified, isLogin);
     console.log("首页 监听 当前角色role:", role);
     console.log("首页 监听 当前用户信息userInfo:", userInfo);
-    getRoleAndPermissionFunc();
+    if(isLogin){
+      getRoleAndPermissionFunc();
+    }
+    
   }, [isLogin, role, userInfo]);
 
   usePullDownRefresh(() => {
