@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-02 15:55:05
+ * @LastEditTime: 2025-04-09 17:13:28
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -27,6 +27,7 @@ const Index = observer(({ store }) => {
   const [loginoutSure, setLoginoutSure] = useState(false);
   const [showRoleModel, setShowRoleModel] = useState(false);
   const [currentRoles, setCurrentRoles] = useState([]);
+  const [isOpened, setIsOpened] = useState(false);
 
   useEffect(() => {
     let _list = userRoles.map((item, index) => {
@@ -45,7 +46,7 @@ const Index = observer(({ store }) => {
   }, [])
 
   useDidShow(() => {
-    refreshUserInfo();
+    if (isLogin) refreshUserInfo();
   })
 
   usePullDownRefresh(() => {
@@ -53,9 +54,12 @@ const Index = observer(({ store }) => {
       title: '加载中',
       mask: true
     })
-    refreshUserInfo();
-    getRoleAndPermissionFunc();
-    setMyPermissions();
+    if (isLogin) {
+      refreshUserInfo();
+      getRoleAndPermissionFunc();
+      setMyPermissions();
+    }
+
     setTimeout(() => {
       Taro.hideLoading();
       Taro.stopPullDownRefresh();
@@ -79,9 +83,10 @@ const Index = observer(({ store }) => {
   const navigateFunc = (type, url) => {
     if (type) {   // 需要校验用户是否登录
       if (isLogin === 0) {
-        Taro.navigateTo({
-          url: '/pages/login/index'
-        })
+        // Taro.navigateTo({
+        //   url: '/pages/login/index'
+        // })
+        setIsOpened(true);
         return
       }
     }
@@ -89,12 +94,19 @@ const Index = observer(({ store }) => {
       url
     })
   }
+  const onClose = (e) => {
+    if (e === 'success') {
+      // forceUpdate()
+    }
+    setIsOpened(false)
+  }
 
   const navigateVerifiedFunc = (url) => {
     if (isLogin === 0) {
-      Taro.navigateTo({
-        url: '/pages/login/index'
-      })
+      // Taro.navigateTo({
+      //   url: '/pages/login/index'
+      // })
+      setIsOpened(true);
       return
     }
     if (!companyVerified) {
@@ -134,9 +146,10 @@ const Index = observer(({ store }) => {
 
   const aboutFunc = () => {
     if (isLogin === 0) {
-      Taro.navigateTo({
-        url: '/pages/login/index'
-      })
+      // Taro.navigateTo({
+      //   url: '/pages/login/index'
+      // })
+      setIsOpened(true);
       return
     } else {
       Taro.navigateTo({ url: '/pages/minePackage/aboutUs/index' })
@@ -178,7 +191,10 @@ const Index = observer(({ store }) => {
       </View>
       {
         !isLogin &&
-        <View className='user_info' onClick={() => Taro.navigateTo({ url: '/pages/login/index' })}>
+        <View className='user_info' onClick={() => {
+          setIsOpened(true);
+          // Taro.navigateTo({ url: '/pages/login/index' })
+        }}>
           {/* <View className='user_info_avatar'></View> */}
           <Image className='user_info_avatar' src={`${Taro.$baseCdnUrl}/personal/personal_defaultAvatar.png`}></Image>
           <View className='user_info_right'>
@@ -374,6 +390,8 @@ const Index = observer(({ store }) => {
           </View>
         </AtFloatLayout>
       </Block>
+
+      <Taro.GlobalLogin isOpened={isOpened} onClose={onClose} />
     </View>
   )
 })

@@ -17,7 +17,7 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
     const {
         baseStore: { didPrivacy, setdidPrivacy },
         ChatStore: { setSessionList, setCursor, setHxUser },
-        userStore: { setToken, setIsLogin, enterParams, setUserInfo, getRoleAndPermissionFunc, setSupplierCompanyInfo }
+        userStore: { setToken, setIsLogin, enterParams, setUserInfo, getRoleAndPermissionFunc, setSupplierCompanyInfo, getSubTemplates }
     } = store
     useEffect(() => {
         if (isOpened) {
@@ -78,6 +78,8 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
                     // setRole(result.data.user.userRole);
                     getRoleAndPermissionFunc();
                     handleClose();
+
+                    getSubTemplates();
                     if (isSupplier) {
                         console.log("供应商登录后,调接口切换到供应商")
                         switchRoles({ userRole: 'SUPPLIER' }).then(res => {

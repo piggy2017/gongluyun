@@ -2,18 +2,18 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-03 16:12:45
+ * @LastEditTime: 2025-04-09 14:12:00
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
-import Taro, { usePullDownRefresh } from '@tarojs/taro';
+import Taro from '@tarojs/taro';
 import { View, Text, Image } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import './index.scss'
 
 const Index = observer(({ store }) => {
     const {
-        userStore: { isLogin, setRole, token,getSubTemplates, role, companyVerified, refreshUserInfo },
+        userStore: { isLogin, setRole, token, role },
     } = store
 
     useEffect(() => {
@@ -27,9 +27,14 @@ const Index = observer(({ store }) => {
             // return;
 
             console.log(1)
-            if (!isLogin || !token) {  // 未登录
+            if (!isLogin || !token) {  // 未登录,跳转求职者首页
                 console.log(2)
-                Taro.redirectTo({ url: '/pages/login/index' });
+                // Taro.redirectTo({ url: '/pages/login/index' });
+                Taro.setStorageSync('role', 'SEEK')
+                setRole('SEEK');
+                Taro.switchTab({
+                    url: '/pages/workerIndex/index'
+                });
                 return
             }
 
@@ -62,14 +67,18 @@ const Index = observer(({ store }) => {
                 });
                 return
             }
-            else{
+            else {
                 console.log('已经登陆但是还没有角色,前往选择角色');
-                Taro.redirectTo({ url: '/pages/loginPackage/chooseRole/index' });
-                return
+                // Taro.redirectTo({ url: '/pages/loginPackage/chooseRole/index' });
+                // return
+                Taro.setStorageSync('role', 'SEEK')
+                setRole('SEEK');
+                Taro.switchTab({
+                    url: '/pages/workerIndex/index'
+                });
             }
         }, 200);
     }, [])
-
 
     return (
         <View className='container'>

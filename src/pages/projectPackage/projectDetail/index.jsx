@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-03 16:13:53
+ * @LastEditTime: 2025-04-09 16:22:20
  * @Description: 
  */
 
@@ -511,7 +511,7 @@ const Index = observer(({ store }) => {
       </View>
 
       {
-        // role != 'CUSTOMER' && role != 'ON_SITE' &&
+        role != 'CUSTOMER' && role != 'ON_SITE' &&
         <>
           {
             (!detail.cooperationModels || detail.cooperationModels?.length === 0) &&

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-01 15:43:13
+ * @LastEditTime: 2025-04-09 15:08:07
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -24,7 +24,7 @@ import { indexFeeds } from '@/util/api'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { isLogin, refreshUserInfo },
+        userStore: { isLogin, refreshUserInfo, getSubTemplates },
         businessStore: { jobFilterAddress, setJobFilterAddress },
     } = store
 
@@ -57,6 +57,7 @@ const Index = observer(({ store }) => {
     useEffect(() => {
         if (isLogin) {
             refreshUserInfo();
+            getSubTemplates();
         }
     }, [isLogin]);
 
