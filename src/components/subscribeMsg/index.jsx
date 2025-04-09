@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-03-10 17:58:09
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-01 16:22:00
+ * @LastEditTime: 2025-04-09 15:10:44
  * @Description: 订阅消息
  */
 import React, { useState, useEffect } from 'react';
@@ -15,7 +15,7 @@ import { subscribeMessage } from '@/util/api'
 const SubscribeMsg = observer(({ store }) => {
     const {
         baseStore: { tabbarHeight },
-        userStore: { subTemplates, getSubTemplates },
+        userStore: { subTemplates, getSubTemplates, isLogin },
         businessStore: { showSubscribe, setShowSubscribe }
     } = store
 
@@ -23,8 +23,8 @@ const SubscribeMsg = observer(({ store }) => {
     const [isRequesting, setIsRequesting] = useState(false);
 
     useEffect(() => {
-        setShowSubscribe(subTemplates.length > 0 ? true : false);
-    }, [subTemplates]);
+        setShowSubscribe((subTemplates.length > 0 && isLogin) ? true : false);
+    }, [subTemplates, isLogin]);
 
     const subscribeMessageFunc = async () => {
         if (isRequesting) {

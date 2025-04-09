@@ -172,13 +172,21 @@ const Message = observer(({ store }) => {
         }
     })
 
+    const onClose = (e) => {
+        if (e === 'success') {
+            // forceUpdate()
+        }
+        setIsOpened(false)
+    }
+
+
     return (
         <View className='message_box'>
             <Navbar back={false} fixed placeholder bgColor='#FFF' title='消息'></Navbar>
             {
                 isLogin != 1 &&   // 用户未登录
                 <View className='login_area'>
-                    <Image className='login_area_img' src={`${Taro.$cdnUrl}/register/message_noLogin.png`}></Image>
+                    <Image className='login_area_img' src={`${Taro.$baseCdnUrl}/register/message_noLogin.png`}></Image>
                     <View className='login_area_title'>您还未登录</View>
                     <View className='login_area_desc'>登录账户后，可查看消息哦～</View>
                     <View className='login_area_btn' onClick={() => setIsOpened(true)}>立即登录</View>
@@ -235,6 +243,9 @@ const Message = observer(({ store }) => {
                     }
                 </View>
             }
+
+            <Taro.GlobalLogin isOpened={isOpened} onClose={onClose} />
+
             <TabBar actCurrent={(role === 'SEEK' || role === 'CHANNEL') ? 1 : 3} />
         </View>
     )
