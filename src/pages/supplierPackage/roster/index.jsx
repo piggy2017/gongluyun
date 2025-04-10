@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 15:39:47
+ * @LastEditTime: 2025-04-10 19:59:09
  * @Description: 
  */
 
@@ -237,6 +237,7 @@ const Index = observer(({ store }) => {
 
     const goAddWorker = () => {
         const { recruitSerialCode, title } = route.params;
+        console.log("goAddWorker", recruitSerialCode, title);
         Taro.navigateTo({ url: `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${recruitSerialCode}&title=${title}` })
     }
 

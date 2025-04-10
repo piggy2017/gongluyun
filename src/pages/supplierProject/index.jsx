@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 14:02:01
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 16:01:22
+ * @LastEditTime: 2025-04-10 20:05:26
  * @Description: 
  */
 
@@ -146,6 +146,9 @@ const Index = observer(({ store }) => {
             } else {
                 setgoonLoad(false);
                 setRequestState(3);
+                if (_pageNo === 1) {
+                    setList([]);
+                }
             }
         } else {
             setgoonLoad(false);
@@ -200,7 +203,6 @@ const Index = observer(({ store }) => {
         }
         getChoosePattern(item);
     }
-    
 
     const getChoosePattern = async (obj) => {
         console.log("---选择合作模式:", obj);
@@ -264,7 +266,11 @@ const Index = observer(({ store }) => {
                 <View className='my_port_right'>
                     <View className='my_port_compone_name'>{componyInfo.name}</View>
                     <View className='my_port_connect'>
-                        <View>合作对接：{componyInfo.contactName} <Text>{componyInfo.contactMobile}</Text> </View>
+                        <View>合作对接：{componyInfo.contactName} <Text onClick={() => {
+                            Taro.makePhoneCall({
+                                phoneNumber: componyInfo.contactMobile
+                            })
+                        }}>{componyInfo.contactMobile}</Text> </View>
                     </View>
                 </View>
                 <Image className='my_port_right_logo' src={`${Taro.$cdnUrl}/supplier/supplier_14.webp`} onClick={() => {
@@ -385,6 +391,10 @@ const Index = observer(({ store }) => {
                             </View>
                         )
                     })
+                }
+                {
+                    list.length === 0 && requestState === 3 &&
+                    <Taro.NoData></Taro.NoData>
                 }
             </ScrollView>
 

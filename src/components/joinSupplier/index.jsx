@@ -2,14 +2,15 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 10:22:06
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 15:54:23
+ * @LastEditTime: 2025-04-10 20:03:15
  * @Description:  申请成为供应商--输入公司名称
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { observer, inject } from 'mobx-react';
 import { View, Input } from '@tarojs/components';
 import { AtFloatLayout, AtIcon } from 'taro-ui'
+import { decryptData, encryptData } from '@/util/crypto'
 
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -18,12 +19,19 @@ import { supplierCreate } from '@/util/api';
 
 const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
     const {
-        userStore: { supplierCompanyInfo, setSupplierCompanyInfo }
+        userStore: { supplierCompanyInfo, setSupplierCompanyInfo, userInfo }
     } = store
     const [componyName, setComponyName] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [channelCode, setChannelCode] = useState('');
+
+    useEffect(() => {
+        if (userInfo) {
+            // setChannelCode(userInfo.channelCode)
+            setPhone(decryptData(userInfo.phone))
+        }
+    }, [userInfo])
 
     const postComponyName = async () => {
         // if (!componyName) {
@@ -44,10 +52,10 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
         console.log(" 注册供应商 ", code, data, msg)
         if (code === 200) {
             setSupplierCompanyInfo({ ...data });
+            onClose();
         } else {
-            Taro.showToast({ title: msg, icon: 'none', duration: 2000 })
+            Taro.showToast({ title: msg, icon: 'none', duration: 2000 });
         }
-        onClose();
     }
 
     return (
@@ -60,7 +68,7 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
                             <View className='filter_title'>
                                 <View>
                                     <View>要申请成为供应商</View>
-                                    <View>请提供你或你所代表公司的名称(保存后不能修改)</View>
+                                    <View>请提供手机号和渠道码(保存后不能修改)</View>
                                 </View>
                                 <AtIcon value='close' size='20' color='#222222' onClick={onClose}></AtIcon>
                             </View>

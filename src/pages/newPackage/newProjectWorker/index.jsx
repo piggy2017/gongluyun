@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 15:20:03
+ * @LastEditTime: 2025-04-10 20:02:33
  * @Description: 
  */
 
@@ -28,9 +28,7 @@ const Index = observer(({ store }) => {
     } = store
 
     const [chooseJob, setChooseJob] = useState(false);  // 选择岗位类型的弹窗
-
     const [showDatePicker, setShowDatePicker] = useState(false);
-
     // const [jobTypeNames, setJobTypeNames] = useState('');
     const [jobTypes, setJobTypes] = useState([]);
 
@@ -380,7 +378,7 @@ const Index = observer(({ store }) => {
                                                 setCurrentIndex(index);
                                             }}>
                                                 {
-                                                    JSON.parse(route.params.cooperationModels).length > 0 &&
+                                                    route.params.cooperationModels && JSON.parse(route.params.cooperationModels).length > 0 &&
                                                     <Text className={`${arrangList[index].cooperationModel ? 'project_item_text_active' : 'project_item_text'}`}>{arrangList[index].cooperationModel ? arrangList[index].cooperationModel : '请选择合作模式'}</Text> ||
                                                     <Text className='‘project_item_text'>该项目暂无合作模式</Text>
                                                 }
