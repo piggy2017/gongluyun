@@ -2,14 +2,14 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 14:02:01
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-25 09:58:35
+ * @LastEditTime: 2025-04-10 10:36:56
  * @Description: 
  */
 
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
-import { View, Image, ScrollView, Text, Button, Textarea, Block } from '@tarojs/components'
+import { View, Image, ScrollView, Text, Button, Input, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 
@@ -42,6 +42,7 @@ const Index = observer(({ store }) => {
     const [showJoinPicker, setShowJoinPicker] = useState(false);
     const [showPatternModel, setShowPatternModel] = useState(false);
     const [currentItem, setCurrentItem] = useState({});
+    const [searchValue, setSearchValue] = useState('');
 
     useDidShow(() => {
         if (isLogin) {
@@ -112,7 +113,8 @@ const Index = observer(({ store }) => {
             pageNo: _pageNo,
             pageSize,
             inCooperation: type === 0 ? null : type === 1 ? true : false,
-            companySerialCode: billComponySerialCode
+            companySerialCode: billComponySerialCode,
+            searchInfo: searchValue
         }
         setRequestState(1);
         Taro.showLoading({ title: '加载中', mask: true });
@@ -182,24 +184,20 @@ const Index = observer(({ store }) => {
         if (!supplierCompanyInfo.name) {   // 调用输入公司名字的弹窗
             return setShowJoinPicker(true);
         }
-        // else {
-        //     setShowPatternModel(true);
-        // }
         getChoosePattern(item);
     }
 
-    // const getComponyName = () => {
-    //     setShowPatternModel(true);
-    // }
     const getChoosePattern = async (obj) => {
         console.log("---选择合作模式:", obj);
         let params = {
             companySerialCode: billComponySerialCode,  // route.params.companySerialCode
             contractsSerialCode: obj.serialCode,
             supplierName: supplierCompanyInfo.name,
-            supplierSerialCode: supplierCompanyInfo.serialCode
+            supplierSerialCode: supplierCompanyInfo.serialCode,
+            channelCode: supplierCompanyInfo.channelCode
             // coopModel: value,
         }
+        console.log('加入项目参数:',params);
         Taro.showLoading({
             title: '提交中...',
             mask: true
@@ -232,6 +230,21 @@ const Index = observer(({ store }) => {
                     Taro.navigateTo({ url: `/pages/supplierPackage/collaborateBill/index` })
                 }} ></Image>
             </View>
+
+            <View className='search_content'>
+                <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+                <Input className='search_input'
+                    placeholder='搜索项目'
+                    confirmType='search'
+                    placeholderStyle='color: #777777;'
+                    onInput={(e) => { setSearchValue(e.detail.value) }}
+                    onConfirm={(e) => {
+                        setgoonLoad(true);
+                        getList(1);
+                    }}
+                    value={searchValue}></Input>
+            </View>
+
             <View className='my_port_label'>
                 <View onClick={() => setType(0)} className={`${type === 0 ? 'my_port_active' : ''}`}>全部项目</View>
                 <View onClick={() => setType(1)} className={`${type === 1 ? 'my_port_active' : ''}`}>合作中</View>

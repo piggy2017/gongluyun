@@ -71,6 +71,29 @@
 
     }
 
+    .search_content {
+        width: 694rpx;
+        height: 68rpx;
+        flex-shrink: 0;
+        background-color: #FFF;
+        @include flex-center(flex-start);
+        border-radius: 34rpx;
+        margin: 20rpx auto 0 auto;
+
+        image {
+            width: 36rpx;
+            height: 36rpx;
+            flex-shrink: 0;
+            margin: 0 10rpx 0 22rpx;
+        }
+
+        .search_input {
+            font-family: "PingFang SC";
+            font-size: 28rpx;
+            width: 580rpx;
+        }
+    }
+
     .my_port_label {
         color: #666666;
         font-family: "PingFang SC";
@@ -169,7 +192,7 @@
             }
 
             .supplier_list_nums {
-                width: 602rpx;
+                width: 662rpx;
                 height: 124rpx;
                 flex-shrink: 0;
                 border-radius: 10rpx;

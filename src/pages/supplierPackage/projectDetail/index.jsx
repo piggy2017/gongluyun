@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-20 10:11:44
+ * @LastEditTime: 2025-04-10 10:17:56
  * @Description: 
  */
 
@@ -48,7 +48,8 @@ const Index = observer(({ store }) => {
             companySerialCode: detail.companySerialCode,
             contractsSerialCode: detail.serialCode,
             supplierName: supplierCompanyInfo.name,
-            supplierSerialCode: supplierCompanyInfo.serialCode
+            supplierSerialCode: supplierCompanyInfo.serialCode,
+            channelCode: supplierCompanyInfo.channelCode
             // coopModel: value,
         }
         Taro.showLoading({

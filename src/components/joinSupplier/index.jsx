@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 10:22:06
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-09 15:48:44
+ * @LastEditTime: 2025-04-10 10:08:48
  * @Description:  申请成为供应商--输入公司名称
  */
 import React, { useState } from 'react';
@@ -23,6 +23,7 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
     const [componyName, setComponyName] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
+    const [channelCode, setChannelCode] = useState('');
 
     const postComponyName = async () => {
         if (!componyName) {
@@ -39,8 +40,7 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
                 duration: 2000
             })
         }
-        // setSupplierCompanyInfo({ ...supplierCompanyInfo, name: componyName });
-        const { code, data, msg } = await supplierCreate({ name: componyName, phone, address });
+        const { code, data, msg } = await supplierCreate({ name: componyName, phone, channelCode, address });
         console.log(" 注册供应商 ", code, data, msg)
         if (code === 200) {
             setSupplierCompanyInfo({ ...data });
@@ -48,7 +48,6 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
             Taro.showToast({ title: msg, icon: 'none', duration: 2000 })
         }
         onClose();
-        // onChange();
     }
 
     return (
@@ -82,6 +81,14 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
                                     onInput={(e) => setPhone(e.detail.value)}></Input>
                             </View>
                             <View className='filter_content_item'>
+                                <View className='filter_content_item_label'>渠道码</View>
+                                <Input className='filter_content_input'
+                                    placeholder='点击输入渠道码'
+                                    placeholderStyle='color: #999999;'
+                                    value={channelCode}
+                                    onInput={(e) => setChannelCode(e.detail.value)}></Input>
+                            </View>
+                            <View className='filter_content_item'>
                                 <View className='filter_content_item_label'>地点</View>
                                 <Input className='filter_content_input'
                                     placeholder='点击地址'
@@ -90,7 +97,7 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
                                     onInput={(e) => setAddress(e.detail.value)}></Input>
                             </View>
 
-                            <View className={`filter_wrapper_btn ${(componyName && phone) ? 'filter_wrapper_btn_active' : ''}`} onClick={() => postComponyName()}>保存</View>
+                            <View className={`filter_wrapper_btn ${(componyName && phone && channelCode) ? 'filter_wrapper_btn_active' : ''}`} onClick={() => postComponyName()}>保存</View>
                         </View>
                     </View>
                 </AtFloatLayout>
