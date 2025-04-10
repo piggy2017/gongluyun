@@ -166,7 +166,7 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
         }
         let params = {
             phone: encryptData(account),
-            password: encryptData(password), // password
+            password: encryptData(password),
         }
         Taro.showLoading({
             title: "登录中...",
