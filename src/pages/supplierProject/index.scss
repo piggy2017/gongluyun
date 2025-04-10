@@ -7,13 +7,55 @@
     background-size: 100% 368rpx;
     background-repeat: no-repeat;
 
+    .my_tips {
+        width: 750rpx;
+        // height: 116rpx;
+        flex-shrink: 0;
+        background: #ffffffbd;
+        padding: 18rpx 0 14rpx 0;
+        color: #1678ff;
+        font-family: "PingFang SC";
+        font-size: 28rpx;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 42rpx;
+        @include flex-center(space-between);
+
+        .my_tips_left {
+            @include flex-center(flex-start);
+            align-items: flex-start;
+            margin-left: 22rpx;
+            .my_tips_text{
+                width: 600rpx;
+                word-break: break-all;
+                .my_tips_phone{
+                    text-decoration: underline;
+                }
+            }
+
+            image {
+                width: 35rpx;
+                height: 35rpx;
+                flex-shrink: 0;
+                margin-right: 6rpx;
+            }
+        }
+
+        .my_tips_right {
+            width: 40rpx;
+            height: 40rpx;
+            flex-shrink: 0;
+            margin-right: 20rpx;
+        }
+    }
+
     .my_port {
         width: 716rpx;
         height: 148rpx;
         flex-shrink: 0;
         border-radius: 20rpx;
         background: #FFF;
-        margin: 12rpx auto 0 auto;
+        margin: 20rpx auto 0 auto;
         position: relative;
         @include flex-center(flex-start);
 
@@ -266,7 +308,8 @@
                 .supplier_list_model_content {
                     width: 508rpx;
                     @include ellipsis;
-                    text{
+
+                    text {
                         margin-right: 8rpx;
                     }
                 }

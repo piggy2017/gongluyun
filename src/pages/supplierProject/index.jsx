@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 14:02:01
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 10:36:56
+ * @LastEditTime: 2025-04-10 16:01:22
  * @Description: 
  */
 
@@ -17,7 +17,7 @@ import TabBar from '@/components/tabBar';
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { getCoopCompanyBySupplier, getContractsByCompany, joinContracts, switchRoles } from '@/util/api';
+import { getCoopCompanyBySupplier, getContractsByCompany, joinContracts, switchRoles, getDocoument } from '@/util/api';
 
 
 const Index = observer(({ store }) => {
@@ -43,6 +43,8 @@ const Index = observer(({ store }) => {
     const [showPatternModel, setShowPatternModel] = useState(false);
     const [currentItem, setCurrentItem] = useState({});
     const [searchValue, setSearchValue] = useState('');
+    const [tipsContent, setTipsContent] = useState([]);
+    const [showTips, setShowTips] = useState(false);
 
     useDidShow(() => {
         if (isLogin) {
@@ -57,6 +59,18 @@ const Index = observer(({ store }) => {
             setRole('SUPPLIER');
             Taro.setStorageSync('role', 'SUPPLIER');
         }
+        getDocoument({ dicTypes: ['announcement'] }).then(res => {
+            console.log("首页 getDocoument", res);
+            if (res.code === 200) {
+                let _text = [];
+                _text.push(res.data.supplier.split('{')[0])
+                _text.push(res.data.supplier.split('{')[1].split('}')[0])
+                _text.push(res.data.supplier.split('}')[1]);
+                console.log("_text", _text);
+                setTipsContent(_text);
+                setShowTips(true);
+            }
+        })
     }, [])
 
     useEffect(() => {
@@ -91,7 +105,7 @@ const Index = observer(({ store }) => {
                 pageNo: 1,
                 pageSize: 10,
                 supplierSerialCode: supplierCompanyInfo.serialCode,
-                companySerialCode: supplierCompanyInfo.name
+                // companySerialCode: supplierCompanyInfo.name
             }
             getCoopCompanyBySupplier(params).then(res => {
                 console.log("合作公司列表:", res);
@@ -156,7 +170,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 274rpx)`;
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 282rpx - 88rpx - ${showTips ? 116 : 0}rpx)`;
     }
 
     const goDetail = (item, index) => {
@@ -181,11 +195,12 @@ const Index = observer(({ store }) => {
         if (!isLogin) {
             return setIsOpened(true)
         }
-        if (!supplierCompanyInfo.name) {   // 调用输入公司名字的弹窗
+        if (!supplierCompanyInfo.serialCode) {   // 调用输入公司名字的弹窗
             return setShowJoinPicker(true);
         }
         getChoosePattern(item);
     }
+    
 
     const getChoosePattern = async (obj) => {
         console.log("---选择合作模式:", obj);
@@ -197,7 +212,7 @@ const Index = observer(({ store }) => {
             channelCode: supplierCompanyInfo.channelCode
             // coopModel: value,
         }
-        console.log('加入项目参数:',params);
+        console.log('加入项目参数:', params);
         Taro.showLoading({
             title: '提交中...',
             mask: true
@@ -217,6 +232,32 @@ const Index = observer(({ store }) => {
     return (
         <View className='container'>
             <Navbar back={false} fixed placeholder bgColor='transparent' title='我的合作端口' titleColor='#FFFFFF'></Navbar>
+
+            {
+                showTips &&
+                <View className='my_tips'>
+                    <View className='my_tips_left'>
+                        <Image src={`${Taro.$cdnUrl}/supplier/supplier_85.webp`}></Image>
+                        <View className='my_tips_text'>
+                            {
+                                tipsContent.length > 0 &&
+                                tipsContent.map((item, index) => {
+                                    return (
+                                        <Text onClick={() => {
+                                            if (index === 1) {
+                                                Taro.makePhoneCall({
+                                                    phoneNumber: item,
+                                                })
+                                            }
+                                        }} className={`${index === 1 ? 'my_tips_phone' : ''}`} key={index}>{item}</Text>
+                                    )
+                                })
+                            }
+                        </View>
+                    </View>
+                    <Image onClick={() => { setShowTips(false) }} className='my_tips_right' src={`${Taro.$cdnUrl}/supplier/supplier_86.webp`}></Image>
+                </View>
+            }
 
             <View className='my_port'>
                 <Image className='my_port_left_logo' src={componyInfo?.logo}></Image>
@@ -274,6 +315,7 @@ const Index = observer(({ store }) => {
 
                                 <View className='supplier_list_detail'>
                                     <View>
+                                        {item.areaName ? item.areaName + '·' : ''}
                                         {item.jobTypeName}·
                                         {item.salaryType === 'FIXED' ? '全职' : item.salaryType === 'DAY' ? '兼职' : '全职/兼职'}·
                                         {item.createDate.split(' ')[0]}发布
@@ -284,6 +326,10 @@ const Index = observer(({ store }) => {
                                         <View className='join_project_btn' onClick={(e) => joinProject(e, item)}>加入项目</View>
                                     }
                                 </View>
+                                {
+                                    item.company &&
+                                    <View className='supplier_list_detail'>{item.company}</View>
+                                }
                                 {
                                     item.joiningSuccessful &&
                                     <View className='supplier_list_nums'>

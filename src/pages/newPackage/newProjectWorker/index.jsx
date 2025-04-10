@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-17 15:43:02
+ * @LastEditTime: 2025-04-10 15:20:03
  * @Description: 
  */
 
@@ -44,18 +44,23 @@ const Index = observer(({ store }) => {
         jobTypeIds: [],
         jobTypeNames: "",
         recruitSerialCode: '',
+        cooperationModel: '',     // 选择的合作模式
         jobTypes: [],
         isOpen: true,
         interviewArranged: true,
-        agentSerialCode: userSerialCode
+        agentSerialCode: userSerialCode,
     }
     const [arrangList, setArrangList] = useState([{ ...interViewTemplate }]); //安排列表
     const [allOpen, setAllOpen] = useState(true);
 
     const [aiRecognize, setAiRecognize] = useState('');  // AI识别内容
+    const [showPatternModel, setShowPatternModel] = useState(false);
+    const [currentPattren, setCurrentPattren] = useState('');
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
-        const { recruitSerialCode, title } = route.params;
+        const { cooperationModels } = route.params;
+        console.log("cooperationModels:", cooperationModels);
     }, [])
 
     const datePickerSelect = (e) => {
@@ -110,7 +115,7 @@ const Index = observer(({ store }) => {
     }
 
     const setFormListData = (index, type, value) => {
-        console.log("setFormListData", index, type, value);
+        // console.log("setFormListData", index, type, value);
         setArrangList(arrangList => {
             arrangList[index][type] = value
             return arrangList
@@ -153,8 +158,11 @@ const Index = observer(({ store }) => {
             item.interviewArranged = true;
             item.agentSerialCode = userSerialCode;
             item.source = 'GLPK';
+            if (role != 'SUPPLIER') {
+                delete item.cooperationModel
+            }
             if (role === 'SUPPLIER') {
-                item.supplierSerialCode= supplierCompanyInfo.serialCode;
+                item.supplierSerialCode = supplierCompanyInfo.serialCode;
             }
             return item;
         })
@@ -233,6 +241,15 @@ const Index = observer(({ store }) => {
         } else {
             Taro.showToast({ title: msg, icon: 'none', });
         }
+    }
+    const getChoosePattern = async (value) => {   // 选择合作模式的回调
+        console.log("选择的模式", value);
+        setArrangList(arrangList => {
+            arrangList[currentIndex].cooperationModel = value
+            return arrangList
+        })
+        forceUpdate();
+        setShowPatternModel(false);
     }
 
     return (
@@ -314,7 +331,6 @@ const Index = observer(({ store }) => {
                                         <View>{arrangList[index].isOpen ? '收起' : '展开'}</View>
                                     </View>
                                 </View>
-
                             </View>
                             {
                                 item.isOpen &&
@@ -338,7 +354,7 @@ const Index = observer(({ store }) => {
                                             <View onClick={() => setFormListData(index, 'sex', 1)} className={`option_item ${arrangList[index].sex === 1 ? 'option_item_active' : ''}`}>女</View>
                                         </View>
                                     </View>
-                                    <View className='project_item'>
+                                    <View className='project_item project_item_border'>
                                         <View className='project_item_label project_item_label_required'>手机号码</View>
                                         <View className='project_item_right'>
                                             <Input
@@ -354,6 +370,24 @@ const Index = observer(({ store }) => {
                                             <View className='project_item_right_stick' onClick={() => stick(index)}>粘贴</View>
                                         </View>
                                     </View>
+                                    {
+                                        role === 'SUPPLIER' &&
+                                        <View className='project_item project_item_border'>
+                                            <View className='project_item_label'>选择模式</View>
+                                            <View className='project_item_right' onClick={() => {
+                                                setCurrentPattren(arrangList[index].cooperationModel ? arrangList[index].cooperationModel : '');
+                                                setShowPatternModel(true);
+                                                setCurrentIndex(index);
+                                            }}>
+                                                {
+                                                    JSON.parse(route.params.cooperationModels).length > 0 &&
+                                                    <Text className={`${arrangList[index].cooperationModel ? 'project_item_text_active' : 'project_item_text'}`}>{arrangList[index].cooperationModel ? arrangList[index].cooperationModel : '请选择合作模式'}</Text> ||
+                                                    <Text className='‘project_item_text'>该项目暂无合作模式</Text>
+                                                }
+                                            </View>
+                                        </View>
+                                    }
+
                                     <View className='project_item project_item_border' onClick={() => {
                                         setActiveIndex(index);
                                         setChooseJob(true);
@@ -462,6 +496,13 @@ const Index = observer(({ store }) => {
 
             <Block>
                 <DatePicker type='Single' showPicker={showDatePicker} onClose={() => { setShowDatePicker(false) }} onSelectDate={datePickerSelect}></DatePicker>
+            </Block>
+
+            <Block>
+                {
+                    route.params.cooperationModels && 
+                    <Taro.ChoosePattern initItem={currentPattren} list={JSON.parse(route.params.cooperationModels)} showPicker={showPatternModel} onClose={() => setShowPatternModel(false)} onchange={getChoosePattern}></Taro.ChoosePattern>
+                }
             </Block>
 
         </View>

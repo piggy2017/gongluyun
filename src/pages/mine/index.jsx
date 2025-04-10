@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-09 17:13:28
+ * @LastEditTime: 2025-04-10 17:03:14
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -301,13 +301,22 @@ const Index = observer(({ store }) => {
       <View className='section_group'>
         {
           role === 'SEEK' &&
-          <View className='section_item' onClick={() => navigateFunc(1, '/pages/workerPackage/signupHistory/index')}>
-            <View className='section_item_left'>
-              <Image src={`${Taro.$cdnUrl}/supplier/supplier_46.webp`}></Image>
-              <Text>报名记录</Text>
+          <>
+            <View className='section_item' onClick={() => navigateFunc(1, '/pages/workerPackage/editProfile/index')}>
+              <View className='section_item_left'>
+                <Image src={`${Taro.$cdnUrl}/supplier/supplier_87.webp`}></Image>
+                <Text>修改简历</Text>
+              </View>
+              <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
             </View>
-            <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
-          </View>
+            <View className='section_item' onClick={() => navigateFunc(1, '/pages/workerPackage/signupHistory/index')}>
+              <View className='section_item_left'>
+                <Image src={`${Taro.$cdnUrl}/supplier/supplier_46.webp`}></Image>
+                <Text>报名记录</Text>
+              </View>
+              <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
+            </View>
+          </>
         }
         <View className='section_item' onClick={aboutFunc}>
           <View className='section_item_left'>

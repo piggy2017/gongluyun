@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 10:17:56
+ * @LastEditTime: 2025-04-10 15:57:18
  * @Description: 
  */
 
@@ -105,7 +105,7 @@ const Index = observer(({ store }) => {
 
     const joinProject = () => {
         console.log('加入项目_supplierCompanyInfo', supplierCompanyInfo);
-        if (!supplierCompanyInfo.name) {
+        if (!supplierCompanyInfo.serialCode) {
             setShowJoinPicker(true);
         }
         getChoosePattern();
@@ -185,6 +185,34 @@ const Index = observer(({ store }) => {
                             <View className='collaborate_pattern_content_text'>{detail.cooperationModel}</View>
                         </View>
                     </View>  */}
+                    <View className='project_pattern'>
+                        <View className='project_pattern_title'>合作模式</View>
+                        {
+                            detail.cooperationModels?.length > 0 &&
+                            <>
+                                {
+                                    detail.cooperationModels.map((item, index) => {
+                                        return (
+                                            <View className='project_pattern_item' key={index}>
+                                                <View className='project_pattern_item_title'>模式{index + 1}:</View>
+                                                <View className='project_pattern_item_content'>{item}</View>
+                                            </View>
+                                        )
+                                    })
+                                }
+                            </> ||
+                            <View className='project_pattern_item'>暂无合作模式</View>
+                        }
+                    </View>
+
+                    <View className='project_pattern project_pattern_1'>
+                        <View className='project_pattern_title'>结算规则</View>
+                        <View className='project_pattern_rule'>
+                            {
+                                detail.settlementStandard ? <RichText nodes={detail.settlementStandard}></RichText> : '暂无结算规则'
+                            }
+                        </View>
+                    </View>
 
                     <View className='project_interview'>
                         <View className='project_interview_title'>面试信息</View>
@@ -314,7 +342,7 @@ const Index = observer(({ store }) => {
                     <View className='jion_btn' onClick={joinProject}>加入项目</View> ||
                     <View className='page_bottom_btns'>
                         <View className='page_bottom_btn_left' onClick={(e) => navigateFunc(e, `/pages/supplierPackage/roster/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>名单</View>
-                        <View className='page_bottom_btn_right' onClick={(e) => navigateFunc(e, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>上报求职者</View>
+                        <View className='page_bottom_btn_right' onClick={(e) => navigateFunc(e, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}&cooperationModels=${JSON.stringify(detail.cooperationModels ? detail.cooperationModels : [])}`)}>上报求职者</View>
                     </View>
                 }
 

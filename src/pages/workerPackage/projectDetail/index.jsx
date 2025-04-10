@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-03 15:21:27
+ * @LastEditTime: 2025-04-10 17:53:17
  * @Description: 
  */
 
@@ -27,7 +27,6 @@ const Index = observer(({ store }) => {
         userStore: { isLogin, userInfo, setRole, setEnterParams },
         ChatStore: { sessionList, setSessionList },
     } = store
-
 
     const [detail, setDetail] = useState({});
     const [isOpened, setIsOpened] = useState(false);
@@ -60,7 +59,6 @@ const Index = observer(({ store }) => {
             })
         }
     }, [codesrc, canvasBg]);
-
 
     useEffect(() => {
         const { inviteRole, recruitSerialCode, agentSerialCode, source, q } = route.params;

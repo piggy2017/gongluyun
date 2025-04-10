@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-05 15:39:11
  * @LastEditors: 孙林
- * @LastEditTime: 2024-10-16 10:45:45
+ * @LastEditTime: 2025-04-10 18:11:40
  * @Description: 时间选择器 -- 可选择当前月和接下来的6个月的月份数据
  */
 import React,{ useState, useEffect, useReducer } from 'react';
@@ -79,11 +79,12 @@ const DatePicker = observer(({ type = 'Single', showPicker, onClose, onSelectDat
                 if (isAllChoose) {
                     childrenObj.canSelect = true;
                 } else {
-                    if ((i === 6 && currentDate > j + 1) || i < 6) {  // 不可选的日期
-                        childrenObj.canSelect = false;
-                    } else {
-                        childrenObj.canSelect = true;
-                    }
+                    childrenObj.canSelect = true;    // 之前的日期也可以选
+                    // if ((i === 6 && currentDate > j + 1) || i < 6) {  // 不可选的日期
+                    //     childrenObj.canSelect = false;
+                    // } else {
+                    //     childrenObj.canSelect = true;
+                    // }
                 }
 
                 if (defaultValue && childrenObj.label === defaultValue) {

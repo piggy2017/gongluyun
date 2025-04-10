@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 14:37:51
+ * @LastEditTime: 2025-04-10 15:39:47
  * @Description: 
  */
 
@@ -478,6 +478,7 @@ const Index = observer(({ store }) => {
                                         <View className='item_title_name'>{item.name}</View>
                                         <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
                                         <View className='item_title_phone' onClick={(e) => callUser(e, item)}>{item.phone}</View>
+                                        <View className='item_title_source'>{item.sourceDesc}</View>
                                     </View>
                                 </View>
                                 <View className='roster_item_detail'>

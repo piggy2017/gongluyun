@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-09 15:08:07
+ * @LastEditTime: 2025-04-10 16:04:43
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -221,10 +221,9 @@ const Index = observer(({ store }) => {
                                     <View className='list_item_addr'>{item.areaName}</View>
                                     {
                                         !item.signUp &&
-                                        <View className='list_item_btn' onClick={(e) => signupFunc(e, index, item)}>立即报名</View> ||
+                                        <View className='list_item_btn' onClick={(e) => signupFunc(e, index, item)}>查看详情</View> ||
                                         <View className='did_signup'>已报名</View>
                                     }
-
                                 </View>
                             </View>
                         )

@@ -8,11 +8,14 @@ import { observer, inject } from 'mobx-react';
 import { decryptData, encryptData } from '@/util/crypto'
 import './index.scss';
 
-import { loginPhone, checkSupplier, switchRoles } from '@/util/api';
+import { loginPhone, checkSupplier, switchRoles, loginEmployeePhone } from '@/util/api';
 
 const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
     const [isShow, setIsOpened] = useState(false);
     const [isNornalLogin, setIsNornalLogin] = useState(1);
+    const [account, setAccount] = useState('');
+    const [password, setPassword] = useState('');
+    const [ispassword, setIsPassword] = useState(true);
 
     const {
         baseStore: { didPrivacy, setdidPrivacy },
@@ -41,7 +44,7 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
             const { code, errMsg } = e.detail;
             if (errMsg === 'getPhoneNumber:ok') {
                 Taro.showLoading({
-                    title: "请求中",
+                    title: "登录中...",
                     mask: true
                 })
                 let params = {
@@ -154,10 +157,61 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
         })
     }
 
+    const accountLogin = () => {
+        if (!account || account.length < 11) {
+            return Taro.showToast({ title: "请输入11位手机号", icon: "none", duration: 2000 })
+        }
+        if (!password) {
+            return Taro.showToast({ title: "请输入密码", icon: "none", duration: 2000 })
+        }
+        let params = {
+            phone: encryptData(account),
+            password: encryptData(password), // password
+        }
+        Taro.showLoading({
+            title: "登录中...",
+            mask: true
+        })
+        loginEmployeePhone(params).then((result) => {
+            console.log("登录结果", result);
+            const { code, data, msg } = result;
+            Taro.hideLoading();
+            if (code === 200) {
+                Taro.showToast({ title: "登录成功", icon: "none", duration: 2000 })
+                setToken(result.data.token);
+                Taro.setStorageSync('token', result.data.token);
+                Taro.setStorageSync('isLogin', 1);
+                Taro.setStorageSync('userInfo', result.data.user);
+                setIsLogin(1);
+                setHxUser(result.data.hxUser);
+                // loginhxIM(result.data.hxUser);
+                setUserInfo(result.data.user);
+                getRoleAndPermissionFunc();
+                handleClose();
+
+                getSubTemplates();
+                getSupplierCompanyInfo();      // 检查用户是否是供应商
+                if (isSupplier) {
+                    console.log("供应商登录后,调接口切换到供应商")
+                    switchRoles({ userRole: 'SUPPLIER' }).then(res => {
+                        console.log("供应商登录后,调接口切换到供应商__", res);
+                        if (res.code === 200) {
+                        }
+                    })
+                }
+                setTimeout(() => {
+                    checkIssuppier();
+                }, 100);
+            } else {
+                Taro.showToast({ title: msg, icon: "none", duration: 2000 })
+            }
+        })
+    }
+
     return (
         <>
             <AtFloatLayout
-                className={`is_layout ${!didPrivacy ? 'is_layout_didPrivacy' : ''} ${isNornalLogin === 2 ? 'phone_layout' : ''}`}
+                className={`is_layout ${!didPrivacy ? 'is_layout_didPrivacy' : ''} ${didPrivacy && isNornalLogin === 2 ? 'phone_layout' : ''}`}
                 isOpened={isShow}
                 title={didPrivacy ? " " : ""}
                 onClose={() => handleClose(null)}
@@ -198,7 +252,35 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
                         <View className='login_title'><Image src={`${Taro.$baseCdnUrl}/index/guide_logo.webp`}></Image></View>
                         <View className='login_slogn'>登录后更方便使用小程序</View>
                         <Button className='logn_btn' openType='getPhoneNumber' onGetPhoneNumber={handleGetPhoneNumber}>一键登录</Button>
-                        {/* <View className='other_login' onClick={() => setIsNornalLogin(2)}>其他手机号登录</View> */}
+                        <View className='other_login' onClick={() => setIsNornalLogin(2)}>员工账号登录</View>
+                    </View> ||
+                    didPrivacy && isNornalLogin === 2 &&
+                    <View className='login_box'>
+                        <View className='login_box_title'>账号密码登录</View>
+                        <View className='input_wrap'>
+                            <Input
+                                className='my_input'
+                                type='number'
+                                maxlength={11}
+                                placeholder='请输入账号'
+                                placeholderStyle='color: #777777;'
+                                value={account}
+                                onInput={(e) => setAccount(e.detail.value)}
+                            ></Input>
+                        </View>
+                        <View className='input_wrap input_wrap_password'>
+                            <Input
+                                className='my_input'
+                                placeholder='请输入密码'
+                                placeholderStyle='color: #777777;'
+                                value={password}
+                                password={ispassword}
+                                onInput={(e) => setPassword(e.detail.value)}
+                            ></Input>
+                            <Image onClick={() => setIsPassword(!ispassword)} className='input_clock_icon' src={`${Taro.$cdnUrl}/index/index_icon47.webp`}></Image>
+                        </View>
+                        <Button className='logn_btn logn_btn_acount' onClick={() => accountLogin()}>立即登录</Button>
+                        <View className='other_login' onClick={() => setIsNornalLogin(1)}>一键登录</View>
                     </View>
                 }
             </AtFloatLayout>

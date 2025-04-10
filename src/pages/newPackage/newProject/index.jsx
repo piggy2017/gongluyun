@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-03 10:17:42
+ * @LastEditTime: 2025-04-10 15:47:51
  * @Description: 
  */
 
@@ -131,12 +131,6 @@ const Index = observer(({ store }) => {
             })
         }
     }, [editProjectInfo]);
-
-    // useEffect(() => {
-    //     if (onSiteInfo.phone) {
-    //         setFormData({ ...formData, interviewContactInfo: onSiteInfo.userSerialCode, interviewContactName: onSiteInfo.name, interviewContactPhone: onSiteInfo.phone });
-    //     }
-    // }, [onSiteInfo]);
 
     const getMyAddress = async () => {
         try {
@@ -445,6 +439,18 @@ const Index = observer(({ store }) => {
                             value={formData.addressDetail}
                             onInput={(e) => setFormData({ ...formData, addressDetail: e.detail.value })}>
                         </Input>
+                    </View>
+                </View>
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>电话号码</View>
+                    <View className='project_item_right'>
+                        <Input
+                            className='new_input'
+                            placeholder='请输入企业电话号码'
+                            placeholderStyle='color: #999999;'
+                            value={formData.recruitPhone}
+                            onInput={(e) => setFormData({ ...formData, recruitPhone: e.detail.value })}
+                        ></Input>
                     </View>
                 </View>
             </View>

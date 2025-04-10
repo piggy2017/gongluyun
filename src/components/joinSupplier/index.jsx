@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 10:22:06
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 10:08:48
+ * @LastEditTime: 2025-04-10 15:54:23
  * @Description:  申请成为供应商--输入公司名称
  */
 import React, { useState } from 'react';
@@ -26,13 +26,13 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
     const [channelCode, setChannelCode] = useState('');
 
     const postComponyName = async () => {
-        if (!componyName) {
-            return Taro.showToast({
-                title: '请输入公司/个人名称',
-                icon: 'none',
-                duration: 2000
-            })
-        }
+        // if (!componyName) {
+        //     return Taro.showToast({
+        //         title: '请输入公司/个人名称',
+        //         icon: 'none',
+        //         duration: 2000
+        //     })
+        // }
         if (!phone) {
             return Taro.showToast({
                 title: '请输入手机号',
@@ -40,7 +40,7 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
                 duration: 2000
             })
         }
-        const { code, data, msg } = await supplierCreate({ name: componyName, phone, channelCode, address });
+        const { code, data, msg } = await supplierCreate({ phone, channelCode });
         console.log(" 注册供应商 ", code, data, msg)
         if (code === 200) {
             setSupplierCompanyInfo({ ...data });
@@ -64,14 +64,14 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
                                 </View>
                                 <AtIcon value='close' size='20' color='#222222' onClick={onClose}></AtIcon>
                             </View>
-                            <View className='filter_content_item'>
+                            {/* <View className='filter_content_item'>
                                 <View className='filter_content_item_label'>名称</View>
                                 <Input className='filter_content_input'
                                     placeholder='点击输入公司/个人名称'
                                     placeholderStyle='color: #999999;'
                                     value={componyName}
                                     onInput={(e) => setComponyName(e.detail.value)}></Input>
-                            </View>
+                            </View> */}
                             <View className='filter_content_item'>
                                 <View className='filter_content_item_label'>手机号</View>
                                 <Input className='filter_content_input'
@@ -88,16 +88,16 @@ const JoinSupplier = observer(({ showPicker, onClose, onChange, store }) => {
                                     value={channelCode}
                                     onInput={(e) => setChannelCode(e.detail.value)}></Input>
                             </View>
-                            <View className='filter_content_item'>
+                            {/* <View className='filter_content_item'>
                                 <View className='filter_content_item_label'>地点</View>
                                 <Input className='filter_content_input'
                                     placeholder='点击地址'
                                     placeholderStyle='color: #999999;'
                                     value={address}
                                     onInput={(e) => setAddress(e.detail.value)}></Input>
-                            </View>
+                            </View> */}
 
-                            <View className={`filter_wrapper_btn ${(componyName && phone && channelCode) ? 'filter_wrapper_btn_active' : ''}`} onClick={() => postComponyName()}>保存</View>
+                            <View className={`filter_wrapper_btn ${(phone && channelCode) ? 'filter_wrapper_btn_active' : ''}`} onClick={() => postComponyName()}>保存</View>
                         </View>
                     </View>
                 </AtFloatLayout>

@@ -2,10 +2,10 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 10:22:06
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-05 17:43:37
+ * @LastEditTime: 2025-04-10 17:35:17
  * @Description:  申请成为供应商--输入公司名称
  */
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { observer, inject } from 'mobx-react';
 import { View, Input } from '@tarojs/components';
@@ -15,14 +15,18 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss';
 
-const ChoosePattern = observer(({ list, showPicker, onClose, onchange, store }) => {
+const ChoosePattern = observer(({ list, showPicker, onClose, onchange, initItem, store }) => {
     const [patternList, setPatternList] = useState([]);
     const [chooseId, setChooseId] = useState('');
-    useEffect(()=>{
-        if(list && list.length > 0){
+    useEffect(() => {
+        if (list && list.length > 0) {
             setPatternList(list)
         }
-    },[list])
+    }, [list])
+
+    useEffect(() => {
+        setChooseId(initItem);
+    }, [initItem])
 
     return (
         <>

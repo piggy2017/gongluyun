@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 09:36:34
+ * @LastEditTime: 2025-04-10 11:37:08
  * @Description: 
  */
 
@@ -15,7 +15,9 @@ export const API_BASE_URL = base + "/mini"
 const CDN_BASE_URL = "https://apu-mini.oss-accelerate.aliyuncs.com"
 const webSocketUrl = env === 'prod' ? "wss://im.apujiyu.com/websocket" : "ws://test.im.apujiyu.com/websocket"
 
-
+export const getDocoument = params => { //数据字典
+    return http(API_BASE_URL + '/dictionary/', params, "POST", { "Content-Type": "application/json" });
+};
 // 登录模块
 export const loginPhone = params => { // 手机号登录
     return http(API_BASE_URL + '/login/wechat/applet', params, "POST", {
