@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-31 11:03:57
+ * @LastEditTime: 2025-04-11 13:53:19
  * @Description: 
  */
 
@@ -66,8 +66,9 @@ const Index = observer(({ store }) => {
                         Taro.setStorageSync('role', data);
                         setRole(data);
                         Taro.switchTab({
-                            url: '/pages/index/index'
+                            url: `/pages/${data === 'CHANNEL' ? 'channelIndex' : 'index'}/index`
                         })
+
                     })
                 } else {
                     Taro.showToast({

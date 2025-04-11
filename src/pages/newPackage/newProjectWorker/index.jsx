@@ -240,6 +240,7 @@ const Index = observer(({ store }) => {
             Taro.showToast({ title: msg, icon: 'none', });
         }
     }
+    
     const getChoosePattern = async (value) => {   // 选择合作模式的回调
         console.log("选择的模式", value);
         setArrangList(arrangList => {

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 15:57:18
+ * @LastEditTime: 2025-04-11 10:15:20
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
         userStore: { supplierCompanyInfo },
     } = store
 
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
 
     const [showPatternModel, setShowPatternModel] = useState(false);
     const [statistics, setStatistics] = useState({});
@@ -89,10 +89,10 @@ const Index = observer(({ store }) => {
         console.log("getProjectDetail_data", data);
         if (code === 200 && data) {
             if (data.introduction) {
-                data.introduction = replaceNewLinesWithBr(data.introduction);
+                data.introductions = replaceNewLinesWithBr(data.introduction);
             }
             if (data.settlementStandard) {
-                data.settlementStandard = replaceNewLinesWithBr(data.settlementStandard);
+                data.settlementStandards = replaceNewLinesWithBr(data.settlementStandard);
             }
             if (data.privateIntroduction) {
                 data.privateIntroductions = replaceNewLinesWithBr(data.privateIntroduction);
@@ -125,6 +125,18 @@ const Index = observer(({ store }) => {
         Taro.previewImage({
             current: imgSrc,                // 当前显示图片的链接
             urls: detail.jobImages          // 需要预览的图片列表
+        })
+    }
+
+    const copyFunc = (text) => {
+        Taro.setClipboardData({
+            data: text,
+            success: () => {
+                Taro.showToast({
+                    title: '复制成功',
+                    icon: 'none'
+                })
+            }
         })
     }
 
@@ -186,7 +198,9 @@ const Index = observer(({ store }) => {
                         </View>
                     </View>  */}
                     <View className='project_pattern'>
-                        <View className='project_pattern_title'>合作模式</View>
+                        <View className='project_pattern_title'>
+                            <View>合作模式</View>
+                        </View>
                         {
                             detail.cooperationModels?.length > 0 &&
                             <>
@@ -206,10 +220,15 @@ const Index = observer(({ store }) => {
                     </View>
 
                     <View className='project_pattern project_pattern_1'>
-                        <View className='project_pattern_title'>结算规则</View>
+                        <View className='project_pattern_title'>
+                            <View>结算规则</View>
+                            {
+                                detail.settlementStandard ? <View className='project_title_copy' onClick={() => copyFunc(detail.settlementStandard)}>一键复制</View> : ''
+                            }
+                        </View>
                         <View className='project_pattern_rule'>
                             {
-                                detail.settlementStandard ? <RichText nodes={detail.settlementStandard}></RichText> : '暂无结算规则'
+                                detail.settlementStandard ? <RichText nodes={detail.settlementStandards}></RichText> : '暂无结算规则'
                             }
                         </View>
                     </View>
@@ -237,21 +256,29 @@ const Index = observer(({ store }) => {
                     <View className='project_desc'>
                         <View className='project_desc_title'>
                             <View>招聘简章</View>
-                            <View className='project_desc_title_right' onClick={() => {
+                            {
+                                detail.introduction ? <View className='project_title_copy' onClick={() => copyFunc(detail.introduction)}>一键复制</View> : ''
+                            }
+                            {/* <View className='project_desc_title_right' onClick={() => {
                                 setIsOpen(!isOpen);
                             }}>
                                 <View>展开</View>
                                 <Image src={`${Taro.$cdnUrl}/supplier/supplier_${isOpen ? 9 : 8}.webp`}></Image>
-                            </View>
+                            </View> */}
                         </View>
                         <View className={`project_desc_content ${isOpen ? 'project_desc_content_open' : 'project_desc_content_close'}`}>
-                            <RichText nodes={detail.introduction}></RichText>
+                            <RichText nodes={detail.introductions}></RichText>
                         </View>
                     </View>
                     {
                         detail.privateIntroduction &&
                         <View className='project_pattern project_pattern_1'>
-                            <View className='project_pattern_title'>岗位详情</View>
+                            <View className='project_pattern_title'>
+                                <View>岗位详情</View>
+                                {
+                                    detail.privateIntroduction && <View className='project_title_copy' onClick={() => copyFunc(detail.privateIntroduction)}>一键复制</View>
+                                }
+                            </View>
                             <View className='project_pattern_rule'>
                                 <RichText nodes={detail.privateIntroductions}></RichText>
                             </View>
@@ -266,21 +293,26 @@ const Index = observer(({ store }) => {
                     <View className='project_desc'>
                         <View className='project_desc_title'>
                             <View>招聘简章</View>
-                            <View className='project_desc_title_right' onClick={() => {
+                            {
+                                detail.introduction ? <View className='project_title_copy' onClick={() => copyFunc(detail.introduction)}>一键复制</View> : ''
+                            }
+                            {/* <View className='project_desc_title_right' onClick={() => {
                                 setIsOpen(!isOpen);
                             }}>
                                 <View>展开</View>
                                 <Image src={`${Taro.$cdnUrl}/supplier/supplier_${isOpen ? 9 : 8}.webp`}></Image>
-                            </View>
+                            </View> */}
                         </View>
                         <View className={`project_desc_content ${isOpen ? 'project_desc_content_open' : 'project_desc_content_close'}`}>
-                            <RichText nodes={detail.introduction}></RichText>
+                            <RichText nodes={detail.introductions}></RichText>
                         </View>
                     </View>
 
 
                     <View className='project_pattern'>
-                        <View className='project_pattern_title'>合作模式</View>
+                        <View className='project_pattern_title'>
+                            <View>合作模式</View>
+                        </View>
                         {
                             detail.cooperationModels?.length > 0 &&
                             <>
@@ -295,15 +327,20 @@ const Index = observer(({ store }) => {
                                     })
                                 }
                             </> ||
-                            <View className='project_pattern_item'>暂无合作模式</View>
+                            <View className='project_pattern_rule'>暂无合作模式</View>
                         }
                     </View>
 
                     <View className='project_pattern project_pattern_1'>
-                        <View className='project_pattern_title'>结算规则</View>
+                        <View className='project_pattern_title'>
+                            <View>结算规则</View>
+                            {
+                                detail.settlementStandard ? <View className='project_title_copy' onClick={() => copyFunc(detail.settlementStandard)}>一键复制</View> : ''
+                            }
+                        </View>
                         <View className='project_pattern_rule'>
                             {
-                                detail.settlementStandard ? <RichText nodes={detail.settlementStandard}></RichText> : '暂无结算规则'
+                                detail.settlementStandard ? <RichText nodes={detail.settlementStandards}></RichText> : '暂无结算规则'
                             }
                         </View>
                     </View>
@@ -311,7 +348,12 @@ const Index = observer(({ store }) => {
                     {
                         detail.privateIntroduction &&
                         <View className='project_pattern project_pattern_1'>
-                            <View className='project_pattern_title'>岗位详情</View>
+                            <View className='project_pattern_title'>
+                                <View>岗位详情</View>
+                                {
+                                    detail.privateIntroduction && <View className='project_title_copy' onClick={() => copyFunc(detail.privateIntroduction)}>一键复制</View>
+                                }
+                            </View>
                             <View className='project_pattern_rule'>
                                 <RichText nodes={detail.privateIntroductions}></RichText>
                             </View>

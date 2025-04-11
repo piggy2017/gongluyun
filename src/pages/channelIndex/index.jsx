@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-24 14:30:15
+ * @LastEditTime: 2025-04-11 13:56:40
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -18,7 +18,7 @@ import { mySupplierList } from '@/util/api'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
-        userStore: { isLogin, role, userInfo, companyInfo, companyVerified, refreshUserInfo },
+        userStore: { isLogin, refreshUserInfo, userInfo, companyInfo, getRoleAndPermissionFunc, setMyPermissions },
         businessStore: { setSourceList }
     } = store
 
@@ -31,17 +31,25 @@ const Index = observer(({ store }) => {
     const [list, setList] = useState([]);
 
     useEffect(() => {
+        if (isLogin) {
+            getRoleAndPermissionFunc();
+            refreshUserInfo();
+            setMyPermissions();
+        }
+    }, [isLogin])
+
+    useEffect(() => {
         console.log('供应商管理页面,companyInfo', userInfo, companyInfo);
         getList(1)
-      }, [])
-    
-      const getList = async (_pageNo) => {
+    }, [])
+
+    const getList = async (_pageNo) => {
         let params = {
-          pageNo: _pageNo,
-          pageSize,
-          // userSerialCode: userInfo.userSerialCode,
-          companySerialCode: companyInfo.companySerialCode,
-          supplierSerialCode: ''
+            pageNo: _pageNo,
+            pageSize,
+            // userSerialCode: userInfo.userSerialCode,
+            companySerialCode: companyInfo.companySerialCode,
+            supplierSerialCode: ''
         }
         setRequestState(1);
         Taro.showLoading({ title: '加载中', mask: true });
@@ -50,18 +58,18 @@ const Index = observer(({ store }) => {
         console.log("code, data", code, data);
         setIsRefresh(false);
         if (code === 200 && data?.responses?.length > 0) {
-          setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
-          setgoonLoad(true);
-          setPageNo(data.pageNo);
-          setRequestState(2);
+            setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
+            setgoonLoad(true);
+            setPageNo(data.pageNo);
+            setRequestState(2);
         } else {
-          setgoonLoad(false);
-          setRequestState(3);
-          if (_pageNo === 1) {
-            setList([]);
-          }
+            setgoonLoad(false);
+            setRequestState(3);
+            if (_pageNo === 1) {
+                setList([]);
+            }
         }
-      }
+    }
 
     const handleScrollToLower = debounce(() => {    // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');

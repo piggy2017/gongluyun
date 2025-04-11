@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 17:03:14
+ * @LastEditTime: 2025-04-11 13:44:05
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -284,7 +284,7 @@ const Index = observer(({ store }) => {
         }
 
         {
-          userRoles.length >= 2 && isLogin && role != 'SEEK' && role != 'SUPPLIER' &&
+          userRoles.length >= 2 && isLogin === 1 && role != 'SEEK' && role != 'SUPPLIER' &&
           <View className='section_item' onClick={() => setShowRoleModel(true)}>
             <View className='section_item_left'>
               <Image src={`${Taro.$cdnUrl}/supplier/supplier_79.webp`}></Image>

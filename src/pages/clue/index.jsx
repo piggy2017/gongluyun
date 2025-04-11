@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-31 14:00:39
+ * @LastEditTime: 2025-04-11 11:05:44
  * @Description: 
  */
 
@@ -387,6 +387,7 @@ const Index = observer(({ store }) => {
             return
           }
         }}>
+          
           <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
           <Input className='search_input'
             disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}

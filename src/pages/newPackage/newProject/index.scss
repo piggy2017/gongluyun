@@ -70,6 +70,7 @@
             height: 140rpx;
             padding: 0 20rpx 0 44rpx;
             @include flex-center(space-between);
+            position: relative;
             // border-bottom: 1rpx solid #0000000a;
 
             .project_item_label {
@@ -115,6 +116,10 @@
                     color: #222222;
                 }
 
+                .close_img {
+                    margin-left: 16rpx;
+                }
+
                 image {
                     width: 40rpx;
                     height: 40rpx;
@@ -147,6 +152,37 @@
                 .traffic_item_active {
                     color: #1678ff;
                     border: 2rpx solid #1678ff;
+                }
+            }
+
+            .searchlist_wrapper {
+                width: 520rpx;
+                flex-shrink: 0;
+                border-radius: 12rpx;
+                background: #FFF;
+                box-shadow: 0 0 48rpx 0 #00000029;
+                padding: 20rpx;
+                max-height: 434rpx;
+                overflow-y: scroll;
+                position: absolute;
+                right: 0;
+                z-index: 999;
+                top: 140rpx;
+                .searchlist_item{
+                    height: 66rpx;
+                    padding: 0 20rpx;
+                    @include ellipsis;
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 66rpx;
+                    margin-bottom: 14rpx;
+                    
+                }
+                .searchlist_item_active{
+                    background: #EBF4FF;
                 }
             }
         }
@@ -587,7 +623,7 @@
         }
 
         .project_group_imgs_wrap {
-            
+
             padding: 23rpx 28rpx 0 34rpx;
             display: flex;
             flex-flow: row wrap;

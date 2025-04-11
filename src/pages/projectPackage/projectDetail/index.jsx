@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-09 16:22:20
+ * @LastEditTime: 2025-04-11 10:06:49
  * @Description: 
  */
 
@@ -666,6 +666,7 @@ const Index = observer(({ store }) => {
           <RichText nodes={detail.introductions}></RichText>
         </View>
       </View>
+
 
       {
         detail.privateIntroduction &&
