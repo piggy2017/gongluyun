@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 18:49:07
+ * @LastEditTime: 2025-04-11 19:19:54
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -49,7 +49,8 @@ const Index = observer(({ store }) => {
             pageSize,
             // userSerialCode: userInfo.userSerialCode,
             companySerialCode: companyInfo.companySerialCode,
-            supplierSerialCode: ''
+            supplierSerialCode: '',
+            searchInfo: searchValue
         }
         setRequestState(1);
         Taro.showLoading({ title: '加载中', mask: true });
