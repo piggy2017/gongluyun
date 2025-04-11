@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-09 14:18:47
+ * @LastEditTime: 2025-04-11 19:40:40
  * @Description: 
  */
 
@@ -15,7 +15,9 @@ export const API_BASE_URL = base + "/mini"
 const CDN_BASE_URL = "https://apu-mini.oss-accelerate.aliyuncs.com"
 const webSocketUrl = env === 'prod' ? "wss://im.apujiyu.com/websocket" : "ws://test.im.apujiyu.com/websocket"
 
-
+export const getDocoument = params => { //数据字典
+    return http(API_BASE_URL + '/dictionary/', params, "POST", { "Content-Type": "application/json" });
+};
 // 登录模块
 export const loginPhone = params => { // 手机号登录
     return http(API_BASE_URL + '/login/wechat/applet', params, "POST", {
@@ -565,4 +567,7 @@ export const sendHx = params => { //发送hx的时候再次调用记录
 };
 export const getUserInfo = params => { //获取用户的详情信息
     return http(API_BASE_URL + '/user/getUserInfo', params, "POST", { "Content-Type": "application/json" });
+};
+export const getRecruitCompany = params => { //【411】根据公司名称获取相识公司
+    return http(API_BASE_URL + '/recruit/getRecruitCompany', params, "POST", { "Content-Type": "application/json" });
 };

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-23 11:41:37
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-19 11:16:45
+ * @LastEditTime: 2025-04-11 18:58:57
  * @Description: 更改用户状态  未到面 已到面 面试失败 面试通过 已离职 已入职
  */
 
@@ -34,7 +34,8 @@ const UpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomHeig
         }
     }, [currentStatus])
 
-    const clickStatus = (status) => {
+    const clickStatus = (e, status) => {
+        e.stopPropagation();
         if (status === 'INTERVIEW_FAILED' || status === 'RESIGN') {   // 面试失败、已离职
             setModelTitle(status === 'INTERVIEW_FAILED' ? '面试失败' : '离职');
             setShowModel(true);
@@ -68,7 +69,7 @@ const UpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomHeig
                 <View className='footer_options' >
                     {
                         type === 2 &&
-                        <View className='footer_options_item' onClick={() => clickStatus('SCHEDULED_INTERVIEW')}>
+                        <View className='footer_options_item' onClick={(e) => clickStatus(e, 'SCHEDULED_INTERVIEW')}>
                             <View className='footer_options_item_icon'>
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon50.webp`}></Image>
                                 <View style={{ color: '#08B5FF' }}>已约面</View>
@@ -78,7 +79,7 @@ const UpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomHeig
                                 <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
                             }
                         </View> ||
-                        <View className='footer_options_item' onClick={() => clickStatus('NOT_INTERVIEW')}>
+                        <View className='footer_options_item' onClick={(e) => clickStatus(e, 'NOT_INTERVIEW')}>
                             <View className='footer_options_item_icon'>
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon42.webp`}></Image>
                                 <View>未到面</View>
@@ -89,7 +90,7 @@ const UpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomHeig
                             }
                         </View>
                     }
-                    <View className='footer_options_item' onClick={() => clickStatus('ARRIVE_INTERVIEW')}>
+                    <View className='footer_options_item' onClick={(e) => clickStatus(e, 'ARRIVE_INTERVIEW')}>
                         <View className='footer_options_item_icon'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon43.webp`}></Image>
                             <View style={{ color: '#1678FF' }}>已到面</View>
@@ -100,7 +101,7 @@ const UpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomHeig
                         }
                     </View>
 
-                    <View className='footer_options_item' onClick={() => clickStatus('INTERVIEW_FAILED')}>
+                    <View className='footer_options_item' onClick={(e) => clickStatus(e, 'INTERVIEW_FAILED')}>
                         <View className='footer_options_item_icon'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon44.webp`}></Image>
                             <View style={{ color: '#F00000' }}>面试失败</View>
@@ -110,7 +111,7 @@ const UpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomHeig
                             <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
                         }
                     </View>
-                    <View className='footer_options_item' onClick={() => clickStatus('INTERVIEW_PASSED')}>
+                    <View className='footer_options_item' onClick={(e) => clickStatus(e, 'INTERVIEW_PASSED')}>
                         <View className='footer_options_item_icon'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon37.webp`}></Image>
                             <View style={{ color: '#FF6B17' }}>面试通过</View>
@@ -121,7 +122,7 @@ const UpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomHeig
                         }
                     </View>
 
-                    <View className='footer_options_item' onClick={() => clickStatus('RESIGN')}>
+                    <View className='footer_options_item' onClick={(e) => clickStatus(e, 'RESIGN')}>
                         <View className='footer_options_item_icon'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon39.webp`}></Image>
                             <View>已离职</View>
@@ -131,7 +132,7 @@ const UpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomHeig
                             <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
                         }
                     </View>
-                    <View className='footer_options_item' onClick={() => clickStatus('EMPLOYED')}>
+                    <View className='footer_options_item' onClick={(e) => clickStatus(e, 'EMPLOYED')}>
                         <View className='footer_options_item_icon'>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon36.webp`}></Image>
                             <View style={{ color: '#04B400' }}>已入职</View>

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-19 18:01:00
+ * @LastEditTime: 2025-04-11 10:44:27
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
-        businessStore: { workerSetCustomerInfo, addWorkerJobInfo, setAddWorkerJobInfo, editClientInfos, setEditClientInfos, sourceGroup },
+        businessStore: { workerSetCustomerInfo, setAddWorkerJobInfo, editClientInfos, setEditClientInfos, sourceGroup },
         userStore: { role, userInfo: { userSerialCode } },
     } = store
     const [formData, setFormData] = useState({});
@@ -86,10 +86,7 @@ const Index = observer(({ store }) => {
         if (workerSetCustomerInfo.name) {
             setFormData({ ...formData, service: workerSetCustomerInfo.name });
         }
-        if (addWorkerJobInfo.title && !addWorkerJobInfo.init) {
-            setFormData({ ...formData, recruitSerialCode: addWorkerJobInfo.recruitSerialCode, recruitTitle: addWorkerJobInfo.title });
-        }
-    }, [workerSetCustomerInfo, addWorkerJobInfo])
+    }, [workerSetCustomerInfo])
 
     useEffect(() => {
         return () => {

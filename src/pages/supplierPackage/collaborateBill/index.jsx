@@ -45,7 +45,7 @@ const Index = observer(({ store }) => {
             pageNo: _pageNo,
             pageSize,
             supplierSerialCode: supplierCompanyInfo.serialCode,
-            companySerialCode: supplierCompanyInfo.name
+            // companySerialCode: supplierCompanyInfo.name
         }
         const { code, data } = await getCoopCompanyBySupplier(params);
         console.log("getList", code, data);

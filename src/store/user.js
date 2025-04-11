@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-09 16:47:08
+ * @LastEditTime: 2025-04-10 10:07:56
  * @Description: 用于存放用户的相关信息
  */
 
@@ -152,6 +152,7 @@ const userStore = observable({
 
     supplierCompanyInfo: { // 供应商的公司信息
         companyVerified: false,
+        channelCode:'',
         logo: null,
         name: null,
         serialCode: null

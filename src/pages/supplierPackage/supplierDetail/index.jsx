@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-18 14:59:03
+ * @LastEditTime: 2025-04-11 16:58:40
  * @Description: 
  */
 
@@ -21,8 +21,8 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-        businessStore: { setRosterFilterSupplier },
-        userStore: { companyInfo, userInfo }
+        businessStore: { setRosterFilterSupplier, setChannelFilterSupplier },
+        userStore: { role, companyInfo, userInfo, setMyPermissions }
     } = store
 
     const [isRefresh, setIsRefresh] = useState(false);
@@ -35,7 +35,9 @@ const Index = observer(({ store }) => {
 
     const [list, setList] = useState([]);
 
+
     useEffect(() => {
+        setMyPermissions();
         getDetail();
         getList(1);
     }, [])
@@ -173,15 +175,29 @@ const Index = observer(({ store }) => {
                                 <View className='supplier_list_name'>
                                     <View className='supplier_list_name_l'>{item.title}</View>
                                     <View className='supplier_list_name_r' onClick={() => {
-                                        setRosterFilterSupplier({
-                                            name: detail.name,
-                                            userSerialCode: detail.supplierUserSerialCode,
-                                            supplierSerialCode: route.params.supplierSerialCode,
-                                            selected: true
-                                        })
-                                        Taro.navigateTo({
-                                            url: `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`
-                                        })
+                                        console.log("role", role);
+                                        if (role === 'CHANNEL') {
+                                            console.log("detail.name", detail.name, route.params.supplierSerialCode)
+                                            setChannelFilterSupplier({
+                                                name: detail.name,
+                                                // userSerialCode: detail.supplierUserSerialCode,
+                                                supplierSerialCode: route.params.supplierSerialCode,
+                                                selected: true
+                                            })
+                                            Taro.navigateTo({
+                                                url: `/pages/channelPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}&contractsSerialCode=${item.contractsSerialCode}&cooperationModels=${JSON.stringify(item.cooperationModels ? item.cooperationModels : [])}`
+                                            })
+                                        } else {
+                                            setRosterFilterSupplier({
+                                                name: detail.name,
+                                                userSerialCode: detail.supplierUserSerialCode,
+                                                supplierSerialCode: route.params.supplierSerialCode,
+                                                selected: true
+                                            })
+                                            Taro.navigateTo({
+                                                url: `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`
+                                            })
+                                        }
                                     }}>
                                         <Image src={`${Taro.$cdnUrl}/supplier/supplier_2.webp`}></Image>
                                         <View>名单</View>

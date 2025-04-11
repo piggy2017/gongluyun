@@ -2,14 +2,14 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 14:02:01
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-25 09:58:35
+ * @LastEditTime: 2025-04-10 20:05:26
  * @Description: 
  */
 
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
-import { View, Image, ScrollView, Text, Button, Textarea, Block } from '@tarojs/components'
+import { View, Image, ScrollView, Text, Button, Input, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce } from '@/util/utils'
 
@@ -17,7 +17,7 @@ import TabBar from '@/components/tabBar';
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { getCoopCompanyBySupplier, getContractsByCompany, joinContracts, switchRoles } from '@/util/api';
+import { getCoopCompanyBySupplier, getContractsByCompany, joinContracts, switchRoles, getDocoument } from '@/util/api';
 
 
 const Index = observer(({ store }) => {
@@ -42,6 +42,9 @@ const Index = observer(({ store }) => {
     const [showJoinPicker, setShowJoinPicker] = useState(false);
     const [showPatternModel, setShowPatternModel] = useState(false);
     const [currentItem, setCurrentItem] = useState({});
+    const [searchValue, setSearchValue] = useState('');
+    const [tipsContent, setTipsContent] = useState([]);
+    const [showTips, setShowTips] = useState(false);
 
     useDidShow(() => {
         if (isLogin) {
@@ -56,6 +59,18 @@ const Index = observer(({ store }) => {
             setRole('SUPPLIER');
             Taro.setStorageSync('role', 'SUPPLIER');
         }
+        getDocoument({ dicTypes: ['announcement'] }).then(res => {
+            console.log("首页 getDocoument", res);
+            if (res.code === 200) {
+                let _text = [];
+                _text.push(res.data.supplier.split('{')[0])
+                _text.push(res.data.supplier.split('{')[1].split('}')[0])
+                _text.push(res.data.supplier.split('}')[1]);
+                console.log("_text", _text);
+                setTipsContent(_text);
+                setShowTips(true);
+            }
+        })
     }, [])
 
     useEffect(() => {
@@ -90,7 +105,7 @@ const Index = observer(({ store }) => {
                 pageNo: 1,
                 pageSize: 10,
                 supplierSerialCode: supplierCompanyInfo.serialCode,
-                companySerialCode: supplierCompanyInfo.name
+                // companySerialCode: supplierCompanyInfo.name
             }
             getCoopCompanyBySupplier(params).then(res => {
                 console.log("合作公司列表:", res);
@@ -112,7 +127,8 @@ const Index = observer(({ store }) => {
             pageNo: _pageNo,
             pageSize,
             inCooperation: type === 0 ? null : type === 1 ? true : false,
-            companySerialCode: billComponySerialCode
+            companySerialCode: billComponySerialCode,
+            searchInfo: searchValue
         }
         setRequestState(1);
         Taro.showLoading({ title: '加载中', mask: true });
@@ -130,6 +146,9 @@ const Index = observer(({ store }) => {
             } else {
                 setgoonLoad(false);
                 setRequestState(3);
+                if (_pageNo === 1) {
+                    setList([]);
+                }
             }
         } else {
             setgoonLoad(false);
@@ -154,7 +173,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 274rpx)`;
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 282rpx - 88rpx - ${showTips ? 116 : 0}rpx)`;
     }
 
     const goDetail = (item, index) => {
@@ -179,27 +198,23 @@ const Index = observer(({ store }) => {
         if (!isLogin) {
             return setIsOpened(true)
         }
-        if (!supplierCompanyInfo.name) {   // 调用输入公司名字的弹窗
+        if (!supplierCompanyInfo.serialCode) {   // 调用输入公司名字的弹窗
             return setShowJoinPicker(true);
         }
-        // else {
-        //     setShowPatternModel(true);
-        // }
         getChoosePattern(item);
     }
 
-    // const getComponyName = () => {
-    //     setShowPatternModel(true);
-    // }
     const getChoosePattern = async (obj) => {
         console.log("---选择合作模式:", obj);
         let params = {
             companySerialCode: billComponySerialCode,  // route.params.companySerialCode
             contractsSerialCode: obj.serialCode,
             supplierName: supplierCompanyInfo.name,
-            supplierSerialCode: supplierCompanyInfo.serialCode
+            supplierSerialCode: supplierCompanyInfo.serialCode,
+            channelCode: supplierCompanyInfo.channelCode
             // coopModel: value,
         }
+        console.log('加入项目参数:', params);
         Taro.showLoading({
             title: '提交中...',
             mask: true
@@ -220,18 +235,63 @@ const Index = observer(({ store }) => {
         <View className='container'>
             <Navbar back={false} fixed placeholder bgColor='transparent' title='我的合作端口' titleColor='#FFFFFF'></Navbar>
 
+            {
+                showTips &&
+                <View className='my_tips'>
+                    <View className='my_tips_left'>
+                        <Image src={`${Taro.$cdnUrl}/supplier/supplier_85.webp`}></Image>
+                        <View className='my_tips_text'>
+                            {
+                                tipsContent.length > 0 &&
+                                tipsContent.map((item, index) => {
+                                    return (
+                                        <Text onClick={() => {
+                                            if (index === 1) {
+                                                Taro.makePhoneCall({
+                                                    phoneNumber: item,
+                                                })
+                                            }
+                                        }} className={`${index === 1 ? 'my_tips_phone' : ''}`} key={index}>{item}</Text>
+                                    )
+                                })
+                            }
+                        </View>
+                    </View>
+                    <Image onClick={() => { setShowTips(false) }} className='my_tips_right' src={`${Taro.$cdnUrl}/supplier/supplier_86.webp`}></Image>
+                </View>
+            }
+
             <View className='my_port'>
                 <Image className='my_port_left_logo' src={componyInfo?.logo}></Image>
                 <View className='my_port_right'>
                     <View className='my_port_compone_name'>{componyInfo.name}</View>
                     <View className='my_port_connect'>
-                        <View>合作对接：{componyInfo.contactName} <Text>{componyInfo.contactMobile}</Text> </View>
+                        <View>合作对接：{componyInfo.contactName} <Text onClick={() => {
+                            Taro.makePhoneCall({
+                                phoneNumber: componyInfo.contactMobile
+                            })
+                        }}>{componyInfo.contactMobile}</Text> </View>
                     </View>
                 </View>
                 <Image className='my_port_right_logo' src={`${Taro.$cdnUrl}/supplier/supplier_14.webp`} onClick={() => {
                     Taro.navigateTo({ url: `/pages/supplierPackage/collaborateBill/index` })
                 }} ></Image>
             </View>
+
+            <View className='search_content'>
+                <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+                <Input className='search_input'
+                    placeholder='搜索项目'
+                    confirmType='search'
+                    placeholderStyle='color: #777777;'
+                    onInput={(e) => { setSearchValue(e.detail.value) }}
+                    onConfirm={(e) => {
+                        setgoonLoad(true);
+                        getList(1);
+                    }}
+                    value={searchValue}></Input>
+            </View>
+
             <View className='my_port_label'>
                 <View onClick={() => setType(0)} className={`${type === 0 ? 'my_port_active' : ''}`}>全部项目</View>
                 <View onClick={() => setType(1)} className={`${type === 1 ? 'my_port_active' : ''}`}>合作中</View>
@@ -261,6 +321,7 @@ const Index = observer(({ store }) => {
 
                                 <View className='supplier_list_detail'>
                                     <View>
+                                        {item.areaName ? item.areaName + '·' : ''}
                                         {item.jobTypeName}·
                                         {item.salaryType === 'FIXED' ? '全职' : item.salaryType === 'DAY' ? '兼职' : '全职/兼职'}·
                                         {item.createDate.split(' ')[0]}发布
@@ -271,6 +332,10 @@ const Index = observer(({ store }) => {
                                         <View className='join_project_btn' onClick={(e) => joinProject(e, item)}>加入项目</View>
                                     }
                                 </View>
+                                {
+                                    item.company &&
+                                    <View className='supplier_list_detail'>{item.company}</View>
+                                }
                                 {
                                     item.joiningSuccessful &&
                                     <View className='supplier_list_nums'>
@@ -326,6 +391,10 @@ const Index = observer(({ store }) => {
                             </View>
                         )
                     })
+                }
+                {
+                    list.length === 0 && requestState === 3 &&
+                    <Taro.NoData></Taro.NoData>
                 }
             </ScrollView>
 

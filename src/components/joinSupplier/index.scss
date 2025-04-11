@@ -2,8 +2,8 @@
 .join_supplier_layout {
     .at-float-layout__container {
         // height: 630rpx !important;
-        max-height: 930rpx !important;
-        min-height: 930rpx !important;
+        max-height: 730rpx !important;
+        min-height: 730rpx !important;
         border-radius: 20rpx 20rpx 0 0 !important;
         overflow: hidden;
     }
@@ -26,7 +26,7 @@
             .filter_title {
                 @include flex-center(space-between);
                 align-items: flex-start !important;
-                padding: 36rpx 22rpx 40rpx 30rpx;
+                padding: 36rpx 22rpx 20rpx 30rpx;
                 color: #222222;
                 font-family: "PingFang SC";
                 font-size: 34rpx;
@@ -39,7 +39,7 @@
                 width: 690rpx;
                 margin: 0 auto;
                 border-bottom: 1rpx solid #0000000a;
-                padding: 80rpx 0 26rpx 0 ;
+                padding: 50rpx 0 26rpx 0 ;
                 @include flex-center(flex-start);
                 color: #222222;
                 font-family: "PingFang SC";

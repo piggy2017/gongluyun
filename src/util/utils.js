@@ -91,7 +91,6 @@ export const throttle = function (fn, delay) {
         if (!canRun) {
             return;
         }
-
         const context = this;
         const args = arguments;
 
@@ -102,6 +101,19 @@ export const throttle = function (fn, delay) {
         }, delay);
     };
 };
+
+export const throttleCustom = function (fn, delay) {
+    let isThrottled = false;
+    return function (...args) {
+      if (!isThrottled) {
+        fn(...args);
+        isThrottled = true;
+        setTimeout(() => {
+          isThrottled = false;
+        }, delay);
+      }
+    }
+  }
 
 export const getTimeDetail = function (time) {
     let date = new Date(time);

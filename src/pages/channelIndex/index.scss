@@ -2,7 +2,7 @@
 
 .container {
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
     background: linear-gradient(180deg, #E8F1FF 0%, #edf3fc00 100%);
 
     .my_header {
@@ -130,7 +130,7 @@
 
     .scrollWrapper {
         width: 100%;
-        border: 1rpx solid red;
+        // border: 1rpx solid red;
 
         .supplier_list {
             width: 710rpx;
@@ -165,7 +165,7 @@
             }
 
             .supplier_list_nums {
-                width: 602rpx;
+                width: 662rpx;
                 height: 124rpx;
                 flex-shrink: 0;
                 border-radius: 10rpx;

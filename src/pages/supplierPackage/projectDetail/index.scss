@@ -263,6 +263,15 @@
             font-weight: 500;
             line-height: normal;
             padding: 0 24rpx;
+            .project_title_copy{
+                color: #1678ff;
+                text-align: right;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+            }
 
             .project_desc_title_right {
                 @include flex-center(flex-end);
@@ -318,7 +327,17 @@
             font-style: normal;
             font-weight: 500;
             line-height: normal;
-            padding: 32rpx 0 0 30rpx;
+            padding: 32rpx 30rpx 0 30rpx;
+            @include flex-center(space-between);
+            .project_title_copy{
+                color: #1678ff;
+                text-align: right;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+            }
         }
 
         .project_pattern_item {
@@ -331,7 +350,7 @@
                 font-style: normal;
                 font-weight: 400;
                 line-height: 40rpx;
-                width: 94rpx;
+                width: 100rpx;
                 height: 40rpx;
                 padding-left: 10rpx;
                 flex-shrink: 0;
@@ -351,6 +370,9 @@
                 margin-top: 12rpx;
                 padding: 0 40rpx 0 30rpx;
             }
+        }
+        .project_pattern_item2{
+            
         }
 
         .project_pattern_rule {

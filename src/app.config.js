@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-03 22:09:28
+ * @LastEditTime: 2025-04-11 15:27:05
  * @Description: 
  */
 export default defineAppConfig({
@@ -186,6 +186,14 @@ export default defineAppConfig({
                 "collaborateBill/index",          // 合作的发单方
                 "sharePage/index",                // 分享落地页
                 "roster/index",                   // 名单
+            ]
+        },
+        {
+            "root": "pages/channelPackage/",      // 渠道相关页面
+            "pages":[
+                "roster/index",                   // 渠道看到的项目名单
+                "clientDetail/index",             // 渠道详情
+                "chooseSupplier/index",           // 渠道查看项目名单-选择供应商
             ]
         }
     ]

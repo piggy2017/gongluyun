@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-03 10:17:42
+ * @LastEditTime: 2025-04-11 11:39:11
  * @Description: 
  */
 
@@ -10,7 +10,7 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro from '@tarojs/taro';
 import { View, Image, Text, Input, Textarea, Block, Picker } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce, throttle } from '@/util/utils'
+import { selectorQueryDomInfo, throttleCustom, throttle } from '@/util/utils'
 import { reverseGeocoder } from '@/util/getLocation';
 import { AtIcon, AtFloatLayout, AtActionSheet, AtActionSheetItem } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
@@ -23,7 +23,7 @@ import crypto from 'crypto-js';
 import Navbar from '@/components/navbar';
 import ChooseJobType from '@/components/chooseJobType';
 import DatePicker from '@/components/datePicker'
-import { contractsCreate, updateContracts, fetchOssConfig } from '@/util/api'
+import { contractsCreate, updateContracts, fetchOssConfig, getRecruitCompany } from '@/util/api'
 import './index.scss'
 
 
@@ -60,6 +60,7 @@ const Index = observer(({ store }) => {
 
     const [openAction, setOpenAction] = useState(false);           // 是否打开选择照片弹窗
     const [images, setImages] = useState([]);                      // 选择的照片
+    const [searchlist, setSearchlist] = useState([]);              // 搜索公司名称
 
     useEffect(() => {
         console.log("jobFilterAddress", formData, jobFilterAddress);
@@ -79,7 +80,7 @@ const Index = observer(({ store }) => {
             let _editProjectInfo = JSON.parse(JSON.stringify(editProjectInfo));
             setIsUpdate(true);
 
-            if(_editProjectInfo.jobImages){
+            if (_editProjectInfo.jobImages) {
                 setImages(_editProjectInfo.jobImages);
             }
 
@@ -132,12 +133,6 @@ const Index = observer(({ store }) => {
         }
     }, [editProjectInfo]);
 
-    // useEffect(() => {
-    //     if (onSiteInfo.phone) {
-    //         setFormData({ ...formData, interviewContactInfo: onSiteInfo.userSerialCode, interviewContactName: onSiteInfo.name, interviewContactPhone: onSiteInfo.phone });
-    //     }
-    // }, [onSiteInfo]);
-
     const getMyAddress = async () => {
         try {
             const res = await Taro.chooseLocation();
@@ -167,6 +162,17 @@ const Index = observer(({ store }) => {
             }
         }
     }
+
+    const getSearchList = throttleCustom(async (value) => {
+        const { code, data, msg } = await getRecruitCompany({ company: value });
+        console.log("getRecruitCompany", code, data, msg);
+        if (code === 200 && data?.length > 0) {
+            setSearchlist(data);
+        } else {
+            setSearchlist([]);
+            Taro.showToast({ title: '未找到相关企业', icon: 'none' });
+        }
+    }, 300)
 
     const handlePhotoClick = async (type) => {
         let sourceType = {
@@ -410,9 +416,37 @@ const Index = observer(({ store }) => {
                             placeholder='请输入企业名称(必填)'
                             placeholderStyle='color: #999999;'
                             value={formData.company}
+                            confirmType='search'
                             onInput={(e) => setFormData({ ...formData, company: e.detail.value })}
+                            onConfirm={(e) => {
+                                if (e.detail.value.length < 4) {
+                                    return Taro.showToast({ title: '请输入至少四个字符搜索', icon: 'none' })
+                                }
+                                getSearchList(e.detail.value);
+                            }}
                         ></Input>
+                        {
+                            formData.company &&
+                            <Image onClick={() => setFormData({ ...formData, company: '' })} className='close_img' src={`${Taro.$cdnUrl}/supplier/supplier_88.webp`}></Image>
+                        }
                     </View>
+                    {
+                        searchlist.length > 0 &&
+                        <View className='searchlist_wrapper'>
+                            {
+                                searchlist.map((item, index) => {
+                                    return (
+                                        <View className={`searchlist_item ${item === formData.company ? 'searchlist_item_active' : ''}`} key={index} onClick={() => {
+                                            setFormData({ ...formData, company: item });
+                                            setSearchlist([]);
+                                        }}>
+                                            {item}
+                                        </View>
+                                    )
+                                })
+                            }
+                        </View>
+                    }
                 </View>
                 <View className='project_item project_item_border'>
                     <View className='project_item_label project_item_label_required'>需求人数</View>
@@ -445,6 +479,18 @@ const Index = observer(({ store }) => {
                             value={formData.addressDetail}
                             onInput={(e) => setFormData({ ...formData, addressDetail: e.detail.value })}>
                         </Input>
+                    </View>
+                </View>
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>电话号码</View>
+                    <View className='project_item_right'>
+                        <Input
+                            className='new_input'
+                            placeholder='请输入企业电话号码'
+                            placeholderStyle='color: #999999;'
+                            value={formData.recruitPhone}
+                            onInput={(e) => setFormData({ ...formData, recruitPhone: e.detail.value })}
+                        ></Input>
                     </View>
                 </View>
             </View>
