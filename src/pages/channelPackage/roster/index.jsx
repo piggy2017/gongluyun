@@ -395,6 +395,9 @@ const Index = observer(({ store }) => {
         if (chooseList.length === 0) {
             return Taro.showToast({ title: '请先选择用户', icon: 'none' });
         }
+        if(JSON.parse(route.params.cooperationModels).length===0){
+            return Taro.showToast({ title: '当前项目暂无合作模式', icon: 'none' });
+        }
         setShowPatternModel(true);
     }
 
