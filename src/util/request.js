@@ -2,7 +2,7 @@
  * @Author: yinzhengchao yinzhengchao@apujiyu.com
  * @Date: 2024-01-24 18:11:08
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 18:42:14
+ * @LastEditTime: 2025-04-11 18:45:12
  * @FilePath: /apu_mini/src/util/request.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -54,10 +54,15 @@ export default function request(url, data, method, header) {
                             icon: 'none'
                         })
                         const pages = Taro.getCurrentPages();
-                        console.log("当前页面", pages[0].route)
-                        Taro.redirectTo({
-                            url: '/pages/launch/index',
-                        })
+                        console.log("当前页面", pages[0].route);
+                        if (pages[0].route !== "pages/supplierProject/index") {
+                            Taro.redirectTo({
+                              url: '/pages/launch/index',
+                            })
+                          }
+                        // Taro.redirectTo({
+                        //     url: '/pages/launch/index',
+                        // })
                         return
                     }
                 } else {

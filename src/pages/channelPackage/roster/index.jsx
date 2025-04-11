@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 18:04:26
+ * @LastEditTime: 2025-04-11 18:54:47
  * @Description: 
  */
 
@@ -285,9 +285,6 @@ const Index = observer(({ store }) => {
 
     const changeStatusBatch = (e, reason) => {    // 批量修改状态
         console.log("changeStatusBatch", e, reason);
-        if (JSON.parse(route.params.cooperationModels).length === 0) {
-            return Taro.showToast({ title: '当前项目暂无合作模式', icon: 'none' });
-        }
         if (chooseList.length === 0) {
             return Taro.showToast({ title: '请先选择用户', icon: 'none' });
         }

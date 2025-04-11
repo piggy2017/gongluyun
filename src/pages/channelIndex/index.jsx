@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 13:56:40
+ * @LastEditTime: 2025-04-11 18:49:07
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -85,7 +85,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 221rpx)`;
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 230rpx)`;
     }
 
     Taro.useShareAppMessage(res => {
