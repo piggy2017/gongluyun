@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 13:44:05
+ * @LastEditTime: 2025-04-14 10:08:05
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -145,15 +145,7 @@ const Index = observer(({ store }) => {
   }
 
   const aboutFunc = () => {
-    if (isLogin === 0) {
-      // Taro.navigateTo({
-      //   url: '/pages/login/index'
-      // })
-      setIsOpened(true);
-      return
-    } else {
-      Taro.navigateTo({ url: '/pages/minePackage/aboutUs/index' })
-    }
+    Taro.navigateTo({ url: '/pages/minePackage/aboutUs/index' })
   }
 
   const chooseRoleFunc = async (obj, index) => {
@@ -180,6 +172,12 @@ const Index = observer(({ store }) => {
       Taro.showToast({ title: msg, icon: 'none' })
     }
     setShowRoleModel(false);
+  }
+
+  const feedbackFunc = () => {
+    Taro.navigateTo({
+      url: "/pages/minePackage/feedback/index"
+    })
   }
 
   return (
@@ -325,7 +323,7 @@ const Index = observer(({ store }) => {
           </View>
           <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
         </View>
-        <View className='section_item' onClick={() => navigateFunc(1, '/pages/minePackage/feedback/index')}>
+        <View className='section_item' onClick={() => feedbackFunc()}>
           <View className='section_item_left'>
             <Image src={`${Taro.$cdnUrl}/mine/mine_icon5.webp`}></Image>
             <Text>意见反馈</Text>
