@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 09:47:45
+ * @LastEditTime: 2025-04-12 09:59:55
  * @Description: 
  */
 
@@ -23,6 +23,7 @@ import './index.scss'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+        userStore: { isLogin, setIsLogin, role, setRole, companyVerified },
     } = store
 
     const [openAction, setOpenAction] = useState(false);           // 是否打开选择照片弹窗
@@ -34,11 +35,16 @@ const Index = observer(({ store }) => {
         // 'https://apu-mini.oss-cn-hangzhou.aliyuncs.com/saasProject/index/index_icon4.webp',
     ]);                      // 选择的照片
 
-    const [feedbackValue, setFeedbackValue] = useState('')
+    const [feedbackValue, setFeedbackValue] = useState('');
+    const [isOpened, setIsOpened] = useState(false);
 
 
 
     const handlePhotoClick = async (type) => {
+        if(isLogin===0){
+            setIsOpened(true);
+            return;
+        }
         if (images.length >= 5) {
             return Taro.showToast({ title: '最多上传5张图片', icon: 'none' })
         }
@@ -141,6 +147,10 @@ const Index = observer(({ store }) => {
     }
 
     const handleSubmit = async () => {
+        if(isLogin===0){
+            setIsOpened(true);
+            return;
+        }
         if (!feedbackValue && images.length === 0) {
             return Taro.showToast({ title: '请填写反馈内容或上传反馈图片', icon: 'none' })
         }
@@ -157,6 +167,13 @@ const Index = observer(({ store }) => {
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
+    }
+
+    const onClose = (e) => {
+        if (e === 'success') {
+            // forceUpdate()
+        }
+        setIsOpened(false)
     }
 
     return (
@@ -219,6 +236,8 @@ const Index = observer(({ store }) => {
                     </AtActionSheetItem>
                 </AtActionSheet>
             </Block>
+
+            <Taro.GlobalLogin isOpened={isOpened} onClose={onClose} />
         </View>
     )
 })
