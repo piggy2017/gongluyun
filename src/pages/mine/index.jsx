@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-14 10:08:05
+ * @LastEditTime: 2025-04-14 15:57:02
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -20,8 +20,9 @@ import { loginOut, switchRoles } from '@/util/api'
 
 const Index = observer(({ store }) => {
   const {
+    ChatStore: { setUnReadTotal },
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-    userStore: { isLogin, setIsLogin, role, setRole, userRoles, setUserRoles, setToken, userInfo, setUserInfo, companyInfo, companyVerified, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
+    userStore: { isLogin, setIsLogin, role, setRole, userRoles, setToken, userInfo, setUserInfo, companyInfo, companyVerified, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
   } = store
 
   const [loginoutSure, setLoginoutSure] = useState(false);
@@ -135,6 +136,7 @@ const Index = observer(({ store }) => {
       setUserInfo('');
       setCompanyVerified(false);
       setLoginoutSure(false);
+      setUnReadTotal(0);
       Taro.setStorageSync('token', '');
       Taro.setStorageSync('isLogin', 0);
       Taro.setStorageSync('role', '');

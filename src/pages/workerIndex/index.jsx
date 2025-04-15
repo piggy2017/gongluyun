@@ -2,11 +2,11 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 16:04:43
+ * @LastEditTime: 2025-04-14 16:27:14
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
-import Taro, { usePullDownRefresh, useDidShow } from '@tarojs/taro';
+import Taro, { useRouter } from '@tarojs/taro';
 import { View, Text, Input, Picker, Image, Block, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { debounce } from '@/util/utils'
@@ -22,9 +22,10 @@ import './index.scss'
 import { indexFeeds, signUpAdd } from '@/util/api'
 
 const Index = observer(({ store }) => {
+    const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { isLogin, refreshUserInfo, getSubTemplates },
+        userStore: { isLogin, refreshUserInfo, getSubTemplates, setRole, setEnterParams },
         businessStore: { jobFilterAddress, setJobFilterAddress },
     } = store
 
@@ -72,6 +73,40 @@ const Index = observer(({ store }) => {
             })
         }
     }, [])
+
+    useEffect(() => {
+        const { inviteRole, agentSerialCode, source } = route.params;
+        console.log("进入到岗位详情页,查看携带的参数", route.params);
+        if (inviteRole === 'SEEK') {
+            setRole('SEEK');
+            Taro.setStorageSync('role', 'SEEK');
+        }
+        // 缓存进入页面的参数------》管道收益
+        if (source && agentSerialCode) {
+            setEnterParams({ source, agentSerialCode })
+        }
+    }, [])
+
+    Taro.useShareAppMessage(res => {
+        console.log("求职者分享 userInfo.userSerialCode", userInfo, userInfo?.userSerialCode);
+        if (res.from === 'button') {
+            // 来自页面内转发按钮
+            console.log(res.target)
+        }
+        let url = `/pages/workerIndex/index?recruitSerialCode=''&inviteRole=SEEK&source=WECHAT_MINI_SHARE&agentSerialCode=${userInfo?.userSerialCode ? userInfo.userSerialCode : ''}`;
+        return {
+            title: '这儿有很多优质岗位,快来看看吧',
+            imageUrl: `${Taro.$baseCdnUrl}/entrust/share_back.jpeg`, // 图片 URL
+            path: url
+        }
+    })
+
+    Taro.useShareTimeline(() => {   // 分享到朋友圈
+        return {
+            title: '这儿有很多优质岗位,快来看看吧',
+            query: `recruitSerialCode=''&inviteRole=SEEK&source=WECHAT_MINI_SHARE&agentSerialCode=${userInfo?.userSerialCode ? userInfo.userSerialCode : ''}`
+        }
+    })
 
     const getList = async (_pageNo) => {
         let params = {

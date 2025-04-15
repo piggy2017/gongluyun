@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-19 13:45:17
+ * @LastEditTime: 2025-04-14 16:18:30
  * @Description: 
  */
 
@@ -252,7 +252,7 @@ const Index = observer(({ store }) => {
     const { code, data, msg } = await contractsSign({ uuid });
     Taro.hideLoading();
     if (code === 200) {
-      Taro.showToast({ title: '签约成功', icon: 'none', duration: 2000 });
+      Taro.showToast({ title: '签到成功', icon: 'none', duration: 2000 });
       setTimeout(() => {
         getList(1);
       }, 1500);
@@ -495,6 +495,9 @@ const Index = observer(({ store }) => {
                       <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.idCardNo) ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
                     </View>
                     <View className='roster_item_job'>{item.recruitTitle}</View>
+                    {
+                      item.sourceDesc &&  <View className='roster_item_job'>来源：{item.sourceDesc}</View>
+                    }
                     <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
                   </View>
                   <View className='roster_item_wrap_right'>

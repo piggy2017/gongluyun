@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 18:54:47
+ * @LastEditTime: 2025-04-14 16:15:22
  * @Description: 
  */
 
@@ -17,7 +17,6 @@ import './index.scss'
 
 import UpdateStatus from '@/components/updateStatus';
 import CustomDate from '@/components/customDate';
-import SourcePicker from '@/components/sourcePcker';
 
 import { contractsgetRoster, updateInterviewer, batchUpdateInterviewer, downloadRoster } from '@/util/api';
 
@@ -566,6 +565,9 @@ const Index = observer(({ store }) => {
                                         </View>
                                     }
                                 </View>
+                                {
+                                    item.sourceDesc &&  <View className='roster_item_time'>来源：{item.sourceDesc}</View>
+                                }
                                 <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
                                 {
                                     item.cooperationModel &&
@@ -661,11 +663,6 @@ const Index = observer(({ store }) => {
             <Block>
                 <CustomDate showPicker={showFilterDate} onClose={() => { setShowFilterDate(false) }} onChange={customDateSelect}></CustomDate>
             </Block>
-
-            {/* 筛选线索来源 */}
-            {/* <Block>
-                <SourcePicker showPicker={showSourcePicker} onClose={() => { setShowSourcePicker(false) }} onChange={sourcePickerSelect}></SourcePicker>
-            </Block> */}
 
             <Block>
                 {

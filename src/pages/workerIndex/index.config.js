@@ -10,4 +10,6 @@ export default definePageConfig({
     navigationBarTitleText: '',
     enablePullDownRefresh: false,
     disableScroll: true,
+    enableShareAppMessage: true,
+    enableShareTimeline: true,
   })

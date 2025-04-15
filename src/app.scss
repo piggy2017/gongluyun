@@ -24,6 +24,24 @@ View{
 .disNone{
   display: none !important;
 }
+.at-badge__num {
+  position: absolute;
+  padding: 0 10rpx;
+  top: -14rpx;
+  right: -6PX;
+  color: #FFF;
+  font-size: 20rpx;
+  line-height: 1.4;
+  border-radius: 14rpx 14rpx 14rpx 0;
+  background: #FF4949;
+  -webkit-box-shadow: 0 4rpx 8rpx 0 rgba(255, 73, 73, 0.2);
+          box-shadow: 0 4rpx 8rpx 0 rgba(255, 73, 73, 0.2);
+  -webkit-transform: translate(50%, 0);
+      -ms-transform: translate(50%, 0);
+          transform: translate(50%, 0);
+  overflow: hidden;
+  z-index: 1;
+}
 
 @mixin flex-center($justify-content: $global-justify-content) {
   display: flex;
