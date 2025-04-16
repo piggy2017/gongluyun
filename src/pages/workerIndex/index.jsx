@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-14 16:27:14
+ * @LastEditTime: 2025-04-16 15:06:37
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -251,6 +251,9 @@ const Index = observer(({ store }) => {
                                             })
                                         }
                                     </View>
+                                }
+                                {
+                                    item.updateDate && <View className='list_item_time'>更新时间：{item.updateDate}</View>
                                 }
                                 <View className='list_item_bottom'>
                                     <View className='list_item_addr'>{item.areaName}</View>

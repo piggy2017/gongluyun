@@ -8,7 +8,7 @@
 
 import http from "./request"
 
-export const env = 'prod'
+export const env = 'test'
 const base = env === 'prod' ? 'https://sa-api.apujiyu.com' : 'https://sa-test.apujiyu.com/'
 export const API_BASE_URL = base + "/mini"
 // const API_BASE_URL_JOB = "https://testios.joymian.com/jobfly/order"

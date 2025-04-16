@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 11:05:44
+ * @LastEditTime: 2025-04-15 16:40:12
  * @Description: 
  */
 
@@ -61,9 +61,9 @@ const Index = observer(({ store }) => {
   const [sourceObj, setSourceObj] = useState({    // 筛选来源
     source: "", name: '全部来源'
   })
-  const [filterState, setFilterState] = useState({    // 筛选状态
-    state: "", name: '全部状态'
-  })
+  const [filterState, setFilterState] = useState(   // 筛选状态
+    [{ name: '全部状态', state: 'ALL', seleted: true },]
+  )
 
   const [mylist, setmyList] = useState([])
 
@@ -381,34 +381,41 @@ const Index = observer(({ store }) => {
 
       <View className='search_wrapper'>
         <View style={`height: 12rpx;`}></View>
-        <View className='search_content' onClick={() => {
-          if (!isLogin || !companyVerified) {
-            loginOrAuth();
-            return
-          }
-        }}>
-          
-          <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
-          <Input className='search_input'
-            disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
-            placeholder='搜索姓名、手机号、身份证号'
-            confirmType='search'
-            placeholderStyle='color: #777777;'
-            onInput={(e) => { setSearchValue(e.detail.value) }}
-            onConfirm={(e) => {
-              if (!isLogin || !companyVerified) {
-                loginOrAuth();
-                return
-              }
-              setgoonLoad(true);
-              if (type === '线索池') {
+        {
+          type === '线索池' &&
+          <View className='search_content'>
+            <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+            <Input className='search_input'
+              // disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
+              placeholder='搜索姓名、手机号、身份证号'
+              confirmType='search'
+              placeholderStyle='color: #777777;'
+              onInput={(e) => { setSearchValue(e.detail.value) }}
+              onConfirm={() => {
+                setgoonLoad(true);
                 getClueList(1);
-              } else {
-                getClientList(1);
-              }
-            }}
-            value={searchValue}></Input>
-        </View>
+              }}
+              value={searchValue}></Input>
+          </View> ||
+          <View className='search_content_client'>
+            <View className='search_content_client_left'>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+              <Input className='search_input'
+                // disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
+                placeholder='搜索姓名、手机号、身份证号'
+                confirmType='search'
+                placeholderStyle='color: #777777;'
+                onInput={(e) => { setSearchValue(e.detail.value) }}
+                onConfirm={() => {
+                  setgoonLoad(true);
+                  getClientList(1);
+                }}
+                value={searchValue}></Input>
+            </View>
+            <View className='search_content_client_export'>导出</View>
+          </View>
+        }
+
         <View className='filter_wrapper'>
           {
             type === '线索池' &&
@@ -433,7 +440,7 @@ const Index = observer(({ store }) => {
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
               <View className='filter_wrap_item' onClick={() => setShowPickerStatus(true)}>
-                <View>{filterState.name}</View>
+                {/* <View>{filterState.name}</View> */}
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
               <View className='filter_wrap_item' onClick={() => setClientshowFilterDate(true)}>
@@ -620,7 +627,7 @@ const Index = observer(({ store }) => {
 
       {/* 筛选状态 showPickerStatus, setShowPickerStatus */}
       <Block>
-        <StatusPicker showPicker={showPickerStatus} onClose={() => { setShowPickerStatus(false) }} onChange={getPickerStatusFunc}></StatusPicker>
+        <StatusPicker initData={filterState} showPicker={showPickerStatus} onClose={() => { setShowPickerStatus(false) }} onChange={getPickerStatusFunc}></StatusPicker>
       </Block>
 
       <TabBar actCurrent={2} />

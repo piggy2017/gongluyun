@@ -463,28 +463,38 @@ export default {
 
 export const getStatus = (status, type) => {
     switch (status) {
+        case 'SIGNED_UP':
+            return '已录入';
         case 'PENDING':
             return '待处理';
+        case 'CONTACT':
+            return '已联系';
         case 'UNSUITABLE':
             return '不合适';
+        case 'FULL':
+            return '名单满储备下次';
+        case 'REVIEW_NOT_PASSED':
+            return '名单审核不通过';
         case 'SCHEDULED_INTERVIEW':
             return '已约面';
         case 'NOT_INTERVIEW':
             return '未到面';
         case 'ARRIVE_INTERVIEW':
             return type === 1 ? '已签到' : '已到面';
+        case 'UNDETERMINED':
+            return '待定';
         case 'INTERVIEW_PASSED':
             return '面试通过';
         case 'INTERVIEW_FAILED':
             return '面试失败';
+        case 'GIVE_HALFWAY':
+            return '中途放弃';
         case 'EMPLOYED':
             return '已入职';
         case 'RESIGN':
             return '已离职';
         case 'SETTLEMENT':
             return '可结算';
-        case 'CONTACT':
-            return '已联系';
     }
 }
 

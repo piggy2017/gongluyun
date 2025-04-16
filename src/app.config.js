@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 15:27:05
+ * @LastEditTime: 2025-04-16 15:28:32
  * @Description: 
  */
 export default defineAppConfig({
@@ -133,6 +133,7 @@ export default defineAppConfig({
                 "newInterviewWorker/index",      // 首页 录入面试信息 新增求职者
                 "onSiteProject/index",           // 添加驻场角色 选择项目
                 "setSite/index",                 // 添加、修改账号,设置站点
+                "chooseInterview/index",         // 新增项目选择面试联系人
             ]
         },
         {
@@ -170,6 +171,7 @@ export default defineAppConfig({
                 "signIn/index",                   // 签到页面
                 "signLogin/index",                // 求职者签到-登录页面
                 "signSuccess/index",              // 求职者签到-成功页面
+                "chooseSignin/index",             // 求职者签到-总签到码进入-选择岗位
                 "chooseJob/index",                // 求职者签到-扫码进入 选择签到岗位   驻场-名单 添加求职者信息指定岗位
             ]
         },

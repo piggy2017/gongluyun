@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 10:06:49
+ * @LastEditTime: 2025-04-16 15:59:32
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
   const route = useRouter();
   const {
     baseStore: { bottomSafeAreaHeight },
-    businessStore: { setEditProjectInfo, setProjectPatternInfo, setSetOnSiteListForProject },
+    businessStore: { setEditProjectInfo, setProjectPatternInfo, setSetOnSiteListForProject, addProjectInterviewInfo, setAddProjectInterviewInfo },
     userStore: { role, userInfo, myPermissions }
   } = store
 
@@ -593,6 +593,26 @@ const Index = observer(({ store }) => {
             <View className='project_title_copy' onClick={() => copyFunc(detail, 1)}>一键复制</View>
           }
         </View>
+        <View className='interview_item'>
+          <View className='interview_item_title'>面试联系人</View>
+          <View className='interview_item_content' onClick={() => {
+            if (!myPermissions.includes('19')) {
+              return Taro.showToast({ title: '暂无权限', icon: 'none' });
+            }
+            Taro.navigateTo({
+              url: `/pages/newPackage/chooseInterview/index?recruitSerialCode=${detail.recruitSerialCode}&serialCode=${detail.serialCode}`
+            })
+            setAddProjectInterviewInfo(detail.interviewInfo ? detail.interviewInfo : {});
+          }}>
+            {
+              (!detail.interviewInfo || Object.keys(detail.interviewInfo).length === 0) &&
+              <View className='interview_item_label'>设置面试联系人</View> ||
+              <View className='interview_item_text'>{detail.interviewInfo.name} {detail.interviewInfo.phone}</View>
+            }
+            <Image className='interview_item_img' src={`${Taro.$cdnUrl}/newIndex/newIndex_7.webp`}></Image>
+          </View>
+        </View>
+
         <View className='interview_item'>
           <View className='interview_item_title'>驻场联系人</View>
           <View className='interview_item_content' onClick={() => {

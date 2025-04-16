@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 17:10:51
+ * @LastEditTime: 2025-04-15 16:09:19
  * @Description: 
  */
 
@@ -84,8 +84,9 @@ const Index = observer(({ store }) => {
         }
 
         console.log("params", params);
+
         const errorMessages = [
-            !params.name && '请输入求职者真实姓名',
+            (!params.name || params.name?.includes('用户')) && '请输入求职者真实姓名',
             !(params.sex === 0 || params.sex === 1) && '请选择求职者性别',
             !params.recruitSerialCode && '请选择岗位',
             !params.interviewDate && '请选择面试日期',
