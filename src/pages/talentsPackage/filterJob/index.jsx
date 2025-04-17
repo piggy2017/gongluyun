@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-04 14:52:35
+ * @LastEditTime: 2025-04-17 17:03:49
  * @Description: 
  */
 
@@ -21,7 +21,7 @@ import { contractsJobSelector, getArrangeableRecruitList } from '@/util/api'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight },
-        businessStore: { poorJobId, myClientJobId, setPoorJobId, setMyClientJobId, addWorkerJobInfo, setAddWorkerJobInfo, interviewJobInfo, setInterviewJobInfo, onSiteFilterJob, setOnSiteFilterJob }
+        businessStore: { addWorkerJobInfo, setAddWorkerJobInfo, interviewJobInfo, setInterviewJobInfo }
     } = store
     const router = useRouter();
 
@@ -38,8 +38,7 @@ const Index = observer(({ store }) => {
     const [title, setTitle] = useState('');
 
     useEffect(() => {
-        // type=1 线索-客户池筛选岗位    type=2 线索-我的客户筛选岗位     type=3 录入求职者信息-选择报名岗位    type=4 安排面试-选择招聘岗位    type=5 驻厂名单-选择岗位
-        // type=6 驻场-首页签到码-选择岗位
+        //  type=3 录入求职者信息-选择报名岗位  type=4 安排面试-选择招聘岗位  type=6 驻场-首页签到码-选择岗位
         const { type, title } = router.params;
         console.log('type, title', type, title);
         setType(type);
@@ -70,7 +69,11 @@ const Index = observer(({ store }) => {
         // if (type == 4) {   // 安排面试
         //     params.uuid = router.params.uuid
         // }
-        const { code, data } = type == 4 ? await getArrangeableRecruitList(params) : await contractsJobSelector(params);
+        if (router.params.type == 3) {
+            params.status = 'PROCESSING';
+        }
+
+        const { code, data } = router.params.type == 4 ? await getArrangeableRecruitList(params) : await contractsJobSelector(params);
         console.log("getClueList", code, data);
         Taro.hideLoading();
         setIsRefresh(false);
@@ -79,36 +82,14 @@ const Index = observer(({ store }) => {
                 data.responses[i].selected = false;
             }
             console.log("type", type);
-            if (router.params.type == 1 || router.params.type == 2 || router.params.type == 5) {
-                if (_pageNo === 1) {
-                    let obj = {
-                        title: '全部岗位',
-                        recruitSerialCode: '',
-                        selected: false
-                    }
-                    data.responses.unshift(obj);
-                }
-            }
 
             for (let i = 0; i < data.responses.length; i++) {
-                if (router.params.type == 1) {
-                    if (data.responses[i].recruitSerialCode == poorJobId.recruitSerialCode) {
-                        data.responses[i].selected = true;
-                    }
-                } else if (router.params.type == 2) {
-                    if (data.responses[i].recruitSerialCode == myClientJobId.recruitSerialCode) {
-                        data.responses[i].selected = true;
-                    }
-                } else if (router.params.type == 3) {
+                if (router.params.type == 3) {
                     if (data.responses[i].recruitSerialCode == addWorkerJobInfo.recruitSerialCode) {
                         data.responses[i].selected = true;
                     }
                 } else if (router.params.type == 4) {
                     if (data.responses[i].recruitSerialCode == interviewJobInfo.recruitSerialCode) {
-                        data.responses[i].selected = true;
-                    }
-                } else if (router.params.type == 5) {
-                    if (data.responses[i].recruitSerialCode == onSiteFilterJob.recruitSerialCode) {
                         data.responses[i].selected = true;
                     }
                 }
@@ -154,19 +135,13 @@ const Index = observer(({ store }) => {
             _list[index].selected = true
             return _list
         })
-        if (type == 1) {
-            setPoorJobId(obj);
-        } else if (type == 2) {
-            setMyClientJobId(obj);
-        } else if (type == 3) {
+        if (type == 3) {
             setAddWorkerJobInfo(obj);
         } else if (type == 4) {
             setInterviewJobInfo({
                 ...obj,
                 init: false,
             });
-        } else if (type == 5) {
-            setOnSiteFilterJob(obj);
         } else if (type == 6) {
             Taro.redirectTo({
                 url: `/pages/projectPackage/signinCode/index?recruitSerialCode=${obj.recruitSerialCode}&title=${obj.title}&type=1`
@@ -214,13 +189,21 @@ const Index = observer(({ store }) => {
                 {
                     list.length > 0 && list.map((item, index) => {
                         return <View className='job_item flex-row-between' key={index} onClick={() => chooseItem(item, index)}>
-                            <View className='job_item_name row-show-1'>{item.title}</View>
+                            {/* <View className='job_item_name row-show-1'>{item.title}</View>
+                             */}
+                            <View className='job_item_left'>
+                                <View className='job_item_name row-show-1'>{item.title}</View>
+                                {
+                                    item.company && <View className='job_item_name row-show-1'>所属公司：{item.company}</View>
+                                }
+                            </View>
                             {
                                 item.selected && <Image src={`${Taro.$cdnUrl}/index/index_icon13.webp`}></Image>
                             }
                         </View>
                     })
                 }
+
                 {
                     list.length >= 14 &&
                     <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>

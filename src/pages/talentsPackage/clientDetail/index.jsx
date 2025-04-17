@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 16:27:42
+ * @LastEditTime: 2025-04-17 11:00:03
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -53,10 +53,6 @@ const Index = observer(({ store }) => {
             getHistoryList(clientInfos.uuid);
         }
     })
-
-    useEffect(() => {
-        console.log("myClientParams_myClientParams", myClientParams);
-    }, [myClientParams])
 
     useEffect(() => {
         const { uid, myClientCount, index, phone } = route.params;

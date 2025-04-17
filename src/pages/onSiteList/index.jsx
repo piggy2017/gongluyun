@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-14 16:18:30
+ * @LastEditTime: 2025-04-17 17:00:53
  * @Description: 
  */
 
@@ -45,12 +45,13 @@ const Index = observer(({ store }) => {
   const [failReason, setFailReason] = useState(''); // 面试失败原因
 
   const [tabList, setTabList] = useState([
+    { state: '', name: '全部' },
     { state: 'SCHEDULED_INTERVIEW', name: '已约面' },
     { state: 'ARRIVE_INTERVIEW', name: '已签到' },
     { state: 'INTERVIEW_PASSED', name: '面试通过' },
     { state: 'INTERVIEW_FAILED', name: '面试失败' }]);
   const [currentTab, setCurrentTab] = useState(0);
-  const [currentCliskstatus, setCurrentCliskstatus] = useState('SCHEDULED_INTERVIEW');
+  const [currentCliskstatus, setCurrentCliskstatus] = useState('');
   const [batchOperations, setBatchOperations] = useState(false);       // 是否进行批量操作
   const [chooseAll, setChooseAll] = useState(false);                   // 全选反选
   const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示底部的操作选项
@@ -114,12 +115,17 @@ const Index = observer(({ store }) => {
   const getList = async (_pageNo) => {    // 获取名单列表
     setRequestState(1);
     Taro.showLoading({ title: '加载中...' });
+    let _recruitSerialCodes = onSiteFilterJob.map(item => item.recruitSerialCode);
+    if (_recruitSerialCodes.length === 1 && _recruitSerialCodes[0] === '') {
+      _recruitSerialCodes = [];
+    }
     let params = {
       pageNo: _pageNo,
       pageSize,
       seekState: tabList[currentTab].state,
       searchInfo: searchValue,
-      recruitSerialCode: onSiteFilterJob.recruitSerialCode,
+      // recruitSerialCode: onSiteFilterJob.recruitSerialCode,
+      recruitSerialCodes: _recruitSerialCodes,
       agentSerialCode: onSiteFilterSUPPLIER.userSerialCode,
       source: '',
       dateRange: dateObj.dateRange,
@@ -415,13 +421,13 @@ const Index = observer(({ store }) => {
 
       <View className='search_wrapper'>
         <View className='filter_wrapper'>
-          <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/talentsPackage/filterJob/index?type=5&title=选择岗位` }) }}>
-            <View>{onSiteFilterJob.title}</View>
+          <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/talentsPackage/multipleFilterJob/index?type=5&title=选择岗位` }) }}>
+            <View>{onSiteFilterJob.length === 1 ? onSiteFilterJob[0].title : onSiteFilterJob[0].title + '等' + onSiteFilterJob.length + '个岗位'}</View>
             <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
           </View>
 
           <View className='filter_wrap_item' onClick={() => setChooseDataSource(true)}>
-            <View>{dataSource == 'ONSITE_DATA' ? '他人上报数据' : '由我上报数据'}</View>
+            <View>{dataSource == 'ONSITE_DATA' ? '项目数据' : '我的数据'}</View>
             <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
           </View>
 
@@ -747,11 +753,11 @@ const Index = observer(({ store }) => {
                 <View onClick={() => {
                   setDataSource('ONSITE_DATA')
                   setChooseDataSource(false);
-                }} className={`type_item ${dataSource === 'ONSITE_DATA' ? 'type_item_active' : ''}`}>他人上报数据</View>
+                }} className={`type_item ${dataSource === 'ONSITE_DATA' ? 'type_item_active' : ''}`}>项目数据</View>
                 <View onClick={() => {
                   setDataSource('OWN_REPORT');
                   setChooseDataSource(false);
-                }} className={`type_item ${dataSource === 'OWN_REPORT' ? 'type_item_active' : ''}`}>由我上报数据</View>
+                }} className={`type_item ${dataSource === 'OWN_REPORT' ? 'type_item_active' : ''}`}>我的数据</View>
               </View>
               <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>

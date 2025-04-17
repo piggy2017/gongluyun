@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-16 16:06:17
+ * @LastEditTime: 2025-04-17 15:40:44
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter } from '@tarojs/taro';
-import { View, Image, Text, ScrollView, Block } from '@tarojs/components'
+import { View, Image, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { throttleCustom, debounce } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'

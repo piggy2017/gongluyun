@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-16 16:37:03
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-16 17:11:19
+ * @LastEditTime: 2025-04-17 14:37:40
  * @Description: 
  */
 
@@ -22,11 +22,11 @@ const StatusPicker = observer(({ onChange, showPicker, onClose, initData, store 
         }
     } = store
     const [filterState, setFilterState] = useState({    // 筛选状态
-        state: "ALL", name: '全部状态'
+        state: "", name: '全部状态'
     })
 
     const [statusList, setStatusList] = useState([   // seleted: true
-        { name: '全部状态', state: 'ALL', },
+        { name: '全部状态', state: '', },
         { name: '待处理', state: 'PENDING', },
         { name: '已联系', state: 'CONTACT', },
         { name: '不合适', state: 'UNSUITABLE', },
@@ -46,31 +46,70 @@ const StatusPicker = observer(({ onChange, showPicker, onClose, initData, store 
 
     useEffect(() => {
         if (initData?.length > 0) {
-            if (initData.length == 1 && initData[0].state === 'ALL') {
+            if (initData.length == 1 && initData[0].state === '') {
                 setStatusList(statusList.map(item => {
                     return {
                         ...item,
                         seleted: true
                     }
                 }))
-            }else{
+            } else {
                 // 如果是选择的其他的
-                
+                let _list = JSON.parse(JSON.stringify(statusList));
+                for (let i = 0; i < _list.length; i++) {
+                    for (let j = 0; j < initData.length; j++) {
+                        if (_list[i].state === initData[j].state) {
+                            _list[i].seleted = true;
+                            break;
+                        }
+                    }
+                }
+                setStatusList(_list)
             }
         }
     }, [initData]);
 
-    const setPickerStatusFunc = (obj) => {   // 筛选状态的回调
+    const setPickerStatusFunc = (obj, index) => {   // 筛选状态的回调
         console.log("setPickerStatusFunc", obj);
-        setFilterState(obj);
-        setTimeout(() => {
-            onChange(obj);
-            onClose();
-        }, 300);
+        // setFilterState(obj);
+        // setTimeout(() => {
+        //     onChange(obj);
+        //     onClose();
+        // }, 300);
+
+        // 如果当前点击的是全部,并且当前是选中的状态,则取消选中
+        if (obj.state === '') {
+            setStatusList(statusList.map(item => {
+                return {
+                    ...item,
+                    seleted: obj.seleted === true ? false : true
+                }
+            }))
+        } else {
+            setStatusList(statusList => {
+                let _list = JSON.parse(JSON.stringify(statusList));
+                _list[index].seleted = obj.seleted === true ? false : true;
+                let _filterList = _list.filter(item => item.seleted);
+                console.log("_filterList.length:", _filterList.length, "_list.length:", _list.length)
+                if (_filterList.length === _list.length - 1 && !obj.seleted) {
+                    _list[0].seleted = true;
+                } else {
+                    _list[0].seleted = false;
+                }
+                return _list
+            })
+        }
     }
 
     const comfirmStatusFunc = () => {
-
+        let _filterList = statusList.filter(item => item.seleted);
+        if (_filterList.length === 0) {
+            _filterList.push({ name: '全部状态', state: '' })
+        } else if (_filterList.length === statusList.length) {
+            _filterList = [{ name: '全部状态', state: '' }]
+        }
+        onChange(_filterList);
+        onClose();
     }
 
     return (
@@ -89,7 +128,7 @@ const StatusPicker = observer(({ onChange, showPicker, onClose, initData, store 
                                         <View
                                             key={index}
                                             className={`filter_wrapper_item ${item.seleted ? 'filter_wrapper_item_active' : ''}`}
-                                            onClick={() => setPickerStatusFunc(item)}
+                                            onClick={() => setPickerStatusFunc(item, index)}
                                         >{item.name}</View>
                                     )
                                 })

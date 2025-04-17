@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 10:44:27
+ * @LastEditTime: 2025-04-17 10:44:37
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
-        businessStore: { workerSetCustomerInfo, setAddWorkerJobInfo, editClientInfos, setEditClientInfos, sourceGroup },
+        businessStore: { workerSetCustomerInfo, addWorkerJobInfo, setAddWorkerJobInfo, editClientInfos, setEditClientInfos, sourceGroup },
         userStore: { role, userInfo: { userSerialCode } },
     } = store
     const [formData, setFormData] = useState({});
@@ -86,7 +86,10 @@ const Index = observer(({ store }) => {
         if (workerSetCustomerInfo.name) {
             setFormData({ ...formData, service: workerSetCustomerInfo.name });
         }
-    }, [workerSetCustomerInfo])
+        if (addWorkerJobInfo.title) {
+            setFormData({ ...formData, recruitTitle: addWorkerJobInfo.title, recruitSerialCode: addWorkerJobInfo.recruitSerialCode });
+        }
+    }, [workerSetCustomerInfo, addWorkerJobInfo])
 
     useEffect(() => {
         return () => {
@@ -98,6 +101,7 @@ const Index = observer(({ store }) => {
             })
         }
     }, [])
+
 
     const datePickerSelect = (e) => {
         console.log("seleceDate", e);
@@ -114,7 +118,7 @@ const Index = observer(({ store }) => {
     const saveWorker = throttle(async () => {
         console.log("isUpdateisUpdateisUpdate", isUpdate);
 
-        
+
         let params = {
             ...formData,
             entryChannel: route.params.entryChannel,
@@ -140,8 +144,8 @@ const Index = observer(({ store }) => {
             if (!formData.recruitSerialCode) {
                 return Taro.showToast({ title: '请选择报名岗位', icon: 'none', })
             }
-        }else if(!route.params.onSite && !isUpdate){
-            if(!(params.agentSerialCode || params.agentSerialCode === '')){
+        } else if (!route.params.onSite && !isUpdate) {
+            if (!(params.agentSerialCode || params.agentSerialCode === '')) {
                 return Taro.showToast({ title: '请为求职者分配跟进人', icon: 'none', })
             }
             if (formData.agentSerialCode === '') {   // 公海线索 不能设置面试时间

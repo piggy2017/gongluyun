@@ -105,15 +105,15 @@ export const throttle = function (fn, delay) {
 export const throttleCustom = function (fn, delay) {
     let isThrottled = false;
     return function (...args) {
-      if (!isThrottled) {
-        fn(...args);
-        isThrottled = true;
-        setTimeout(() => {
-          isThrottled = false;
-        }, delay);
-      }
+        if (!isThrottled) {
+            fn(...args);
+            isThrottled = true;
+            setTimeout(() => {
+                isThrottled = false;
+            }, delay);
+        }
     }
-  }
+}
 
 export const getTimeDetail = function (time) {
     let date = new Date(time);
@@ -500,9 +500,15 @@ export const getStatus = (status, type) => {
 
 export const getColor = (status) => {
     switch (status) {
+        case 'SIGNED_UP':
+            return '#1678FF';
         case 'PENDING':
             return '#1678FF';
         case 'UNSUITABLE':
+            return '#F00000';
+        case 'FULL':
+            return '#F00000';
+        case 'REVIEW_NOT_PASSED':
             return '#F00000';
         case 'SCHEDULED_INTERVIEW':
             return '#32C2FF';
@@ -510,9 +516,13 @@ export const getColor = (status) => {
             return '#666666';
         case 'ARRIVE_INTERVIEW':
             return '#1678FF';
+        case 'UNDETERMINED':
+            return '#666666';
         case 'INTERVIEW_PASSED':
             return '#FF6B17';
         case 'INTERVIEW_FAILED':
+            return '#F00000';
+        case 'GIVE_HALFWAY':
             return '#F00000';
         case 'EMPLOYED':
             return '#04B400';
@@ -520,6 +530,8 @@ export const getColor = (status) => {
             return '#666666';
         case 'CONTACT':
             return '#1678FF';
+        case 'SETTLEMENT':
+            return '#04B400';
     }
 }
 

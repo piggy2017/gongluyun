@@ -60,12 +60,18 @@
             // justify-content: space-between;
             .dateArea_item {
                 width: 100rpx;
-                // width: 88rpx;
                 height: 96rpx;
                 @include flex-center;
                 color: #333333;
                 font-size: 36rpx;
                 font-weight: 400;
+                text{
+                    font-size: 26rpx;
+                }
+            }
+            .today{
+                background-color: rgba(22, 120, 255, 0.1);
+                color: #1678FF;
             }
 
             .disabledBtn {

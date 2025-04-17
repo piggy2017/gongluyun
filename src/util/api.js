@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-14 13:39:23
+ * @LastEditTime: 2025-04-17 11:02:02
  * @Description: 
  */
 
@@ -570,4 +570,9 @@ export const getUserInfo = params => { //获取用户的详情信息
 };
 export const getRecruitCompany = params => { //【411】根据公司名称获取相识公司
     return http(API_BASE_URL + '/recruit/getRecruitCompany', params, "POST", { "Content-Type": "application/json" });
+};
+
+
+export const downloadClients = params => { // 我的客户导出功能
+    return http(API_BASE_URL + '/clue/downloadClients', params, "POST", { "Content-Type": "application/json" });
 };
