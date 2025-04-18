@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 15:57:21
+ * @LastEditTime: 2025-04-18 16:34:13
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -97,15 +97,15 @@ const Index = observer(({ store }) => {
         }
         let url = `/pages/workerIndex/index?recruitSerialCode=''&inviteRole=SEEK&source=WECHAT_MINI_SHARE&agentSerialCode=${userInfo?.userSerialCode ? userInfo.userSerialCode : ''}`;
         return {
-            title: '这儿有很多优质岗位,快来看看吧',
-            imageUrl: `${Taro.$baseCdnUrl}/entrust/share_back.jpeg`, // 图片 URL
+            title: '找工作,上千职万职!',
+            imageUrl: `${Taro.$cdnUrl}/supplier/supplier_81.webp`, // 图片 URL
             path: url
         }
     })
 
     Taro.useShareTimeline(() => {   // 分享到朋友圈
         return {
-            title: '这儿有很多优质岗位,快来看看吧',
+            title: '找工作,上千职万职!',
             query: `recruitSerialCode=''&inviteRole=SEEK&source=WECHAT_MINI_SHARE&agentSerialCode=${userInfo?.userSerialCode ? userInfo.userSerialCode : ''}`
         }
     })
