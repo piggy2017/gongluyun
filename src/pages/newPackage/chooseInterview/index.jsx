@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 10:05:19
+ * @LastEditTime: 2025-04-18 19:54:07
  * @Description: 
  */
 
@@ -55,7 +55,7 @@ const Index = observer(({ store }) => {
             return _list
         })
         setAddProjectInterviewInfo({
-            interviewContactInfo: userSerialCode, interviewContactName: name, interviewContactPhone: phone
+            interviewContactInfo: userSerialCode, interviewContactName: name, interviewContactPhone: phone, isEdit: false
         })
 
         if (recruitSerialCode) {
