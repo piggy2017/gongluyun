@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 13:47:25
+ * @LastEditTime: 2025-04-18 19:53:25
  * @Description: 
  */
 
@@ -75,13 +75,14 @@ const Index = observer(({ store }) => {
     }, [jobFilterAddress]);
 
     useEffect(() => {    // 面试联系人信息
-        if(Object.keys(addProjectInterviewInfo).length > 0){
+        if (Object.keys(addProjectInterviewInfo).length > 0 && !addProjectInterviewInfo.isEdit) {
+            console.log("被修改000")
             setFormData({
                 ...formData,
                 interviewInfo: JSON.parse(JSON.stringify(addProjectInterviewInfo)),
             })
         }
-    },[addProjectInterviewInfo])
+    }, [addProjectInterviewInfo])
 
     useEffect(() => {
         if (editProjectInfo) {
@@ -117,8 +118,10 @@ const Index = observer(({ store }) => {
                     province: _areaName[0],
                 })
             }
-            if(_editProjectInfo.interviewInfo) {
-                setAddProjectInterviewInfo(_editProjectInfo.interviewInfo)
+            if (_editProjectInfo.interviewInfo) {
+                console.log(11123456789)
+                console.log("_editProjectInfo.interviewInfo", _editProjectInfo.interviewInfo);
+                setAddProjectInterviewInfo({ ..._editProjectInfo.interviewInfo, isEdit: true })
             }
             setFormData({
                 ..._editProjectInfo,

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-16 15:00:32
+ * @LastEditTime: 2025-04-18 19:58:16
  * @Description: 
  */
 
@@ -135,6 +135,12 @@ const Index = observer(({ store }) => {
         const { title, recruitSerialCode, isAll, list } = getQueryString(_q);
 
         Taro.showLoading({ title: '签到中...' });
+        if (formData.name === "" || formData.name === null) {
+            return Taro.showToast({ title: '请输入姓名', icon: 'none' });
+        }
+        if(formData.sex === null) {
+            return Taro.showToast({ title: '请选择性别', icon: 'none' });
+        }
         if (formData.idCardNo && formData.idCardNo.length != 18) {
             return Taro.showToast({ title: '请输入18位身份证号码', icon: 'none' });
         }
