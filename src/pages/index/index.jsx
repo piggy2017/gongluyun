@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-01 15:47:00
+ * @LastEditTime: 2025-04-18 16:29:15
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -42,17 +42,31 @@ const Index = observer(({ store }) => {
   const [feedbackInfo, setFeedbackInfo] = useState({       //  【未接待】展示接待成员反馈统计
     feedbackCount: 0,
     noFeedBackMemberCount: 0
-  });          
+  });
 
   useEffect(() => {
     console.log("首页 监听 是否登录isLogin:companyVerified", companyVerified, isLogin);
     console.log("首页 监听 当前角色role:", role);
     console.log("首页 监听 当前用户信息userInfo:", userInfo);
-    if(isLogin){
+    if (isLogin) {
       getRoleAndPermissionFunc();
     }
-    
+
   }, [isLogin, role, userInfo]);
+
+  Taro.useShareAppMessage(res => {
+    console.log("求职者分享 userInfo.userSerialCode", userInfo, userInfo?.userSerialCode);
+    if (res.from === 'button') {
+      // 来自页面内转发按钮
+      console.log(res.target)
+    }
+    let url = `/pages/workerIndex/index?recruitSerialCode=''&inviteRole=SEEK&source=WECHAT_MINI_SHARE&agentSerialCode=${userInfo?.userSerialCode ? userInfo.userSerialCode : ''}`;
+    return {
+      title: '这儿有很多优质岗位,快来看看吧',
+      imageUrl: `${Taro.$baseCdnUrl}/entrust/share_back.jpeg`, // 图片 URL
+      path: url
+    }
+  })
 
   usePullDownRefresh(() => {
     console.log("下拉刷新");
