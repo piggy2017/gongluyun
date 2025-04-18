@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 15:32:00
+ * @LastEditTime: 2025-04-18 16:09:43
  * @Description: 
  */
 
@@ -241,7 +241,7 @@ const Index = observer(({ store }) => {
       })
     } else {
       Taro.navigateTo({
-        url: `/pages/talentsPackage/clientDetail/index?uid=${obj.uuid}&myClientCount=${totalCount}&index=${index * 1 + 1}&type=1&notEdit=${dataSource === 'OWN_REPORT' ? 1 : 0}`
+        url: `/pages/talentsPackage/clientDetail/index?uid=${obj.uuid}&myClientCount=${totalCount}&index=${index * 1 + 1}&type=1&notEdit=${dataSource === 'OWN_REPORT' ? 1 : ''}`
       })
     }
   }

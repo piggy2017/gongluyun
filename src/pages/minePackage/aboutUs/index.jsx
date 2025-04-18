@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-20 09:54:31
+ * @LastEditTime: 2025-04-18 16:19:06
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -55,13 +55,7 @@ const Index = observer(({ store }) => {
             </View>
 
             <View className='section_group'>
-                {/* <View className='section_item' onClick={() => contactServer()}>
-                    <View className='section_item_left'>
-                        <Image src={`${Taro.$cdnUrl}/mine/mine_icon4.webp`}></Image>
-                        <Text>企业微信</Text>
-                    </View>
-                    <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image>
-                </View> */}
+
                 <View className='section_item'>
                     <View className='section_item_left'>
                         <Image src={`${Taro.$cdnUrl}/mine/mine_icon5.webp`}></Image>
@@ -76,12 +70,15 @@ const Index = observer(({ store }) => {
                     </View>
                     {/* <Image src={`https://apu-mini.oss-cn-hangzhou.aliyuncs.com/personal/right_arow.webp`} className='right_arow'></Image> */}
                 </View>
+                <View className='section_item' onClick={() => {
+                    Taro.navigateTo({ url: '/pages/minePackage/companyIntro/index' })
+                }}>
+                    <View className='section_item_left'>
+                        <Image src={`${Taro.$cdnUrl}/mine/mine_icon4.webp`}></Image>
+                        <Text>公司简介</Text>
+                    </View>
+                </View>
             </View>
-
-            {/* <View className='contact_server' onClick={() => contactServer()}>
-                <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_11.webp`}></Image>
-                <View>微信客服</View>
-            </View> */}
         </View>
     )
 })

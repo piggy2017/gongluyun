@@ -192,7 +192,7 @@ const Index = observer(({ store }) => {
             <View style={`height:${contenTitleHeight}px;`}></View>
             <View className='my_headerc' style={`height:${contenTitleHeight}px;top:${statusTitleHeight}px;opacity:${logoOpacity}`}>
                 <View className='my_header_logo'>
-                    <Image src={`${Taro.$cdnUrl}/supplier/supplier_92.webp`}></Image>
+                    <Image src={`${Taro.$cdnUrl}/supplier/supplier_91.webp`}></Image>
                 </View>
             </View>
 

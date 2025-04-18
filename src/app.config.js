@@ -150,6 +150,7 @@ export default defineAppConfig({
                 "dataReport/index",               // 数据报表
                 "sourcePool/index",               // 资源池
                 "changeRole/index",               // 切换当前角色
+                "companyIntro/index",             // 公司介绍
             ]
         },
         {
