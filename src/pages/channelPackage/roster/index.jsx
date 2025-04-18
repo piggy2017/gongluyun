@@ -327,6 +327,8 @@ const Index = observer(({ store }) => {
 
         Taro.showLoading({ title: '导出中...' });
         let params = { ...customRequestParams };
+        delete params.pageNo;
+        delete params.pageSize;
         const { code, data, msg } = await downloadRoster(params);
         console.log("downloadRoster", code, data, msg);
         Taro.hideLoading();

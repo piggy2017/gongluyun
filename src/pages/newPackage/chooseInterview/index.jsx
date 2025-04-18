@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-17 15:40:44
+ * @LastEditTime: 2025-04-18 10:05:19
  * @Description: 
  */
 
@@ -55,7 +55,7 @@ const Index = observer(({ store }) => {
             return _list
         })
         setAddProjectInterviewInfo({
-            userSerialCode, name, phone
+            interviewContactInfo: userSerialCode, interviewContactName: name, interviewContactPhone: phone
         })
 
         if (recruitSerialCode) {
@@ -99,7 +99,7 @@ const Index = observer(({ store }) => {
         setIsRefresh(false);
         if (code === 200 && data.responses?.length > 0) {
             for (let i = 0; i < data.responses.length; i++) {
-                if (data.responses[i].userSerialCode == addProjectInterviewInfo.userSerialCode) {
+                if (data.responses[i].userSerialCode == addProjectInterviewInfo.interviewContactInfo) {
                     data.responses[i].selected = true;
                 }
             }

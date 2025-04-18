@@ -2,14 +2,14 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-16 15:06:37
+ * @LastEditTime: 2025-04-18 15:57:21
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
-import Taro, { useRouter } from '@tarojs/taro';
+import Taro, { useRouter, usePageScroll } from '@tarojs/taro';
 import { View, Text, Input, Picker, Image, Block, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { debounce } from '@/util/utils'
+import { debounce, throttleCustom } from '@/util/utils'
 
 import TabBar from '@/components/tabBar';
 import WorkerJobType from '@/components/workerJobType';
@@ -44,6 +44,8 @@ const Index = observer(({ store }) => {
         name: "", salaryType: ''
     });
     const [isOpened, setIsOpened] = useState(false);
+    const [searchWidth, setSearchWidth] = useState(694);
+    const [logoOpacity, setLogoOpacity] = useState(1);
 
     const chooseTypeFunc = (name, salaryType) => {
         setChooseType(false);
@@ -108,6 +110,22 @@ const Index = observer(({ store }) => {
         }
     })
 
+    usePageScroll(throttleCustom((res) => {
+        console.log("页面发生滚动res:", res.scrollTop, statusTitleHeight + contenTitleHeight);
+        // 694rpx - 500rpx =194rpx 47px  4.4       207
+        if (res.scrollTop == 0) {
+            setSearchWidth(694);
+            setLogoOpacity(1);
+            return
+        } else if (res.scrollTop == 47) {
+            setSearchWidth(487);
+            setLogoOpacity(0);
+            return
+        }
+        setSearchWidth(694 - parseInt(res.scrollTop) * 4.4);
+        setLogoOpacity(1 - parseInt(res.scrollTop) * 0.02128);
+    }, 10));
+
     const getList = async (_pageNo) => {
         let params = {
             pageNo: _pageNo,
@@ -151,7 +169,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 334rpx)`;
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 130rpx)`;   //  - 334rpx
     }
 
     const goDetail = (item) => {
@@ -170,10 +188,17 @@ const Index = observer(({ store }) => {
 
     return (
         <View className='container'>
-            <View style={`height:${statusTitleHeight + contenTitleHeight}px;`}></View>
+            <View style={`height:${statusTitleHeight}px;`}></View>
+            <View style={`height:${contenTitleHeight}px;`}></View>
+            <View className='my_headerc' style={`height:${contenTitleHeight}px;top:${statusTitleHeight}px;opacity:${logoOpacity}`}>
+                <View className='my_header_logo'>
+                    <Image src={`${Taro.$cdnUrl}/supplier/supplier_92.webp`}></Image>
+                </View>
+            </View>
 
-            {/* 搜索区域 */}
-            <View className='search_wrapper'>
+            <View style='height:20rpx;'></View>
+            {/* 搜索区域  */}
+            <View className='search_wrapper' style={`width:${searchWidth}rpx`}>
                 <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
                 <Input className='search_input'
                     placeholder='输入关键词搜索岗位'
@@ -208,7 +233,7 @@ const Index = observer(({ store }) => {
                     <Image src={`${Taro.$cdnUrl}/supplier/supplier_33.webp`}></Image>
                 </View>
                 <View className='filter_item' onClick={() => setChooseType(true)}>
-                    <View>{typeInfo.salaryType ? typeInfo.name : '结算类型'}</View>
+                    <View>{typeInfo.salaryType ? typeInfo.name : '工作类型'}</View>
                     <Image src={`${Taro.$cdnUrl}/supplier/supplier_33.webp`}></Image>
                 </View>
             </View>
@@ -276,6 +301,8 @@ const Index = observer(({ store }) => {
                     <Taro.NoData></Taro.NoData>
                 }
             </ScrollView>
+
+            <View style={`height:${tabbarHeight}px;`}></View>
 
             {/* 选择岗位类型 */}
             <Block>

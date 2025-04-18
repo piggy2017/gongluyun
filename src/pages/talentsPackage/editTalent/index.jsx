@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-19 13:53:28
+ * @LastEditTime: 2025-04-18 15:21:18
  * @Description: 人才库 - 编辑人才信息页面
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
-        businessStore: { workerSetCustomerInfo, addWorkerJobInfo, editClientInfos, setEditClientInfos, sourceGroup },
+        businessStore: { workerSetCustomerInfo, editClientInfos, setEditClientInfos, sourceGroup },
         userStore: { userInfo: { userSerialCode } },
     } = store
     const [formData, setFormData] = useState({});
@@ -80,10 +80,10 @@ const Index = observer(({ store }) => {
         if (workerSetCustomerInfo.name) {
             setFormData({ ...formData, service: workerSetCustomerInfo.name });
         }
-        if (addWorkerJobInfo.title) {
-            setFormData({ ...formData, recruitSerialCode: addWorkerJobInfo.recruitSerialCode });
-        }
-    }, [workerSetCustomerInfo, addWorkerJobInfo])
+        // if (addWorkerJobInfo.title) {
+        //     setFormData({ ...formData, recruitSerialCode: addWorkerJobInfo.recruitSerialCode });
+        // }
+    }, [workerSetCustomerInfo])
 
 
     const datePickerSelect = (e) => {

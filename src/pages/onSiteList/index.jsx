@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-17 17:00:53
+ * @LastEditTime: 2025-04-18 15:32:00
  * @Description: 
  */
 
@@ -73,8 +73,6 @@ const Index = observer(({ store }) => {
 
   const [dataSource, setDataSource] = useState('ONSITE_DATA');   // 由谁录入的求职者 ONSITE_DATA-他人上报数据 OWN_REPORT-由我上报数据
   const [chooseDataSource, setChooseDataSource] = useState(false);
-
-
 
   useDidShow(() => {
     getList(1);
@@ -186,6 +184,9 @@ const Index = observer(({ store }) => {
   const showOptionFunc = (e, obj, index) => {
     if (batchOperations) return;
     e.stopPropagation();
+    if (dataSource === 'OWN_REPORT') {
+      return Taro.showToast({ title: '该数据您无法修改', icon: 'none' });
+    }
     setCurrentCliskstatus(obj.seekState);
     setList(list => {
       let _list = list.map((item, i) => {
@@ -240,7 +241,7 @@ const Index = observer(({ store }) => {
       })
     } else {
       Taro.navigateTo({
-        url: `/pages/talentsPackage/clientDetail/index?uid=${obj.uuid}&myClientCount=${totalCount}&index=${index * 1 + 1}&type=1`
+        url: `/pages/talentsPackage/clientDetail/index?uid=${obj.uuid}&myClientCount=${totalCount}&index=${index * 1 + 1}&type=1&notEdit=${dataSource === 'OWN_REPORT' ? 1 : 0}`
       })
     }
   }
@@ -253,6 +254,9 @@ const Index = observer(({ store }) => {
   const signUpFunc = async (e, obj, index) => {
     if (batchOperations) return;
     e.stopPropagation();
+    if (dataSource === 'OWN_REPORT') {
+      return Taro.showToast({ title: '该数据您无法修改', icon: 'none' });
+    }
     const { uuid } = obj;
     Taro.showLoading({ title: '签到中...' });
     const { code, data, msg } = await contractsSign({ uuid });
@@ -269,6 +273,9 @@ const Index = observer(({ store }) => {
 
   const changeItemState = (e, uuid, state) => {    // 单个修改状态
     e.stopPropagation();
+    if (dataSource === 'OWN_REPORT') {
+      return Taro.showToast({ title: '该数据您无法修改', icon: 'none' });
+    }
     setCurrentCliskstatus(state);
     Taro.showLoading({ title: '提交中...' });
     updateInterviewer({ uuid, seekState: state }).then(res => {
@@ -310,6 +317,9 @@ const Index = observer(({ store }) => {
   }
 
   const batchChangeState = (state, reason) => {    // 批量修改状态
+    if (dataSource === 'OWN_REPORT') {
+      return Taro.showToast({ title: '该数据您无法修改', icon: 'none' });
+    }
     setCurrentCliskstatus(state);
     if (chooseList.length === 0) {
       return Taro.showToast({ title: '请先选择用户', icon: 'none' });
@@ -353,6 +363,8 @@ const Index = observer(({ store }) => {
     }
     Taro.showLoading({ title: '导出中...' });
     let params = { ...customRequestParams };
+    delete params.pageNo;
+    delete params.pageSize;
     const { code, data, msg } = await downloadRoster(params);
     console.log("downloadRoster", code, data, msg);
     Taro.hideLoading();
@@ -454,6 +466,7 @@ const Index = observer(({ store }) => {
               <Image src={`${Taro.$cdnUrl}/index/index_icon48.webp`}></Image>
               <View>新增</View>
             </View>
+            
             <View className='search_total_right_item' onClick={() => exportAllFunc()}>
               <Image src={`${Taro.$cdnUrl}/index/index_icon49.webp`}></Image>
               <View>导出</View>
@@ -502,7 +515,7 @@ const Index = observer(({ store }) => {
                     </View>
                     <View className='roster_item_job'>{item.recruitTitle}</View>
                     {
-                      item.sourceDesc &&  <View className='roster_item_job'>来源：{item.sourceDesc}</View>
+                      item.sourceDesc && <View className='roster_item_job'>来源：{item.sourceDesc}</View>
                     }
                     <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
                   </View>

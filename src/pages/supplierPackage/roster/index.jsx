@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 19:59:09
+ * @LastEditTime: 2025-04-18 11:56:59
  * @Description: 
  */
 
@@ -315,6 +315,8 @@ const Index = observer(({ store }) => {
 
         Taro.showLoading({ title: '导出中...' });
         let params = { ...customRequestParams, supplierSerialCode: supplierCompanyInfo.serialCode };
+        delete params.pageNo;
+        delete params.pageSize;
         const { code, data, msg } = await downloadRoster(params);
         console.log("downloadRoster", code, data, msg);
         Taro.hideLoading();

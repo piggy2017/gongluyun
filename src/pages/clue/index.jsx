@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-17 16:08:15
+ * @LastEditTime: 2025-04-18 11:55:54
  * @Description: 
  */
 
@@ -393,6 +393,8 @@ const Index = observer(({ store }) => {
 
     Taro.showLoading({ title: '导出中...' });
     let params = { ...myClientParams };
+    delete params.pageNo;
+    delete params.pageSize;
     const { code, data, msg } = await downloadClients(params);
     console.log("downloadClients", code, data, msg);
     Taro.hideLoading();

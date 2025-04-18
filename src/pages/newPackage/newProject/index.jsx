@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-16 16:02:18
+ * @LastEditTime: 2025-04-18 13:47:25
  * @Description: 
  */
 
@@ -130,7 +130,6 @@ const Index = observer(({ store }) => {
                 ...formData,
                 settlementType: 'MONTH',
                 salaryUnit: 'MONTH',
-
             })
         }
         return () => {
@@ -308,6 +307,7 @@ const Index = observer(({ store }) => {
             !params.areaCode && '工作地区不能为空',
             !params.addressDetail && '工作详细地址不能为空',
             !params.introduction && '岗位描述不能为空',
+            !params.interviewInfo && '面试联系人不能为空',
         ].filter(Boolean);
 
         if (errorMessages.length > 0) {
@@ -501,7 +501,7 @@ const Index = observer(({ store }) => {
                             url: `/pages/newPackage/chooseInterview/index`
                         })
                     }}>
-                        <Text className={`${formData.interviewInfo ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewInfo ? formData.interviewInfo.name : '请选择面试联系人(必填)'}</Text>
+                        <Text className={`${formData.interviewInfo ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewInfo ? formData.interviewInfo.interviewContactName : '请选择面试联系人(必填)'}</Text>
 
                     </View>
                 </View>
@@ -747,7 +747,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={postProject} className={`post_btn ${(formData.jobTypeId && formData.salaryType && formData.company && formData.numberRecruits && formData.addressDetail && formData.introduction) ? 'post_btn_active' : ''}`}>{isUpdate ? '修改' : '发布'}项目</View>
+                <View onClick={postProject} className={`post_btn ${(formData.jobTypeId && formData.salaryType && formData.company && formData.numberRecruits && formData.interviewInfo && formData.addressDetail && formData.introduction) ? 'post_btn_active' : ''}`}>{isUpdate ? '修改' : '发布'}项目</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 

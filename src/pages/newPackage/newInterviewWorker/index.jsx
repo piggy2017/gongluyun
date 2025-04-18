@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-12 15:43:33
+ * @LastEditTime: 2025-04-18 11:21:21
  * @Description: 
  */
 
@@ -56,7 +56,14 @@ const Index = observer(({ store }) => {
     const [aiRecognize, setAiRecognize] = useState('');  // AI识别内容
 
     useEffect(() => {
-        const { recruitSerialCode, title } = route.params;
+        return () => {
+            setAddWorkerJobInfo({
+                title: '',
+                recruitSerialCode: '',
+                selected: false,
+                init: false,
+            })
+        }
     }, [])
 
     const datePickerSelect = (e) => {
@@ -233,7 +240,6 @@ const Index = observer(({ store }) => {
             Taro.showToast({ title: msg, icon: 'none', });
         }
     }
-
 
     return (
         <View className='container'>

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-17 10:44:37
+ * @LastEditTime: 2025-04-18 15:18:56
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
-        businessStore: { workerSetCustomerInfo, addWorkerJobInfo, setAddWorkerJobInfo, editClientInfos, setEditClientInfos, sourceGroup },
+        businessStore: { addWorkerJobInfo, setAddWorkerJobInfo,workerSetCustomerInfo, editClientInfos, setEditClientInfos, sourceGroup },
         userStore: { role, userInfo: { userSerialCode } },
     } = store
     const [formData, setFormData] = useState({});
@@ -86,7 +86,7 @@ const Index = observer(({ store }) => {
         if (workerSetCustomerInfo.name) {
             setFormData({ ...formData, service: workerSetCustomerInfo.name });
         }
-        if (addWorkerJobInfo.title) {
+        if (route.params.onSite && addWorkerJobInfo.title) {
             setFormData({ ...formData, recruitTitle: addWorkerJobInfo.title, recruitSerialCode: addWorkerJobInfo.recruitSerialCode });
         }
     }, [workerSetCustomerInfo, addWorkerJobInfo])
@@ -327,6 +327,7 @@ const Index = observer(({ store }) => {
                     </View>
                 </View>
             </View>
+
             <View className='project_group'>
                 {
                     route.params.onSite &&   // 驻场角色

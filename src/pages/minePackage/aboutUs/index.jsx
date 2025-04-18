@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 11:28:46
+ * @LastEditTime: 2025-04-18 15:58:23
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -16,7 +16,7 @@ const Index = observer(({ store }) => {
     const {
         userStore: { isLogin },
     } = store
-    const [version, setVersion] = useState('1.0.0');
+    const [version, setVersion] = useState('2.1.0');
 
     useEffect(() => {
         const accountInfo = wx.getAccountInfoSync();

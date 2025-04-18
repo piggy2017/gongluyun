@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-16 15:59:32
+ * @LastEditTime: 2025-04-18 12:30:13
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
-import { View, Image, Textarea, Block, RichText, Button, Canvas, Swiper, SwiperItem } from '@tarojs/components'
+import { View, Image, Text, Textarea, Block, RichText, Button, Canvas, Swiper, SwiperItem } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { replaceNewLinesWithBr, getImageInfo, canvasDrawFillRoundRect, loadImage } from '@/util/utils'
 import drawQrcode from '@/util/drawQrcode.js'
@@ -607,7 +607,12 @@ const Index = observer(({ store }) => {
             {
               (!detail.interviewInfo || Object.keys(detail.interviewInfo).length === 0) &&
               <View className='interview_item_label'>设置面试联系人</View> ||
-              <View className='interview_item_text'>{detail.interviewInfo.name} {detail.interviewInfo.phone}</View>
+              <View className='interview_item_text'>{detail.interviewInfo.interviewContactName} <Text onClick={(e) => {
+                e.stopPropagation();
+                Taro.makePhoneCall({
+                  phoneNumber: detail.interviewInfo.interviewContactPhone
+                })
+              }} >{detail.interviewInfo.interviewContactPhone}</Text></View>
             }
             <Image className='interview_item_img' src={`${Taro.$cdnUrl}/newIndex/newIndex_7.webp`}></Image>
           </View>
