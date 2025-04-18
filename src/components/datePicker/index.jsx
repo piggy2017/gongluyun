@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-05 15:39:11
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 18:11:40
+ * @LastEditTime: 2025-04-17 17:30:14
  * @Description: 时间选择器 -- 可选择当前月和接下来的6个月的月份数据
  */
-import React,{ useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import Taro from '@tarojs/taro';
 import { observer, inject } from 'mobx-react';
-import { View, Button } from '@tarojs/components';
+import { View, Button, Text } from '@tarojs/components';
 import { AtFloatLayout, AtIcon } from 'taro-ui'
 import dayjs from 'dayjs';
 import "taro-ui/dist/style/components/icon.scss";
@@ -23,10 +23,15 @@ const DatePicker = observer(({ type = 'Single', showPicker, onClose, onSelectDat
     const [currentIndex, setcurrentIndex] = useState(6);   // 当前选中月份的下标
     const [currentDate, setcurrentDate] = useState('');    // Single 当前选中的日期
 
+    const [today, setToday] = useState('');
     const [chooseFirstDay, setChooseFirstDay] = useState('');           // 多选的时候选中的第一天
     const [chooseLastDay, setChooseLastDay] = useState('');             // 多选的时候选中的最后一天
 
     useEffect(() => {
+        // 获取当前日期并格式化
+        const formattedDate = dayjs().format('YYYY-MM-DD');
+        console.log("今天--formattedDate", formattedDate);
+        setToday(formattedDate);
         const currentYearMonth = dayjs().format('YYYY-MM');
         // console.log(currentYearMonth);
 
@@ -46,7 +51,7 @@ const DatePicker = observer(({ type = 'Single', showPicker, onClose, onSelectDat
         }
         // 第二步,根据每个月的月份获取该月的日期数组
         const dateArr = [];
-        monthArr.forEach(item => {
+        monthArr.forEach((item, index) => {
             const dateItem = Array.from({ length: dayjs(item).daysInMonth() }, (_, index) =>
                 dayjs(`${item}-${index + 1}`).format('YYYY-MM-DD')
             );
@@ -239,6 +244,7 @@ const DatePicker = observer(({ type = 'Single', showPicker, onClose, onSelectDat
                                         style={`margin-left:${index === 0 ? `${item.firstDay * 100}rpx` : ''};--activeColor:${activeColor};`}
                                         className={[
                                             'dateArea_item',
+                                            `${(item.label === today && !item.active) ? 'today' : ''}`,
                                             `${item.canSelect ? '' : 'disabledBtn'}`,
                                             `${(item.active && type === 'Single' && !activeColor) ? 'singleActiveItem' : (item.active && type === 'Single' && activeColor) ? 'singleActiveItem2' : ''}`,
                                             `${item.isFirst && type === 'Multiple' ? 'firstActiveItem' : ''}`,
@@ -248,7 +254,8 @@ const DatePicker = observer(({ type = 'Single', showPicker, onClose, onSelectDat
                                         key={index}
                                         onClick={() => clickItem(item, index)}
                                     >
-                                        {item.value}
+                                        {item.value} 
+                                        <Text>{item.label === today && '今天'}</Text>
                                     </View>
                                 })
                             }

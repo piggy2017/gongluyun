@@ -207,7 +207,7 @@
 
         .roster_item {
             flex-shrink: 0;
-            height: 200rpx;
+            // height: 200rpx;
             box-sizing: border-box;
             padding: 30rpx 40rpx 30rpx 68rpx;
             border-bottom: 1rpx solid #0000000a;
@@ -332,6 +332,15 @@
                 flex-shrink: 0;
                 background-color: #0000000a;
                 margin: 12rpx auto 0 auto;
+            }
+            .roster_item_source{
+                color: #999999;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                margin-bottom: 10rpx;
             }
 
             .roster_item_time {

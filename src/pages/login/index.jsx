@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 16:15:33
+ * @LastEditTime: 2025-04-16 17:55:54
  * @Description: 
  */
 
@@ -230,19 +230,11 @@ const Index = observer(({ store }) => {
                             placeholder='请输入账号'
                             placeholderStyle='color: #777777;'
                             value={account}
-                            onInput={(e) => setAccount(e.detail.value)}
-                        ></Input>
+                            onInput={(e) => setAccount(e.detail.value)}></Input>
                     </View>
                     <View className='input_wrap input_wrap_password'>
                         <Image className='input_icon' src={`${Taro.$cdnUrl}/index/index_icon46.webp`}></Image>
-                        <Input
-                            className='my_input'
-                            placeholder='请输入密码'
-                            placeholderStyle='color: #777777;'
-                            value={password}
-                            password={ispassword}
-                            onInput={(e) => setPassword(e.detail.value)}
-                        ></Input>
+                        <Input className='my_input' placeholder='请输入密码' placeholderStyle='color: #777777;' value={password} password={ispassword} onInput={(e) => setPassword(e.detail.value)}></Input>
                         <Image onClick={() => setIsPassword(!ispassword)} className='input_clock_icon' src={`${Taro.$cdnUrl}/index/index_icon47.webp`}></Image>
                     </View>
 

@@ -22,12 +22,27 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { bottomSafeAreaHeight },
         userStore: { isLogin, userInfo, setRole, companyInfo },
-        businessStore: { workerJobInfo, setWorkerJobInfo },
+        businessStore: { workerJobInfo, setWorkerJobInfo, signinSelectJob, setSigninSelectJob },
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const [formData, setFormData] = useState({});
     const [fromAll, setFromAll] = useState(false);
     const [recruitNames, setRecruitNames] = useState([]);
+
+    useEffect(() => {
+        console.log("signinSelectJob", signinSelectJob);
+        if (signinSelectJob) {
+            let _selectedList = signinSelectJob.filter(item => item.selected).map(item => item.title);
+            console.log("_selectedList", _selectedList);
+            setRecruitNames(_selectedList);
+        }
+    }, [signinSelectJob]);
+
+    useEffect(() => {
+        return () => {
+            setSigninSelectJob([]);
+        }
+    },[])
 
     const getQueryString = (url) => {
         url = url.replace(/\s*/g, "");
@@ -68,14 +83,19 @@ const Index = observer(({ store }) => {
         let interviewDate = `${year}-${month}-${day}`
 
         const { q } = router.params;
-        console.log("q", q);
         let _q = decodeURIComponent(q);
         console.log("q", _q);
         const { title, recruitSerialCode, isAll, list } = getQueryString(_q);   // isAll 是否是项目管理中的全部岗位 list 二维码中的岗位列表
         if (isAll) {
             setFromAll(true);
-            let _list = JSON.parse(list).map(item => item.title);
-            setRecruitNames(_list);
+            let _parseList = JSON.parse(list);
+            let _recruitList = _parseList.map(item =>{
+                item.selected = true;
+                return item
+            } );
+            console.log('_recruitList', _recruitList)
+            // setRecruitList(_recruitList);
+            setSigninSelectJob(_recruitList);
         }
 
         console.log("title", title, "recruitSerialCode", recruitSerialCode, "isAll", "list", list);
@@ -110,7 +130,6 @@ const Index = observer(({ store }) => {
 
     const signFunc = async () => {
         const { q } = router.params;
-        console.log("q", q);
         let _q = decodeURIComponent(q);
         console.log("q", _q);
         const { title, recruitSerialCode, isAll, list } = getQueryString(_q);
@@ -124,7 +143,8 @@ const Index = observer(({ store }) => {
             // recruitSerialCode: isAll ? workerJobInfo.recruitSerialCode : recruitSerialCode   // isAll 是否是项目管理中的全部岗位
         }
         if (isAll) {  // isAll 是否是项目管理中的多个岗位列表的二维码
-            let _list = JSON.parse(list).map(item => item.recruitSerialCode);
+            // let _list = JSON.parse(list).map(item => item.recruitSerialCode);
+            let _list=signinSelectJob.filter(item => item.selected).map(item => item.recruitSerialCode);
             params.recruitSerialCodes = _list;
         } else {
             params.recruitSerialCode = recruitSerialCode;
@@ -222,15 +242,12 @@ const Index = observer(({ store }) => {
                     </View> ||
                     <View className='employee_item'>
                         <View className='employee_item_label'>报名岗位</View>
-                        <View className='employee_item_right'>
+                        <View className='employee_item_right' onClick={()=>{
+                            Taro.navigateTo({
+                                url:`/pages/signInPackage/chooseSignin/index`
+                            })
+                        }}>
                             <View className='employee_item_right_a'>
-                                {/* {
-                                    recruitNames.map((item, index) => {
-                                        return (
-                                            <Text key={index}>{item}</Text>
-                                        )
-                                    })
-                                } */}
                                 {recruitNames.length === 1 ? recruitNames[0] : recruitNames[0] + '等' + recruitNames.length + '个岗位'}
                             </View>
                             <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:02:33
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-31 14:27:24
+ * @LastEditTime: 2025-04-18 14:50:23
  * @Description: 
  */
 
@@ -216,15 +216,18 @@ const Index = observer(({ store, actCurrent }) => {
         }
     }
     return (
-        <AtTabBar
-            fixed
-            color='#666666'
-            fontSize={11}
-            selectedColor='#1678FF'
-            tabList={getTabList()}
-            onClick={changeTab}
-            current={actCurrent}
-        />
+        <View style={{ backgroundColor: '#fff' }}>
+            <AtTabBar
+                fixed
+                color='#666666'
+                fontSize={11}
+                selectedColor='#1678FF'
+                tabList={getTabList()}
+                onClick={changeTab}
+                current={actCurrent}
+            />
+        </View>
+
     )
 })
 

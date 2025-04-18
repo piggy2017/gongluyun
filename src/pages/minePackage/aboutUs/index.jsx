@@ -16,7 +16,7 @@ const Index = observer(({ store }) => {
     const {
         userStore: { isLogin },
     } = store
-    const [version, setVersion] = useState('1.0.0');
+    const [version, setVersion] = useState('2.1.0');
 
     useEffect(() => {
         const accountInfo = wx.getAccountInfoSync();

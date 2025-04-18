@@ -9,5 +9,7 @@ export default definePageConfig({
     navigationStyle: "custom",
     navigationBarTitleText: '',
     enablePullDownRefresh: false,
-    disableScroll: true,
+    // disableScroll: true,
+    enableShareAppMessage: true,
+    enableShareTimeline: true,
   })

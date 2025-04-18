@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 11:05:44
+ * @LastEditTime: 2025-04-18 11:55:54
  * @Description: 
  */
 
@@ -10,7 +10,7 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useDidShow, useDidHide } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, getStatus, getColor, throttleCustom } from '@/util/utils'
 
 import TabBar from '@/components/tabBar';
 import { AtIcon } from 'taro-ui'
@@ -20,13 +20,13 @@ import './index.scss'
 import CustomDate from '@/components/customDate';
 import SourcePicker from '@/components/sourcePcker';
 import StatusPicker from '@/components/statusPicker';
-import { cluePool, cluemyClients, clueReceive, callUp } from '@/util/api'
+import { cluePool, cluemyClients, clueReceive, callUp, downloadClients } from '@/util/api'
 
 const Index = observer(({ store }) => {
   const {
-    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
     userStore: { isLogin, role, companyVerified, myPermissions },
-    businessStore: { poorJobId, myClientJobId, setMyClientParams, sourceList }
+    businessStore: { poorJobId, myClientJobId, myClientParams, setMyClientParams, sourceList }
   } = store
   const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
   const [type, setType] = useState('线索池');
@@ -61,14 +61,17 @@ const Index = observer(({ store }) => {
   const [sourceObj, setSourceObj] = useState({    // 筛选来源
     source: "", name: '全部来源'
   })
-  const [filterState, setFilterState] = useState({    // 筛选状态
-    state: "", name: '全部状态'
-  })
+  const [filterState, setFilterState] = useState(   // 筛选状态
+    [
+      { name: '全部状态', state: '' },
+    ]
+  )
 
-  const [mylist, setmyList] = useState([])
+  const [mylist, setmyList] = useState([])    // 我的客户列表
 
   const [showPickerStatus, setShowPickerStatus] = useState(false);
   const [myClientCount, setMyClientCount] = useState(0);
+  // const [customRequestParams, setCustomRequestParams] = useState({});  // 我的客户当前请求参数
 
   useEffect(() => {
     setTimeout(async () => {
@@ -84,7 +87,7 @@ const Index = observer(({ store }) => {
     console.log("sourceList发生了改变", sourceList);
   }, [sourceList])
 
-  useDidShow(() => {
+  useDidShow(throttleCustom(() => {
     console.log("出发 didShow");
     const _poor = Taro.getStorageSync('poor');   // 是否是从首页点击领取进入
     console.log("_poor", _poor);
@@ -111,7 +114,7 @@ const Index = observer(({ store }) => {
       setType('我的客户');
       getClientList(1);
     }
-  })
+  }, 500))
 
 
   useDidHide(() => {
@@ -173,8 +176,8 @@ const Index = observer(({ store }) => {
     return `${tabbarHeight + 30}px`;
   }
 
-  const navigateFunc = (e, type, url) => {
-    if (type) {   // 需要校验用户是否登录
+  const navigateFunc = (e, _type, url) => {
+    if (_type) {   // 需要校验用户是否登录
       if (isLogin === 0) {
         Taro.navigateTo({
           url: '/pages/login/index'
@@ -216,11 +219,16 @@ const Index = observer(({ store }) => {
   const getClueList = async (_pageNo) => {   // 获取线索池列表
     setRequestState(1);
     Taro.showLoading({ title: '加载中...' });
+    let _recruitSerialCodes = poorJobId.map(item => item.recruitSerialCode);
+    if (_recruitSerialCodes.length === 1 && _recruitSerialCodes[0] === '') {
+      _recruitSerialCodes = [];
+    }
     let params = {
       pageNo: _pageNo,
       pageSize,
       searchInfo: searchValue,
-      recruitSerialCode: poorJobId ? poorJobId.recruitSerialCode : '',
+      // recruitSerialCode: poorJobId ? poorJobId.recruitSerialCode : '',
+      recruitSerialCodes: _recruitSerialCodes,
       source: sourceObj.source,
       dateRange: dateObj.dateRange,
       startDate: dateObj.startDate,
@@ -249,13 +257,22 @@ const Index = observer(({ store }) => {
   const getClientList = async (_pageNo) => {  // 获取我的客户列表
     setRequestState(1);
     Taro.showLoading({ title: '加载中...' });
+    let _seekStates = filterState.map(item => item.state);
+    if (_seekStates.length === 1 && _seekStates[0] === '') {
+      _seekStates = [];
+    }
+
+    let _recruitSerialCodes = myClientJobId.map(item => item.recruitSerialCode);
+    if (_recruitSerialCodes.length === 1 && _recruitSerialCodes[0] === '') {
+      _recruitSerialCodes = [];
+    }
     let params = {
       pageNo: _pageNo,
       pageSize,
       searchInfo: searchValue,
-      recruitSerialCode: myClientJobId ? myClientJobId.recruitSerialCode : '',
+      recruitSerialCodes: _recruitSerialCodes,
       // source: sourceObj.source,
-      seekState: filterState.state,
+      seekStates: _seekStates,    // 筛选状态 取数组中的state
       dateRange: dateClientObj.dateRange,
       startDate: dateClientObj.startDate,
       endDate: dateClientObj.endDate,
@@ -306,7 +323,7 @@ const Index = observer(({ store }) => {
   }
 
   const getPickerStatusFunc = (e) => {   // 筛选状态的回调
-    console.log("getPickerStatusFunc", e);
+    console.log("筛选状态的回调-getPickerStatusFunc", e);
     setFilterState(e);
   }
 
@@ -369,6 +386,47 @@ const Index = observer(({ store }) => {
     })
   }
 
+  const exportAllFunc = async () => {     // 我的客户 导出功能
+    if (mylist.length === 0) {
+      return Taro.showToast({ title: '暂无数据', icon: 'none' });
+    }
+
+    Taro.showLoading({ title: '导出中...' });
+    let params = { ...myClientParams };
+    delete params.pageNo;
+    delete params.pageSize;
+    const { code, data, msg } = await downloadClients(params);
+    console.log("downloadClients", code, data, msg);
+    Taro.hideLoading();
+    if (code === 200) {
+      let _downLoadSrc = data;
+      Taro.downloadFile({
+        url: _downLoadSrc,
+        success: function (result) {
+          console.log("下载文件成功", result)
+          if (Taro.getSystemInfoSync().platform === 'android') {
+            Taro.showToast({ title: '点击右上方的按钮然后保存至手机', icon: 'none', duration: 3000 });
+          } else {
+            Taro.showToast({ title: '点击右上方的按钮然后分享至微信进行查看', icon: 'none', duration: 3000 });
+          }
+          const filePath = result.tempFilePath;  // 临时文件路径
+          setTimeout(() => {
+            forceUpdate();
+            Taro.openDocument({
+              filePath: filePath,
+              showMenu: true, // 预览文件右上方的...
+              success: function (response) {
+                console.log('打开文档成功', response)
+              }
+            })
+          }, 3000);
+        }
+      })
+    } else {
+      Taro.showToast({ title: msg, icon: 'none' })
+    }
+  }
+
   return (
     <View className='container'>
       <View className='my_header'>
@@ -380,35 +438,42 @@ const Index = observer(({ store }) => {
       </View>
 
       <View className='search_wrapper'>
-        <View style={`height: 12rpx;`}></View>
-        <View className='search_content' onClick={() => {
-          if (!isLogin || !companyVerified) {
-            loginOrAuth();
-            return
-          }
-        }}>
-          
-          <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
-          <Input className='search_input'
-            disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
-            placeholder='搜索姓名、手机号、身份证号'
-            confirmType='search'
-            placeholderStyle='color: #777777;'
-            onInput={(e) => { setSearchValue(e.detail.value) }}
-            onConfirm={(e) => {
-              if (!isLogin || !companyVerified) {
-                loginOrAuth();
-                return
-              }
-              setgoonLoad(true);
-              if (type === '线索池') {
+        <View style='height: 12rpx;'></View>
+        {
+          type === '线索池' &&
+          <View className='search_content'>
+            <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+            <Input className='search_input'
+              // disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
+              placeholder='搜索姓名、手机号、身份证号'
+              confirmType='search'
+              placeholderStyle='color: #777777;'
+              onInput={(e) => { setSearchValue(e.detail.value) }}
+              onConfirm={() => {
+                setgoonLoad(true);
                 getClueList(1);
-              } else {
-                getClientList(1);
-              }
-            }}
-            value={searchValue}></Input>
-        </View>
+              }}
+              value={searchValue}></Input>
+          </View> ||
+          <View className='search_content_client'>
+            <View className='search_content_client_left'>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+              <Input className='search_input'
+                // disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
+                placeholder='搜索姓名、手机号、身份证号'
+                confirmType='search'
+                placeholderStyle='color: #777777;'
+                onInput={(e) => { setSearchValue(e.detail.value) }}
+                onConfirm={() => {
+                  setgoonLoad(true);
+                  getClientList(1);
+                }}
+                value={searchValue}></Input>
+            </View>
+            <View className='search_content_client_export' onClick={exportAllFunc}>导出</View>
+          </View>
+        }
+
         <View className='filter_wrapper'>
           {
             type === '线索池' &&
@@ -417,8 +482,8 @@ const Index = observer(({ store }) => {
                 <View>{sourceObj.name}</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
-              <View className='filter_wrap_item' onClick={(e) => navigateFunc(e, 1, '/pages/talentsPackage/filterJob/index?type=1&title=选择岗位')}>
-                <View>{poorJobId.title}</View>
+              <View className='filter_wrap_item' onClick={(e) => navigateFunc(e, 1, '/pages/talentsPackage/multipleFilterJob/index?type=1&title=选择岗位')}>
+                <View>{poorJobId.length === 1 ? poorJobId[0].title : poorJobId[0].title + '等' + poorJobId.length + '个岗位'}</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
               <View className='filter_wrap_item' onClick={() => setShowFilterDate(true)}>
@@ -428,12 +493,12 @@ const Index = observer(({ store }) => {
             </> ||
             type === '我的客户' &&
             <>
-              <View className='filter_wrap_item' onClick={(e) => navigateFunc(e, 1, '/pages/talentsPackage/filterJob/index?type=2&title=选择岗位')}>
-                <View>{myClientJobId.title}</View>
+              <View className='filter_wrap_item' onClick={(e) => navigateFunc(e, 1, '/pages/talentsPackage/multipleFilterJob/index?type=2&title=选择岗位')}>
+                <View>{myClientJobId.length === 1 ? myClientJobId[0].title : myClientJobId[0].title + '等' + myClientJobId.length + '个岗位'}</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
               <View className='filter_wrap_item' onClick={() => setShowPickerStatus(true)}>
-                <View>{filterState.name}</View>
+                <View>{filterState.length === 1 ? filterState[0].name : filterState[0].name + "等" + filterState.length + "个状态"}</View>
                 <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
               </View>
               <View className='filter_wrap_item' onClick={() => setClientshowFilterDate(true)}>
@@ -620,7 +685,7 @@ const Index = observer(({ store }) => {
 
       {/* 筛选状态 showPickerStatus, setShowPickerStatus */}
       <Block>
-        <StatusPicker showPicker={showPickerStatus} onClose={() => { setShowPickerStatus(false) }} onChange={getPickerStatusFunc}></StatusPicker>
+        <StatusPicker initData={filterState} showPicker={showPickerStatus} onClose={() => { setShowPickerStatus(false) }} onChange={getPickerStatusFunc}></StatusPicker>
       </Block>
 
       <TabBar actCurrent={2} />

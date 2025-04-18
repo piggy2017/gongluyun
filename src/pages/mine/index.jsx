@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-12 09:57:26
+ * @LastEditTime: 2025-04-18 16:00:50
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -20,8 +20,9 @@ import { loginOut, switchRoles } from '@/util/api'
 
 const Index = observer(({ store }) => {
   const {
+    ChatStore: { setUnReadTotal },
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-    userStore: { isLogin, setIsLogin, role, setRole, userRoles, setUserRoles, setToken, userInfo, setUserInfo, companyInfo, companyVerified, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
+    userStore: { isLogin, setIsLogin, role, setRole, userRoles, setToken, userInfo, setUserInfo, companyInfo, companyVerified, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
   } = store
 
   const [loginoutSure, setLoginoutSure] = useState(false);
@@ -135,6 +136,7 @@ const Index = observer(({ store }) => {
       setUserInfo('');
       setCompanyVerified(false);
       setLoginoutSure(false);
+      setUnReadTotal(0);
       Taro.setStorageSync('token', '');
       Taro.setStorageSync('isLogin', 0);
       Taro.setStorageSync('role', '');
@@ -146,15 +148,6 @@ const Index = observer(({ store }) => {
 
   const aboutFunc = () => {
     Taro.navigateTo({ url: '/pages/minePackage/aboutUs/index' })
-    if (isLogin === 0) {
-      // Taro.navigateTo({
-      //   url: '/pages/login/index'
-      // })
-      // setIsOpened(true);
-      // return
-    } else {
-      
-    }
   }
 
   const chooseRoleFunc = async (obj, index) => {

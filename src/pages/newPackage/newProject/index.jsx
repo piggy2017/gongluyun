@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 11:39:11
+ * @LastEditTime: 2025-04-18 13:47:25
  * @Description: 
  */
 
@@ -30,7 +30,7 @@ import './index.scss'
 const Index = observer(({ store }) => {
     const {
         baseStore: { bottomSafeAreaHeight },
-        businessStore: { onSiteInfo, setOnSiteInfo, editProjectInfo, setEditProjectInfo, jobFilterAddress, setJobFilterAddress },
+        businessStore: { editProjectInfo, setEditProjectInfo, jobFilterAddress, setJobFilterAddress, addProjectInterviewInfo, setAddProjectInterviewInfo },
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const [formData, setFormData] = useState({});
@@ -74,6 +74,15 @@ const Index = observer(({ store }) => {
         }
     }, [jobFilterAddress]);
 
+    useEffect(() => {    // 面试联系人信息
+        if(Object.keys(addProjectInterviewInfo).length > 0){
+            setFormData({
+                ...formData,
+                interviewInfo: JSON.parse(JSON.stringify(addProjectInterviewInfo)),
+            })
+        }
+    },[addProjectInterviewInfo])
+
     useEffect(() => {
         if (editProjectInfo) {
             console.log("修改项目信息---editProjectInfo", editProjectInfo);
@@ -108,6 +117,9 @@ const Index = observer(({ store }) => {
                     province: _areaName[0],
                 })
             }
+            if(_editProjectInfo.interviewInfo) {
+                setAddProjectInterviewInfo(_editProjectInfo.interviewInfo)
+            }
             setFormData({
                 ..._editProjectInfo,
             });
@@ -118,7 +130,6 @@ const Index = observer(({ store }) => {
                 ...formData,
                 settlementType: 'MONTH',
                 salaryUnit: 'MONTH',
-
             })
         }
         return () => {
@@ -130,6 +141,7 @@ const Index = observer(({ store }) => {
                 district: '',
                 province: '',
             })
+            setAddProjectInterviewInfo({})
         }
     }, [editProjectInfo]);
 
@@ -295,6 +307,7 @@ const Index = observer(({ store }) => {
             !params.areaCode && '工作地区不能为空',
             !params.addressDetail && '工作详细地址不能为空',
             !params.introduction && '岗位描述不能为空',
+            !params.interviewInfo && '面试联系人不能为空',
         ].filter(Boolean);
 
         if (errorMessages.length > 0) {
@@ -314,7 +327,6 @@ const Index = observer(({ store }) => {
         }
 
         console.log("params", params);
-        // return
         Taro.showLoading({ title: '提交中...', mask: true });
         const { code, data, msg } = await (isUpdate ? updateContracts(params) : contractsCreate(params));
         console.log("contractsCreate", code, data);
@@ -479,6 +491,18 @@ const Index = observer(({ store }) => {
                             value={formData.addressDetail}
                             onInput={(e) => setFormData({ ...formData, addressDetail: e.detail.value })}>
                         </Input>
+                    </View>
+                </View>
+
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label project_item_label_required'>面试联系人</View>
+                    <View className='project_item_right' onClick={() => {
+                        Taro.navigateTo({
+                            url: `/pages/newPackage/chooseInterview/index`
+                        })
+                    }}>
+                        <Text className={`${formData.interviewInfo ? 'project_item_text_active' : 'project_item_text'}`}>{formData.interviewInfo ? formData.interviewInfo.interviewContactName : '请选择面试联系人(必填)'}</Text>
+
                     </View>
                 </View>
                 <View className='project_item project_item_border'>
@@ -723,7 +747,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={postProject} className={`post_btn ${(formData.title && formData.jobTypeId && formData.salaryType && formData.company && formData.numberRecruits && formData.addressDetail && formData.introduction) ? 'post_btn_active' : ''}`}>{isUpdate ? '修改' : '发布'}项目</View>
+                <View onClick={postProject} className={`post_btn ${(formData.title && formData.jobTypeId && formData.salaryType && formData.company && formData.numberRecruits && formData.interviewInfo && formData.addressDetail && formData.introduction) ? 'post_btn_active' : ''}`}>{isUpdate ? '修改' : '发布'}项目</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 

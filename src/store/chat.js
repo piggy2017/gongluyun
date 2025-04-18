@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-01-10 09:38:02
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-01 11:11:37
+ * @LastEditTime: 2025-04-14 15:58:30
  * @FilePath: /apu.mini/src/store/chat.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -72,6 +72,9 @@ const ChatStore = observable({
         });
         Taro.setStorageSync('sessionList', JSON.stringify(_list))
         Taro.setStorageSync('unReadTotal', ChatStore.unReadTotal)
+    },
+    setUnReadTotal:(value)=>{
+        ChatStore.unReadTotal = value;
     },
 
     setIsRead: (code) => {

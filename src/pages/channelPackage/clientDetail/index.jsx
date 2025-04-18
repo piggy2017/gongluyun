@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 17:59:49
+ * @LastEditTime: 2025-04-17 18:05:28
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -27,7 +27,6 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight, keyBoardHeight, setKeyBoardHeight },
-        businessStore: { myClientParams },
         userStore: { myPermissions, role },
     } = store
 
@@ -52,10 +51,6 @@ const Index = observer(({ store }) => {
     //         getHistoryList(clientInfos.uuid);
     //     }
     // })
-
-    useEffect(() => {
-        console.log("myClientParams_myClientParams", myClientParams);
-    }, [myClientParams])
 
     useEffect(() => {
         const { uid, phone } = route.params;

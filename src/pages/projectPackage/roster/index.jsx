@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 16:24:18
+ * @LastEditTime: 2025-04-14 16:13:08
  * @Description: 
  */
 
@@ -325,6 +325,8 @@ const Index = observer(({ store }) => {
 
         Taro.showLoading({ title: '导出中...' });
         let params = { ...customRequestParams };
+        delete params.pageNo;
+        delete params.pageSize;
         const { code, data, msg } = await downloadRoster(params);
         console.log("downloadRoster", code, data, msg);
         Taro.hideLoading();
@@ -509,6 +511,7 @@ const Index = observer(({ store }) => {
                                         <View className='item_title_name'>{item.name}</View>
                                         <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
                                         <View className='item_title_phone' onClick={(e) => callUser(e, item)}>{item.phone}</View>
+                                        
                                     </View>
                                 </View>
                                 <View className='roster_item_detail'>
@@ -538,6 +541,9 @@ const Index = observer(({ store }) => {
                                         </View>
                                     }
                                 </View>
+                                {
+                                    item.sourceDesc &&  <View className='roster_item_source'>来源：{item.sourceDesc}</View>
+                                }
                                 <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
 
                                 {

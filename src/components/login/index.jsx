@@ -119,26 +119,26 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
     }
 
     // const loginhxIM = (hxUser) => {
-    //     let { username, password } = hxUser
-    //     console.log(decryptData(password))
-    //     Taro.WebIM.conn.open({
-    //         user: username,
-    //         pwd: decryptData(password),
-    //     }).then(() => {
-    //         console.log("login success");
-    //         getMessageList()
-    //     }).catch((reason) => {
-    //         console.log("login fail", reason);
-    //     });
+        //     let { username, password } = hxUser
+        //     console.log(decryptData(password))
+        //     Taro.WebIM.conn.open({
+            //         user: username,
+            //         pwd: decryptData(password),
+        //     }).then(() => {
+            //         console.log("login success");
+            //         getMessageList()
+        //     }).catch((reason) => {
+            //         console.log("login fail", reason);
+        //     });
     // }
 
     // const getMessageList = () => {
-    //     Taro.WebIM.conn.getServerConversations({ pageSize: 20, cursor: '' }).then((res) => {
-    //         setSessionList(res.data.conversations)
-    //         const { cursor } = res.data
-    //         if (cursor) {
-    //             setCursor(cursor)
-    //         }
+        //     Taro.WebIM.conn.getServerConversations({ pageSize: 20, cursor: '' }).then((res) => {
+            //         setSessionList(res.data.conversations)
+            //         const { cursor } = res.data
+            //         if (cursor) {
+                //             setCursor(cursor)
+            //         }
     //     })
     // }
 

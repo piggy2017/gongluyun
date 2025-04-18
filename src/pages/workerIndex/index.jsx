@@ -2,14 +2,14 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 16:04:43
+ * @LastEditTime: 2025-04-18 15:57:21
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
-import Taro, {  } from '@tarojs/taro';
-import { View, Text, Input, Image, Block, ScrollView } from '@tarojs/components'
+import Taro, { useRouter, usePageScroll } from '@tarojs/taro';
+import { View, Text, Input, Picker, Image, Block, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { debounce } from '@/util/utils'
+import { debounce, throttleCustom } from '@/util/utils'
 
 import TabBar from '@/components/tabBar';
 import WorkerJobType from '@/components/workerJobType';
@@ -22,9 +22,10 @@ import './index.scss'
 import { indexFeeds } from '@/util/api'
 
 const Index = observer(({ store }) => {
+    const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
-        userStore: { isLogin, refreshUserInfo, getSubTemplates },
+        userStore: { isLogin, refreshUserInfo, getSubTemplates, setRole, setEnterParams },
         businessStore: { jobFilterAddress, setJobFilterAddress },
     } = store
 
@@ -43,6 +44,8 @@ const Index = observer(({ store }) => {
         name: "", salaryType: ''
     });
     const [isOpened, setIsOpened] = useState(false);
+    const [searchWidth, setSearchWidth] = useState(694);
+    const [logoOpacity, setLogoOpacity] = useState(1);
 
     const chooseTypeFunc = (name, salaryType) => {
         setChooseType(false);
@@ -72,6 +75,56 @@ const Index = observer(({ store }) => {
             })
         }
     }, [])
+
+    useEffect(() => {
+        const { inviteRole, agentSerialCode, source } = route.params;
+        console.log("进入到岗位详情页,查看携带的参数", route.params);
+        if (inviteRole === 'SEEK') {
+            setRole('SEEK');
+            Taro.setStorageSync('role', 'SEEK');
+        }
+        // 缓存进入页面的参数------》管道收益
+        if (source && agentSerialCode) {
+            setEnterParams({ source, agentSerialCode })
+        }
+    }, [])
+
+    Taro.useShareAppMessage(res => {
+        console.log("求职者分享 userInfo.userSerialCode", userInfo, userInfo?.userSerialCode);
+        if (res.from === 'button') {
+            // 来自页面内转发按钮
+            console.log(res.target)
+        }
+        let url = `/pages/workerIndex/index?recruitSerialCode=''&inviteRole=SEEK&source=WECHAT_MINI_SHARE&agentSerialCode=${userInfo?.userSerialCode ? userInfo.userSerialCode : ''}`;
+        return {
+            title: '这儿有很多优质岗位,快来看看吧',
+            imageUrl: `${Taro.$baseCdnUrl}/entrust/share_back.jpeg`, // 图片 URL
+            path: url
+        }
+    })
+
+    Taro.useShareTimeline(() => {   // 分享到朋友圈
+        return {
+            title: '这儿有很多优质岗位,快来看看吧',
+            query: `recruitSerialCode=''&inviteRole=SEEK&source=WECHAT_MINI_SHARE&agentSerialCode=${userInfo?.userSerialCode ? userInfo.userSerialCode : ''}`
+        }
+    })
+
+    usePageScroll(throttleCustom((res) => {
+        console.log("页面发生滚动res:", res.scrollTop, statusTitleHeight + contenTitleHeight);
+        // 694rpx - 500rpx =194rpx 47px  4.4       207
+        if (res.scrollTop == 0) {
+            setSearchWidth(694);
+            setLogoOpacity(1);
+            return
+        } else if (res.scrollTop == 47) {
+            setSearchWidth(487);
+            setLogoOpacity(0);
+            return
+        }
+        setSearchWidth(694 - parseInt(res.scrollTop) * 4.4);
+        setLogoOpacity(1 - parseInt(res.scrollTop) * 0.02128);
+    }, 10));
 
     const getList = async (_pageNo) => {
         let params = {
@@ -116,7 +169,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 334rpx)`;
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 130rpx)`;   //  - 334rpx
     }
 
     const goDetail = (item) => {
@@ -135,10 +188,17 @@ const Index = observer(({ store }) => {
 
     return (
         <View className='container'>
-            <View style={`height:${statusTitleHeight + contenTitleHeight}px;`}></View>
+            <View style={`height:${statusTitleHeight}px;`}></View>
+            <View style={`height:${contenTitleHeight}px;`}></View>
+            <View className='my_headerc' style={`height:${contenTitleHeight}px;top:${statusTitleHeight}px;opacity:${logoOpacity}`}>
+                <View className='my_header_logo'>
+                    <Image src={`${Taro.$cdnUrl}/supplier/supplier_92.webp`}></Image>
+                </View>
+            </View>
 
-            {/* 搜索区域 */}
-            <View className='search_wrapper'>
+            <View style='height:20rpx;'></View>
+            {/* 搜索区域  */}
+            <View className='search_wrapper' style={`width:${searchWidth}rpx`}>
                 <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
                 <Input className='search_input'
                     placeholder='输入关键词搜索岗位'
@@ -173,7 +233,7 @@ const Index = observer(({ store }) => {
                     <Image src={`${Taro.$cdnUrl}/supplier/supplier_33.webp`}></Image>
                 </View>
                 <View className='filter_item' onClick={() => setChooseType(true)}>
-                    <View>{typeInfo.salaryType ? typeInfo.name : '结算类型'}</View>
+                    <View>{typeInfo.salaryType ? typeInfo.name : '工作类型'}</View>
                     <Image src={`${Taro.$cdnUrl}/supplier/supplier_33.webp`}></Image>
                 </View>
             </View>
@@ -217,6 +277,9 @@ const Index = observer(({ store }) => {
                                         }
                                     </View>
                                 }
+                                {
+                                    item.updateDate && <View className='list_item_time'>更新时间：{item.updateDate}</View>
+                                }
                                 <View className='list_item_bottom'>
                                     <View className='list_item_addr'>{item.areaName}</View>
                                     {
@@ -238,6 +301,8 @@ const Index = observer(({ store }) => {
                     <Taro.NoData></Taro.NoData>
                 }
             </ScrollView>
+
+            <View style={`height:${tabbarHeight}px;`}></View>
 
             {/* 选择岗位类型 */}
             <Block>

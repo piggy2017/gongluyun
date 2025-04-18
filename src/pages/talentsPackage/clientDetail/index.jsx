@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 16:27:42
+ * @LastEditTime: 2025-04-18 11:41:06
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -55,11 +55,7 @@ const Index = observer(({ store }) => {
     })
 
     useEffect(() => {
-        console.log("myClientParams_myClientParams", myClientParams);
-    }, [myClientParams])
-
-    useEffect(() => {
-        const { uid, myClientCount, index, phone } = route.params;
+        const { uid, myClientCount, index, phone, notEdit } = route.params;
         console.log("route.params", route.params);
         getClientDetail(uid, phone);
         getHistoryList(uid);
@@ -173,7 +169,7 @@ const Index = observer(({ store }) => {
         }
     }
 
-    
+
     const getOherClient = async (_current) => {
         const { type } = route.params;   // type=1 驻场-名单进入
         let _params = {
@@ -195,6 +191,10 @@ const Index = observer(({ store }) => {
 
     const changeStatus = (e, reason) => {
         console.log("changeStatus", e, reason);
+        const { notEdit } = route.params;
+        if (notEdit) {
+            return Taro.showToast({ title: '您无法修改该数据', icon: 'none' });
+        }
         setCurrentCliskstatus(e);
         Taro.showLoading({ title: '提交中...' });
         let params = {
@@ -220,14 +220,22 @@ const Index = observer(({ store }) => {
     }
 
     const unsuitableFunc = async () => {
-        if(myPermissions.includes('14')){
+        const { notEdit } = route.params;
+        if (notEdit) {
+            return Taro.showToast({ title: '您无法修改该数据', icon: 'none' });
+        }
+        if (myPermissions.includes('14')) {
             setShowReason(true);
-        }else{
+        } else {
             return Taro.showToast({ title: '暂无权限', icon: 'none' });
         }
     }
 
     const saveReasonFunc = async () => {
+        const { notEdit } = route.params;
+        if (notEdit) {
+            return Taro.showToast({ title: '您无法修改该数据', icon: 'none' });
+        }
         if (!reason) {
             return Taro.showToast({ title: '请输入不合适原因', icon: 'none' });
         }
@@ -244,7 +252,11 @@ const Index = observer(({ store }) => {
     }
 
     const goInterview = () => {
-        if(!myPermissions.includes('14')){
+        const { notEdit } = route.params;
+        if (notEdit) {
+            return Taro.showToast({ title: '您无法修改该数据', icon: 'none' });
+        }
+        if (!myPermissions.includes('14')) {
             return Taro.showToast({ title: '暂无权限', icon: 'none' });
         }
         Taro.navigateTo({
@@ -397,9 +409,9 @@ const Index = observer(({ store }) => {
                         <View className='go_interview_btn' onClick={() => goInterview()}>安排面试</View> ||
                         <View className='edit_wrap'>
                             <View className='edit_wrap_btn' onClick={() => {
-                                if(!myPermissions.includes('14')){
+                                if (!myPermissions.includes('14')) {
                                     return Taro.showToast({ title: '暂无权限', icon: 'none' });
-                                }else{
+                                } else {
                                     setShowbottomOptions(!showbottomOptions)
                                 }
                             }}>修改状态</View>

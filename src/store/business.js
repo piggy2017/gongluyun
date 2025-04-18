@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 16:46:20
+ * @LastEditTime: 2025-04-17 15:52:23
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -15,20 +15,22 @@ import {
 } from '@/util/api'
 import Taro from '@tarojs/taro';
 const businessStore = observable({
-    poorJobId: { // 客户池的岗位筛选结果
-        title: '全部岗位',
-        recruitSerialCode: '',
-        selected: false
-    },
+    poorJobId: [ // 客户池的岗位筛选结果
+        {
+            title: '全部岗位',
+            recruitSerialCode: '',
+            selected: false
+        }
+    ],
     setPoorJobId(value) {
         businessStore.poorJobId = value;
     },
 
-    myClientJobId: { // 我的客户的岗位筛选结果
+    myClientJobId: [{ // 我的客户的岗位筛选结果
         title: '全部岗位',
         recruitSerialCode: '',
         selected: false
-    },
+    }],
     setMyClientJobId(value) {
         businessStore.myClientJobId = value;
     },
@@ -94,11 +96,13 @@ const businessStore = observable({
     },
 
 
-    onSiteFilterJob: { // 驻场名单-筛选岗位
-        title: '全部岗位',
-        recruitSerialCode: '',
-        selected: false
-    },
+    onSiteFilterJob: [    // 驻场名单-筛选岗位
+        { 
+            title: '全部岗位',
+            recruitSerialCode: '',
+            selected: false
+        }
+    ],
     setOnSiteFilterJob(value) {
         businessStore.onSiteFilterJob = value;
     },
@@ -184,7 +188,7 @@ const businessStore = observable({
         businessStore.setOnSiteListForProject = value;
     },
 
-    siteObj: [],          // 添加、修改账号,设置站点
+    siteObj: [], // 添加、修改账号,设置站点
     setSiteObj(value) {
         businessStore.siteObj = value;
     },
@@ -203,6 +207,32 @@ const businessStore = observable({
     setChannelFilterSupplier(value) {
         businessStore.channelFilterSupplier = value;
     },
+
+    signinSelectJob: [{ // 扫总签到码进入扫码页面,需要选择报名岗位
+            title: "成都阿普机遇招店员",
+            selected: true,
+            recruitSerialCode: "3104524293"
+        },
+        {
+            title: "测试聊天招理货员",
+            selected: true,
+            recruitSerialCode: "1097220153"
+        },
+        {
+            title: "成都阿普机遇招理货员",
+            selected: true,
+            recruitSerialCode: "4109730532"
+        }
+    ],
+    setSigninSelectJob(value) {
+        console.log("setSigninSelectJob", value);
+        businessStore.signinSelectJob = value
+    },
+
+    addProjectInterviewInfo: {}, // 创建项目,添加面试联系人
+    setAddProjectInterviewInfo(value) {
+        businessStore.addProjectInterviewInfo = value
+    }
 });
 
 export default businessStore

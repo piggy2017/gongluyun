@@ -39,7 +39,8 @@
 
         .job_item {
             width: 660rpx;
-            height: 98rpx;
+            // height: 98rpx;
+            padding: 24rpx 0;
             margin: 0 auto;
             border-bottom: 1rpx solid #0000000a;
 
@@ -51,6 +52,14 @@
                 font-style: normal;
                 font-weight: 400;
                 line-height: normal;
+                width: 580rpx;
+            }
+
+            .job_item_name:not(:first-child) {
+                color: #666666;
+            }
+
+            .job_item_left {
                 width: 580rpx;
             }
 

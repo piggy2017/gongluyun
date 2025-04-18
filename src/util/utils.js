@@ -105,15 +105,15 @@ export const throttle = function (fn, delay) {
 export const throttleCustom = function (fn, delay) {
     let isThrottled = false;
     return function (...args) {
-      if (!isThrottled) {
-        fn(...args);
-        isThrottled = true;
-        setTimeout(() => {
-          isThrottled = false;
-        }, delay);
-      }
+        if (!isThrottled) {
+            fn(...args);
+            isThrottled = true;
+            setTimeout(() => {
+                isThrottled = false;
+            }, delay);
+        }
     }
-  }
+}
 
 export const getTimeDetail = function (time) {
     let date = new Date(time);
@@ -463,36 +463,52 @@ export default {
 
 export const getStatus = (status, type) => {
     switch (status) {
+        case 'SIGNED_UP':
+            return '已录入';
         case 'PENDING':
             return '待处理';
+        case 'CONTACT':
+            return '已联系';
         case 'UNSUITABLE':
             return '不合适';
+        case 'FULL':
+            return '名单满储备下次';
+        case 'REVIEW_NOT_PASSED':
+            return '名单审核不通过';
         case 'SCHEDULED_INTERVIEW':
             return '已约面';
         case 'NOT_INTERVIEW':
             return '未到面';
         case 'ARRIVE_INTERVIEW':
             return type === 1 ? '已签到' : '已到面';
+        case 'UNDETERMINED':
+            return '待定';
         case 'INTERVIEW_PASSED':
             return '面试通过';
         case 'INTERVIEW_FAILED':
             return '面试失败';
+        case 'GIVE_HALFWAY':
+            return '中途放弃';
         case 'EMPLOYED':
             return '已入职';
         case 'RESIGN':
             return '已离职';
         case 'SETTLEMENT':
             return '可结算';
-        case 'CONTACT':
-            return '已联系';
     }
 }
 
 export const getColor = (status) => {
     switch (status) {
+        case 'SIGNED_UP':
+            return '#1678FF';
         case 'PENDING':
             return '#1678FF';
         case 'UNSUITABLE':
+            return '#F00000';
+        case 'FULL':
+            return '#F00000';
+        case 'REVIEW_NOT_PASSED':
             return '#F00000';
         case 'SCHEDULED_INTERVIEW':
             return '#32C2FF';
@@ -500,9 +516,13 @@ export const getColor = (status) => {
             return '#666666';
         case 'ARRIVE_INTERVIEW':
             return '#1678FF';
+        case 'UNDETERMINED':
+            return '#666666';
         case 'INTERVIEW_PASSED':
             return '#FF6B17';
         case 'INTERVIEW_FAILED':
+            return '#F00000';
+        case 'GIVE_HALFWAY':
             return '#F00000';
         case 'EMPLOYED':
             return '#04B400';
@@ -510,6 +530,8 @@ export const getColor = (status) => {
             return '#666666';
         case 'CONTACT':
             return '#1678FF';
+        case 'SETTLEMENT':
+            return '#04B400';
     }
 }
 

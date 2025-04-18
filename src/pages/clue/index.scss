@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:52
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 11:58:19
+ * @LastEditTime: 2025-04-17 13:38:53
  * @Description: 
  */
 @import '@/app.scss';
@@ -62,6 +62,48 @@
 
     .search_wrapper {
         width: 100%;
+
+        .search_content_client {
+            width: 694rpx;
+            height: 68rpx;
+            flex-shrink: 0;
+            @include flex-center(space-between);
+            margin: 0 auto;
+
+            .search_content_client_left {
+                @include flex-center(flex-start);
+                width: 560rpx;
+                height: 68rpx;
+                flex-shrink: 0;
+                background-color: #FFF;
+                border-radius: 34rpx;
+
+                image {
+                    width: 36rpx;
+                    height: 36rpx;
+                    flex-shrink: 0;
+                    margin: 0 10rpx 0 22rpx;
+                }
+
+                .search_input {
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    width: 460rpx;
+                }
+            }
+
+            .search_content_client_export {
+                width: 100rpx;
+                height: 60rpx;
+                border-radius: 8rpx;
+                background-color: #1678FF;
+                color: #ffffff;
+                text-align: center;
+                line-height: 60rpx;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+            }
+        }
 
         .search_content {
             width: 694rpx;
@@ -305,7 +347,7 @@
                     width: 152rpx;
                     height: 60rpx;
                     border-radius: 8rpx;
-                    border: 2rpx solid #1678FF;
+                    // border: 2rpx solid #1678FF;
                     background: #1678FF;
                     color: #ffffff;
                     font-family: "PingFang SC";
@@ -385,10 +427,12 @@
                         .clue_item_title_source_view1 {
                             padding: 4rpx 6rpx;
                         }
-                        .clue_item_title_source_view3{
+
+                        .clue_item_title_source_view3 {
                             padding: 4rpx 0 4rpx 6rpx;
                         }
-                        .clue_item_title_source_view2{
+
+                        .clue_item_title_source_view2 {
                             padding: 4rpx 6rpx;
                             background: #1678ff1c;
                         }
@@ -404,7 +448,7 @@
                     font-weight: 400;
                     line-height: normal;
                     margin-top: 8rpx;
-                    width: 400rpx;
+                    width: 550rpx;
                     @include ellipsis;
                 }
 
