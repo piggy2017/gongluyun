@@ -501,9 +501,9 @@ export const getStatus = (status, type) => {
 export const getColor = (status) => {
     switch (status) {
         case 'SIGNED_UP':
-            return '#1678FF';
+            return '#08B5FF';
         case 'PENDING':
-            return '#1678FF';
+            return '#08B5FF';
         case 'UNSUITABLE':
             return '#F00000';
         case 'FULL':
@@ -511,27 +511,27 @@ export const getColor = (status) => {
         case 'REVIEW_NOT_PASSED':
             return '#F00000';
         case 'SCHEDULED_INTERVIEW':
-            return '#32C2FF';
+            return '#1678FF';
         case 'NOT_INTERVIEW':
             return '#666666';
         case 'ARRIVE_INTERVIEW':
-            return '#1678FF';
+            return '#04B400';
         case 'UNDETERMINED':
-            return '#666666';
+            return '#03BFBF';
         case 'INTERVIEW_PASSED':
-            return '#FF6B17';
+            return '#04B400';
         case 'INTERVIEW_FAILED':
             return '#F00000';
         case 'GIVE_HALFWAY':
-            return '#F00000';
+            return '#666666';
         case 'EMPLOYED':
             return '#04B400';
         case 'RESIGN':
             return '#666666';
         case 'CONTACT':
-            return '#1678FF';
+            return '#08B5FF';
         case 'SETTLEMENT':
-            return '#04B400';
+            return '#FF6B17';
     }
 }
 

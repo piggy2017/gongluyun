@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 19:58:16
+ * @LastEditTime: 2025-04-21 09:30:54
  * @Description: 
  */
 
@@ -42,7 +42,7 @@ const Index = observer(({ store }) => {
         return () => {
             setSigninSelectJob([]);
         }
-    },[])
+    }, [])
 
     const getQueryString = (url) => {
         url = url.replace(/\s*/g, "");
@@ -89,10 +89,10 @@ const Index = observer(({ store }) => {
         if (isAll) {
             setFromAll(true);
             let _parseList = JSON.parse(list);
-            let _recruitList = _parseList.map(item =>{
+            let _recruitList = _parseList.map(item => {
                 item.selected = true;
                 return item
-            } );
+            });
             console.log('_recruitList', _recruitList)
             // setRecruitList(_recruitList);
             setSigninSelectJob(_recruitList);
@@ -135,10 +135,10 @@ const Index = observer(({ store }) => {
         const { title, recruitSerialCode, isAll, list } = getQueryString(_q);
 
         Taro.showLoading({ title: '签到中...' });
-        if (formData.name === "" || formData.name === null) {
+        if (!formData.name || formData.name?.trim() === '') {
             return Taro.showToast({ title: '请输入姓名', icon: 'none' });
         }
-        if(formData.sex === null) {
+        if (formData.sex !== 0 && formData.sex !== 1) {
             return Taro.showToast({ title: '请选择性别', icon: 'none' });
         }
         if (formData.idCardNo && formData.idCardNo.length != 18) {
@@ -150,7 +150,7 @@ const Index = observer(({ store }) => {
         }
         if (isAll) {  // isAll 是否是项目管理中的多个岗位列表的二维码
             // let _list = JSON.parse(list).map(item => item.recruitSerialCode);
-            let _list=signinSelectJob.filter(item => item.selected).map(item => item.recruitSerialCode);
+            let _list = signinSelectJob.filter(item => item.selected).map(item => item.recruitSerialCode);
             params.recruitSerialCodes = _list;
         } else {
             params.recruitSerialCode = recruitSerialCode;
@@ -248,9 +248,9 @@ const Index = observer(({ store }) => {
                     </View> ||
                     <View className='employee_item'>
                         <View className='employee_item_label'>报名岗位</View>
-                        <View className='employee_item_right' onClick={()=>{
+                        <View className='employee_item_right' onClick={() => {
                             Taro.navigateTo({
-                                url:`/pages/signInPackage/chooseSignin/index`
+                                url: `/pages/signInPackage/chooseSignin/index`
                             })
                         }}>
                             <View className='employee_item_right_a'>

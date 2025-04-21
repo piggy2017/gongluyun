@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 11:41:06
+ * @LastEditTime: 2025-04-21 16:50:01
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -16,8 +16,7 @@ import "taro-ui/dist/style/components/float-layout.scss";
 
 import Navbar from '@/components/navbar';
 import WorkerInfo from '@/components/workerInfo';
-import DatePicker from '@/components/datePicker'
-import UpdateStatus from '@/components/updateStatus';
+import NewUpdateStatus from '@/components/newUpdateStatus';
 import './index.scss'
 
 import { cluegetUserInfo, updateInterviewer, clueStateFlow, cluemyClients, contractsgetRoster, unsuitable } from '@/util/api'
@@ -32,20 +31,17 @@ const Index = observer(({ store }) => {
     } = store
 
     const [formData, setFormData] = useState({});
-    const [showDatePicker, setShowDatePicker] = useState(false);
     const [dateText, setDateText] = useState("选择面试日期");
-    const [bottomHeight, setBottomHeight] = useState(90);
     const [uuid, setUuid] = useState('');
 
     const [trackList, setTrackList] = useState([]);
 
     const [totalPerson, setTotalPerson] = useState(1);
     const [current, setCurrent] = useState(1);
-    const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示地步的操作选项
-    const [currentCliskstatus, setCurrentCliskstatus] = useState('面试失败');
     const [clientInfos, setClientInfos] = useState(null);
     const [reason, setReason] = useState('');
     const [showReason, setShowReason] = useState(false);
+    const [showEditStatus, setShowEditStatus] = useState(false);
 
     useDidShow(() => {
         if (clientInfos && clientInfos.uuid) {
@@ -96,68 +92,7 @@ const Index = observer(({ store }) => {
         setFormData({ ...formData, date: e });
     }
 
-    const OptionItem1 = () => {
-        return (
-            <View className='item_status_option_item' onClick={() => setCurrentCliskstatus('已到面')}>
-                <View className='option_item_icon'>
-                    <Image src={`${Taro.$cdnUrl}/index/index_icon38.webp`}></Image>
-                    <View className='option_item_text1'>已到面</View>
-                </View>
-                {
-                    currentCliskstatus === '已到面' &&
-                    <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
-                }
-            </View>
-        )
-    }
-
-    const OptionItem2 = () => {
-        return (
-            <View className='item_status_option_item' onClick={() => setCurrentCliskstatus('面试通过')}>
-                <View className='option_item_icon'>
-                    <Image src={`${Taro.$cdnUrl}/index/index_icon37.webp`}></Image>
-                    <View className='option_item_text2'>面试通过</View>
-                </View>
-                {
-                    currentCliskstatus === '面试通过' &&
-                    <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
-                }
-            </View>
-        )
-    }
-
-    const OptionItem3 = () => {
-        return (
-            <View className='item_status_option_item' onClick={() => setCurrentCliskstatus('已入职')}>
-                <View className='option_item_icon'>
-                    <Image src={`${Taro.$cdnUrl}/index/index_icon36.webp`}></Image>
-                    <View className='option_item_text3'>已入职</View>
-                </View>
-                {
-                    currentCliskstatus === '已入职' &&
-                    <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
-                }
-            </View>
-        )
-    }
-
-    const OptionItem4 = () => {
-        return (
-            <View className='item_status_option_item' onClick={() => setCurrentCliskstatus('已离职')}>
-                <View className='option_item_icon'>
-                    <Image src={`${Taro.$cdnUrl}/index/index_icon39.webp`}></Image>
-                    <View className='option_item_text4'>已离职</View>
-                </View>
-                {
-                    currentCliskstatus === '已离职' &&
-                    <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
-                }
-            </View>
-        )
-    }
-
     const setCurrentIndex = (type) => {
-        setShowbottomOptions(false);
         if (type === "add") {
             if (current === totalPerson) return;
             // setCurrent(current => current + 1);
@@ -168,7 +103,6 @@ const Index = observer(({ store }) => {
             getOherClient(current * 1 - 1);
         }
     }
-
 
     const getOherClient = async (_current) => {
         const { type } = route.params;   // type=1 驻场-名单进入
@@ -189,24 +123,19 @@ const Index = observer(({ store }) => {
         }
     }
 
-    const changeStatus = (e, reason) => {
-        console.log("changeStatus", e, reason);
+    const changeStatus = (e, _reason) => {
+        console.log("changeStatus", e, _reason);
         const { notEdit } = route.params;
         if (notEdit) {
             return Taro.showToast({ title: '您无法修改该数据', icon: 'none' });
         }
-        setCurrentCliskstatus(e);
         Taro.showLoading({ title: '提交中...' });
         let params = {
             uuid: clientInfos.uuid,
             seekState: e
         }
-        if (reason) {
-            if (e === 'INTERVIEW_FAILED') {
-                params.failReason = reason;
-            } else if (e === 'RESIGN') {
-                params.resignReason = reason;
-            }
+        if (_reason) {
+            params.failReason = _reason;
         }
         updateInterviewer(params).then(res => {
             Taro.hideLoading();
@@ -264,6 +193,11 @@ const Index = observer(({ store }) => {
         })
     }
 
+    const newEditStatusFunc = (status, failReason) => {
+        console.log("newEditStatusFunc", status, failReason);
+        changeStatus(status, failReason);
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='rgba(237,243,254)' title='客户详情'></Navbar>
@@ -315,90 +249,11 @@ const Index = observer(({ store }) => {
                 }
             </View>
 
-            <View style={`height:200rpx;`}></View>
-
-            <Block>
-                {
-                    // showbottomOptions &&
-                    // <View className='footer_wrapper_options' style={`bottom:${bottomHeight}px;`}>
-                    //     <OptionItem1></OptionItem1>
-                    //     <OptionItem2></OptionItem2>
-                    //     <OptionItem3></OptionItem3>
-                    //     <OptionItem4></OptionItem4>
-                    // </View>
-                }
-            </Block>
-
-            <Block>
-                {/* <View className='footer_options' style={`bottom:${bottomHeight}px;`}>
-                    <View className='footer_options_item' onClick={() => setCurrentCliskstatus('未到面')}>
-                        <View className='footer_options_item_icon'>
-                            <Image src={`${Taro.$cdnUrl}/index/index_icon42.webp`}></Image>
-                            <View>未到面</View>
-                        </View>
-                        {
-                            currentCliskstatus === '未到面' &&
-                            <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
-                        }
-                    </View>
-                    <View className='footer_options_item' onClick={() => setCurrentCliskstatus('已到面')}>
-                        <View className='footer_options_item_icon'>
-                            <Image src={`${Taro.$cdnUrl}/index/index_icon43.webp`}></Image>
-                            <View style={{ color: '#1678FF' }}>已到面</View>
-                        </View>
-                        {
-                            currentCliskstatus === '已到面' &&
-                            <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
-                        }
-                    </View>
-
-                    <View className='footer_options_item' onClick={() => setCurrentCliskstatus('面试失败')}>
-                        <View className='footer_options_item_icon'>
-                            <Image src={`${Taro.$cdnUrl}/index/index_icon44.webp`}></Image>
-                            <View style={{ color: '#F00000' }}>面试失败</View>
-                        </View>
-                        {
-                            currentCliskstatus === '面试失败' &&
-                            <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
-                        }
-                    </View>
-                    <View className='footer_options_item' onClick={() => setCurrentCliskstatus('面试通过')}>
-                        <View className='footer_options_item_icon'>
-                            <Image src={`${Taro.$cdnUrl}/index/index_icon37.webp`}></Image>
-                            <View style={{ color: '#FF6B17' }}>面试通过</View>
-                        </View>
-                        {
-                            currentCliskstatus === '面试通过' &&
-                            <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
-                        }
-                    </View>
-
-                    <View className='footer_options_item' onClick={() => setCurrentCliskstatus('已离职')}>
-                        <View className='footer_options_item_icon'>
-                            <Image src={`${Taro.$cdnUrl}/index/index_icon39.webp`}></Image>
-                            <View>已离职</View>
-                        </View>
-                        {
-                            currentCliskstatus === '已离职' &&
-                            <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
-                        }
-                    </View>
-                    <View className='footer_options_item' onClick={() => setCurrentCliskstatus('已入职')}>
-                        <View className='footer_options_item_icon'>
-                            <Image src={`${Taro.$cdnUrl}/index/index_icon36.webp`}></Image>
-                            <View style={{ color: '#04B400' }}>已入职</View>
-                        </View>
-                        {
-                            currentCliskstatus === '已入职' &&
-                            <Image className='option_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image>
-                        }
-                    </View>
-                </View> */}
-            </Block>
+            <View style='height:200rpx;'></View>
 
             <View className='bottom_wrapper'>
                 <View className='bottom_wrapper_con'>
-                    <View className='' style={`height:16rpx`}></View>
+                    <View className='' style='height:16rpx;'></View>
                     {
                         (clientInfos && (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'CONTACT')) &&
                         <View className='create_interview_pedding'>
@@ -412,7 +267,7 @@ const Index = observer(({ store }) => {
                                 if (!myPermissions.includes('14')) {
                                     return Taro.showToast({ title: '暂无权限', icon: 'none' });
                                 } else {
-                                    setShowbottomOptions(!showbottomOptions)
+                                    setShowEditStatus(true);
                                 }
                             }}>修改状态</View>
                             <View className='count_wrap'>
@@ -425,16 +280,6 @@ const Index = observer(({ store }) => {
                     <View style={`height:${bottomSafeAreaHeight}px`}></View>
 
                     <View className='options_x'>
-                        {
-                            clientInfos &&
-                            <UpdateStatus
-                                onClose={() => setShowbottomOptions(false)}
-                                showPicker={showbottomOptions}
-                                currentStatus={clientInfos.seekState}
-                                bottomHeight={bottomHeight}
-                                onChange={changeStatus}>
-                            </UpdateStatus>
-                        }
                     </View>
                 </View>
             </View>
@@ -481,6 +326,11 @@ const Index = observer(({ store }) => {
                     </AtFloatLayout>
                 }
 
+            </Block>
+
+            {/* 新的修改状态 */}
+            <Block>
+                <NewUpdateStatus showPicker={showEditStatus} currentStatus={clientInfos?.seekState} onClose={() => { setShowEditStatus(false) }} onChange={newEditStatusFunc}></NewUpdateStatus>
             </Block>
         </View>
     )

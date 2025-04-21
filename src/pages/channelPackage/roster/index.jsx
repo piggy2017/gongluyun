@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-14 16:15:22
+ * @LastEditTime: 2025-04-21 16:24:35
  * @Description: 
  */
 
@@ -15,8 +15,8 @@ import { AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import './index.scss'
 
-import UpdateStatus from '@/components/updateStatus';
 import CustomDate from '@/components/customDate';
+import NewUpdateStatus from '@/components/newUpdateStatus';
 
 import { contractsgetRoster, updateInterviewer, batchUpdateInterviewer, downloadRoster } from '@/util/api';
 
@@ -44,10 +44,21 @@ const Index = observer(({ store }) => {
     const [list, setList] = useState([]);
 
     const [tabList, setTabList] = useState([
-        { state: '', name: "全部" }, { state: 'SCHEDULED_INTERVIEW', name: "已约面" },
-        { state: 'ARRIVE_INTERVIEW', name: "已到面" }, { state: 'INTERVIEW_PASSED', name: "面试通过" },
-        { state: 'INTERVIEW_FAILED', name: "面试失败" }, { state: 'EMPLOYED', name: "已入职" },
-        { state: 'RESIGN', name: "已离职" }]);
+        { state: '', name: "全部" }, { name: '待处理', state: 'PENDING', },
+        { name: '已联系', state: 'CONTACT', },
+        { name: '不合适', state: 'UNSUITABLE', },
+        { name: "已约面", state: "SCHEDULED_INTERVIEW", },
+        { name: '未到面', state: 'NOT_INTERVIEW', },
+        { name: '已签到', state: 'ARRIVE_INTERVIEW', },
+        { name: '待定', state: 'UNDETERMINED', },
+        { name: '名单满储备下次', state: 'FULL', },
+        { name: '名单审核不通过', state: 'REVIEW_NOT_PASSED', },
+        { name: '面试失败', state: 'INTERVIEW_FAILED', },
+        { name: '面试通过', state: 'INTERVIEW_PASSED', },
+        { name: '中途放弃', state: 'GIVE_HALFWAY', },
+        { name: '已入职', state: 'EMPLOYED', },
+        { name: '已离职', state: 'RESIGN', },
+        { name: '可结算', state: 'SETTLEMENT', }]);
     const [currentTabIndex, setCurrentTabIndex] = useState(0);           // 当前选中的tab
     const [currentCliskstatus, setCurrentCliskstatus] = useState('');
     const [batchOperations, setBatchOperations] = useState(false);       // 是否进行批量操作
@@ -67,6 +78,7 @@ const Index = observer(({ store }) => {
     });
     const [showPatternModel, setShowPatternModel] = useState(false);
     const [currentPattren, setCurrentPattren] = useState('');
+    const [showEditStatus, setShowEditStatus] = useState(false);
 
     useEffect(() => {
         return () => {
@@ -175,14 +187,8 @@ const Index = observer(({ store }) => {
     const showOptionFunc = (e, obj, index) => {
         if (batchOperations) return;
         e.stopPropagation();
+        setShowEditStatus(true);
         setEditCustom(obj);
-        setList(list => {
-            let _list = list.map((item, i) => {
-                item.showOptions = i === index ? !item.showOptions : false
-                return item
-            })
-            return _list
-        })
     }
 
     const callUser = (e, obj) => {
@@ -211,7 +217,8 @@ const Index = observer(({ store }) => {
 
     const editBtnFunc = () => {   // 点击下方的修改状态按钮
         if (chooseList.length > 0) {
-            setShowbottomOptions(!showbottomOptions);
+            setShowEditStatus(true);
+            setEditCustom({})
         }
     }
 
@@ -244,11 +251,6 @@ const Index = observer(({ store }) => {
         setDateObj(e);
     }
 
-    const sourcePickerSelect = (e) => {    // 选择来源的回调
-        console.log("source", e);
-        setSourceObj(e);
-    }
-
     const goAddWorker = () => {
         const { recruitSerialCode, title } = route.params;
         Taro.navigateTo({ url: `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${recruitSerialCode}&title=${title}` })
@@ -262,11 +264,7 @@ const Index = observer(({ store }) => {
             seekState: e
         }
         if (reason) {
-            if (e === 'INTERVIEW_FAILED') {
-                params.failReason = reason;
-            } else if (e === 'RESIGN') {
-                params.resignReason = reason;
-            }
+            params.failReason = reason;
         }
 
         Taro.showLoading({ title: '提交中...' });
@@ -293,11 +291,7 @@ const Index = observer(({ store }) => {
                 seekState: e
             }
             if (reason) {
-                if (e === 'INTERVIEW_FAILED') {
-                    obj.failReason = reason;
-                } else if (e === 'RESIGN') {
-                    obj.resignReason = reason;
-                }
+                obj.failReason = reason;
             }
             return obj
         })
@@ -314,10 +308,6 @@ const Index = observer(({ store }) => {
                 Taro.showToast({ title: res.msg, icon: 'none' })
             }
         })
-    }
-
-    const exportFunc = () => {
-        setShowExportModel(true);
     }
 
     const exportAllFunc = async () => {
@@ -393,7 +383,7 @@ const Index = observer(({ store }) => {
         if (chooseList.length === 0) {
             return Taro.showToast({ title: '请先选择用户', icon: 'none' });
         }
-        if(JSON.parse(route.params.cooperationModels).length===0){
+        if (JSON.parse(route.params.cooperationModels).length === 0) {
             return Taro.showToast({ title: '当前项目暂无合作模式', icon: 'none' });
         }
         setShowPatternModel(true);
@@ -423,6 +413,15 @@ const Index = observer(({ store }) => {
                 Taro.showToast({ title: res.msg, icon: 'none' })
             }
         })
+    }
+
+    const newEditStatusFunc = (status, failReason) => {
+        console.log("newEditStatusFunc", status, failReason);
+        if (batchOperations) {     // 批量修改
+            changeStatusBatch(status, failReason);
+        } else {                   // 单个修改
+            changeStatus(status, failReason);
+        }
     }
 
     return (
@@ -554,21 +553,9 @@ const Index = observer(({ store }) => {
                                             <AtIcon value='chevron-down' size='14' color={getColor(item.seekState)}></AtIcon>
                                         }
                                     </View>
-                                    {
-                                        item.showOptions &&
-                                        <View className='item_status_options'>
-                                            <UpdateStatus
-                                                type={2}
-                                                showPicker={item.showOptions}
-                                                onClose={() => setShowbottomOptions(false)}
-                                                currentStatus={item.seekState}
-                                                onChange={changeStatus}>
-                                            </UpdateStatus>
-                                        </View>
-                                    }
                                 </View>
                                 {
-                                    item.sourceDesc &&  <View className='roster_item_time'>来源：{item.sourceDesc}</View>
+                                    item.sourceDesc && <View className='roster_item_time'>来源：{item.sourceDesc}</View>
                                 }
                                 <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
                                 {
@@ -594,48 +581,12 @@ const Index = observer(({ store }) => {
                 }
             </ScrollView>
 
-            <Block>
-                {
-                    // showExportModel &&
-                    // <View className='export_model'>
-                    //     <View className='export_model_content'>
-                    //         <Image onClick={() => setShowExportModel(false)} className='export_model_close' src={`${Taro.$cdnUrl}/index/index_icon54.webp`}></Image>
-                    //         <View className='export_model_title'>导出全部名单</View>
-                    //         <Image className='export_model_img' onClick={() => exportAllFunc()} src={`${Taro.$cdnUrl}/index/index_icon53.webp`}></Image>
-                    //         {
-                    //             rosterFilterSupplier.userSerialCode ? <Button open-type='share' className='export_model_btn'>导出为小程序页面</Button> :
-                    //                 <Button className='export_model_btn' onClick={() => {
-                    //                     Taro.showToast({
-                    //                         title: '请选择具体的供应商',
-                    //                         icon: 'none',
-                    //                     })
-                    //                     // setShowExportModel(false);
-                    //                 }}>导出为小程序页面</Button>
-                    //         }
-
-                    //     </View>
-                    // </View>
-                }
-            </Block>
-
             {/* 底部操作栏 */}
             <Block>
                 {
                     batchOperations &&
                     <View className='footer_wrapper'>
                         <View className='footer_wrapper_top' style={`height:16rpx;`}>
-                            {
-                                showbottomOptions &&
-                                <View className='footer_wrapper_top_position'>
-                                    <UpdateStatus
-                                        type={2}
-                                        showPicker={showbottomOptions}
-                                        onClose={() => setShowbottomOptions(false)}
-                                        // currentStatus={currentCliskstatus}
-                                        onChange={changeStatusBatch}>
-                                    </UpdateStatus>
-                                </View>
-                            }
                         </View>
                         <View className='footer_wrapper_content'>
                             <View className='footer_wrapper_left' onClick={() => chooeAllFunc()}>
@@ -659,6 +610,11 @@ const Index = observer(({ store }) => {
                         <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                     </View>
                 }
+            </Block>
+
+            {/* 新的修改状态 */}
+            <Block>
+                <NewUpdateStatus showPicker={showEditStatus} currentStatus={editCustom?.seekState} onClose={() => { setShowEditStatus(false) }} onChange={newEditStatusFunc}></NewUpdateStatus>
             </Block>
 
             {/* 筛选日期组件 */}

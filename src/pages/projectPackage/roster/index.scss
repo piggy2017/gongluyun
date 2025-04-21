@@ -292,6 +292,10 @@
                     font-style: normal;
                     font-weight: 500;
                     line-height: normal;
+
+                    view {
+                        width: 120rpx;
+                    }
                 }
 
                 .item_status_options {
@@ -333,7 +337,8 @@
                 background-color: #0000000a;
                 margin: 12rpx auto 0 auto;
             }
-            .roster_item_source{
+
+            .roster_item_source {
                 color: #999999;
                 font-family: "PingFang SC";
                 font-size: 28rpx;
@@ -582,4 +587,5 @@
             }
         }
     }
+
 }

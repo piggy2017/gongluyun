@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-17 18:05:28
+ * @LastEditTime: 2025-04-21 16:45:37
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -16,11 +16,10 @@ import "taro-ui/dist/style/components/float-layout.scss";
 
 import Navbar from '@/components/navbar';
 import WorkerInfo from '@/components/workerInfo';
-import DatePicker from '@/components/datePicker'
-import UpdateStatus from '@/components/updateStatus';
+import NewUpdateStatus from '@/components/newUpdateStatus';
 import './index.scss'
 
-import { cluegetUserInfo, updateInterviewer, clueStateFlow, cluemyClients, contractsgetRoster, unsuitable } from '@/util/api'
+import { cluegetUserInfo, updateInterviewer, clueStateFlow, unsuitable } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
@@ -30,13 +29,9 @@ const Index = observer(({ store }) => {
         userStore: { myPermissions, role },
     } = store
 
-    const [bottomHeight, setBottomHeight] = useState(90);
     const [uuid, setUuid] = useState('');
-
     const [trackList, setTrackList] = useState([]);    // 用户轨迹历史记录
 
-    const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示底部的操作选项
-    const [currentCliskstatus, setCurrentCliskstatus] = useState('面试失败');
     const [clientInfos, setClientInfos] = useState(null);
     const [reason, setReason] = useState('');
     const [showReason, setShowReason] = useState(false);
@@ -44,13 +39,7 @@ const Index = observer(({ store }) => {
     const [showPatternModel, setShowPatternModel] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [currentCooperationModel, setCurrentCooperationModel] = useState('');
-
-    // useDidShow(() => {
-    //     if (clientInfos && clientInfos.uuid) {
-    //         getClientDetail(clientInfos.uuid, clientInfos.phone);
-    //         getHistoryList(clientInfos.uuid);
-    //     }
-    // })
+    const [showEditStatus, setShowEditStatus] = useState(false);
 
     useEffect(() => {
         const { uid, phone } = route.params;
@@ -89,20 +78,15 @@ const Index = observer(({ store }) => {
         }
     }
 
-    const changeStatus = (e, reason) => {
-        console.log("changeStatus", e, reason);
-        setCurrentCliskstatus(e);
+    const changeStatus = (e, _reason) => {
+        console.log("changeStatus", e, _reason);
         Taro.showLoading({ title: '提交中...' });
         let params = {
             uuid: clientInfos.uuid,
             seekState: e
         }
-        if (reason) {
-            if (e === 'INTERVIEW_FAILED') {
-                params.failReason = reason;
-            } else if (e === 'RESIGN') {
-                params.resignReason = reason;
-            }
+        if (_reason) {
+            params.failReason = _reason;
         }
         updateInterviewer(params).then(res => {
             Taro.hideLoading();
@@ -167,6 +151,11 @@ const Index = observer(({ store }) => {
                 Taro.showToast({ title: res.msg, icon: 'none' });
             }
         })
+    }
+
+    const newEditStatusFunc = (status, failReason) => {
+        console.log("newEditStatusFunc", status, failReason);
+        changeStatus(status, failReason);
     }
 
     return (
@@ -241,11 +230,11 @@ const Index = observer(({ store }) => {
                 }
             </View>
 
-            <View style={`height:200rpx;`}></View>
+            <View style='height:200rpx;'></View>
 
             <View className='bottom_wrapper'>
                 <View className='bottom_wrapper_con'>
-                    <View className='' style={`height:16rpx`}></View>
+                    <View className='' style='height:16rpx'></View>
                     {
                         (clientInfos && (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'CONTACT')) &&
                         <View className='create_interview_pedding'>
@@ -259,27 +248,21 @@ const Index = observer(({ store }) => {
                                 if (!myPermissions.includes('14')) {
                                     return Taro.showToast({ title: '暂无权限', icon: 'none' });
                                 } else {
-                                    setShowbottomOptions(!showbottomOptions)
+                                    setShowEditStatus(true);
                                 }
                             }}>修改状态</View>
                         </View>
                     }
                     <View style={`height:${bottomSafeAreaHeight}px`}></View>
 
-                    <View className='options_x'>
-                        {
-                            clientInfos &&
-                            <UpdateStatus
-                                onClose={() => setShowbottomOptions(false)}
-                                showPicker={showbottomOptions}
-                                currentStatus={clientInfos.seekState}
-                                bottomHeight={bottomHeight}
-                                onChange={changeStatus}>
-                            </UpdateStatus>
-                        }
-                    </View>
+                    <View className='options_x'></View>
                 </View>
             </View>
+
+            {/* 新的修改状态 */}
+            <Block>
+                <NewUpdateStatus showPicker={showEditStatus} currentStatus={clientInfos?.seekState} onClose={() => { setShowEditStatus(false) }} onChange={newEditStatusFunc}></NewUpdateStatus>
+            </Block>
 
             <Block>
                 {
@@ -322,7 +305,6 @@ const Index = observer(({ store }) => {
                         </View>
                     </AtFloatLayout>
                 }
-
             </Block>
 
             <Block>

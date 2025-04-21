@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 12:30:13
+ * @LastEditTime: 2025-04-21 09:34:12
  * @Description: 
  */
 
@@ -417,6 +417,9 @@ const Index = observer(({ store }) => {
   const copyFunc = (text, type) => {
     let _text = '';
     if (type) {    // 复制面试相关信息
+      if(detail.interviewInfo){
+        _text += detail.interviewInfo.interviewContactName + ' ' + detail.interviewInfo.interviewContactPhone + '\n'
+      }
       if (detail.interviewInfos?.length > 0) {
         detail.interviewInfos.forEach(element => {
           _text += element.interviewContactName + ' ' + element.interviewContactPhone + '\n'
