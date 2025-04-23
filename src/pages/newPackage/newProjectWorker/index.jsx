@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 20:02:33
+ * @LastEditTime: 2025-04-22 14:41:37
  * @Description: 
  */
 
@@ -148,6 +148,7 @@ const Index = observer(({ store }) => {
         forceUpdate();
     }
 
+    
     const saveWorker = async () => {
         const { recruitSerialCode } = route.params;
         let list = arrangList.map(item => {

@@ -489,6 +489,8 @@ export const getStatus = (status, type) => {
             return '面试失败';
         case 'GIVE_HALFWAY':
             return '中途放弃';
+        case 'NOT_EMPLOYED':
+            return '未入职';
         case 'EMPLOYED':
             return '已入职';
         case 'RESIGN':
@@ -524,6 +526,8 @@ export const getColor = (status) => {
             return '#F00000';
         case 'GIVE_HALFWAY':
             return '#666666';
+        case 'NOT_EMPLOYED':
+            return '#03BFBF';
         case 'EMPLOYED':
             return '#04B400';
         case 'RESIGN':

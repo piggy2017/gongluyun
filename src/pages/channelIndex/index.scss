@@ -94,8 +94,42 @@
         }
     }
 
+    .btns {
+        margin-top: 44rpx;
+        padding: 0 128rpx 0 148rpx;
+        @include flex-center(space-between);
+
+        .btns_item {
+            margin: 0;
+            padding: 0;
+            border: none;
+            background-color: transparent;
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: center;
+            justify-content: center;
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 26rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+
+            image {
+                width: 84rpx;
+                height: 84rpx;
+                flex-shrink: 0;
+                margin-bottom: 4rpx;
+            }
+
+            &::after {
+                border: none;
+            }
+        }
+    }
+
     .supplier_title {
-        padding: 53rpx 28rpx 28rpx 28rpx;
+        padding: 44rpx 28rpx 28rpx 28rpx;
         @include flex-center(space-between);
         color: #222222;
         font-family: "PingFang SC";

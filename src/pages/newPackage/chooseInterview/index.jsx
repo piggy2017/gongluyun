@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 19:54:07
+ * @LastEditTime: 2025-04-22 10:14:36
  * @Description: 
  */
 
@@ -62,7 +62,7 @@ const Index = observer(({ store }) => {
             let params = {
                 recruitSerialCode,
                 serialCode,
-                interviewInfo: { userSerialCode, name, phone }
+                interviewInfo: { interviewContactInfo: userSerialCode, interviewContactName: name, interviewContactPhone: phone }
             }
             updateContracts(params).then(res => {
                 if (res.code === 200) {
@@ -131,7 +131,7 @@ const Index = observer(({ store }) => {
 
     return (
         <View className='container'>
-            <Navbar fixed placeholder bgColor='transparent' title='设置驻场'></Navbar>
+            <Navbar fixed placeholder bgColor='transparent' title='设置面试联系人'></Navbar>
 
             <ScrollView
                 scrollY

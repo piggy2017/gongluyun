@@ -272,6 +272,7 @@
                         font-style: normal;
                         font-weight: 500;
                         line-height: normal;
+                        text-align: center;
 
                         view {
                             width: 120rpx;
@@ -292,6 +293,19 @@
                         font-weight: 500;
                         line-height: 60rpx;
                     }
+                }
+
+                .item_title_copy {
+                    color: #1678ff;
+                    text-align: right;
+                    font-family: "PingFang SC";
+                    font-size: 26rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    position: absolute;
+                    right: 24rpx;
+                    top: 0rpx;
                 }
             }
 

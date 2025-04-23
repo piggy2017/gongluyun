@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-21 11:02:52
+ * @LastEditTime: 2025-04-22 16:08:04
  * @Description: 
  */
 
@@ -263,6 +263,11 @@ export const updateContracts = params => { // 编辑项目
 }
 export const contractsJobSelector = params => { // 项目筛选列表
     return http(API_BASE_URL + '/contracts/jobSelector', params, "POST", {
+        "Content-Type": "application/json"
+    });
+}
+export const jobSelectorByPossess = params => { // 驻场-名单-项目筛选列表
+    return http(API_BASE_URL + '/contracts/jobSelectorByPossess', params, "POST", {
         "Content-Type": "application/json"
     });
 }
@@ -575,4 +580,7 @@ export const getRecruitCompany = params => { //【411】根据公司名称获取
 
 export const downloadClients = params => { // 我的客户导出功能
     return http(API_BASE_URL + '/clue/downloadClients', params, "POST", { "Content-Type": "application/json" });
+};
+export const batchUpdateSupplier = params => { // 渠道给求职者批量设置供应商
+    return http(API_BASE_URL + '/interview/batchUpdateSupplier', params, "POST", { "Content-Type": "application/json" });
 };

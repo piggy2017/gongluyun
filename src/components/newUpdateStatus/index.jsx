@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-23 11:41:37
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-21 16:17:43
+ * @LastEditTime: 2025-04-23 14:09:59
  * @Description: 更改用户状态  未到面 已到面 面试失败 面试通过 已离职 已入职
  */
 
@@ -26,7 +26,7 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
 
     const [showModel, setShowModel] = useState(false);
     const [failReason, setFailReason] = useState(''); // 面试失败原因
-    const [modelTitle, setModelTitle] = useState(''); // 
+    const [modelTitle, setModelTitle] = useState(''); //
 
     const [statusList, setStatusList] = useState([])
 
@@ -43,9 +43,11 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
         { name: '面试失败', state: 'INTERVIEW_FAILED', },
         { name: '面试通过', state: 'INTERVIEW_PASSED', },
         { name: '中途放弃', state: 'GIVE_HALFWAY', },
+        { name: '未入职', state: 'NOT_EMPLOYED', },
         { name: '已入职', state: 'EMPLOYED', },
         { name: '已离职', state: 'RESIGN', },
-        { name: '可结算', state: 'SETTLEMENT', },]
+            // { name: '可结算', state: 'SETTLEMENT', },
+        ]
         let _statusList = [];
         if (role === 'ADMIN') {
             _statusList = list;
@@ -155,7 +157,7 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
                                             confirmType='return'
                                             value={failReason}
                                             onInput={(e) => setFailReason(e.detail.value)}
-                                            adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                                            adjustPosition={true} //键盘弹起时，是否自动上推页面
                                             showConfirmBar={false}
                                             maxlength={50}
                                             autoHeight

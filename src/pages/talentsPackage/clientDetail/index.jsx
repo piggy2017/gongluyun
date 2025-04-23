@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-21 16:50:01
+ * @LastEditTime: 2025-04-22 10:25:41
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -183,7 +183,7 @@ const Index = observer(({ store }) => {
     const goInterview = () => {
         const { notEdit } = route.params;
         if (notEdit) {
-            return Taro.showToast({ title: '您无法修改该数据', icon: 'none' });
+            return Taro.showToast({ title: '您无法安排面试', icon: 'none' });
         }
         if (!myPermissions.includes('14')) {
             return Taro.showToast({ title: '暂无权限', icon: 'none' });
@@ -267,7 +267,23 @@ const Index = observer(({ store }) => {
                                 if (!myPermissions.includes('14')) {
                                     return Taro.showToast({ title: '暂无权限', icon: 'none' });
                                 } else {
-                                    setShowEditStatus(true);
+                                    // setShowEditStatus(true);
+                                    if (role === 'CUSTOMER') {
+                                        if (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'CONTACT' || clientInfos.seekState === 'UNSUITABLE') {
+                                            setShowEditStatus(true);
+                                        } else {
+                                            Taro.showToast({ title: '您无法修改', icon: 'none' });
+                                        }
+                                    } else if (role === 'ON_SITE' || role === 'CHANNEL') {
+                                        if (clientInfos.seekState != 'PENDING' && clientInfos.seekState != 'CONTACT' && clientInfos.seekState != 'UNSUITABLE') {
+                                            setShowEditStatus(true);
+                                        } else {
+                                            Taro.showToast({ title: '您无法修改', icon: 'none' });
+                                        }
+                                    }
+                                    else {
+                                        setShowEditStatus(true);
+                                    }
                                 }
                             }}>修改状态</View>
                             <View className='count_wrap'>

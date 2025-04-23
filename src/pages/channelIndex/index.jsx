@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 19:19:54
+ * @LastEditTime: 2025-04-22 14:09:23
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -47,7 +47,6 @@ const Index = observer(({ store }) => {
         let params = {
             pageNo: _pageNo,
             pageSize,
-            // userSerialCode: userInfo.userSerialCode,
             companySerialCode: companyInfo.companySerialCode,
             supplierSerialCode: '',
             searchInfo: searchValue
@@ -86,7 +85,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 230rpx)`;
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 360rpx)`;
     }
 
     Taro.useShareAppMessage(res => {
@@ -140,12 +139,25 @@ const Index = observer(({ store }) => {
                     value={searchValue}></Input>
             </View>
 
+            <View className='btns'>
+                <View className='btns_item' onClick={()=>{
+                    Taro.navigateTo({ url: `/pages/channelPackage/newInterviewWorker/index` })
+                }}>
+                    <Image src={`${Taro.$cdnUrl}/supplier/supplier_97.webp`}></Image>
+                    <View>面试录入</View>
+                </View>
+                <Button open-type='share' className='btns_item'>
+                    <Image src={`${Taro.$cdnUrl}/supplier/supplier_96.webp`}></Image>
+                    <View>邀请供应商</View>
+                </Button>
+            </View>
+
             <View className='supplier_title'>
                 <View>我的供应商</View>
-                <Button open-type='share' className='supplier_title_right'>
+                {/* <Button open-type='share' className='supplier_title_right'>
                     <Image src={`${Taro.$cdnUrl}/supplier/supplier_6.webp`}></Image>
                     <View>邀请供应商加入</View>
-                </Button>
+                </Button> */}
             </View>
 
             <ScrollView

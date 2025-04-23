@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-21 16:00:22
+ * @LastEditTime: 2025-04-22 16:35:38
  * @Description: 
  */
 
@@ -53,9 +53,10 @@ const Index = observer(({ store }) => {
     { name: '面试失败', state: 'INTERVIEW_FAILED', },
     { name: '面试通过', state: 'INTERVIEW_PASSED', },
     { name: '中途放弃', state: 'GIVE_HALFWAY', },
+    { name: '未入职', state: 'NOT_EMPLOYED', },
     { name: '已入职', state: 'EMPLOYED', },
     { name: '已离职', state: 'RESIGN', },
-    { name: '可结算', state: 'SETTLEMENT', },
+    // { name: '可结算', state: 'SETTLEMENT', },
   ]);
   const [currentTab, setCurrentTab] = useState(0);
   const [batchOperations, setBatchOperations] = useState(false);       // 是否进行批量操作
@@ -398,6 +399,30 @@ const Index = observer(({ store }) => {
     }
   })
 
+  const copyFunc = (e, obj) => {
+    console.log("obj", obj)
+    e.stopPropagation();
+    let _sex = obj.sex === 0 ? '男' : obj.sex === 1 ? '女' : ''
+    let _text = '';
+    _text += '姓名:' + obj.name + '\n'
+    _text += '手机号码:' + obj.phone + '\n'
+    _text += '年龄:' + obj.age + '\n'
+    _text += '性别:' + _sex + '\n'
+    _text += '身份证号:' + (obj.idCardNo ? obj.idCardNo : '') + '\n'
+    _text += '面试时间:' + obj.interviewDate + '\n'
+
+    console.log("复制的内容:", _text);
+    Taro.setClipboardData({
+      data: _text,
+      success: () => {
+        Taro.showToast({
+          title: '复制成功',
+          icon: 'none'
+        })
+      }
+    })
+  }
+
   return (
     <View className='container'>
       <View className='my_header'>
@@ -495,6 +520,7 @@ const Index = observer(({ store }) => {
                         <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
                         <View className='item_title_phone' onClick={(e) => callUser(e, item)}>{item.phone}</View>
                       </View>
+
                     </View>
                     <View className='roster_item_detail'>
                       <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.idCardNo) ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
@@ -515,6 +541,8 @@ const Index = observer(({ store }) => {
                       </View>
                     }
                   </View>
+
+                  <View className='item_title_copy' onClick={(e) => copyFunc(e, item)}>一键复制</View>
                 </View>
                 {
                   batchOperations && <Image className='roster_item_choose' src={`${Taro.$cdnUrl}/index/index_icon2${item.isChoosed ? 7 : 8}.webp`}></Image>

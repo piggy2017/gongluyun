@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-16 16:37:03
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-21 13:46:41
+ * @LastEditTime: 2025-04-21 17:40:17
  * @Description: 
  */
 
@@ -39,9 +39,10 @@ const StatusPicker = observer(({ onChange, showPicker, onClose, initData, store 
         { name: '面试失败', state: 'INTERVIEW_FAILED', },
         { name: '面试通过', state: 'INTERVIEW_PASSED', },
         { name: '中途放弃', state: 'GIVE_HALFWAY', },
+        { name: '未入职', state: 'NOT_EMPLOYED', },
         { name: '已入职', state: 'EMPLOYED', },
         { name: '已离职', state: 'RESIGN', },
-        { name: '可结算', state: 'SETTLEMENT', },
+        // { name: '可结算', state: 'SETTLEMENT', },
     ])
 
     useEffect(() => {

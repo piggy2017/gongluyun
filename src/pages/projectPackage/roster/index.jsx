@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-21 16:40:10
+ * @LastEditTime: 2025-04-21 17:30:13
  * @Description: 
  */
 
@@ -57,9 +57,11 @@ const Index = observer(({ store }) => {
         { name: '面试失败', state: 'INTERVIEW_FAILED', },
         { name: '面试通过', state: 'INTERVIEW_PASSED', },
         { name: '中途放弃', state: 'GIVE_HALFWAY', },
+        { name: '未入职', state: 'NOT_EMPLOYED', },
         { name: '已入职', state: 'EMPLOYED', },
         { name: '已离职', state: 'RESIGN', },
-        { name: '可结算', state: 'SETTLEMENT', }]);
+        // { name: '可结算', state: 'SETTLEMENT', }
+    ]);
     const [currentTabIndex, setCurrentTabIndex] = useState(0);           // 当前选中的tab
     const [batchOperations, setBatchOperations] = useState(false);       // 是否进行批量操作
     const [chooseAll, setChooseAll] = useState(false);                   // 全选反选
@@ -188,8 +190,25 @@ const Index = observer(({ store }) => {
     const showOptionFunc = (e, obj, index) => {
         if (batchOperations) return;
         e.stopPropagation();
-        setShowEditStatus(true);
-        setEditCustom(obj);
+        if (role === 'CUSTOMER') {
+            if (obj.seekState === 'PENDING' || obj.seekState === 'CONTACT' || obj.seekState === 'UNSUITABLE') {
+                setShowEditStatus(true);
+                setEditCustom(obj);
+            } else {
+                Taro.showToast({ title: '您无法修改', icon: 'none' });
+            }
+        } else if (role === 'ON_SITE') {
+            if (obj.seekState != 'PENDING' && obj.seekState != 'CONTACT' && obj.seekState != 'UNSUITABLE') {
+                setShowEditStatus(true);
+                setEditCustom(obj);
+            } else {
+                Taro.showToast({ title: '您无法修改', icon: 'none' });
+            }
+        }
+        else {
+            setShowEditStatus(true);
+            setEditCustom(obj);
+        }
     }
 
     const callUser = (e, obj) => {
@@ -383,9 +402,9 @@ const Index = observer(({ store }) => {
 
     const newEditStatusFunc = (status, failReason) => {
         console.log("newEditStatusFunc", status, failReason);
-        if(batchOperations){     // 批量修改
+        if (batchOperations) {     // 批量修改
             changeStatusBatch(status, failReason);
-        }else{                   // 单个修改
+        } else {                   // 单个修改
             changeStatus(status, failReason);
         }
     }
@@ -587,7 +606,7 @@ const Index = observer(({ store }) => {
                     batchOperations &&
                     <View className='footer_wrapper'>
                         <View className='footer_wrapper_top' style={`height:16rpx;`}>
-                            
+
                         </View>
                         <View className='footer_wrapper_content'>
                             <View className='footer_wrapper_left' onClick={() => chooeAllFunc()}>

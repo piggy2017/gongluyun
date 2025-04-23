@@ -218,9 +218,9 @@
 
         .roster_item {
             flex-shrink: 0;
-            height: 200rpx;
+            // height: 200rpx;
             box-sizing: border-box;
-            padding: 30rpx 40rpx 30rpx 68rpx;
+            padding: 24rpx 40rpx 24rpx 68rpx;
             border-bottom: 1rpx solid #0000000a;
             position: relative;
 
@@ -311,6 +311,11 @@
                     font-style: normal;
                     font-weight: 500;
                     line-height: normal;
+                    text-align: center;
+
+                    view {
+                        width: 120rpx;
+                    }
                 }
 
                 .item_status_options {
@@ -361,6 +366,7 @@
                 font-style: normal;
                 font-weight: 400;
                 line-height: normal;
+                margin-bottom: 8rpx;
             }
         }
     }

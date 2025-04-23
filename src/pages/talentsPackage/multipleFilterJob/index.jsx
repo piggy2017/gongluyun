@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-17 15:41:15
+ * @LastEditTime: 2025-04-22 11:28:19
  * @Description: 
  */
 
@@ -15,7 +15,7 @@ import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce, throttleCustom } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
-import { contractsJobSelector } from '@/util/api'
+import { contractsJobSelector,jobSelectorByPossess } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
@@ -67,7 +67,7 @@ const Index = observer(({ store }) => {
             searchInfo: searchValue
         }
 
-        const { code, data } = await contractsJobSelector(params);
+        const { code, data } = await (router.params.type == 5 ? jobSelectorByPossess(params) : contractsJobSelector(params));
         console.log("getClueList", code, data);
         Taro.hideLoading();
         setIsRefresh(false);

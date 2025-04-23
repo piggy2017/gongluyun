@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 10:15:20
+ * @LastEditTime: 2025-04-22 11:33:04
  * @Description: 
  */
 
@@ -238,9 +238,9 @@ const Index = observer(({ store }) => {
                         <View className='project_interview_item'>
                             <Image src={`${Taro.$cdnUrl}/supplier/supplier_12.webp`}></Image>
                             {
-                                detail.interviewInfos?.length > 0 ?
-                                    <View><Text>驻场联系人：</Text>{detail.interviewInfos.length === 1 ? detail.interviewInfos[0].interviewContactName + ' ' + detail.interviewInfos[0].interviewContactPhone : detail.interviewInfos[0].interviewContactName + ` 等${detail.interviewInfos.length}人`}</View> :
-                                    <View><Text>驻场联系人：</Text>暂无</View>
+                                detail.interviewInfo ?
+                                    <View><Text>面试联系人：</Text>{detail.interviewInfo.interviewContactName + ' ' + detail.interviewInfo.interviewContactPhone}</View> :
+                                    <View><Text>面试联系人：</Text>暂无</View>
                             }
                         </View>
                         <View className='project_interview_item'>
