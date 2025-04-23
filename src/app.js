@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-14 13:49:52
- * @Description: 
+ * @LastEditTime: 2025-04-23 14:39:08
+ * @Description:
  */
 import {
     useEffect
@@ -187,7 +187,7 @@ function App({
         setSessionList([obj, ...chatList])
       }
     }
-    
+
     useEffect(() => {
       if (Object.keys(hxUser).length && token) {
         console.log(hxUser, "我重新登陆了")
@@ -198,7 +198,7 @@ function App({
             user: username,
             pwd: decryptData(password),
           }).then(() => {
-            // console.log("login success");
+            console.log("login success");
             Taro.WebIM.conn.fetchUserInfoById([hxUser.username]).then(res => {
               // console.log("app.jsx fetchUserInfoById1", res);
             })
@@ -214,7 +214,7 @@ function App({
         }
       }
     }, [hxUser, token]);
-  
+
     const getMessageList = () => {
       const { setSessionList, setCursor } = ChatStore;
       Taro.WebIM.conn.getServerConversations({ pageSize: 20, cursor: '' }).then((res) => {
@@ -278,11 +278,11 @@ function App({
         }
     }, []);
 
-    return ( 
+    return (
       <Provider store = {store}>
         {
             children
-        } 
+        }
       </Provider>
     );
 }

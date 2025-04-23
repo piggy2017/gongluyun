@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-22 15:43:22
- * @Description: 
+ * @LastEditTime: 2025-04-23 16:10:07
+ * @Description:
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
@@ -83,6 +83,7 @@ const Index = observer(({ store }) => {
     useEffect(() => {
         if (supplierInfo.supplierSerialCode) {
             getJobList(1);
+            setJobInfo({});
         }
     }, [supplierInfo])
 
@@ -405,7 +406,7 @@ const Index = observer(({ store }) => {
                             confirmType='return'
                             value={aiRecognize}
                             onInput={(e) => setAiRecognize(e.detail.value)}
-                            adjustPosition={true} // 键盘弹起时，是否自动上推页面 
+                            adjustPosition={true} // 键盘弹起时，是否自动上推页面
                             show-confirm-bar
                             placeholder={`粘贴识别或输入文本智能拆分求职者基本信息`}></Textarea>
                         {
