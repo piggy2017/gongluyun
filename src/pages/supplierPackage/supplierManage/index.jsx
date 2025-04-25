@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-24 14:30:02
- * @Description: 
+ * @LastEditTime: 2025-04-25 11:34:05
+ * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
@@ -19,7 +19,7 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { mySupplierList, getContractsByCompany } from '@/util/api';
+import { myChannelList, getContractsByCompany } from '@/util/api';
 
 const Index = observer(({ store }) => {
   const route = useRouter();
@@ -47,12 +47,13 @@ const Index = observer(({ store }) => {
       pageNo: _pageNo,
       pageSize,
       // userSerialCode: userInfo.userSerialCode,
+    //   companySerialCode: 3012588591,
       companySerialCode: companyInfo.companySerialCode,
       supplierSerialCode: ''
     }
     setRequestState(1);
     Taro.showLoading({ title: '加载中', mask: true });
-    const { code, data } = await mySupplierList(params);
+    const { code, data } = await myChannelList(params);
     Taro.hideLoading();
     console.log("code, data", code, data);
     setIsRefresh(false);
@@ -143,13 +144,13 @@ const Index = observer(({ store }) => {
           list.length > 0 && list.map((item, index) => {
             return (
               <View className='supplier_list' key={index} onClick={()=>{
-                Taro.navigateTo({ url: `/pages/supplierPackage/supplierDetail/index?supplierSerialCode=${item.supplierSerialCode}` })
+                Taro.navigateTo({ url: `/pages/supplierPackage/supplierDetail/index?channelSerialCode=${item.channelSerialCode}&channelCode=${item.channelCode}` })
               }}>
                 <View className='supplier_list_name'>
-                  <View>{item.name}</View>
-                  {
+                  <View>{item.channelName}</View>
+                  {/* {
                     item.companyVerified ? <View className='supplier_list_name_auth'>已认证</View> : ''
-                  }
+                  } */}
                 </View>
                 <View className='supplier_list_nums'>
                   <View className='supplier_list_nums_item'>

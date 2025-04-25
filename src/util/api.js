@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 20:01:03
- * @Description: 
+ * @LastEditTime: 2025-04-25 17:11:26
+ * @Description:
  */
 
 import http from "./request"
@@ -266,6 +266,11 @@ export const contractsJobSelector = params => { // 项目筛选列表
         "Content-Type": "application/json"
     });
 }
+export const jobSelectorByPossess = params => { // 驻场-名单-项目筛选列表
+    return http(API_BASE_URL + '/contracts/jobSelectorByPossess', params, "POST", {
+        "Content-Type": "application/json"
+    });
+}
 export const contractsSign = params => { // 签到  已约面-已到面
     return http(API_BASE_URL + '/contracts/sign', params, "POST", {
         "Content-Type": "application/json"
@@ -381,12 +386,12 @@ export const fetchOssConfig = params => { //  获取oss校验
 
 
 
-// 反馈名单
-export const getFeedbackObjectsByCustomer = params => { //  客服获取反馈对象
-    return http(API_BASE_URL + '/fb/getFeedbackObjectsByCustomer', params, "POST", {
-        "Content-Type": "application/json"
-    });
-};
+// // 反馈名单
+// export const getFeedbackObjectsByCustomer = params => { //  客服获取反馈对象
+//     return http(API_BASE_URL + '/fb/getFeedbackObjectsByCustomer', params, "POST", {
+//         "Content-Type": "application/json"
+//     });
+// };
 
 
 
@@ -409,13 +414,28 @@ export const mySupplierList = params => { // 【供应商】供应商-合作的�
         "Content-Type": "application/json"
     });
 };
-export const getSupplierInfo = params => { // 【供应商】供应商详情
-    return http(API_BASE_URL + '/supplier/getSupplierInfo', params, "POST", {
+export const myChannelList = params => { // 【供应商】供应商-合作的供应商列表
+    return http(API_BASE_URL + '/supplier/myChannelList', params, "POST", {
+        "Content-Type": "application/json"
+    });
+};
+export const getChannelInfo = params => { // 【供应商】供应商详情
+    return http(API_BASE_URL + '/supplier/getChannelInfo', params, "POST", {
         "Content-Type": "application/json"
     });
 };
 export const getContractsBySupplierAndCompany = params => { // 【供应商】企业查看-与供应商合作的项目
     return http(API_BASE_URL + '/supplier/getContractsBySupplierAndCompany', params, "POST", {
+        "Content-Type": "application/json"
+    });
+};
+export const getContractsByChannelAndCompany = params => { // 【供应商】企业查看-与供应商合作的项目
+    return http(API_BASE_URL + '/supplier/getContractsByChannelAndCompany', params, "POST", {
+        "Content-Type": "application/json"
+    });
+};
+export const getCoopCompanyByChannel = params => { // 【供应商】供应商查看-合作的发单方列表
+    return http(API_BASE_URL + '/supplier/getCoopCompanyByChannel', params, "POST", {
         "Content-Type": "application/json"
     });
 };
@@ -461,6 +481,11 @@ export const getContractsList = params => { // 【【供应商】企业查看项
 };
 export const supplierCreate = params => { // 【供应商】供应商操作-创建
     return http(API_BASE_URL + '/supplier/create', params, "POST", {
+        "Content-Type": "application/json"
+    });
+};
+export const myChannelSelector = params => { // 【供应商】供应商-根据项目ID获取合作的供应商列表
+    return http(API_BASE_URL + '/supplier/myChannelSelector', params, "POST", {
         "Content-Type": "application/json"
     });
 };
@@ -517,7 +542,7 @@ export const setJP = params => { //    求职设置
     });
 };
 
-export const parsePerson = params => { // 【供应商】录入求职者-智能识别 
+export const parsePerson = params => { // 【供应商】录入求职者-智能识别
     return http(API_BASE_URL + '/clue/parsePerson', params, "POST", {
         "Content-Type": "application/json"
     });
@@ -575,4 +600,7 @@ export const getRecruitCompany = params => { //【411】根据公司名称获取
 
 export const downloadClients = params => { // 我的客户导出功能
     return http(API_BASE_URL + '/clue/downloadClients', params, "POST", { "Content-Type": "application/json" });
+};
+export const batchUpdateSupplier = params => { // 渠道给求职者批量设置供应商
+    return http(API_BASE_URL + '/interview/batchUpdateSupplier', params, "POST", { "Content-Type": "application/json" });
 };

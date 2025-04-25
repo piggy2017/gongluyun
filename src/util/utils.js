@@ -480,7 +480,7 @@ export const getStatus = (status, type) => {
         case 'NOT_INTERVIEW':
             return '未到面';
         case 'ARRIVE_INTERVIEW':
-            return type === 1 ? '已签到' : '已到面';
+            return '已签到';
         case 'UNDETERMINED':
             return '待定';
         case 'INTERVIEW_PASSED':
@@ -489,6 +489,8 @@ export const getStatus = (status, type) => {
             return '面试失败';
         case 'GIVE_HALFWAY':
             return '中途放弃';
+        case 'NOT_EMPLOYED':
+            return '未入职';
         case 'EMPLOYED':
             return '已入职';
         case 'RESIGN':
@@ -501,9 +503,9 @@ export const getStatus = (status, type) => {
 export const getColor = (status) => {
     switch (status) {
         case 'SIGNED_UP':
-            return '#1678FF';
+            return '#08B5FF';
         case 'PENDING':
-            return '#1678FF';
+            return '#08B5FF';
         case 'UNSUITABLE':
             return '#F00000';
         case 'FULL':
@@ -511,27 +513,29 @@ export const getColor = (status) => {
         case 'REVIEW_NOT_PASSED':
             return '#F00000';
         case 'SCHEDULED_INTERVIEW':
-            return '#32C2FF';
+            return '#1678FF';
         case 'NOT_INTERVIEW':
             return '#666666';
         case 'ARRIVE_INTERVIEW':
-            return '#1678FF';
+            return '#04B400';
         case 'UNDETERMINED':
-            return '#666666';
+            return '#03BFBF';
         case 'INTERVIEW_PASSED':
-            return '#FF6B17';
+            return '#04B400';
         case 'INTERVIEW_FAILED':
             return '#F00000';
         case 'GIVE_HALFWAY':
-            return '#F00000';
+            return '#666666';
+        case 'NOT_EMPLOYED':
+            return '#03BFBF';
         case 'EMPLOYED':
             return '#04B400';
         case 'RESIGN':
             return '#666666';
         case 'CONTACT':
-            return '#1678FF';
+            return '#08B5FF';
         case 'SETTLEMENT':
-            return '#04B400';
+            return '#FF6B17';
     }
 }
 

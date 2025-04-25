@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 10:50:15
- * @Description: 
+ * @LastEditTime: 2025-04-24 17:11:10
+ * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
@@ -16,7 +16,7 @@ import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { getFeedbackObjectsByCustomer } from '@/util/api'
+import { myChannelList } from '@/util/api'
 
 // type = 1 ,来自岗位名单(花名册)的供应商筛选; type = 2 ,来自驻场的名单中供应商筛选
 const Index = observer(({ store }) => {
@@ -61,7 +61,7 @@ const Index = observer(({ store }) => {
             searchInfo: searchValue,
             companySerialCode: companyInfo.companySerialCode
         }
-        const { code, data } = await getFeedbackObjectsByCustomer(params);
+        const { code, data } = await myChannelList(params);
         console.log("getClueList", code, data);
         Taro.hideLoading();
         setIsRefresh(false);
@@ -71,8 +71,8 @@ const Index = observer(({ store }) => {
             }
             if (_pageNo === 1) {
                 let obj = {
-                    name: '全部供应商',
-                    userSerialCode: '',
+                    channelName: '全部供应商',
+                    channelCode: '',
                     selected: false
                 }
                 data.responses.unshift(obj);
@@ -81,11 +81,11 @@ const Index = observer(({ store }) => {
             console.log('router.params_type', type);
             for (let i = 0; i < data.responses.length; i++) {
                 if (type == 2) {
-                    if (data.responses[i].userSerialCode == onSiteFilterSUPPLIER.userSerialCode) {
+                    if (data.responses[i].channelCode == onSiteFilterSUPPLIER.channelCode) {
                         data.responses[i].selected = true;
                     }
                 } else if (type == 1) {
-                    if (data.responses[i].userSerialCode == rosterFilterSupplier.userSerialCode) {
+                    if (data.responses[i].channelCode == rosterFilterSupplier.channelCode) {
                         data.responses[i].selected = true;
                     }
                 }
@@ -176,7 +176,7 @@ const Index = observer(({ store }) => {
                     list.length > 0 && list.map((item, index) => {
                         return (
                             <View key={index} className='list_item' onClick={() => chooseFunc(item, index)}>
-                                <View className='list_item_name'>{item.name}</View>
+                                <View className='list_item_name'>{item.channelName}</View>
                                 {
                                     item.selected ? <Image className='list_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image> : ''
                                 }

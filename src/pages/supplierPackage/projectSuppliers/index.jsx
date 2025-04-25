@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-19 17:51:12
+ * @LastEditTime: 2025-04-24 18:51:59
  * @Description: 项目详情中查看供应商列表
  */
 
@@ -15,13 +15,13 @@ import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { mySupplierListByContracts } from '@/util/api';
+import { myChannelSelector,mySupplierListByContracts } from '@/util/api';
 
 const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-        businessStore: { setRosterFilterSupplier },
+        businessStore: { setRosterFilterSupplier, setChannelFilterSupplier },
         userStore: { companyInfo }
     } = store
 
@@ -47,7 +47,7 @@ const Index = observer(({ store }) => {
         }
         setRequestState(1);
         Taro.showLoading({ title: '加载中', mask: true });
-        const { code, data } = await mySupplierListByContracts(params);
+        const { code, data } = await myChannelSelector(params);
         Taro.hideLoading();
         console.log("code, data", code, data);
         setIsRefresh(false);
@@ -101,7 +101,7 @@ const Index = observer(({ store }) => {
 
     return (
         <View className='container'>
-            <Navbar fixed placeholder bgColor='#fff' title={route.params.title} titleColor='#222222'></Navbar>
+            <Navbar fixed placeholder bgColor='#fff' title={route.params.title} titleColor='#222222;'></Navbar>
             <View style={`height:24rpx;`}></View>
             <ScrollView
                 scrollY
@@ -121,16 +121,26 @@ const Index = observer(({ store }) => {
                         return (
                             <View className='project_list' key={index}>
                                 <View className='supplier_list_name'>
-                                    <View className='supplier_list_name_l'>{item.supplierName}</View>
+                                    <View className='supplier_list_name_l'>{item.channelName}</View>
                                     <View className='supplier_list_name_r' onClick={() => {
-                                        setRosterFilterSupplier({
-                                            name: item.supplierName,
-                                            userSerialCode: item.supplierUserSerialCode,
-                                            supplierSerialCode: item.supplierSerialCode,
+                                        // setRosterFilterSupplier({
+                                        //     name: item.supplierName,
+                                        //     userSerialCode: item.supplierUserSerialCode,
+                                        //     supplierSerialCode: item.supplierSerialCode,
+                                        //     selected: true
+                                        // })
+                                        // Taro.navigateTo({
+                                        //     url: `/pages/projectPackage/roster/index?recruitSerialCode=${route.params.recruitSerialCode}&title=${route.params.title}`
+                                        // })
+                                        setChannelFilterSupplier({
+                                            channelName: item.channelName,
+                                            // userSerialCode: detail.supplierUserSerialCode,
+                                            // channelSerialCode: route.params.channelSerialCode,
+                                            channelCode: item.channelCode,
                                             selected: true
                                         })
                                         Taro.navigateTo({
-                                            url: `/pages/projectPackage/roster/index?recruitSerialCode=${route.params.recruitSerialCode}&title=${route.params.title}`
+                                            url: `/pages/channelPackage/roster/index?recruitSerialCode=${route.params.recruitSerialCode}&title=${route.params.title}&contractsSerialCode=${route.params.contractsSerialCode}&cooperationModels=${route.params.cooperationModels}`
                                         })
                                     }}>
                                         <Image src={`${Taro.$cdnUrl}/supplier/supplier_2.webp`}></Image>

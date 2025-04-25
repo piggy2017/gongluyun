@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 11:56:59
- * @Description: 
+ * @LastEditTime: 2025-04-24 16:53:30
+ * @Description:
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
@@ -45,10 +45,24 @@ const Index = observer(({ store }) => {
     const [list, setList] = useState([]);
 
     const [tabList, setTabList] = useState([
-        { state: '', name: "全部" }, { state: 'SCHEDULED_INTERVIEW', name: "已约面" },
-        { state: 'ARRIVE_INTERVIEW', name: "已到面" }, { state: 'INTERVIEW_PASSED', name: "面试通过" },
-        { state: 'INTERVIEW_FAILED', name: "面试失败" }, { state: 'EMPLOYED', name: "已入职" },
-        { state: 'RESIGN', name: "已离职" }]);
+        { state: '', name: "全部" },
+        // { name: '待处理', state: 'PENDING', },
+        // { name: '已联系', state: 'CONTACT', },
+        // { name: '不合适', state: 'UNSUITABLE', },
+        { name: "已约面", state: "SCHEDULED_INTERVIEW", },
+        { name: '未到面', state: 'NOT_INTERVIEW', },
+        { name: '已签到', state: 'ARRIVE_INTERVIEW', },
+        { name: '待定', state: 'UNDETERMINED', },
+        { name: '名单满储备下次', state: 'FULL', },
+        { name: '名单审核不通过', state: 'REVIEW_NOT_PASSED', },
+        { name: '面试失败', state: 'INTERVIEW_FAILED', },
+        { name: '面试通过', state: 'INTERVIEW_PASSED', },
+        { name: '中途放弃', state: 'GIVE_HALFWAY', },
+        { name: '未入职', state: 'NOT_EMPLOYED', },
+        { name: '已入职', state: 'EMPLOYED', },
+        { name: '已离职', state: 'RESIGN', },
+        // { name: '可结算', state: 'SETTLEMENT', }
+    ]);
     const [currentTabIndex, setCurrentTabIndex] = useState(0);           // 当前选中的tab
     const [currentCliskstatus, setCurrentCliskstatus] = useState('');
     const [batchOperations, setBatchOperations] = useState(false);       // 是否进行批量操作
@@ -117,7 +131,8 @@ const Index = observer(({ store }) => {
             searchInfo: searchValue,
             recruitSerialCode,
             // source: sourceObj.source,
-            agentSerialCode: rosterFilterSupplier.userSerialCode,
+            // agentSerialCode: rosterFilterSupplier.userSerialCode,
+            channelCode: rosterFilterSupplier.channelCode,
             dateRange: dateObj.dateRange,
             startDate: dateObj.startDate,
             endDate: dateObj.endDate,
@@ -350,29 +365,6 @@ const Index = observer(({ store }) => {
         }
     }
 
-    Taro.useShareAppMessage(res => {
-        let path = `/pages/projectPackage/viewExport/index`
-        let _shareTitle = `[名单]${title}`;
-        if (res.from === 'button') {
-            console.log("页面中的分享---customRequestParams", customRequestParams);
-            const { recruitSerialCode } = route.params;
-            let _par = {
-                // ...customRequestParams,
-                recruitSerialCode: recruitSerialCode,
-                agentSerialCode: rosterFilterSupplier.userSerialCode,
-                title: title,
-                sourceName: rosterFilterSupplier.name,
-            }
-            const params = new URLSearchParams(_par);
-            path = `${path}?${params.toString()}`
-        } else {
-            path = `/pages/index/index`
-        }
-        return {
-            title: _shareTitle,
-            path,
-        }
-    })
 
     return (
         <View className='container'>
@@ -481,7 +473,7 @@ const Index = observer(({ store }) => {
                                         <View className='item_title_name'>{item.name}</View>
                                         <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
                                         <View className='item_title_phone' onClick={(e) => callUser(e, item)}>{item.phone}</View>
-                                        <View className='item_title_source'>{item.sourceDesc}</View>
+                                        {/* <View className='item_title_source'>{item.sourceDesc}</View> */}
                                     </View>
                                 </View>
                                 <View className='roster_item_detail'>
@@ -511,6 +503,7 @@ const Index = observer(({ store }) => {
                                         </View>
                                     }
                                 </View>
+                                <View className='roster_item_time'>来源：{item.sourceDesc}</View>
                                 <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
 
                                 {
@@ -539,16 +532,6 @@ const Index = observer(({ store }) => {
                             <Image onClick={() => setShowExportModel(false)} className='export_model_close' src={`${Taro.$cdnUrl}/index/index_icon54.webp`}></Image>
                             <View className='export_model_title'>导出全部名单</View>
                             <Image className='export_model_img' onClick={() => exportAllFunc()} src={`${Taro.$cdnUrl}/index/index_icon53.webp`}></Image>
-                            {
-                                rosterFilterSupplier.userSerialCode ? <Button open-type='share' className='export_model_btn'>导出为小程序页面</Button> :
-                                    <Button className='export_model_btn' onClick={() => {
-                                        Taro.showToast({
-                                            title: '请选择具体的供应商',
-                                            icon: 'none',
-                                        })
-                                        // setShowExportModel(false);
-                                    }}>导出为小程序页面</Button>
-                            }
 
                         </View>
                     </View>

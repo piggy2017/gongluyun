@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-27 11:32:28
+ * @LastEditTime: 2025-04-24 17:05:31
  * @Description: 添加、修改账号,设置站点
  */
 
@@ -18,7 +18,7 @@ import './index.scss'
 
 import { getDepartment } from '@/util/api'
 
-// 
+//
 const Index = observer(({ store }) => {
     const router = useRouter();
     const {
@@ -108,7 +108,7 @@ const Index = observer(({ store }) => {
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
         if (goonLoad) {
-            getList(pageNo + 1);
+            // getList(pageNo + 1);
         }
     }, 500);
 
@@ -127,7 +127,7 @@ const Index = observer(({ store }) => {
             list[index].selected = !list[index].selected;
             return [...list];
         })
-        if (obj.selected) {  
+        if (obj.selected) {
             setChoosedList(choosedList => {
                 let list = choosedList.filter(item => item !== obj.deptId)
                 return list

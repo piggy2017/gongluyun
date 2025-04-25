@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 16:00:50
- * @Description: 
+ * @LastEditTime: 2025-04-24 10:27:07
+ * @Description:
  */
 import React, { useState, useEffect } from 'react'
 import Taro, { usePullDownRefresh, useDidShow } from '@tarojs/taro';
@@ -353,7 +353,7 @@ const Index = observer(({ store }) => {
         {/* <View className='mine_desc'>助力企业数字化转型</View> role === 'SUPPLIER' ||  */}
       </View>
 
-      <TabBar actCurrent={(role === 'SEEK' || role === 'CHANNEL') ? 2 : role === 'SUPPLIER' ? 1 : 4} />
+      <TabBar actCurrent={(role === 'SEEK' || role === 'CHANNEL' || role === 'SUPPLIER') ? 2 : 4} />
       <Taro.SubscribeMsg></Taro.SubscribeMsg>
 
       <AtModal

@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 19:19:54
- * @Description: 
+ * @LastEditTime: 2025-04-24 15:07:49
+ * @Description:
  */
 import React, { useState, useEffect } from 'react'
 import Taro, { usePullDownRefresh, useDidShow } from '@tarojs/taro';
@@ -13,7 +13,7 @@ import TabBar from '@/components/tabBar';
 import { debounce } from '@/util/utils'
 import './index.scss'
 
-import { mySupplierList } from '@/util/api'
+import { myChannelList } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const {
@@ -47,14 +47,13 @@ const Index = observer(({ store }) => {
         let params = {
             pageNo: _pageNo,
             pageSize,
-            // userSerialCode: userInfo.userSerialCode,
             companySerialCode: companyInfo.companySerialCode,
-            supplierSerialCode: '',
+            // supplierSerialCode: '',
             searchInfo: searchValue
         }
         setRequestState(1);
         Taro.showLoading({ title: '加载中', mask: true });
-        const { code, data } = await mySupplierList(params);
+        const { code, data } = await myChannelList(params);
         Taro.hideLoading();
         console.log("code, data", code, data);
         setIsRefresh(false);
@@ -86,7 +85,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 230rpx)`;
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 360rpx)`;
     }
 
     Taro.useShareAppMessage(res => {
@@ -140,12 +139,25 @@ const Index = observer(({ store }) => {
                     value={searchValue}></Input>
             </View>
 
+            <View className='btns'>
+                <View className='btns_item' onClick={()=>{
+                    Taro.navigateTo({ url: `/pages/channelPackage/newInterviewWorker/index` })
+                }}>
+                    <Image src={`${Taro.$cdnUrl}/supplier/supplier_97.webp`}></Image>
+                    <View>面试录入</View>
+                </View>
+                <Button open-type='share' className='btns_item'>
+                    <Image src={`${Taro.$cdnUrl}/supplier/supplier_96.webp`}></Image>
+                    <View>邀请供应商</View>
+                </Button>
+            </View>
+
             <View className='supplier_title'>
                 <View>我的供应商</View>
-                <Button open-type='share' className='supplier_title_right'>
+                {/* <Button open-type='share' className='supplier_title_right'>
                     <Image src={`${Taro.$cdnUrl}/supplier/supplier_6.webp`}></Image>
                     <View>邀请供应商加入</View>
-                </Button>
+                </Button> */}
             </View>
 
             <ScrollView
@@ -165,13 +177,13 @@ const Index = observer(({ store }) => {
                     list.length > 0 && list.map((item, index) => {
                         return (
                             <View className='supplier_list' key={index} onClick={() => {
-                                Taro.navigateTo({ url: `/pages/supplierPackage/supplierDetail/index?supplierSerialCode=${item.supplierSerialCode}` })
+                                Taro.navigateTo({ url: `/pages/supplierPackage/supplierDetail/index?channelSerialCode=${item.channelSerialCode}&channelCode=${item.channelCode}` })
                             }}>
                                 <View className='supplier_list_name'>
-                                    <View>{item.name}</View>
-                                    {
+                                    <View>{item.channelName}</View>
+                                    {/* {
                                         item.companyVerified ? <View className='supplier_list_name_auth'>已认证</View> : ''
-                                    }
+                                    } */}
                                 </View>
                                 <View className='supplier_list_nums'>
                                     <View className='supplier_list_nums_item'>

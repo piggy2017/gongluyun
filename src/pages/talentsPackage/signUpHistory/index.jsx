@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-20 16:04:55
- * @Description: 
+ * @LastEditTime: 2025-04-25 14:10:45
+ * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
@@ -202,7 +202,7 @@ const Index = observer(({ store }) => {
                                                         }
 
                                                     </View>
-
+                                                    <View className='record_item_list_item_date'>报名时间: {child.signUpDate}</View>
                                                     <View className='record_item_list_item_addr flex-row-items'>
                                                         <Image src={`${Taro.$cdnUrl}/index/index_icon12.webp`}></Image>
                                                         <View>{child.areaName}</View>
