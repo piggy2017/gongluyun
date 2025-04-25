@@ -3,7 +3,7 @@
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
  * @LastEditTime: 2025-04-21 09:34:12
- * @Description: 
+ * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
@@ -316,7 +316,7 @@ const Index = observer(({ store }) => {
       context.textBaseline = 'top';               // 设置文本基线
       context.fillText(detail.title.length > 14 ? detail.title.slice(0, 14) + '...' : detail.title, 54, 864);
 
-      // 绘制岗位薪资  
+      // 绘制岗位薪资
       let metricsWidth = context.measureText(detail.salaryRange.split('元/')[0]).width;
       context.font = '49px D-DIN-PRO';
       context.fillStyle = '#FF5C00';
@@ -570,7 +570,7 @@ const Index = observer(({ store }) => {
                 <View className='get_supplier_wrapper_content_item' onClick={() => {
                   if (myPermissions.includes('10')) {
                     Taro.navigateTo({
-                      url: `/pages/supplierPackage/projectSuppliers/index?contractsSerialCode=${detail.serialCode}&title=${detail.title}&recruitSerialCode=${detail.recruitSerialCode}`
+                      url: `/pages/supplierPackage/projectSuppliers/index?contractsSerialCode=${detail.serialCode}&title=${detail.title}&recruitSerialCode=${detail.recruitSerialCode}&cooperationModels=${JSON.stringify(detail.cooperationModels ? detail.cooperationModels : [])}`
                     })
                   } else {
                     Taro.showToast({ title: '暂无权限', icon: 'none' });
@@ -683,7 +683,7 @@ const Index = observer(({ store }) => {
             <View className='project_more' onClick={() => {
               goEditProject()
             }}>
-              
+
               <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
             </View> ||
             <View> </View>
@@ -902,7 +902,7 @@ const Index = observer(({ store }) => {
                     confirmType='return'
                     value={addressInt}
                     onInput={(e) => setAddressInt(e.detail.value)}
-                    adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                    adjustPosition={true} //键盘弹起时，是否自动上推页面
                     show-confirm-bar
                     maxlength={500}
                     autoHeight
@@ -935,7 +935,7 @@ const Index = observer(({ store }) => {
                     confirmType='return'
                     value={interviewDate}
                     onInput={(e) => setInterviewDate(e.detail.value)}
-                    adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                    adjustPosition={true} //键盘弹起时，是否自动上推页面
                     show-confirm-bar
                     maxlength={500}
                     autoHeight

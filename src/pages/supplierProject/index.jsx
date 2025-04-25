@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 14:02:01
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 20:05:26
- * @Description: 
+ * @LastEditTime: 2025-04-25 09:46:48
+ * @Description:
  */
 
 
@@ -17,7 +17,7 @@ import TabBar from '@/components/tabBar';
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { getCoopCompanyBySupplier, getContractsByCompany, joinContracts, switchRoles, getDocoument } from '@/util/api';
+import { getCoopCompanyByChannel, getCoopCompanyBySupplier, getContractsByCompany, joinContracts, switchRoles, getDocoument } from '@/util/api';
 
 
 const Index = observer(({ store }) => {
@@ -107,7 +107,7 @@ const Index = observer(({ store }) => {
                 supplierSerialCode: supplierCompanyInfo.serialCode,
                 // companySerialCode: supplierCompanyInfo.name
             }
-            getCoopCompanyBySupplier(params).then(res => {
+            getCoopCompanyByChannel(params).then(res => {
                 console.log("合作公司列表:", res);
                 if (res.code === 200 && res.data.responses.length > 0) {
                     if (billComponySerialCode == '') {

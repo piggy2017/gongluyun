@@ -3,7 +3,7 @@
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
  * @LastEditTime: 2025-04-21 17:30:13
- * @Description: 
+ * @Description:
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
@@ -89,8 +89,8 @@ const Index = observer(({ store }) => {
         return () => {
             console.log("触发 名单页面卸载")
             setRosterFilterSupplier({
-                name: '全部供应商',
-                userSerialCode: '',
+                channelName: '全部供应商',
+                channelCode: '',
                 selected: false
             })
         }
@@ -142,8 +142,9 @@ const Index = observer(({ store }) => {
             searchInfo: searchValue,
             recruitSerialCode,
             // source: sourceObj.source,
-            agentSerialCode: rosterFilterSupplier.userSerialCode,
-            supplierSerialCode: rosterFilterSupplier.supplierSerialCode,
+            // agentSerialCode: rosterFilterSupplier.userSerialCode,
+            // supplierSerialCode: rosterFilterSupplier.supplierSerialCode,
+            channelCode: rosterFilterSupplier.channelCode,
             dateRange: dateObj.dateRange,
             startDate: dateObj.startDate,
             endDate: dateObj.endDate,
@@ -376,30 +377,6 @@ const Index = observer(({ store }) => {
         }
     }
 
-    Taro.useShareAppMessage(res => {
-        let path = `/pages/projectPackage/viewExport/index`
-        let _shareTitle = `[名单]${title}`;
-        if (res.from === 'button') {
-            console.log("页面中的分享---customRequestParams", customRequestParams);
-            const { recruitSerialCode } = route.params;
-            let _par = {
-                // ...customRequestParams,
-                recruitSerialCode: recruitSerialCode,
-                agentSerialCode: rosterFilterSupplier.userSerialCode,
-                title: title,
-                sourceName: rosterFilterSupplier.name,
-            }
-            const params = new URLSearchParams(_par);
-            path = `${path}?${params.toString()}`
-        } else {
-            path = `/pages/index/index`
-        }
-        return {
-            title: _shareTitle,
-            path,
-        }
-    })
-
     const newEditStatusFunc = (status, failReason) => {
         console.log("newEditStatusFunc", status, failReason);
         if (batchOperations) {     // 批量修改
@@ -442,7 +419,7 @@ const Index = observer(({ store }) => {
                     {
                         role === 'ADMIN' &&
                         <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/projectPackage/chooseSupplier/index?type=1` }) }}>
-                            <View>{rosterFilterSupplier.name}</View>
+                            <View>{rosterFilterSupplier.channelName}</View>
                             <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
                         </View>
                     }
@@ -584,16 +561,6 @@ const Index = observer(({ store }) => {
                             <Image onClick={() => setShowExportModel(false)} className='export_model_close' src={`${Taro.$cdnUrl}/index/index_icon54.webp`}></Image>
                             <View className='export_model_title'>导出全部名单</View>
                             <Image className='export_model_img' onClick={() => exportAllFunc()} src={`${Taro.$cdnUrl}/index/index_icon53.webp`}></Image>
-                            {
-                                rosterFilterSupplier.userSerialCode ? <Button open-type='share' className='export_model_btn'>导出为小程序页面</Button> :
-                                    <Button className='export_model_btn' onClick={() => {
-                                        Taro.showToast({
-                                            title: '请选择具体的供应商',
-                                            icon: 'none',
-                                        })
-                                        // setShowExportModel(false);
-                                    }}>导出为小程序页面</Button>
-                            }
 
                         </View>
                     </View>

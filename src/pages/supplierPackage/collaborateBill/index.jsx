@@ -3,7 +3,7 @@
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
  * @LastEditTime: 2025-03-14 17:36:24
- * @Description: 
+ * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
@@ -15,7 +15,7 @@ import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { getCoopCompanyBySupplier } from '@/util/api';
+import { getCoopCompanyByChannel } from '@/util/api';
 
 const Index = observer(({ store }) => {
     const route = useRouter();
@@ -47,7 +47,7 @@ const Index = observer(({ store }) => {
             supplierSerialCode: supplierCompanyInfo.serialCode,
             // companySerialCode: supplierCompanyInfo.name
         }
-        const { code, data } = await getCoopCompanyBySupplier(params);
+        const { code, data } = await getCoopCompanyByChannel(params);
         console.log("getList", code, data);
         Taro.hideLoading();
         setIsRefresh(false);

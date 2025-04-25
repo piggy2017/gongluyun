@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-22 11:33:04
- * @Description: 
+ * @LastEditTime: 2025-04-25 13:57:28
+ * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
@@ -24,6 +24,7 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { bottomSafeAreaHeight },
         userStore: { supplierCompanyInfo },
+        userStore: { role, userInfo, myPermissions }
     } = store
 
     const [isOpen, setIsOpen] = useState(true);
@@ -139,6 +140,20 @@ const Index = observer(({ store }) => {
             }
         })
     }
+
+    Taro.useShareAppMessage(res => {  // 分享给朋友
+        console.log("企业分享 userInfo.userSerialCode", userInfo, userInfo?.userSerialCode);
+        if (res.from === 'button') {
+            // 来自页面内转发按钮
+            console.log(res.target)
+        }
+        let url = `/pages/workerPackage/projectDetail/index?recruitSerialCode=${detail.recruitSerialCode}&agentSerialCode=${userInfo.userSerialCode}&inviteRole=SEEK&source=WECHAT_MINI_SHARE`;
+        return {
+            title: detail.areaName + detail.title,
+            imageUrl: `${Taro.$baseCdnUrl}/entrust/share_back.jpeg`, // 图片 URL
+            path: url
+        }
+    })
 
     return (
         <View className='container'>

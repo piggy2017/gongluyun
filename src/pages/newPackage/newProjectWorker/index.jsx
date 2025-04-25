@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-22 14:41:37
- * @Description: 
+ * @LastEditTime: 2025-04-25 10:57:30
+ * @Description:
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
@@ -148,9 +148,9 @@ const Index = observer(({ store }) => {
         forceUpdate();
     }
 
-    
+
     const saveWorker = async () => {
-        const { recruitSerialCode } = route.params;
+        const { recruitSerialCode, channelCode } = route.params;
         let list = arrangList.map(item => {
             item.recruitSerialCode = recruitSerialCode;
             item.interviewDate = interviewDate;
@@ -162,6 +162,9 @@ const Index = observer(({ store }) => {
             }
             if (role === 'SUPPLIER') {
                 item.supplierSerialCode = supplierCompanyInfo.serialCode;
+            }
+            if (channelCode) {   // 企业查看供应商花名册的新增功能
+                item.channelCode = channelCode;
             }
             return item;
         })
@@ -224,6 +227,7 @@ const Index = observer(({ store }) => {
                         phone: data[i].phone,
                         sex: data[i].gender === '男' ? 0 : data[i].gender === '女' ? 1 : '',
                         idCardNo: data[i].id,
+                        interviewDate
                     })
                 }
                 console.log('   处理后的数据:', _list);
@@ -241,7 +245,7 @@ const Index = observer(({ store }) => {
             Taro.showToast({ title: msg, icon: 'none', });
         }
     }
-    
+
     const getChoosePattern = async (value) => {   // 选择合作模式的回调
         console.log("选择的模式", value);
         setArrangList(arrangList => {
@@ -290,7 +294,7 @@ const Index = observer(({ store }) => {
                             confirmType='return'
                             value={aiRecognize}
                             onInput={(e) => setAiRecognize(e.detail.value)}
-                            adjustPosition={true} // 键盘弹起时，是否自动上推页面 
+                            adjustPosition={true} // 键盘弹起时，是否自动上推页面
                             show-confirm-bar
                             placeholder={`粘贴识别或输入文本智能拆分求职者基本信息`}></Textarea>
                         {
@@ -500,7 +504,7 @@ const Index = observer(({ store }) => {
 
             <Block>
                 {
-                    route.params.cooperationModels && 
+                    route.params.cooperationModels &&
                     <Taro.ChoosePattern initItem={currentPattren} list={JSON.parse(route.params.cooperationModels)} showPicker={showPatternModel} onClose={() => setShowPatternModel(false)} onchange={getChoosePattern}></Taro.ChoosePattern>
                 }
             </Block>

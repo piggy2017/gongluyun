@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-22 11:43:38
- * @Description: 
+ * @LastEditTime: 2025-04-24 13:57:38
+ * @Description:
  */
 export default defineAppConfig({
     pages: [
@@ -19,6 +19,7 @@ export default defineAppConfig({
         'pages/workerIndex/index',           // 求职者首页
         'pages/channelIndex/index',          // 渠道首页
         'pages/message/index',
+        'pages/supplierlist/index',
     ],
     window: {
         backgroundTextStyle: 'light',
@@ -75,6 +76,10 @@ export default defineAppConfig({
                 'pagePath': 'pages/supplierProject/index',
                 "text": "项目"
             },
+            {
+                'pagePath': 'pages/supplierlist/index',
+                "text": "名单"
+            },
         ]
     },
     subPackages: [{
@@ -83,7 +88,7 @@ export default defineAppConfig({
                 "talents/index",
                 "signUpHistory/index",
                 "interview/index",              // 安排面试页面
-                "filterJob/index",              // 安排面试-报名筛选岗位 
+                "filterJob/index",              // 安排面试-报名筛选岗位
                 "search/index",                 // 首页的搜索页面
                 "clientDetail/index",           // 客户详情
                 "editTalent/index",             // 编辑人才信息
@@ -189,6 +194,7 @@ export default defineAppConfig({
                 "collaborateBill/index",          // 合作的发单方
                 "sharePage/index",                // 分享落地页
                 "roster/index",                   // 名单
+                "filterJob/index",                // 供应商-名单-筛选岗位
             ]
         },
         {

@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:02:33
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 14:50:23
- * @Description: 
+ * @LastEditTime: 2025-04-24 10:25:30
+ * @Description:
  */
 
 import { useEffect, useState, useReducer } from 'react';
@@ -154,6 +154,11 @@ const Index = observer(({ store, actCurrent }) => {
                     break;
                 case 1:
                     Taro.switchTab({
+                        url: '/pages/supplierlist/index'
+                    });
+                    break;
+                case 2:
+                    Taro.switchTab({
                         url: '/pages/mine/index'
                     });
                     break;
@@ -205,6 +210,7 @@ const Index = observer(({ store, actCurrent }) => {
         else if (role === 'SUPPLIER') {  // 供应商 并且未开通公路云
             return [
                 { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
+                { title: '名单', image: getdefalutIcon(5), selectedImage: getSelectIcon(5) },
                 { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },
             ]
         } else if (role === 'SEEK') {          // 求职者

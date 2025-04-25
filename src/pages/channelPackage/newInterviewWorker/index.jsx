@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-23 16:10:07
+ * @LastEditTime: 2025-04-24 15:43:58
  * @Description:
  */
 
@@ -31,7 +31,6 @@ const Index = observer(({ store }) => {
     } = store
 
     const [chooseJob, setChooseJob] = useState(false);  // 选择岗位类型的弹窗
-
     const [showDatePicker, setShowDatePicker] = useState(false);
 
     // const [jobTypeNames, setJobTypeNames] = useState('');

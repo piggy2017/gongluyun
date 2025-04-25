@@ -480,7 +480,7 @@ export const getStatus = (status, type) => {
         case 'NOT_INTERVIEW':
             return '未到面';
         case 'ARRIVE_INTERVIEW':
-            return type === 1 ? '已签到' : '已到面';
+            return '已签到';
         case 'UNDETERMINED':
             return '待定';
         case 'INTERVIEW_PASSED':

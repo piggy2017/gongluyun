@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 18:11:33
- * @Description: 
+ * @LastEditTime: 2025-04-24 17:24:58
+ * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
@@ -16,7 +16,7 @@ import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { mySupplierListByContracts } from '@/util/api'
+import { myChannelSelector } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const router = useRouter();
@@ -61,7 +61,7 @@ const Index = observer(({ store }) => {
             searchInfo: searchValue,
             contractsSerialCode: router.params.contractsSerialCode
         }
-        const { code, data } = await mySupplierListByContracts(params);
+        const { code, data } = await myChannelSelector(params);
         console.log("getClueList", code, data);
         Taro.hideLoading();
         setIsRefresh(false);
@@ -71,14 +71,14 @@ const Index = observer(({ store }) => {
             }
             if (_pageNo === 1) {
                 let obj = {
-                    supplierName: '全部供应商',
-                    supplierSerialCode: '',
+                    channelName: '全部供应商',
+                    channelCode: '',
                     selected: false
                 }
                 data.responses.unshift(obj);
             }
             for (let i = 0; i < data.responses.length; i++) {
-                if (data.responses[i].supplierSerialCode == channelFilterSupplier.supplierSerialCode) {
+                if (data.responses[i].channelCode == channelFilterSupplier.channelCode) {
                     data.responses[i].selected = true;
                 }
             }
@@ -123,8 +123,8 @@ const Index = observer(({ store }) => {
         })
         console.log("当前点击的:", obj);
         setChannelFilterSupplier({
-            name: obj.supplierName,
-            supplierSerialCode: obj.supplierSerialCode,
+            channelName: obj.channelName,
+            channelCode: obj.channelCode,
             selected: true
         })
         setTimeout(() => {
@@ -156,7 +156,7 @@ const Index = observer(({ store }) => {
                     list.length > 0 && list.map((item, index) => {
                         return (
                             <View key={index} className='list_item' onClick={() => chooseFunc(item, index)}>
-                                <View className='list_item_name'>{item.supplierName}</View>
+                                <View className='list_item_name'>{item.channelName}</View>
                                 {
                                     item.selected ? <Image className='list_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image> : ''
                                 }

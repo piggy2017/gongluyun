@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 16:58:40
- * @Description: 
+ * @LastEditTime: 2025-04-24 17:15:02
+ * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
@@ -15,7 +15,7 @@ import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { getSupplierInfo, getContractsBySupplierAndCompany } from '@/util/api';
+import { getChannelInfo, getContractsByChannelAndCompany } from '@/util/api';
 
 const Index = observer(({ store }) => {
     const route = useRouter();
@@ -43,9 +43,9 @@ const Index = observer(({ store }) => {
     }, [])
 
     const getDetail = async () => {
-        const { supplierSerialCode } = route.params;
+        const { channelSerialCode } = route.params;
         Taro.showLoading({ title: '加载中...' });
-        const { code, data } = await getSupplierInfo({ supplierSerialCode, companySerialCode: companyInfo.companySerialCode });
+        const { code, data } = await getChannelInfo({ channelSerialCode, companySerialCode: companyInfo.companySerialCode });
         Taro.hideLoading();
         console.log("供应商详情", code, data)
         if (code == 200) {
@@ -54,17 +54,17 @@ const Index = observer(({ store }) => {
     }
 
     const getList = async (_pageNo) => {
-        const { supplierSerialCode } = route.params;
+        const { channelCode } = route.params;
         let params = {
             pageNo: _pageNo,
             pageSize,
-            supplierSerialCode,
-            userSerialCode: userInfo.userSerialCode,
+            channelCode,
+            // userSerialCode: userInfo.userSerialCode,
             companySerialCode: companyInfo.companySerialCode,
         }
         setRequestState(1);
         Taro.showLoading({ title: '加载中', mask: true });
-        const { code, data } = await getContractsBySupplierAndCompany(params);
+        const { code, data } = await getContractsByChannelAndCompany(params);
         Taro.hideLoading();
         console.log("getList", code, data);
         setIsRefresh(false);
@@ -108,14 +108,14 @@ const Index = observer(({ store }) => {
                     <Image src={detail.logo} className='supplier_info_top_logo'></Image>
                     <View className='supplier_info_content'>
                         <View className='supplier_info_content_top'>
-                            <View>{detail.name}</View>
-                            <View className='supplier_info_content_auth'>{detail.companyVerified ? '已认证' : '未认证'}</View>
+                            <View>{detail.channelName}</View>
+                            {/* <View className='supplier_info_content_auth'>已认证</View> */}
                         </View>
                         <View className='supplier_info_content_bottom'>
                             <View className='supplier_info_content_dot'></View>
                             <View className='supplier_info_content_status'>合作中</View>
                             <View className='supplier_info_content_hr'></View>
-                            <View className='supplier_info_content_time'>已入驻 {detail.settledDate}</View>
+                            <View className='supplier_info_content_time'>已入驻 {detail.createDate}</View>
                         </View>
                     </View>
                 </View>
@@ -177,25 +177,36 @@ const Index = observer(({ store }) => {
                                     <View className='supplier_list_name_r' onClick={() => {
                                         console.log("role", role);
                                         if (role === 'CHANNEL') {
-                                            console.log("detail.name", detail.name, route.params.supplierSerialCode)
+                                            console.log("detail.name", detail.name, route.params.channelSerialCode)
                                             setChannelFilterSupplier({
-                                                name: detail.name,
+                                                channelName: detail.channelName,
                                                 // userSerialCode: detail.supplierUserSerialCode,
-                                                supplierSerialCode: route.params.supplierSerialCode,
+                                                // channelSerialCode: route.params.channelSerialCode,
+                                                channelCode: detail.channelCode,
                                                 selected: true
                                             })
                                             Taro.navigateTo({
                                                 url: `/pages/channelPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}&contractsSerialCode=${item.contractsSerialCode}&cooperationModels=${JSON.stringify(item.cooperationModels ? item.cooperationModels : [])}`
                                             })
                                         } else {
-                                            setRosterFilterSupplier({
-                                                name: detail.name,
-                                                userSerialCode: detail.supplierUserSerialCode,
-                                                supplierSerialCode: route.params.supplierSerialCode,
+                                            // setRosterFilterSupplier({
+                                            //     name: detail.name,
+                                            //     userSerialCode: detail.supplierUserSerialCode,
+                                            //     channelSerialCode: route.params.channelSerialCode,
+                                            //     selected: true
+                                            // })
+                                            // Taro.navigateTo({
+                                            //     url: `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`
+                                            // })
+                                            setChannelFilterSupplier({
+                                                channelName: detail.channelName,
+                                                // userSerialCode: detail.supplierUserSerialCode,
+                                                // channelSerialCode: route.params.channelSerialCode,
+                                                channelCode: detail.channelCode,
                                                 selected: true
                                             })
                                             Taro.navigateTo({
-                                                url: `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`
+                                                url: `/pages/channelPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}&contractsSerialCode=${item.contractsSerialCode}&cooperationModels=${JSON.stringify(item.cooperationModels ? item.cooperationModels : [])}`
                                             })
                                         }
                                     }}>

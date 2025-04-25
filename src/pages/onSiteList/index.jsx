@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-23 16:04:21
+ * @LastEditTime: 2025-04-24 16:49:32
  * @Description:
  */
 
@@ -130,7 +130,7 @@ const Index = observer(({ store }) => {
       searchInfo: searchValue,
       // recruitSerialCode: onSiteFilterJob.recruitSerialCode,
       recruitSerialCodes: _recruitSerialCodes,
-      agentSerialCode: onSiteFilterSUPPLIER.userSerialCode,
+      agentSerialCode: onSiteFilterSUPPLIER.channelCode,
       source: '',
       dateRange: dateObj.dateRange,
       startDate: dateObj.startDate,
@@ -384,8 +384,8 @@ const Index = observer(({ store }) => {
       console.log("页面中的分享---customRequestParams", customRequestParams);
       let _par = {
         // ...customRequestParams,
-        sourceName: onSiteFilterSUPPLIER.name,
-        agentSerialCode: onSiteFilterSUPPLIER.userSerialCode,
+        sourceName: onSiteFilterSUPPLIER.channelName,
+        channelCode: onSiteFilterSUPPLIER.channelCode,
         title: onSiteFilterJob.title,
         recruitSerialCode: onSiteFilterJob.recruitSerialCode,
       }
@@ -601,6 +601,7 @@ const Index = observer(({ store }) => {
               <Image onClick={() => setShowExportModel(false)} className='export_model_close' src={`${Taro.$cdnUrl}/index/index_icon54.webp`}></Image>
               <View className='export_model_title'>导出全部名单</View>
               <Image className='export_model_img' onClick={() => exportAllFunc()} src={`${Taro.$cdnUrl}/index/index_icon53.webp`}></Image>
+              {/* <Button open-type='share' className='export_model_btn'>导出为小程序页面</Button> */}
               {
                 (onSiteFilterJob.recruitSerialCode && onSiteFilterSUPPLIER.userSerialCode) ? <Button open-type='share' className='export_model_btn'>导出为小程序页面</Button> :
                   <Button className='export_model_btn' onClick={() => {

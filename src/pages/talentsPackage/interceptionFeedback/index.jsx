@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-10 20:04:18
- * @Description: 
+ * @LastEditTime: 2025-04-24 17:09:55
+ * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
@@ -30,12 +30,7 @@ const Index = observer(({ store }) => {
     const [pageNo, setPageNo] = useState(1)
     const pageSize = 10
     const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
-    const [list, setList] = useState([
-        // { name: "高小光", phone: '177 9190 0923', num: 5 },{ name: "高小光", phone: '177 9190 0923', num: 5 },
-        // { name: "高小光", phone: '177 9190 0923', num: 5 },{ name: "高小光", phone: '177 9190 0923', num: 5 },
-        // { name: "高小光", phone: '177 9190 0923', num: 5 },{ name: "高小光", phone: '177 9190 0923', num: 5 },
-        // { name: "高小光", phone: '177 9190 0923', num: 5 },{ name: "高小光", phone: '177 9190 0923', num: 5 },
-    ]);
+    const [list, setList] = useState([]);
 
     useEffect(() => {
         getList(1);
@@ -69,7 +64,7 @@ const Index = observer(({ store }) => {
     const handleScrollToLower = debounce(() => {    // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
         if (goonLoad) {
-            getList(pageNo + 1);
+            // getList(pageNo + 1);
         }
     }, 500);
 
@@ -113,7 +108,7 @@ const Index = observer(({ store }) => {
                                         })
                                     }}>{item.phone}</View>
                                 </View>
-                                
+
                                 <View className='list_item_nums'>未反馈人数：<Text>{item.noFeedbackCount}</Text></View>
                             </View>
                         )

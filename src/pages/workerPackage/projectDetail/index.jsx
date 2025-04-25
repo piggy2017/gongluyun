@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-15 15:51:52
- * @Description: 
+ * @LastEditTime: 2025-04-25 14:03:05
+ * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
@@ -24,7 +24,7 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { bottomSafeAreaHeight },
         businessStore: { },
-        userStore: { isLogin, userInfo, setRole, setEnterParams },
+        userStore: { isLogin, userInfo, setRole, enterParams, setEnterParams },
         ChatStore: { sessionList, setSessionList },
     } = store
 
@@ -123,8 +123,10 @@ const Index = observer(({ store }) => {
             let params = {
                 source: 'SIGN',
                 recruitSerialCode: detail.recruitSerialCode,
-                signUpChannel: 'IN_WECHAT_MINI'
+                signUpChannel: 'IN_WECHAT_MINI',
+                agentSerialCode: enterParams.agentSerialCode
             }
+            console.log("报名——params", params, enterParams);
             Taro.showLoading({ title: '报名中...' });
             const { code, data, msg } = await signUpAdd(params);
             Taro.hideLoading();
@@ -256,7 +258,7 @@ const Index = observer(({ store }) => {
             context.textBaseline = 'top';               // 设置文本基线
             context.fillText(detail.recruitTitle.length > 14 ? detail.recruitTitle.slice(0, 14) + '...' : detail.recruitTitle, 54, 864);
 
-            // 绘制岗位薪资  
+            // 绘制岗位薪资
             let metricsWidth = context.measureText(detail.recruitSalaryRange.split('元/')[0]).width;
             context.font = '49px D-DIN-PRO';
             context.fillStyle = '#FF5C00';
@@ -365,13 +367,13 @@ const Index = observer(({ store }) => {
             recruitSalaryRange: detail.recruitSalaryRange,
             jobReq: detail.jobReq,
             tags: detail.tags,
-            userAvatar: detail.userAvatar? detail.userAvatar : '',
+            userAvatar: detail.userAvatar ? detail.userAvatar : '',
             areaName: detail.areaName,
             createDate: detail.createDate,
             serialCode: detail.contractsSerialCode ? detail.contractsSerialCode : '',       // 发送岗位卡片消息后,企业端需要用serialCode查询岗位详情
             distance: detail.distance ? detail.distance : '',
             phone: decryptData(detail.recruitPhone),
-            userNickName: detail.userNickName? detail.userNickName : '',
+            userNickName: detail.userNickName ? detail.userNickName : '',
         }
         let _customExts = { ...params, source: 'IN_WECHAT_MINI' };
         let option = {

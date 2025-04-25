@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-23 14:05:08
- * @Description: 
+ * @LastEditTime: 2025-04-24 17:50:48
+ * @Description:
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
@@ -97,8 +97,9 @@ const Index = observer(({ store }) => {
         return () => {
             console.log("触发 名单页面卸载")
             setChannelFilterSupplier({
-                name: '全部供应商',
-                supplierSerialCode: '',
+                channelName: '全部供应商',
+                // userSerialCode: '',
+                channelCode: '',
                 selected: false
             })
         }
@@ -204,8 +205,7 @@ const Index = observer(({ store }) => {
             searchInfo: searchValue,
             recruitSerialCode,
             // source: sourceObj.source,
-            // agentSerialCode: rosterFilterSupplier.userSerialCode,
-            supplierSerialCode: channelFilterSupplier.supplierSerialCode,
+            channelCode: channelFilterSupplier.channelCode,
             dateRange: dateObj.dateRange,
             startDate: dateObj.startDate,
             endDate: dateObj.endDate,
@@ -317,7 +317,7 @@ const Index = observer(({ store }) => {
 
     const goAddWorker = () => {
         const { recruitSerialCode, title } = route.params;
-        Taro.navigateTo({ url: `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${recruitSerialCode}&title=${title}&supplierSerialCode=${channelFilterSupplier.supplierSerialCode}` })
+        Taro.navigateTo({ url: `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${recruitSerialCode}&title=${title}&channelCode=${channelFilterSupplier.channelCode}` })
     }
 
     const changeStatus = (e, reason) => {
@@ -415,29 +415,6 @@ const Index = observer(({ store }) => {
         }
     }
 
-    Taro.useShareAppMessage(res => {
-        let path = `/pages/projectPackage/viewExport/index`
-        let _shareTitle = `[名单]${title}`;
-        if (res.from === 'button') {
-            console.log("页面中的分享---customRequestParams", customRequestParams);
-            const { recruitSerialCode } = route.params;
-            let _par = {
-                // ...customRequestParams,
-                recruitSerialCode: recruitSerialCode,
-                agentSerialCode: channelFilterSupplier.userSerialCode,
-                title: title,
-                sourceName: channelFilterSupplier.name,
-            }
-            const params = new URLSearchParams(_par);
-            path = `${path}?${params.toString()}`
-        } else {
-            path = `/pages/index/index`
-        }
-        return {
-            title: _shareTitle,
-            path,
-        }
-    })
 
     const setPatternFunc = () => {
         if (list.length === 0) {
@@ -552,7 +529,7 @@ const Index = observer(({ store }) => {
                 <View className='filter_wrapper'>
                     {
                         <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/channelPackage/chooseSupplier/index?contractsSerialCode=${route.params.contractsSerialCode}` }) }}>
-                            <View>{channelFilterSupplier.name}</View>
+                            <View>{channelFilterSupplier.channelName}</View>
                             <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
                         </View>
                     }
