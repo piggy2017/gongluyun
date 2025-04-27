@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-24 17:50:48
+ * @LastEditTime: 2025-04-27 17:44:25
  * @Description:
  */
 
@@ -91,6 +91,7 @@ const Index = observer(({ store }) => {
     const [pageNo2, setPageNo2] = useState(1)
     const pageSize2 = 20;
     const [requestState2, setRequestState2] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
+    const [supplierValue, setSupplierValue] = useState('');
 
     useEffect(() => {
         getSupplierList(1);
@@ -153,13 +154,14 @@ const Index = observer(({ store }) => {
         }
     }, [chooseList])
 
+
     const getSupplierList = async (_pageNo) => {
         let params = {
             pageNo: _pageNo,
             pageSize: pageSize2,
             companySerialCode: companyInfo.companySerialCode,
             supplierSerialCode: '',
-            searchInfo: ''
+            searchInfo: supplierValue,
         }
         setRequestState2(1);
         Taro.showLoading({ title: '加载中', mask: true });
@@ -722,6 +724,20 @@ const Index = observer(({ store }) => {
                                 <View className='filter_title'>
                                     <View>选择供应商</View>
                                     <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowSupplierModel(false) }}></AtIcon>
+                                </View>
+                                <View className='search_content'>
+                                    <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+                                    <Input className='search_input'
+                                        // disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
+                                        placeholder='搜索供应商'
+                                        confirmType='search'
+                                        placeholderStyle='color: #777777;'
+                                        onInput={(e) => { setSupplierValue(e.detail.value) }}
+                                        onConfirm={() => {
+                                            setgoonLoad(true);
+                                            getSupplierList(1);
+                                        }}
+                                        value={supplierValue}></Input>
                                 </View>
                                 <ScrollView scrollY
                                     className='sup_scrollWrapper'

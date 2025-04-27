@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-22 10:25:41
- * @Description: 
+ * @LastEditTime: 2025-04-27 16:06:04
+ * @Description:
  */
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
@@ -17,6 +17,7 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import WorkerInfo from '@/components/workerInfo';
 import NewUpdateStatus from '@/components/newUpdateStatus';
+import DatePicker from '@/components/datePicker'
 import './index.scss'
 
 import { cluegetUserInfo, updateInterviewer, clueStateFlow, cluemyClients, contractsgetRoster, unsuitable } from '@/util/api'
@@ -26,12 +27,11 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight, keyBoardHeight, setKeyBoardHeight },
-        businessStore: { myClientParams },
+        businessStore: { myClientParams, exchangeJobInfo, setExchangeJobInfo },
         userStore: { myPermissions, role },
     } = store
 
-    const [formData, setFormData] = useState({});
-    const [dateText, setDateText] = useState("选择面试日期");
+    const [dateText, setDateText] = useState("请选选择日期");
     const [uuid, setUuid] = useState('');
 
     const [trackList, setTrackList] = useState([]);
@@ -42,13 +42,32 @@ const Index = observer(({ store }) => {
     const [reason, setReason] = useState('');
     const [showReason, setShowReason] = useState(false);
     const [showEditStatus, setShowEditStatus] = useState(false);
+    const [showExchangeModel, setShowExchangeModel] = useState(false);
+    const [showDatePicker, setShowDatePicker] = useState(false);
 
     useDidShow(() => {
         if (clientInfos && clientInfos.uuid) {
-            getClientDetail(clientInfos.uuid, clientInfos.phone);
             getHistoryList(clientInfos.uuid);
+            if (exchangeJobInfo.edit) {
+                setExchangeJobInfo({
+                    ...exchangeJobInfo,
+                    edit: false
+                })
+            } else {
+                getClientDetail(clientInfos.uuid, clientInfos.phone);
+            }
         }
     })
+
+    useEffect(() => {
+        return () => {
+            setExchangeJobInfo({
+                title: '',
+                recruitSerialCode: '',
+                edit: false
+            })
+        }
+    }, [])
 
     useEffect(() => {
         const { uid, myClientCount, index, phone, notEdit } = route.params;
@@ -71,6 +90,15 @@ const Index = observer(({ store }) => {
         console.log("code", code, "data", data, "msg", msg);
         if (code === 200) {
             setClientInfos(data);
+            setExchangeJobInfo({
+                title: data.recruitTitle,
+                recruitSerialCode: data.recruitSerialCode,
+            })
+            if (data.seekState === 'EMPLOYED') {
+                setDateText(data.employedDate);
+            } else if (data.seekState === 'RESIGN') {
+                setDateText(data.resignDate);
+            }
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
@@ -89,7 +117,7 @@ const Index = observer(({ store }) => {
     const datePickerSelect = (e) => {
         console.log("seleceDate", e);
         setDateText(e);
-        setFormData({ ...formData, date: e });
+        // setFormData({ ...formData, date: e });
     }
 
     const setCurrentIndex = (type) => {
@@ -198,6 +226,72 @@ const Index = observer(({ store }) => {
         changeStatus(status, failReason);
     }
 
+    const editStatusFunc = () => {   // 编辑状态
+        if (!myPermissions.includes('14')) {
+            return Taro.showToast({ title: '暂无权限', icon: 'none' });
+        } else {
+            // setShowEditStatus(true);
+            if (role === 'CUSTOMER') {
+                if (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'CONTACT' || clientInfos.seekState === 'UNSUITABLE') {
+                    setShowEditStatus(true);
+                } else {
+                    Taro.showToast({ title: '您无法修改', icon: 'none' });
+                }
+            } else if (role === 'ON_SITE' || role === 'CHANNEL') {
+                if (clientInfos.seekState != 'PENDING' && clientInfos.seekState != 'CONTACT' && clientInfos.seekState != 'UNSUITABLE') {
+                    setShowEditStatus(true);
+                } else {
+                    Taro.showToast({ title: '您无法修改', icon: 'none' });
+                }
+            }
+            else {
+                setShowEditStatus(true);
+            }
+        }
+    }
+
+    const exchangeJob = () => {
+        if (!myPermissions.includes('14')) {
+            return Taro.showToast({ title: '暂无权限', icon: 'none' });
+        } else {
+            if (role === 'CUSTOMER') {
+                Taro.showToast({ title: '您无法修改', icon: 'none' });
+                return;
+            }
+        }
+        setShowExchangeModel(true);
+    }
+
+    const postExchangeFunc = () => {
+        if (!dateText || dateText === '请选择日期') {
+            Taro.showToast({ title: '请选择日期', icon: 'none' });
+            return;
+        }
+        Taro.showLoading({ title: '提交中...' });
+        let params = {
+            uuid: clientInfos.uuid,
+            seekState: clientInfos.seekState,
+            recruitSerialCode: exchangeJobInfo.recruitSerialCode
+        }
+
+        if (clientInfos.seekState === 'RESIGN') {  // 已离职
+            params.resignDate = dateText;
+        } else if (clientInfos.seekState === 'EMPLOYED') {  // 已入职
+            params.employedDate = dateText;
+        }
+
+        updateInterviewer(params).then(res => {
+            Taro.hideLoading();
+            if (res.code === 200) {
+                Taro.showToast({ title: '更新成功', icon: 'none' })
+                getClientDetail(clientInfos.uuid, clientInfos.phone);
+                setShowExchangeModel(false);
+            } else {
+                Taro.showToast({ title: res.msg, icon: 'none' });
+            }
+        })
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='rgba(237,243,254)' title='客户详情'></Navbar>
@@ -220,10 +314,18 @@ const Index = observer(({ store }) => {
                     <View className='client_status_item_label'>报名岗位</View>
                     <View className='client_status_item_con'>{clientInfos && clientInfos.recruitTitle ? clientInfos.recruitTitle : '暂无'}</View>
                 </View>
-                <View className='client_status_item'>
-                    <View className='client_status_item_label'>面试日期</View>
-                    <View className='client_status_item_con'>{clientInfos && clientInfos.interviewDate ? clientInfos.interviewDate : '暂无'}</View>
-                </View>
+                {
+                    clientInfos && (clientInfos.seekState === 'EMPLOYED' || clientInfos.seekState === 'RESIGN') &&
+                    <View className='client_status_item'>
+                        <View className='client_status_item_label'>{clientInfos.seekState === 'EMPLOYED' ? '入职日期' : '离职日期'}</View>
+                        <View className='client_status_item_con'>{dateText ? dateText : '暂无'}</View>
+                    </View> ||
+                    clientInfos && (clientInfos.seekState != 'EMPLOYED' && clientInfos.seekState != 'RESIGN') &&
+                    <View className='client_status_item'>
+                        <View className='client_status_item_label'>面试时间</View>
+                        <View className='client_status_item_con'>{clientInfos && clientInfos.interviewDate ? clientInfos.interviewDate : '暂无'}</View>
+                    </View>
+                }
             </View>
 
             <View className='client_track'>
@@ -262,30 +364,18 @@ const Index = observer(({ store }) => {
                         </View> ||
                         (clientInfos && clientInfos.seekState === 'UNSUITABLE') &&
                         <View className='go_interview_btn' onClick={() => goInterview()}>安排面试</View> ||
+                        (clientInfos && (clientInfos.seekState === 'EMPLOYED' || clientInfos.seekState === 'RESIGN')) &&
+                        <View className='change_job' >
+                            <View className='change_job_1' onClick={() => exchangeJob()}>转项目</View>
+                            <View className='change_job_2' onClick={() => editStatusFunc()}>修改状态</View>
+                            <View className='count_wrap'>
+                                <AtIcon onClick={() => setCurrentIndex('reduce')} value='chevron-left' size='20' color={`${current === 1 ? '#999999' : '#333333'}`}></AtIcon>
+                                <View className='count'>{current}/{totalPerson}</View>
+                                <AtIcon onClick={() => setCurrentIndex('add')} value='chevron-right' size='20' color={`${current === totalPerson ? '#999999' : '#333333'}`}></AtIcon>
+                            </View>
+                        </View> ||
                         <View className='edit_wrap'>
-                            <View className='edit_wrap_btn' onClick={() => {
-                                if (!myPermissions.includes('14')) {
-                                    return Taro.showToast({ title: '暂无权限', icon: 'none' });
-                                } else {
-                                    // setShowEditStatus(true);
-                                    if (role === 'CUSTOMER') {
-                                        if (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'CONTACT' || clientInfos.seekState === 'UNSUITABLE') {
-                                            setShowEditStatus(true);
-                                        } else {
-                                            Taro.showToast({ title: '您无法修改', icon: 'none' });
-                                        }
-                                    } else if (role === 'ON_SITE' || role === 'CHANNEL') {
-                                        if (clientInfos.seekState != 'PENDING' && clientInfos.seekState != 'CONTACT' && clientInfos.seekState != 'UNSUITABLE') {
-                                            setShowEditStatus(true);
-                                        } else {
-                                            Taro.showToast({ title: '您无法修改', icon: 'none' });
-                                        }
-                                    }
-                                    else {
-                                        setShowEditStatus(true);
-                                    }
-                                }
-                            }}>修改状态</View>
+                            <View className='edit_wrap_btn' onClick={() => editStatusFunc()}>修改状态</View>
                             <View className='count_wrap'>
                                 <AtIcon onClick={() => setCurrentIndex('reduce')} value='chevron-left' size='20' color={`${current === 1 ? '#999999' : '#333333'}`}></AtIcon>
                                 <View className='count'>{current}/{totalPerson}</View>
@@ -294,11 +384,67 @@ const Index = observer(({ store }) => {
                         </View>
                     }
                     <View style={`height:${bottomSafeAreaHeight}px`}></View>
-
-                    <View className='options_x'>
-                    </View>
                 </View>
             </View>
+
+            <Block>
+                <AtFloatLayout catchMove className='exchangeJob_init_layout' isOpened={showExchangeModel} onClose={() => { setShowExchangeModel(false) }}>
+                    <View className='exchangeJob_wrapper'>
+                        <View className='filter_wrapper_bg'>
+                            <View className='filter_title'>
+                                <View>转项目</View>
+                                <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowExchangeModel(false) }}></AtIcon>
+                            </View>
+
+                            <View className='exchangeJob_content'>
+                                <View className='exchangeJob_content_item'>
+                                    <View className='exchangeJob_content_item_label'>
+                                        <View className='exchangeJob_content_item_label_icon'></View>
+                                        <View>岗位</View>
+                                    </View>
+                                    <View className='exchangeJob_content_item_right' onClick={() => {
+                                        Taro.navigateTo({
+                                            url: `/pages/talentsPackage/filterJob/index?type=7&title=选择岗位`
+                                        })
+                                    }}>
+                                        <View>{exchangeJobInfo.title}</View>
+                                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                                    </View>
+                                </View>
+                                <View className='exchangeJob_content_hr'></View>
+                                <View className='exchangeJob_content_item'>
+                                    <View className='exchangeJob_content_item_label'>
+                                        <View className='exchangeJob_content_item_label_icon'></View>
+                                        <View>当前状态</View>
+                                    </View>
+                                    <View className='exchangeJob_content_item_right'>
+                                        <View>{clientInfos && clientInfos.seekState ? getStatus(clientInfos.seekState) : ''}</View>
+                                        {/* <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image> */}
+                                    </View>
+                                </View>
+                                <View className='exchangeJob_content_hr'></View>
+                                <View className='exchangeJob_content_item'>
+                                    <View className='exchangeJob_content_item_label'>
+                                        <View className='exchangeJob_content_item_label_icon'></View>
+                                        {
+                                            clientInfos &&
+                                            <View>{clientInfos.seekState === 'EMPLOYED' ? '入职时间' : '离职时间'}</View>
+                                        }
+                                    </View>
+                                    <View className='exchangeJob_content_item_right' onClick={() => { setShowDatePicker(true) }}>
+                                        <View>{dateText}</View>
+                                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                                    </View>
+                                </View>
+                            </View>
+
+                            <View className='exchangeJob_content_btn' onClick={() => postExchangeFunc()}>确定</View>
+
+                            <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+                        </View>
+                    </View>
+                </AtFloatLayout>
+            </Block>
 
             <Block>
                 {
@@ -319,7 +465,7 @@ const Index = observer(({ store }) => {
                                         confirmType='return'
                                         value={reason}
                                         onInput={(e) => setReason(e.detail.value)}
-                                        adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                                        adjustPosition={true} //键盘弹起时，是否自动上推页面
                                         showConfirmBar={false}
                                         maxlength={50}
                                         autoHeight
@@ -347,6 +493,10 @@ const Index = observer(({ store }) => {
             {/* 新的修改状态 */}
             <Block>
                 <NewUpdateStatus showPicker={showEditStatus} currentStatus={clientInfos?.seekState} onClose={() => { setShowEditStatus(false) }} onChange={newEditStatusFunc}></NewUpdateStatus>
+            </Block>
+
+            <Block>
+                <DatePicker defaultValue={dateText} type='Single' showPicker={showDatePicker} onClose={() => { setShowDatePicker(false) }} onSelectDate={datePickerSelect}></DatePicker>
             </Block>
         </View>
     )

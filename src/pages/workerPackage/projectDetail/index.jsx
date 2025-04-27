@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-25 17:28:13
+ * @LastEditTime: 2025-04-27 17:48:17
  * @Description:
  */
 
@@ -394,7 +394,7 @@ const Index = observer(({ store }) => {
         Taro.WebIM.conn.send(msg).then(res => {
             console.log("自定义岗位卡片发送成功: 成功", res);
             setTimeout(() => {
-                let _phone = detail.recruitPhone?decryptData(detail.recruitPhone):'';
+                let _phone = detail.recruitPhone ? decryptData(detail.recruitPhone) : '';
                 let url = `/pages/messagePackage/consult/index?recruitSerialCode=${detail.recruitSerialCode}&conversationId=${'apujiyu' + detail.userSerialCode}&userSerialCode=${detail.userSerialCode}&nickname=${detail.userNickName}&phone=${_phone}`
                 Taro.navigateTo({
                     url: url

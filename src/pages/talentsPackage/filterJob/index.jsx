@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-17 17:03:49
- * @Description: 
+ * @LastEditTime: 2025-04-27 16:05:17
+ * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
@@ -21,7 +21,7 @@ import { contractsJobSelector, getArrangeableRecruitList } from '@/util/api'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight },
-        businessStore: { addWorkerJobInfo, setAddWorkerJobInfo, interviewJobInfo, setInterviewJobInfo }
+        businessStore: { addWorkerJobInfo, setAddWorkerJobInfo, interviewJobInfo, setInterviewJobInfo, exchangeJobInfo, setExchangeJobInfo }
     } = store
     const router = useRouter();
 
@@ -39,6 +39,7 @@ const Index = observer(({ store }) => {
 
     useEffect(() => {
         //  type=3 录入求职者信息-选择报名岗位  type=4 安排面试-选择招聘岗位  type=6 驻场-首页签到码-选择岗位
+        //  type=7 客户详情--转岗
         const { type, title } = router.params;
         console.log('type, title', type, title);
         setType(type);
@@ -73,6 +74,7 @@ const Index = observer(({ store }) => {
             params.status = 'PROCESSING';
         }
 
+
         const { code, data } = router.params.type == 4 ? await getArrangeableRecruitList(params) : await contractsJobSelector(params);
         console.log("getClueList", code, data);
         Taro.hideLoading();
@@ -90,6 +92,10 @@ const Index = observer(({ store }) => {
                     }
                 } else if (router.params.type == 4) {
                     if (data.responses[i].recruitSerialCode == interviewJobInfo.recruitSerialCode) {
+                        data.responses[i].selected = true;
+                    }
+                } else if (router.params.type == 7) {
+                    if (data.responses[i].recruitSerialCode == exchangeJobInfo.recruitSerialCode) {
                         data.responses[i].selected = true;
                     }
                 }
@@ -146,6 +152,8 @@ const Index = observer(({ store }) => {
             Taro.redirectTo({
                 url: `/pages/projectPackage/signinCode/index?recruitSerialCode=${obj.recruitSerialCode}&title=${obj.title}&type=1`
             })
+        } else if (type == 7) {
+            setExchangeJobInfo({ ...obj, edit: true });
         }
         if (type != 6) {
             setTimeout(() => {

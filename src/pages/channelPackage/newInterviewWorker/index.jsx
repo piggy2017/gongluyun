@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-24 15:43:58
+ * @LastEditTime: 2025-04-27 15:08:34
  * @Description:
  */
 
@@ -18,7 +18,7 @@ import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import { debounce } from '@/util/utils'
-import { batchInsert, parsePerson, mySupplierList, getContractsBySupplierAndCompany } from '@/util/api'
+import { batchInsert, parsePerson, mySupplierList, getContractsBySupplierAndCompany,contractsList } from '@/util/api'
 import './index.scss'
 
 
@@ -73,16 +73,18 @@ const Index = observer(({ store }) => {
     const [requestStateJob, setRequestStateJob] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
     const [jobList, setJobList] = useState([]);
     const [jobInfo, setJobInfo] = useState({});
-
+    const [searchValue, setSearchValue] = useState('');
+    const [jobValue, setJobValue] = useState('');
 
     useEffect(() => {
         getSupplierList(1);
+        getJobList(1);
     }, [])
 
     useEffect(() => {
         if (supplierInfo.supplierSerialCode) {
-            getJobList(1);
-            setJobInfo({});
+            // getJobList(1);
+            // setJobInfo({});
         }
     }, [supplierInfo])
 
@@ -92,7 +94,7 @@ const Index = observer(({ store }) => {
             pageSize,
             companySerialCode: companyInfo.companySerialCode,
             supplierSerialCode: '',
-            searchInfo: ''
+            searchInfo: searchValue,
         }
         setRequestState(1);
         Taro.showLoading({ title: '加载中', mask: true });
@@ -124,13 +126,15 @@ const Index = observer(({ store }) => {
         let params = {
             pageNo: _pageNo,
             pageSize,
-            supplierSerialCode: supplierInfo.supplierSerialCode,
-            userSerialCode,
-            companySerialCode: companyInfo.companySerialCode,
+            searchInfo: jobValue,
+            status: "PROCESSING",
+            // supplierSerialCode: supplierInfo.supplierSerialCode,
+            // userSerialCode,
+            // companySerialCode: companyInfo.companySerialCode,
         }
         setRequestStateJob(1);
         Taro.showLoading({ title: '加载中', mask: true });
-        const { code, data } = await getContractsBySupplierAndCompany(params);
+        const { code, data } = await contractsList(params);
         Taro.hideLoading();
         console.log("getJobList", code, data);
         setIsRefresh2(false);
@@ -253,7 +257,7 @@ const Index = observer(({ store }) => {
             return item;
         })
         console.log("list", list);
-        if(!jobInfo.recruitSerialCode || !supplierInfo.supplierSerialCode){
+        if (!jobInfo.recruitSerialCode || !supplierInfo.supplierSerialCode) {
             Taro.showToast({ title: '请先选择供应商和岗位', icon: 'none', })
             return;
         }
@@ -372,10 +376,10 @@ const Index = observer(({ store }) => {
                     </View>
                 </View>
                 <View className='project_item project_item_border' onClick={() => {
-                    if (!supplierInfo.supplierSerialCode) {
-                        Taro.showToast({ title: '请先选择供应商', icon: 'none', })
-                        return;
-                    }
+                    // if (!supplierInfo.supplierSerialCode) {
+                    //     Taro.showToast({ title: '请先选择供应商', icon: 'none', })
+                    //     return;
+                    // }
                     setShowJobModel(true);
                 }}>
                     <View className='project_item_label project_item_label_required'>岗位</View>
@@ -390,7 +394,7 @@ const Index = observer(({ store }) => {
                     <View className='project_item_right' onClick={() => {
                         setShowDatePicker(true)
                     }}>
-                        <Text className={`${arrangList[0].interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{arrangList[0].interviewDate ? arrangList[0].interviewDate : '请选择面试日期'}</Text>
+                        <Text className={`${interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{interviewDate ? interviewDate : '请选择面试日期'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
@@ -607,6 +611,20 @@ const Index = observer(({ store }) => {
                                     <View>选择供应商</View>
                                     <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowSupplierModel(false) }}></AtIcon>
                                 </View>
+                                <View className='search_content'>
+                                    <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+                                    <Input className='search_input'
+                                        // disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
+                                        placeholder='搜索供应商'
+                                        confirmType='search'
+                                        placeholderStyle='color: #777777;'
+                                        onInput={(e) => { setSearchValue(e.detail.value) }}
+                                        onConfirm={() => {
+                                            setgoonLoad(true);
+                                            getSupplierList(1);
+                                        }}
+                                        value={searchValue}></Input>
+                                </View>
                                 <ScrollView scrollY
                                     className='sup_scrollWrapper'
                                     scrollWithAnimation
@@ -665,6 +683,20 @@ const Index = observer(({ store }) => {
                                 <View className='filter_title'>
                                     <View>选择岗位</View>
                                     <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowJobModel(false) }}></AtIcon>
+                                </View>
+                                <View className='search_content'>
+                                    <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+                                    <Input className='search_input'
+                                        // disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
+                                        placeholder='搜索岗位'
+                                        confirmType='search'
+                                        placeholderStyle='color: #777777;'
+                                        onInput={(e) => { setJobValue(e.detail.value) }}
+                                        onConfirm={() => {
+                                            setGoonLoad2(true);
+                                            getJobList(1);
+                                        }}
+                                        value={jobValue}></Input>
                                 </View>
                                 <ScrollView scrollY
                                     className='sup_scrollWrapper'
