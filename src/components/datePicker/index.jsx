@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-05 15:39:11
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-17 17:30:14
+ * @LastEditTime: 2025-04-27 15:28:56
  * @Description: 时间选择器 -- 可选择当前月和接下来的6个月的月份数据
  */
 import React, { useState, useEffect, useReducer } from 'react';
@@ -254,7 +254,7 @@ const DatePicker = observer(({ type = 'Single', showPicker, onClose, onSelectDat
                                         key={index}
                                         onClick={() => clickItem(item, index)}
                                     >
-                                        {item.value} 
+                                        {item.value}
                                         <Text>{item.label === today && '今天'}</Text>
                                     </View>
                                 })

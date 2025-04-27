@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 11:21:21
- * @Description: 
+ * @LastEditTime: 2025-04-27 15:15:11
+ * @Description:
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
@@ -264,7 +264,7 @@ const Index = observer(({ store }) => {
                     <View className='project_item_right' onClick={() => {
                         setShowDatePicker(true)
                     }}>
-                        <Text className={`${arrangList[0].interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{arrangList[0].interviewDate ? arrangList[0].interviewDate : '请选择面试日期'}</Text>
+                        <Text className={`${interviewDate ? 'project_item_text_active' : 'project_item_text'}`}>{interviewDate ? interviewDate : '请选择面试日期'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
@@ -279,7 +279,7 @@ const Index = observer(({ store }) => {
                             confirmType='return'
                             value={aiRecognize}
                             onInput={(e) => setAiRecognize(e.detail.value)}
-                            adjustPosition={true} // 键盘弹起时，是否自动上推页面 
+                            adjustPosition={true} // 键盘弹起时，是否自动上推页面
                             show-confirm-bar
                             placeholder={`粘贴识别或输入文本智能拆分求职者基本信息`}></Textarea>
                         {

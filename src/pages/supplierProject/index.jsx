@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-02-24 14:02:01
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-25 09:46:48
+ * @LastEditTime: 2025-04-27 16:28:16
  * @Description:
  */
 
@@ -59,18 +59,6 @@ const Index = observer(({ store }) => {
             setRole('SUPPLIER');
             Taro.setStorageSync('role', 'SUPPLIER');
         }
-        getDocoument({ dicTypes: ['announcement'] }).then(res => {
-            console.log("首页 getDocoument", res);
-            if (res.code === 200) {
-                let _text = [];
-                _text.push(res.data.supplier.split('{')[0])
-                _text.push(res.data.supplier.split('{')[1].split('}')[0])
-                _text.push(res.data.supplier.split('}')[1]);
-                console.log("_text", _text);
-                setTipsContent(_text);
-                setShowTips(true);
-            }
-        })
     }, [])
 
     useEffect(() => {
@@ -114,6 +102,27 @@ const Index = observer(({ store }) => {
                         console.log("如果没有 billComponySerialCode", billComponySerialCode);
                         setBillComponySerialCode(res.data.responses[0].companySerialCode);
                     }
+                    let _current = JSON.parse(res.data.responses[0].announcement);
+                    let _newCurrent = [];
+                    _current.forEach(item => {
+                        let _item = []
+                        _item.push({
+                            content: item.split('{')[0],
+                            isPhone: false
+                        })
+                        _item.push({
+                            content: item.split('{')[1].split('}')[0],
+                            isPhone: true
+                        })
+                        _item.push({
+                            content: item.split('}')[1],
+                            isPhone: false
+                        })
+                        _newCurrent.push(_item);
+                    })
+                    console.log("_newCurrent", _newCurrent)
+                    setTipsContent(_newCurrent);
+                    setShowTips(true);
                 } else {
                     // 提醒用户先加入供应商
                 }
@@ -173,7 +182,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 282rpx - 88rpx - ${showTips ? 116 : 0}rpx)`;
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 282rpx - 88rpx - ${showTips ? 168 : 0}rpx)`;
     }
 
     const goDetail = (item, index) => {
@@ -245,13 +254,21 @@ const Index = observer(({ store }) => {
                                 tipsContent.length > 0 &&
                                 tipsContent.map((item, index) => {
                                     return (
-                                        <Text onClick={() => {
-                                            if (index === 1) {
-                                                Taro.makePhoneCall({
-                                                    phoneNumber: item,
+                                        <View className='my_tips_item' key={index}>
+                                            {
+                                                item.map((child, idx) => {
+                                                    return (
+                                                        <Text key={idx} onClick={() => {
+                                                            if (child.isPhone) {
+                                                                Taro.makePhoneCall({
+                                                                    phoneNumber: child.content,
+                                                                })
+                                                            }
+                                                        }} className={`${child.isPhone ? 'my_tips_phone' : ''}`}>{child.content}</Text>
+                                                    )
                                                 })
                                             }
-                                        }} className={`${index === 1 ? 'my_tips_phone' : ''}`} key={index}>{item}</Text>
+                                        </View>
                                     )
                                 })
                             }

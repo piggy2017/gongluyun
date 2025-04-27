@@ -538,9 +538,9 @@
 
     .supplier_init_layout {
         .at-float-layout__container {
-            height: 982rpx !important;
-            min-height: 982rpx !important;
-            max-height: 982rpx !important;
+            height: 1070rpx !important;
+            min-height: 1070rpx !important;
+            max-height: 1070rpx !important;
             overflow: hidden;
             border-radius: 20rpx 20rpx 0 0 !important;
 
@@ -574,7 +574,31 @@
                     line-height: normal;
                 }
 
+                .search_content {
+                    width: 694rpx;
+                    height: 68rpx;
+                    flex-shrink: 0;
+                    background-color: #f4f4f4;
+                    @include flex-center(flex-start);
+                    border-radius: 34rpx;
+                    margin: 0 auto;
+
+                    image {
+                        width: 36rpx;
+                        height: 36rpx;
+                        flex-shrink: 0;
+                        margin: 0 10rpx 0 22rpx;
+                    }
+
+                    .search_input {
+                        font-family: "PingFang SC";
+                        font-size: 28rpx;
+                        width: 580rpx;
+                    }
+                }
+
                 .sup_scrollWrapper {
+                    margin-top: 20rpx;
                     height: 800rpx;
 
                     .sup_item {
@@ -593,7 +617,8 @@
                         padding: 0 24rpx;
                         @include ellipsis;
                     }
-                    .sup_item_active{
+
+                    .sup_item_active {
                         color: #1678ff;
                         background: #E8F2FF;
                     }
