@@ -207,6 +207,22 @@
                 line-height: normal;
             }
 
+            .choose_status_date{
+                padding: 0 24rpx;
+                @include flex-center(space-between);
+                .choose_status_date_label{
+                    color: #666666;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+                .choose_status_date_right{
+                    @include flex-center(flex-end);
+                }
+            }
+
             .input_wrapper {
                 height: 250rpx;
                 position: relative;
@@ -246,7 +262,7 @@
             }
 
             .post_btn {
-                // background: #0483FF;
+                background: #0483FF;
                 color: #ffffff;
                 width: 662rpx;
                 height: 92rpx;

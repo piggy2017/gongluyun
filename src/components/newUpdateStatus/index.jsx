@@ -2,17 +2,18 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-23 11:41:37
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-23 14:09:59
+ * @LastEditTime: 2025-04-28 16:34:29
  * @Description: 更改用户状态  未到面 已到面 面试失败 面试通过 已离职 已入职
  */
 
 import React, { useState, useEffect, useReducer } from 'react';
 import Taro from '@tarojs/taro';
 import { observer, inject } from 'mobx-react';
-import { View, Block, Textarea, Text, RootPortal } from '@tarojs/components';
+import { View, Block, Textarea, Text, Image, RootPortal } from '@tarojs/components';
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
+import DatePicker from '@/components/datePicker'
 import './index.scss';
 
 const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomHeight, onClose, type = 1, store }) => {
@@ -28,7 +29,11 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
     const [failReason, setFailReason] = useState(''); // 面试失败原因
     const [modelTitle, setModelTitle] = useState(''); //
 
-    const [statusList, setStatusList] = useState([])
+    const [statusList, setStatusList] = useState([]);
+    // const [myStatus, setMyStatus] = useState('');
+    const [showExchange, setShowExchange] = useState(false);
+    const [statusDate, setstatusDate] = useState('请选择日期')
+    const [showDatePicker, setShowDatePicker] = useState(false);         // 是否显示转项目的日期选择
 
     useEffect(() => {
         let list = [{ name: '待处理', state: 'PENDING', },
@@ -83,10 +88,15 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
             return statusList
         })
         forceUpdate();
-        if (obj.state === 'UNSUITABLE' || obj.state === 'REVIEW_NOT_PASSED' || obj.state === 'NOT_INTERVIEW' || obj.state === 'INTERVIEW_FAILED' || obj.state === 'GIVE_HALFWAY' || obj.state === 'RESIGN') { // 面试失败、已离职
+        if (obj.state === 'UNSUITABLE' || obj.state === 'REVIEW_NOT_PASSED' || obj.state === 'INTERVIEW_FAILED' || obj.state === 'GIVE_HALFWAY' || obj.state === 'RESIGN' || obj.state === 'EMPLOYED') { // 面试失败、已离职
             setShowModel(true);
             setStatus(obj.state);
-        } else {
+        }
+        // else if (obj.state === 'EMPLOYED' || obj.state === 'RESIGN') { // 入职状态 和 离职状态 需要添加离职时间(必填)+备注;
+        //     // setMyStatus(obj.state);
+        //     setStatus(obj.state);
+        // }
+        else {
             onChange(obj.state);
             setTimeout(() => {
                 onClose();
@@ -104,6 +114,11 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
             onClose();
             setFailReason('');
         }, 200);
+    }
+
+    const datePickerSelect = (e) => {
+        console.log("seleceDate", e);
+        setstatusDate(e);
     }
 
     return (
@@ -149,6 +164,16 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
                                         <View>填写反馈原因</View>
                                         <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowModel(false) }}></AtIcon>
                                     </View>
+                                    {
+                                        (status === 'RESIGN' || status === 'EMPLOYED') &&
+                                        <View className='choose_status_date'>
+                                            <View className='choose_status_date_label'>{status === 'RESIGN' ? '离职' : '入职'}时间</View>
+                                            <View className='choose_status_date_right' onClick={() => { setShowDatePicker(true) }}>
+                                                <View>{statusDate}</View>
+                                                <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                                            </View>
+                                        </View>
+                                    }
                                     <View className='input_wrapper'>
                                         <Textarea count={false}
                                             focus={true}
@@ -161,7 +186,7 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
                                             showConfirmBar={false}
                                             maxlength={50}
                                             autoHeight
-                                            placeholder={`请描述具体原因...（必填）`}
+                                            placeholder={`请描述具体原因...`}
                                             onKeyboardHeightChange={(e) => {
                                                 let currHeight = e.detail.height;
                                                 console.log('currHeight', currHeight)
@@ -173,14 +198,76 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
                                         </Textarea>
                                         <View className='input_number'><Text>{failReason.length}</Text>/50</View>
                                     </View>
-                                    <View style={`background:${failReason.length > 0 ? '#0483FF' : '#CDE1FF'}`} className='post_btn' onClick={postReasonFunc}>提交</View>
+                                    {/* style={`background:${failReason.length > 0 ? '#0483FF' : '#CDE1FF'}`} */}
+                                    <View className='post_btn' onClick={postReasonFunc}>提交</View>
                                     <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                                 </View>
                             </View>
                         </AtFloatLayout>
                     </RootPortal>
-
                 }
+                {
+                    // showExchange &&
+                    // <RootPortal>
+                    //     <AtFloatLayout catchMove className='exchangeJob_init_layout' isOpened={showExchangeModel} onClose={() => { setShowExchangeModel(false) }}>
+                    //         <View className='exchangeJob_wrapper'>
+                    //             <View className='filter_wrapper_bg'>
+                    //                 <View className='filter_title'>
+                    //                     <View>转项目</View>
+                    //                     <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowExchangeModel(false) }}></AtIcon>
+                    //                 </View>
+
+                    //                 <View className='exchangeJob_content'>
+                    //                     <View className='exchangeJob_content_item'>
+                    //                         <View className='exchangeJob_content_item_label'>
+                    //                             <View className='exchangeJob_content_item_label_icon'></View>
+                    //                             <View>岗位</View>
+                    //                         </View>
+                    //                         <View className='exchangeJob_content_item_right' onClick={() => {
+                    //                             Taro.navigateTo({
+                    //                                 url: `/pages/talentsPackage/filterJob/index?type=7&title=选择岗位`
+                    //                             })
+                    //                         }}>
+                    //                             <View>{exchangeJobInfo.title}</View>
+                    //                             <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                    //                         </View>
+                    //                     </View>
+                    //                     <View className='exchangeJob_content_hr'></View>
+                    //                     <View className='exchangeJob_content_item'>
+                    //                         <View className='exchangeJob_content_item_label'>
+                    //                             <View className='exchangeJob_content_item_label_icon'></View>
+                    //                             <View>当前状态</View>
+                    //                         </View>
+                    //                         <View className='exchangeJob_content_item_right'>
+                    //                             <View>{clientInfos && clientInfos.seekState ? getStatus(clientInfos.seekState) : ''}</View>
+                    //                             {/* <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image> */}
+                    //                         </View>
+                    //                     </View>
+                    //                     <View className='exchangeJob_content_hr'></View>
+                    //                     <View className='exchangeJob_content_item'>
+                    //                         <View className='exchangeJob_content_item_label'>
+                    //                             <View className='exchangeJob_content_item_label_icon'></View>
+                    //                             {
+                    //                                 clientInfos &&
+                    //                                 <View>{clientInfos.seekState === 'EMPLOYED' ? '入职时间' : '离职时间'}</View>
+                    //                             }
+                    //                         </View>
+                    //                         <View className='exchangeJob_content_item_right' onClick={() => { setShowDatePicker(true) }}>
+                    //                             <View>{dateText}</View>
+                    //                             <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                    //                         </View>
+                    //                     </View>
+                    //                 </View>
+                    //                 <View className='exchangeJob_content_btn' onClick={() => postExchangeFunc()}>确定</View>
+                    //                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+                    //             </View>
+                    //         </View>
+                    //     </AtFloatLayout>
+                    // </RootPortal>
+                }
+            </Block>
+            <Block>
+                <DatePicker defaultValue={statusDate} type='Single' showPicker={showDatePicker} onClose={() => { setShowDatePicker(false) }} onSelectDate={datePickerSelect}></DatePicker>
             </Block>
         </>
     );

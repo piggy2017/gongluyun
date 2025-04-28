@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-27 16:06:04
+ * @LastEditTime: 2025-04-28 16:11:50
  * @Description:
  */
 import React, { useState, useEffect } from 'react'
@@ -31,7 +31,7 @@ const Index = observer(({ store }) => {
         userStore: { myPermissions, role },
     } = store
 
-    const [dateText, setDateText] = useState("请选选择日期");
+    const [dateText, setDateText] = useState("请选择日期");
     const [uuid, setUuid] = useState('');
 
     const [trackList, setTrackList] = useState([]);
@@ -437,9 +437,7 @@ const Index = observer(({ store }) => {
                                     </View>
                                 </View>
                             </View>
-
                             <View className='exchangeJob_content_btn' onClick={() => postExchangeFunc()}>确定</View>
-
                             <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                         </View>
                     </View>

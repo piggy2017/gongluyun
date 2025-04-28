@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-27 16:05:17
+ * @LastEditTime: 2025-04-28 15:34:55
  * @Description:
  */
 
@@ -164,7 +164,16 @@ const Index = observer(({ store }) => {
 
     return (
         <View className='container'>
-            <Navbar fixed placeholder bgColor='#FFF' title={title ? title : ''}></Navbar>
+            <Navbar fixed placeholder bgColor='#FFF' title={title ? title : ''} customBack={() => {
+                if (router.params.type == 7) {
+                    console.log("自定义返回", router.params.type)
+                    setExchangeJobInfo({
+                        ...exchangeJobInfo,
+                        edit: true
+                    })
+                }
+                Taro.navigateBack({ delta: 1 });
+            }}></Navbar>
 
             <View className='search_wrapp'>
                 <View className='input_wrap flex-row-items'>

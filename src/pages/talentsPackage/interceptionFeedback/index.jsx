@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-24 17:09:55
+ * @LastEditTime: 2025-04-28 16:48:54
  * @Description:
  */
 
@@ -114,10 +114,10 @@ const Index = observer(({ store }) => {
                         )
                     })
                 }
-                {
+                {/* {
                     list.length >= 9 &&
                     <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
-                }
+                } */}
                 {
                     list.length === 0 && requestState === 3 &&
                     <Taro.NoData></Taro.NoData>

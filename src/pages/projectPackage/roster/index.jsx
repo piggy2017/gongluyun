@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-21 17:30:13
+ * @LastEditTime: 2025-04-28 16:22:52
  * @Description:
  */
 
@@ -11,13 +11,15 @@ import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Button, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
-import { AtIcon } from 'taro-ui'
+import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
-import './index.scss'
+import "taro-ui/dist/style/components/float-layout.scss";
 
 import CustomDate from '@/components/customDate';
 import SourcePicker from '@/components/sourcePcker';
 import NewUpdateStatus from '@/components/newUpdateStatus';
+import DatePicker from '@/components/datePicker'
+import './index.scss'
 
 import { contractsgetRoster, updateInterviewer, batchUpdateInterviewer, downloadRoster } from '@/util/api';
 
@@ -26,7 +28,7 @@ const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
         userStore: { myPermissions, role },
-        businessStore: { rosterFilterSupplier, setRosterFilterSupplier },
+        businessStore: { rosterFilterSupplier, setRosterFilterSupplier, exchangeJobInfo, setExchangeJobInfo },
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
 
@@ -85,6 +87,10 @@ const Index = observer(({ store }) => {
 
     const [showEditStatus, setShowEditStatus] = useState(false);
 
+    const [showExchangeModel, setShowExchangeModel] = useState(false);   // 是否显示转项目的弹窗
+    const [showDatePicker, setShowDatePicker] = useState(false);         // 是否显示转项目的日期选择
+    const [dateText, setDateText] = useState("请选择日期");
+
     useEffect(() => {
         return () => {
             console.log("触发 名单页面卸载")
@@ -93,16 +99,33 @@ const Index = observer(({ store }) => {
                 channelCode: '',
                 selected: false
             })
+            setExchangeJobInfo({
+                title: '',
+                recruitSerialCode: '',
+                edit: false
+            })
         }
     }, [])
 
     useEffect(() => {
         const { title, recruitSerialCode } = route.params;
+        setExchangeJobInfo({
+            title,
+            recruitSerialCode,
+            edit: false
+        })
         setTitle(title);
     }, [])
 
     useDidShow(() => {
-        getList(1);
+        if (exchangeJobInfo.edit) {
+            setExchangeJobInfo({
+                ...exchangeJobInfo,
+                edit: false
+            })
+        } else {
+            getList(1);
+        }
     })
 
     useEffect(() => {
@@ -386,6 +409,49 @@ const Index = observer(({ store }) => {
         }
     }
 
+    const datePickerSelect = (e) => {
+        console.log("seleceDate", e);
+        setDateText(e);
+    }
+
+    const exchangeJobFunc = () => {
+        if (chooseList.length === 0) {
+            return Taro.showToast({ title: '请先选择用户', icon: 'none' });
+        }
+        // 后续需要判断当前的用户角色,只有管理员才能操作
+        setShowExchangeModel(true);
+    }
+
+    const postExchangeFunc = () => {
+        if (!dateText || dateText === '请选择日期') {
+            Taro.showToast({ title: '请选择日期', icon: 'none' });
+            return;
+        }
+        let _list = chooseList.map(item => {
+            let obj = {
+                uuid: item,
+                seekState: 'SCHEDULED_INTERVIEW',
+                interviewDate: dateText,
+                recruitSerialCode: exchangeJobInfo.recruitSerialCode
+            }
+            return obj
+        })
+        Taro.showLoading({ title: '提交中...' });
+        batchUpdateInterviewer(_list).then(res => {
+            Taro.hideLoading();
+            if (res.code === 200) {
+                Taro.showToast({ title: '更新成功', icon: 'none' })
+                getList(1);
+                setChooseList([]);
+                setChooseAll(false);
+                setShowbottomOptions(false);
+                setShowExchangeModel(false);
+            } else {
+                Taro.showToast({ title: res.msg, icon: 'none' })
+            }
+        })
+    }
+
     return (
         <View className='container'>
             <View className='my_header'>
@@ -518,14 +584,14 @@ const Index = observer(({ store }) => {
                                 <View className='roster_item_detail'>
                                     <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.idCardNo) ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
                                     <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }} onClick={(e) => {
-                                        if (!myPermissions.includes('14')) {
-                                            return
-                                        }
+                                        // if (!myPermissions.includes('14')) {
+                                        //     return
+                                        // }
                                         showOptionFunc(e, item, index);
                                     }}>
                                         <View>{getStatus(item.seekState)}</View>
                                         {
-                                            myPermissions.includes('14') &&
+                                            // myPermissions.includes('14') &&
                                             <AtIcon value='chevron-down' size='14' color={getColor(item.seekState)}></AtIcon>
                                         }
                                     </View>
@@ -561,7 +627,6 @@ const Index = observer(({ store }) => {
                             <Image onClick={() => setShowExportModel(false)} className='export_model_close' src={`${Taro.$cdnUrl}/index/index_icon54.webp`}></Image>
                             <View className='export_model_title'>导出全部名单</View>
                             <Image className='export_model_img' onClick={() => exportAllFunc()} src={`${Taro.$cdnUrl}/index/index_icon53.webp`}></Image>
-
                         </View>
                     </View>
                 }
@@ -580,6 +645,7 @@ const Index = observer(({ store }) => {
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon2${chooseAll ? 7 : 8}.webp`}></Image>
                                 <View>全选</View>
                             </View>
+                            <View className='change_job_1' onClick={() => exchangeJobFunc()}>转项目</View>
                             <View
                                 className={`footer_btn ${chooseList.length > 0 ? 'footer_btn_active' : ''}`}
                                 onClick={() => {
@@ -589,39 +655,11 @@ const Index = observer(({ store }) => {
                                         Taro.showToast({ title: '暂无权限', icon: 'none' });
                                     }
 
-                                }}>修改状态 {chooseList.length > 0 ? chooseList.length : ''}</View>
+                                }}>修改状态</View>
                         </View>
                         <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                     </View>
                 }
-            </Block>
-
-            {/* 线索来源 */}
-            <Block>
-                {/* <AtFloatLayout catchMove className='source_init_layout' isOpened={showSourceModel} onClose={() => setShowSourceModel(false)}>
-                    <View className='filter_wrapper'>
-                        <View className='filter_wrapper_bg'>
-                            <View className='filter_title'>
-                                <View>线索来源</View>
-                                <AtIcon value='close' size='14' color='#222222' onClick={() => setShowSourceModel(false)}></AtIcon>
-                            </View>
-                            <View className='filter_wrapper_content'>
-                                {
-                                    sourceList.map((item, index) => {
-                                        return (
-                                            <View
-                                                key={index}
-                                                className={`filter_wrapper_item ${index === sourceIndex ? 'filter_wrapper_item_active' : ''}`}
-                                                onClick={() => setSourceIndex(index)}
-                                            >{item}</View>
-                                        )
-                                    })
-                                }
-                            </View>
-                            <View style={`height:${bottomSafeAreaHeight}px;`}></View>
-                        </View>
-                    </View>
-                </AtFloatLayout> */}
             </Block>
 
             {/* 筛选日期组件 */}
@@ -637,6 +675,62 @@ const Index = observer(({ store }) => {
             {/* 新的修改状态 */}
             <Block>
                 <NewUpdateStatus showPicker={showEditStatus} currentStatus={editCustom?.seekState} onClose={() => { setShowEditStatus(false) }} onChange={newEditStatusFunc}></NewUpdateStatus>
+            </Block>
+
+            {/* 转项目 */}
+            <Block>
+                <AtFloatLayout catchMove className='exchangeJob_init_layout' isOpened={showExchangeModel} onClose={() => { setShowExchangeModel(false) }}>
+                    <View className='exchangeJob_wrapper'>
+                        <View className='filter_wrapper_bg'>
+                            <View className='filter_title'>
+                                <View>转项目</View>
+                                <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowExchangeModel(false) }}></AtIcon>
+                            </View>
+
+                            <View className='exchangeJob_content'>
+                                <View className='exchangeJob_content_item'>
+                                    <View className='exchangeJob_content_item_label'>
+                                        <View className='exchangeJob_content_item_label_icon'></View>
+                                        <View>岗位</View>
+                                    </View>
+                                    <View className='exchangeJob_content_item_right' onClick={() => {
+                                        Taro.navigateTo({
+                                            url: `/pages/talentsPackage/filterJob/index?type=7&title=选择岗位`
+                                        })
+                                    }}>
+                                        <View>{exchangeJobInfo.title}</View>
+                                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                                    </View>
+                                </View>
+                                <View className='exchangeJob_content_hr'></View>
+                                {/* <View className='exchangeJob_content_item'>
+                                    <View className='exchangeJob_content_item_label'>
+                                        <View className='exchangeJob_content_item_label_icon'></View>
+                                        <View>当前状态</View>
+                                    </View>
+                                    <View className='exchangeJob_content_item_right'>
+                                        <View>{clientInfos && clientInfos.seekState ? getStatus(clientInfos.seekState) : ''}</View>
+                                    </View>
+                                </View> */}
+                                <View className='exchangeJob_content_hr'></View>
+                                <View className='exchangeJob_content_item'>
+                                    <View className='exchangeJob_content_item_label'>
+                                        <View className='exchangeJob_content_item_label_icon'></View>面试时间</View>
+                                    <View className='exchangeJob_content_item_right' onClick={() => { setShowDatePicker(true) }}>
+                                        <View>{dateText}</View>
+                                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                                    </View>
+                                </View>
+                            </View>
+                            <View className='exchangeJob_content_btn' onClick={() => postExchangeFunc()}>确定</View>
+                            <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+                        </View>
+                    </View>
+                </AtFloatLayout>
+            </Block>
+
+            <Block>
+                <DatePicker defaultValue={dateText} type='Single' showPicker={showDatePicker} onClose={() => { setShowDatePicker(false) }} onSelectDate={datePickerSelect}></DatePicker>
             </Block>
 
         </View>
