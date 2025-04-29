@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-24 17:05:31
+ * @LastEditTime: 2025-04-29 14:04:57
  * @Description: 添加、修改账号,设置站点
  */
 
@@ -47,7 +47,6 @@ const Index = observer(({ store }) => {
     }, [siteObj]);
 
     useEffect(() => {
-        //   type = 1 ,来自岗位名单(花名册)的供应商筛选; type = 2 ,来自驻场的名单中供应商筛选
         const { type } = router.params;
         console.log('type', type);
         setTimeout(async () => {
@@ -94,7 +93,7 @@ const Index = observer(({ store }) => {
 
             setList(_pageNo === 1 ? data : [...list, ...data]);
             setgoonLoad(true);
-            setPageNo(data.pageNo);
+            // setPageNo(data.pageNo);
             setRequestState(2);
         } else {
             setgoonLoad(false);
@@ -206,10 +205,10 @@ const Index = observer(({ store }) => {
                         )
                     })
                 }
-                {
+                {/* {
                     list.length >= 14 &&
                     <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
-                }
+                } */}
                 {
                     list.length === 0 && requestState === 3 &&
                     <Taro.NoData></Taro.NoData>

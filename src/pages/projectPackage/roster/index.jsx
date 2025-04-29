@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-28 18:19:14
+ * @LastEditTime: 2025-04-29 11:59:31
  * @Description:
  */
 
@@ -613,6 +613,10 @@ const Index = observer(({ store }) => {
                                 </View>
                                 {
                                     item.sourceDesc && <View className='roster_item_source'>来源：{item.sourceDesc}</View>
+                                }
+                                {
+                                    role === 'ADMIN' && item.cooperationModel &&
+                                    <View className='roster_item_source'>合作模式：{item.cooperationModel}</View>
                                 }
                                 <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
 

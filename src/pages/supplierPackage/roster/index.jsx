@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-24 16:53:30
+ * @LastEditTime: 2025-04-29 11:56:11
  * @Description:
  */
 
@@ -253,7 +253,7 @@ const Index = observer(({ store }) => {
     const goAddWorker = () => {
         const { recruitSerialCode, title } = route.params;
         console.log("goAddWorker", recruitSerialCode, title);
-        Taro.navigateTo({ url: `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${recruitSerialCode}&title=${title}` })
+        Taro.navigateTo({ url: `/pages/newPackage/newProjectWorker/index?phoneRule=1&recruitSerialCode=${recruitSerialCode}&title=${title}` })
     }
 
     const changeStatus = (e, reason) => {
@@ -503,7 +503,11 @@ const Index = observer(({ store }) => {
                                         </View>
                                     }
                                 </View>
+
                                 <View className='roster_item_time'>来源：{item.sourceDesc}</View>
+                                {
+                                    item.cooperationModel && <View className='roster_item_time'>合作模式：{item.cooperationModel}</View>
+                                }
                                 <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
 
                                 {

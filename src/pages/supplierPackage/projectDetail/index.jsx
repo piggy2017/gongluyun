@@ -399,7 +399,7 @@ const Index = observer(({ store }) => {
                     <View className='jion_btn' onClick={joinProject}>加入项目</View> ||
                     <View className='page_bottom_btns'>
                         <View className='page_bottom_btn_left' onClick={(e) => navigateFunc(e, `/pages/supplierPackage/roster/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>名单</View>
-                        <View className='page_bottom_btn_right' onClick={(e) => navigateFunc(e, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}&cooperationModels=${JSON.stringify(detail.cooperationModels ? detail.cooperationModels : [])}`)}>上报求职者</View>
+                        <View className='page_bottom_btn_right' onClick={(e) => navigateFunc(e, `/pages/newPackage/newProjectWorker/index?phoneRule=1&recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}&cooperationModels=${JSON.stringify(detail.cooperationModels ? detail.cooperationModels : [])}`)}>上报求职者</View>
                     </View>
                 }
 

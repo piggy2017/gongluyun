@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-25 17:40:38
+ * @LastEditTime: 2025-04-29 11:24:02
  * @Description:
  */
 
@@ -259,14 +259,15 @@ const Index = observer(({ store }) => {
             context.fillText(detail.recruitTitle.length > 14 ? detail.recruitTitle.slice(0, 14) + '...' : detail.recruitTitle, 54, 864);
 
             // 绘制岗位薪资
-            let metricsWidth = context.measureText(detail.recruitSalaryRange.split('元/')[0]).width;
-            context.font = '49px D-DIN-PRO';
+
+            context.font = '49px';
             context.fillStyle = '#FF5C00';
+            let metricsWidth = context.measureText(detail.recruitSalaryRange.split('元/')[0]).width;
             context.fillText(detail.recruitSalaryRange.split('元/')[0], 54, 933);
             if (detail.recruitSalaryRange.split('元/')[1]) {
                 context.font = '28px PingFang SC';
                 context.fillStyle = '#FF5C00';
-                context.fillText('元/' + detail.recruitSalaryRange.split('元/')[1], 75 + metricsWidth, 946);
+                context.fillText('元/' + detail.recruitSalaryRange.split('元/')[1], 58 + metricsWidth, 946);
             }
 
             // 绘制岗位标签

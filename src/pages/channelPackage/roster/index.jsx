@@ -319,7 +319,7 @@ const Index = observer(({ store }) => {
 
     const goAddWorker = () => {
         const { recruitSerialCode, title } = route.params;
-        Taro.navigateTo({ url: `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${recruitSerialCode}&title=${title}&channelCode=${channelFilterSupplier.channelCode}` })
+        Taro.navigateTo({ url: `/pages/newPackage/newProjectWorker/index?phoneRule=1&recruitSerialCode=${recruitSerialCode}&title=${title}&channelCode=${channelFilterSupplier.channelCode}` })
     }
 
     const changeStatus = (e, reason, date) => {
