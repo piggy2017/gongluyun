@@ -135,13 +135,20 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const changeItemState = (state, reason) => {    // 单个修改状态
+    const changeItemState = (state, reason, date) => {    // 单个修改状态
         let params = {
             uuid: editCustom.uuid,
             seekState: state
         }
         if (reason) {
             params.failReason = reason;
+        }
+        if (date) {
+            if (state === 'EMPLOYED') {       // 已入职
+                params.employedDate = date;
+            } else if (state === 'RESIGN') {   // 已离职
+                params.resignDate = date;
+            }
         }
         Taro.showLoading({ title: '提交中...' });
         updateInterviewer(params).then(res => {
@@ -155,9 +162,9 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const newEditStatusFunc = (status, failReason) => {
-        console.log("newEditStatusFunc", status, failReason);
-        changeItemState(status, failReason);
+    const newEditStatusFunc = (status, failReason, date) => {
+        console.log("newEditStatusFunc", status, failReason, date);
+        changeItemState(status, failReason, date);
     }
 
     return (

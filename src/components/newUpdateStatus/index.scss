@@ -208,10 +208,10 @@
             }
 
             .choose_status_date{
-                padding: 0 24rpx;
+                padding: 20rpx 24rpx 20rpx 30rpx;
                 @include flex-center(space-between);
                 .choose_status_date_label{
-                    color: #666666;
+                    color: #333333;
                     font-family: "PingFang SC";
                     font-size: 30rpx;
                     font-style: normal;
@@ -220,6 +220,11 @@
                 }
                 .choose_status_date_right{
                     @include flex-center(flex-end);
+                    image{
+                        width: 40rpx;
+                        height: 40rpx;
+                        margin-left: 10rpx;
+                    }
                 }
             }
 

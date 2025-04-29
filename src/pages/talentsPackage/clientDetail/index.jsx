@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-28 16:11:50
+ * @LastEditTime: 2025-04-28 18:30:44
  * @Description:
  */
 import React, { useState, useEffect } from 'react'
@@ -31,7 +31,7 @@ const Index = observer(({ store }) => {
         userStore: { myPermissions, role },
     } = store
 
-    const [dateText, setDateText] = useState("请选择日期");
+    const [dateText, setDateText] = useState("");
     const [uuid, setUuid] = useState('');
 
     const [trackList, setTrackList] = useState([]);
@@ -94,11 +94,12 @@ const Index = observer(({ store }) => {
                 title: data.recruitTitle,
                 recruitSerialCode: data.recruitSerialCode,
             })
-            if (data.seekState === 'EMPLOYED') {
-                setDateText(data.employedDate);
-            } else if (data.seekState === 'RESIGN') {
-                setDateText(data.resignDate);
-            }
+            setDateText(data.interviewDate || '');
+            // if (data.seekState === 'EMPLOYED') {
+            //     setDateText(data.employedDate);
+            // } else if (data.seekState === 'RESIGN') {
+            //     setDateText(data.resignDate);
+            // }
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
@@ -151,8 +152,8 @@ const Index = observer(({ store }) => {
         }
     }
 
-    const changeStatus = (e, _reason) => {
-        console.log("changeStatus", e, _reason);
+    const changeStatus = (e, _reason, date) => {
+        console.log("changeStatus", e, _reason, date);
         const { notEdit } = route.params;
         if (notEdit) {
             return Taro.showToast({ title: '您无法修改该数据', icon: 'none' });
@@ -161,6 +162,13 @@ const Index = observer(({ store }) => {
         let params = {
             uuid: clientInfos.uuid,
             seekState: e
+        }
+        if (date) {
+            if (e === 'EMPLOYED') {       // 已入职
+                params.employedDate = date;
+            } else if (e === 'RESIGN') {   // 已离职
+                params.resignDate = date;
+            }
         }
         if (_reason) {
             params.failReason = _reason;
@@ -221,9 +229,9 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const newEditStatusFunc = (status, failReason) => {
-        console.log("newEditStatusFunc", status, failReason);
-        changeStatus(status, failReason);
+    const newEditStatusFunc = (status, failReason, date) => {
+        console.log("newEditStatusFunc", status, failReason, date);
+        changeStatus(status, failReason, date);
     }
 
     const editStatusFunc = () => {   // 编辑状态
@@ -263,22 +271,23 @@ const Index = observer(({ store }) => {
     }
 
     const postExchangeFunc = () => {
-        if (!dateText || dateText === '请选择日期') {
+        if (!dateText) {
             Taro.showToast({ title: '请选择日期', icon: 'none' });
             return;
         }
         Taro.showLoading({ title: '提交中...' });
         let params = {
             uuid: clientInfos.uuid,
-            seekState: clientInfos.seekState,
-            recruitSerialCode: exchangeJobInfo.recruitSerialCode
+            seekState: 'SCHEDULED_INTERVIEW', // clientInfos.seekState,
+            recruitSerialCode: exchangeJobInfo.recruitSerialCode,
+            interviewDate: dateText
         }
 
-        if (clientInfos.seekState === 'RESIGN') {  // 已离职
-            params.resignDate = dateText;
-        } else if (clientInfos.seekState === 'EMPLOYED') {  // 已入职
-            params.employedDate = dateText;
-        }
+        // if (clientInfos.seekState === 'RESIGN') {  // 已离职
+        //     params.resignDate = dateText;
+        // } else if (clientInfos.seekState === 'EMPLOYED') {  // 已入职
+        //     params.employedDate = dateText;
+        // }
 
         updateInterviewer(params).then(res => {
             Taro.hideLoading();
@@ -364,7 +373,7 @@ const Index = observer(({ store }) => {
                         </View> ||
                         (clientInfos && clientInfos.seekState === 'UNSUITABLE') &&
                         <View className='go_interview_btn' onClick={() => goInterview()}>安排面试</View> ||
-                        (clientInfos && (clientInfos.seekState === 'EMPLOYED' || clientInfos.seekState === 'RESIGN')) &&
+                        (clientInfos && (clientInfos.seekState === 'SCHEDULED_INTERVIEW' || clientInfos.seekState === 'NOT_INTERVIEW')) &&
                         <View className='change_job' >
                             <View className='change_job_1' onClick={() => exchangeJob()}>转项目</View>
                             <View className='change_job_2' onClick={() => editStatusFunc()}>修改状态</View>
@@ -412,27 +421,26 @@ const Index = observer(({ store }) => {
                                     </View>
                                 </View>
                                 <View className='exchangeJob_content_hr'></View>
-                                <View className='exchangeJob_content_item'>
+                                {/* <View className='exchangeJob_content_item'>
                                     <View className='exchangeJob_content_item_label'>
                                         <View className='exchangeJob_content_item_label_icon'></View>
                                         <View>当前状态</View>
                                     </View>
                                     <View className='exchangeJob_content_item_right'>
                                         <View>{clientInfos && clientInfos.seekState ? getStatus(clientInfos.seekState) : ''}</View>
-                                        {/* <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image> */}
                                     </View>
-                                </View>
+                                </View> */}
                                 <View className='exchangeJob_content_hr'></View>
                                 <View className='exchangeJob_content_item'>
                                     <View className='exchangeJob_content_item_label'>
                                         <View className='exchangeJob_content_item_label_icon'></View>
                                         {
                                             clientInfos &&
-                                            <View>{clientInfos.seekState === 'EMPLOYED' ? '入职时间' : '离职时间'}</View>
+                                            <View>面试时间</View>
                                         }
                                     </View>
                                     <View className='exchangeJob_content_item_right' onClick={() => { setShowDatePicker(true) }}>
-                                        <View>{dateText}</View>
+                                        <View style={{ color: dateText ? '#333333' : '#777777' }}>{dateText ? dateText : '请选择面试日期'}</View>
                                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                                     </View>
                                 </View>

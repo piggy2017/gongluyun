@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-28 16:22:52
+ * @LastEditTime: 2025-04-28 18:19:14
  * @Description:
  */
 
@@ -301,14 +301,21 @@ const Index = observer(({ store }) => {
         Taro.navigateTo({ url: `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${recruitSerialCode}&title=${title}` })
     }
 
-    const changeStatus = (e, reason) => {
-        console.log("changeStatus", e, reason);
+    const changeStatus = (e, reason, date) => {
+        console.log("changeStatus", e, reason, date);
         let params = {
             uuid: editCustom.uuid,
             seekState: e
         }
         if (reason) {
             params.failReason = reason;
+        }
+        if (date) {
+            if (e === 'EMPLOYED') {       // 已入职
+                params.employedDate = date;
+            } else if (e === 'RESIGN') {   // 已离职
+                params.resignDate = date;
+            }
         }
 
         Taro.showLoading({ title: '提交中...' });
@@ -324,8 +331,8 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const changeStatusBatch = (e, reason) => {    // 批量修改状态
-        console.log("changeStatusBatch", e, reason);
+    const changeStatusBatch = (e, reason, date) => {    // 批量修改状态
+        console.log("changeStatusBatch", e, reason, date);
         if (chooseList.length === 0) {
             return Taro.showToast({ title: '请先选择用户', icon: 'none' });
         }
@@ -336,6 +343,13 @@ const Index = observer(({ store }) => {
             }
             if (reason) {
                 obj.failReason = reason;
+            }
+            if (date) {
+                if (e === 'EMPLOYED') {        // 已入职
+                    obj.employedDate = date;
+                } else if (e === 'RESIGN') {   // 已离职
+                    obj.resignDate = date;
+                }
             }
             return obj
         })
@@ -400,12 +414,13 @@ const Index = observer(({ store }) => {
         }
     }
 
-    const newEditStatusFunc = (status, failReason) => {
-        console.log("newEditStatusFunc", status, failReason);
+    const newEditStatusFunc = (status, failReason, date) => {
+        console.log("newEditStatusFunc", status, failReason, date);
+        // return
         if (batchOperations) {     // 批量修改
-            changeStatusBatch(status, failReason);
+            changeStatusBatch(status, failReason, date);
         } else {                   // 单个修改
-            changeStatus(status, failReason);
+            changeStatus(status, failReason, date);
         }
     }
 
@@ -584,14 +599,14 @@ const Index = observer(({ store }) => {
                                 <View className='roster_item_detail'>
                                     <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.idCardNo) ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
                                     <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }} onClick={(e) => {
-                                        // if (!myPermissions.includes('14')) {
-                                        //     return
-                                        // }
+                                        if (!myPermissions.includes('14')) {
+                                            return
+                                        }
                                         showOptionFunc(e, item, index);
                                     }}>
                                         <View>{getStatus(item.seekState)}</View>
                                         {
-                                            // myPermissions.includes('14') &&
+                                            myPermissions.includes('14') &&
                                             <AtIcon value='chevron-down' size='14' color={getColor(item.seekState)}></AtIcon>
                                         }
                                     </View>
@@ -645,7 +660,11 @@ const Index = observer(({ store }) => {
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon2${chooseAll ? 7 : 8}.webp`}></Image>
                                 <View>全选</View>
                             </View>
-                            <View className='change_job_1' onClick={() => exchangeJobFunc()}>转项目</View>
+                            {
+                                role === 'ADMIN' &&
+                                <View className='change_job_1' onClick={() => exchangeJobFunc()}>转项目</View>
+                            }
+
                             <View
                                 className={`footer_btn ${chooseList.length > 0 ? 'footer_btn_active' : ''}`}
                                 onClick={() => {

@@ -2,18 +2,15 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-22 10:14:36
- * @Description: 
+ * @LastEditTime: 2025-04-29 10:39:57
+ * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter } from '@tarojs/taro';
-import { View, Image, ScrollView } from '@tarojs/components'
+import { View, Image, ScrollView, Input } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { throttleCustom, debounce } from '@/util/utils'
-import { AtIcon, AtFloatLayout } from 'taro-ui'
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
+import { throttleCustom, selectorQueryDomInfo, throttle, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
@@ -32,15 +29,24 @@ const Index = observer(({ store }) => {
     const [pageNo, setPageNo] = useState(1);
     const pageSize = 20;
     const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
+    const [searchHeight, setSearchHeight] = useState(43);
+    const [searchValue, setSearchValue] = useState('');
 
     const [list, setList] = useState([]);
 
     useEffect(() => {
+        setTimeout(async () => {
+            const _query = await selectorQueryDomInfo('.search_wrapper');
+            if (_query?.height) {
+                console.log("_query_query_query", _query.height);
+                setSearchHeight(_query.height)
+            }
+        }, 0);
         getList(1);
     }, []);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight}px - 60rpx)`;
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + searchHeight}px - 60rpx)`;
     }
     const setOnSite = throttleCustom((obj, index) => {
         const { recruitSerialCode, serialCode } = route.params;
@@ -88,6 +94,7 @@ const Index = observer(({ store }) => {
             pageNo: _pageNo,
             pageSize,
             companySerialCode: companyInfo.companySerialCode,
+            searchInfo: searchValue,
             status: 0,
             roleId: '3'
         }
@@ -129,9 +136,27 @@ const Index = observer(({ store }) => {
         getList(1);
     }, 200);
 
+    const searchFunc = throttle(() => {
+        setgoonLoad(true);
+        getList(1);
+    }, 200)
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='transparent' title='设置面试联系人'></Navbar>
+            <View className='search_wrapper'>
+                <View style={`height: 18rpx;`}></View>
+                <View className='search_content'>
+                    <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+                    <Input className='search_input'
+                        placeholder='输入关键词搜索'
+                        confirmType='search'
+                        placeholderStyle='color: #777777;'
+                        onInput={(e) => { setSearchValue(e.detail.value) }}
+                        onConfirm={() => searchFunc()}
+                        value={searchValue}></Input>
+                </View>
+            </View>
 
             <ScrollView
                 scrollY
@@ -166,7 +191,7 @@ const Index = observer(({ store }) => {
                     })
                 }
                 {
-                    list.length >= 12 &&
+                    list.length >= 9 &&
                     <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
                 }
                 {

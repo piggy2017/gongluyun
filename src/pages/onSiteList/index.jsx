@@ -272,7 +272,7 @@ const Index = observer(({ store }) => {
     }
   }
 
-  const changeItemState = (state, reason) => {    // 单个修改状态
+  const changeItemState = (state, reason, date) => {    // 单个修改状态
     if (dataSource === 'OWN_REPORT') {
       return Taro.showToast({ title: '该数据您无法修改', icon: 'none' });
     }
@@ -283,6 +283,13 @@ const Index = observer(({ store }) => {
     }
     if (reason) {
       params.failReason = reason;
+    }
+    if (date) {
+      if (state === 'EMPLOYED') {       // 已入职
+        params.employedDate = date;
+      } else if (state === 'RESIGN') {   // 已离职
+        params.resignDate = date;
+      }
     }
 
     updateInterviewer(params).then(res => {
@@ -296,7 +303,7 @@ const Index = observer(({ store }) => {
     })
   }
 
-  const batchChangeState = (state, reason) => {    // 批量修改状态
+  const batchChangeState = (state, reason, date) => {    // 批量修改状态
     if (dataSource === 'OWN_REPORT') {
       return Taro.showToast({ title: '该数据您无法修改', icon: 'none' });
     }
@@ -310,6 +317,13 @@ const Index = observer(({ store }) => {
       }
       if (reason) {
         obj.failReason = reason;
+      }
+      if (date) {
+        if (state === 'EMPLOYED') {       // 已入职
+          obj.employedDate = date;
+        } else if (state === 'RESIGN') {   // 已离职
+          obj.resignDate = date;
+        }
       }
       return obj
     })
@@ -328,12 +342,12 @@ const Index = observer(({ store }) => {
     })
   }
 
-  const newEditStatusFunc = (status, failReason) => {
-    console.log("newEditStatusFunc", status, failReason);
+  const newEditStatusFunc = (status, failReason, date) => {
+    console.log("newEditStatusFunc", status, failReason, date);
     if (batchOperations) {     // 批量修改
-      batchChangeState(status, failReason);
+      batchChangeState(status, failReason, date);
     } else {                   // 单个修改
-      changeItemState(status, failReason);
+      changeItemState(status, failReason, date);
     }
   }
 

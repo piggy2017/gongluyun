@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-23 11:41:37
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-28 16:34:29
+ * @LastEditTime: 2025-04-28 18:02:31
  * @Description: 更改用户状态  未到面 已到面 面试失败 面试通过 已离职 已入职
  */
 
@@ -32,7 +32,7 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
     const [statusList, setStatusList] = useState([]);
     // const [myStatus, setMyStatus] = useState('');
     const [showExchange, setShowExchange] = useState(false);
-    const [statusDate, setstatusDate] = useState('请选择日期')
+    const [statusDate, setstatusDate] = useState('')
     const [showDatePicker, setShowDatePicker] = useState(false);         // 是否显示转项目的日期选择
 
     useEffect(() => {
@@ -92,10 +92,6 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
             setShowModel(true);
             setStatus(obj.state);
         }
-        // else if (obj.state === 'EMPLOYED' || obj.state === 'RESIGN') { // 入职状态 和 离职状态 需要添加离职时间(必填)+备注;
-        //     // setMyStatus(obj.state);
-        //     setStatus(obj.state);
-        // }
         else {
             onChange(obj.state);
             setTimeout(() => {
@@ -105,8 +101,18 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
     }
 
     const postReasonFunc = () => {
-        if (!failReason) {
-            return Taro.showToast({ title: '请输入原因', icon: 'none' });
+        if (status === 'RESIGN' || status === 'EMPLOYED') {   // 已入职、离职 ,必须输入时间
+            if (!statusDate) {
+                return Taro.showToast({ title: `请选择${status === 'RESIGN' ? '离职' : '入职'}时间`, icon: 'none' });
+            } else {
+                onChange(status, failReason, statusDate);
+                setShowModel(false);
+                setTimeout(() => {
+                    onClose();
+                    setFailReason('');
+                }, 200);
+                return;
+            }
         }
         onChange(status, failReason);
         setShowModel(false);
@@ -155,56 +161,56 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
             <Block>
                 {
                     showModel &&
-                    <RootPortal>
-                        <AtFloatLayout catchMove className='status_init_layout' isOpened={showModel} onClose={() => { setShowModel(false) }}>
-                            <View className='filter_wrapper'>
-                                <View className='filter_wrapper_bg'>
-                                    <View className='filter_title'>
-                                        <View></View>
-                                        <View>填写反馈原因</View>
-                                        <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowModel(false) }}></AtIcon>
-                                    </View>
-                                    {
-                                        (status === 'RESIGN' || status === 'EMPLOYED') &&
-                                        <View className='choose_status_date'>
-                                            <View className='choose_status_date_label'>{status === 'RESIGN' ? '离职' : '入职'}时间</View>
-                                            <View className='choose_status_date_right' onClick={() => { setShowDatePicker(true) }}>
-                                                <View>{statusDate}</View>
-                                                <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
-                                            </View>
-                                        </View>
-                                    }
-                                    <View className='input_wrapper'>
-                                        <Textarea count={false}
-                                            focus={true}
-                                            className='float_input'
-                                            auto-height
-                                            confirmType='return'
-                                            value={failReason}
-                                            onInput={(e) => setFailReason(e.detail.value)}
-                                            adjustPosition={true} //键盘弹起时，是否自动上推页面
-                                            showConfirmBar={false}
-                                            maxlength={50}
-                                            autoHeight
-                                            placeholder={`请描述具体原因...`}
-                                            onKeyboardHeightChange={(e) => {
-                                                let currHeight = e.detail.height;
-                                                console.log('currHeight', currHeight)
-                                                if (currHeight > 0) {
-                                                    setKeyBoardHeight(currHeight);
-                                                }
-                                            }}
-                                        >
-                                        </Textarea>
-                                        <View className='input_number'><Text>{failReason.length}</Text>/50</View>
-                                    </View>
-                                    {/* style={`background:${failReason.length > 0 ? '#0483FF' : '#CDE1FF'}`} */}
-                                    <View className='post_btn' onClick={postReasonFunc}>提交</View>
-                                    <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+                    // <RootPortal>
+                    <AtFloatLayout catchMove className='status_init_layout' isOpened={showModel} onClose={() => { setShowModel(false) }}>
+                        <View className='filter_wrapper'>
+                            <View className='filter_wrapper_bg'>
+                                <View className='filter_title'>
+                                    <View></View>
+                                    <View>填写反馈原因</View>
+                                    <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowModel(false) }}></AtIcon>
                                 </View>
+                                {
+                                    (status === 'RESIGN' || status === 'EMPLOYED') &&
+                                    <View className='choose_status_date'>
+                                        <View className='choose_status_date_label'>{status === 'RESIGN' ? '离职' : '入职'}时间</View>
+                                        <View className='choose_status_date_right' onClick={() => { setShowDatePicker(true) }}>
+                                            <View style={{ color: statusDate ? '#222222' : '#777777' }}>{statusDate ? statusDate : `请选择${status === 'RESIGN' ? '离职' : '入职'}时间`}</View>
+                                            <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                                        </View>
+                                    </View>
+                                }
+                                <View className='input_wrapper'>
+                                    <Textarea count={false}
+                                        focus={true}
+                                        className='float_input'
+                                        auto-height
+                                        confirmType='return'
+                                        value={failReason}
+                                        onInput={(e) => setFailReason(e.detail.value)}
+                                        adjustPosition={true} //键盘弹起时，是否自动上推页面
+                                        showConfirmBar={false}
+                                        maxlength={50}
+                                        autoHeight
+                                        placeholder={`${status === 'EMPLOYED' ? '请填写备注...' : '请描述具体原因...'}`}
+                                        onKeyboardHeightChange={(e) => {
+                                            let currHeight = e.detail.height;
+                                            console.log('currHeight', currHeight)
+                                            if (currHeight > 0) {
+                                                setKeyBoardHeight(currHeight);
+                                            }
+                                        }}
+                                    >
+                                    </Textarea>
+                                    <View className='input_number'><Text>{failReason.length}</Text>/50</View>
+                                </View>
+                                {/* style={`background:${failReason.length > 0 ? '#0483FF' : '#CDE1FF'}`} */}
+                                <View className='post_btn' onClick={postReasonFunc}>提交</View>
+                                <View style={`height:${bottomSafeAreaHeight}px;`}></View>
                             </View>
-                        </AtFloatLayout>
-                    </RootPortal>
+                        </View>
+                    </AtFloatLayout>
+                    // </RootPortal>
                 }
                 {
                     // showExchange &&
@@ -267,7 +273,9 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
                 }
             </Block>
             <Block>
-                <DatePicker defaultValue={statusDate} type='Single' showPicker={showDatePicker} onClose={() => { setShowDatePicker(false) }} onSelectDate={datePickerSelect}></DatePicker>
+                <RootPortal>
+                    <DatePicker defaultValue={statusDate} type='Single' showPicker={showDatePicker} onClose={() => { setShowDatePicker(false) }} onSelectDate={datePickerSelect}></DatePicker>
+                </RootPortal>
             </Block>
         </>
     );
