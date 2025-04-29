@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-27 15:08:34
+ * @LastEditTime: 2025-04-29 14:36:25
  * @Description:
  */
 
@@ -182,7 +182,7 @@ const Index = observer(({ store }) => {
         })
         console.log("list", list);
         for (let i = 0; i < list.length; i++) {
-            if (!list[i].interviewDate) {
+            if (!interviewDate) {
                 Taro.showToast({ title: '请选择面试日期', icon: 'none', })
                 return;
             } else if (!list[i].name) {
@@ -276,6 +276,7 @@ const Index = observer(({ store }) => {
                 return;
             } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
                 Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
+                return;
             }
         }
         console.log("list", list);
@@ -563,7 +564,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={saveWorker} className={`post_btn ${(supplierInfo.supplierSerialCode && jobInfo.recruitSerialCode && arrangList[0].interviewDate && arrangList[0].name && arrangList[0].phone && (arrangList[0].sex === 0 || arrangList[0].sex === 1)) ? 'post_btn_active' : ''}`}>保存</View>
+                <View onClick={saveWorker} className={`post_btn ${(supplierInfo.supplierSerialCode && jobInfo.recruitSerialCode && interviewDate && arrangList[0].name && arrangList[0].phone && (arrangList[0].sex === 0 || arrangList[0].sex === 1)) ? 'post_btn_active' : ''}`}>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 

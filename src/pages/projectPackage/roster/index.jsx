@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 11:59:31
+ * @LastEditTime: 2025-04-29 14:43:21
  * @Description:
  */
 
@@ -473,7 +473,7 @@ const Index = observer(({ store }) => {
                 <View className='my_header_hr' style={`--statusBarHeight:${statusTitleHeight}px;`}></View>
                 <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
                     <Image className='back_icon' src={`${Taro.$cdnBackIcon}`} onClick={() => Taro.navigateBack({ delta: 1 })}></Image>
-                    <View className='project_name' onClick={() => setShowEditStatus(true)}>{title}</View>
+                    <View className='project_name'>{title}</View>
                 </View>
             </View>
 
