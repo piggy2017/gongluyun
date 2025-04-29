@@ -317,9 +317,10 @@ const Index = observer(({ store }) => {
       context.fillText(detail.title.length > 14 ? detail.title.slice(0, 14) + '...' : detail.title, 54, 864);
 
       // 绘制岗位薪资
-      let metricsWidth = context.measureText(detail.salaryRange.split('元/')[0]).width;
-      context.font = '49px D-DIN-PRO';
+
+      context.font = '49px';
       context.fillStyle = '#FF5C00';
+      let metricsWidth = context.measureText(detail.salaryRange.split('元/')[0]).width;
       context.fillText(detail.salaryRange.split('元/')[0], 54, 933);
       if (detail.salaryRange.split('元/')[1]) {
         context.font = '28px PingFang SC';
