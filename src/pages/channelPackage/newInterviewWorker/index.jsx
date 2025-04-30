@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 14:36:25
+ * @LastEditTime: 2025-04-29 18:02:58
  * @Description:
  */
 
@@ -18,7 +18,7 @@ import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import { debounce } from '@/util/utils'
-import { batchInsert, parsePerson, mySupplierList, getContractsBySupplierAndCompany,contractsList } from '@/util/api'
+import { batchInsert, parsePerson, mySupplierList, getContractsBySupplierAndCompany, contractsList } from '@/util/api'
 import './index.scss'
 
 
@@ -271,11 +271,17 @@ const Index = observer(({ store }) => {
             } else if (list[i].sex === '') {
                 Taro.showToast({ title: '请选择求职者性别', icon: 'none', })
                 return;
-            } else if (!list[i].phone || list[i].phone.length != 11) {
-                Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
-                return;
-            } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
-                Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
+            }
+            // else if (list[i].phone && list[i].phone.length != 11) {
+            //     Taro.showToast({ title: '请填写11位求职者手机号', icon: 'none', })
+            //     return;
+            // } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
+            //     Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
+            //     return;
+            // }
+
+            if ((!list[i].phone || list[i].phone.length != 11) && (!list[i].idCardNo || list[i].idCardNo.length != 18)) {
+                Taro.showToast({ title: '请填写求职者手机号或身份证', icon: 'none', })
                 return;
             }
         }
@@ -476,14 +482,14 @@ const Index = observer(({ store }) => {
                                         </View>
                                     </View>
                                     <View className='project_item'>
-                                        <View className='project_item_label project_item_label_required'>手机号码</View>
+                                        <View className='project_item_label'>手机号码</View>
                                         <View className='project_item_right'>
                                             <Input
                                                 style={`width:400rpx;`}
                                                 type='number'
                                                 className='new_input'
                                                 maxlength='11'
-                                                placeholder='输入求职者的手机号(必填）'
+                                                placeholder='输入求职者的手机号'
                                                 placeholderStyle='color: #777777;'
                                                 value={arrangList[index].phone}
                                                 onInput={(e) => setFormListData(index, 'phone', e.detail.value)}

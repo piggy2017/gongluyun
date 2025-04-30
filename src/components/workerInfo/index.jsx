@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-28 16:47:05
+ * @LastEditTime: 2025-04-29 17:37:16
  * @Description:
  */
 import React, { useState, useEffect } from 'react';
@@ -62,7 +62,10 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
                         <>
                         </> ||
                         <View className='userInfo_tel flex-row-items' onClick={() => callUser(info)}>
-                            <Image className='tel_img' src={`${Taro.$cdnUrl}/index/mine_icon7.webp`}></Image>
+                            {
+                                info.phone &&
+                                <Image className='tel_img' src={`${Taro.$cdnUrl}/index/mine_icon7.webp`}></Image>
+                            }
                             <View>{info.phone}</View>
                         </View>
                     }

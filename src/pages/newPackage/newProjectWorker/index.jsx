@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 11:47:04
+ * @LastEditTime: 2025-04-29 17:29:56
  * @Description:
  */
 
@@ -162,6 +162,7 @@ const Index = observer(({ store }) => {
             }
             if (role === 'SUPPLIER') {
                 item.supplierSerialCode = supplierCompanyInfo.serialCode;
+                item.signUpChannel = 'SUPPLIER';
             }
             if (channelCode) {   // 企业查看供应商花名册的新增功能
                 item.channelCode = channelCode;
@@ -374,7 +375,7 @@ const Index = observer(({ store }) => {
                                                 style={`width:400rpx;`}
                                                 className='new_input'
                                                 maxlength='11'
-                                                placeholder='输入求职者的手机号(必填）'
+                                                placeholder='输入求职者的手机号'
                                                 placeholderStyle='color: #777777;'
                                                 value={arrangList[index].phone}
                                                 onInput={(e) => setFormListData(index, 'phone', e.detail.value)}

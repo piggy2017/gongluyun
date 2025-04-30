@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 10:39:09
+ * @LastEditTime: 2025-04-29 17:57:59
  * @Description:
  */
 
@@ -93,6 +93,7 @@ const Index = observer(({ store }) => {
             pageNo: _pageNo,
             pageSize,
             companySerialCode: companyInfo.companySerialCode,
+            searchInfo: searchValue,
             status: 0,
             roleId: '3'
         }

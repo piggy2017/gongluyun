@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 19:53:25
- * @Description: 
+ * @LastEditTime: 2025-04-30 09:58:03
+ * @Description:
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
@@ -464,6 +464,20 @@ const Index = observer(({ store }) => {
                     }
                 </View>
                 <View className='project_item project_item_border'>
+                    <View className='project_item_label'>公司简称</View>
+                    <View className='project_item_right'>
+                        <Input
+                            type='text'
+                            className='new_input'
+                            placeholder='请输入公司简称'
+                            placeholderStyle='color: #999999;'
+                            value={formData.companyShortName}
+                            onInput={(e) => setFormData({ ...formData, companyShortName: e.detail.value })}
+                        ></Input>
+                    </View>
+                </View>
+
+                <View className='project_item project_item_border'>
                     <View className='project_item_label project_item_label_required'>需求人数</View>
                     <View className='project_item_right'>
                         <Input
@@ -593,7 +607,7 @@ const Index = observer(({ store }) => {
                             confirmType='return'
                             value={formData.introduction}
                             onInput={(e) => setFormData({ ...formData, introduction: e.detail.value })}
-                            adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                            adjustPosition={true} //键盘弹起时，是否自动上推页面
                             show-confirm-bar
                             maxlength={500}
                             autoHeight
@@ -617,7 +631,7 @@ const Index = observer(({ store }) => {
                             confirmType='return'
                             value={formData.privateIntroduction}
                             onInput={(e) => setFormData({ ...formData, privateIntroduction: e.detail.value })}
-                            adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                            adjustPosition={true} //键盘弹起时，是否自动上推页面
                             show-confirm-bar
                             maxlength={500}
                             autoHeight
@@ -736,7 +750,7 @@ const Index = observer(({ store }) => {
                             confirmType='return'
                             value={formData.interviewPrecautions}
                             onInput={(e) => setFormData({ ...formData, interviewPrecautions: e.detail.value })}
-                            adjustPosition={false} //键盘弹起时，是否自动上推页面 
+                            adjustPosition={false} //键盘弹起时，是否自动上推页面
                             show-confirm-bar
                             maxlength={500}
                             autoHeight
