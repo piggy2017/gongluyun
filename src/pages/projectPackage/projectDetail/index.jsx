@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-21 09:34:12
+ * @LastEditTime: 2025-04-29 11:24:34
  * @Description:
  */
 
@@ -325,7 +325,7 @@ const Index = observer(({ store }) => {
       if (detail.salaryRange.split('元/')[1]) {
         context.font = '28px PingFang SC';
         context.fillStyle = '#FF5C00';
-        context.fillText('元/' + detail.salaryRange.split('元/')[1], 75 + metricsWidth, 946);
+        context.fillText('元/' + detail.salaryRange.split('元/')[1], 58 + metricsWidth, 946);
       }
 
       // 绘制岗位标签

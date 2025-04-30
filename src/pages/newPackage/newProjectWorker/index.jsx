@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-25 10:57:30
+ * @LastEditTime: 2025-04-29 17:29:56
  * @Description:
  */
 
@@ -57,7 +57,7 @@ const Index = observer(({ store }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
-        const { cooperationModels } = route.params;
+        const { cooperationModels, phoneRule } = route.params;
         console.log("cooperationModels:", cooperationModels);
     }, [])
 
@@ -74,7 +74,7 @@ const Index = observer(({ store }) => {
     }
 
     const addWorker = () => {
-        const { recruitSerialCode } = route.params;
+        const { recruitSerialCode, phoneRule } = route.params;
         let list = arrangList.map(item => {
             item.recruitSerialCode = recruitSerialCode;
             item.interviewDate = interviewDate;
@@ -94,7 +94,7 @@ const Index = observer(({ store }) => {
             } else if (list[i].sex === '') {
                 Taro.showToast({ title: '请选择求职者性别', icon: 'none', })
                 return;
-            } else if (!list[i].phone || list[i].phone.length != 11) {
+            } else if ((!list[i].phone || list[i].phone.length != 11) && !phoneRule) {
                 Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
                 return;
             } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
@@ -150,7 +150,7 @@ const Index = observer(({ store }) => {
 
 
     const saveWorker = async () => {
-        const { recruitSerialCode, channelCode } = route.params;
+        const { recruitSerialCode, channelCode, phoneRule } = route.params;
         let list = arrangList.map(item => {
             item.recruitSerialCode = recruitSerialCode;
             item.interviewDate = interviewDate;
@@ -162,6 +162,7 @@ const Index = observer(({ store }) => {
             }
             if (role === 'SUPPLIER') {
                 item.supplierSerialCode = supplierCompanyInfo.serialCode;
+                item.signUpChannel = 'SUPPLIER';
             }
             if (channelCode) {   // 企业查看供应商花名册的新增功能
                 item.channelCode = channelCode;
@@ -178,11 +179,19 @@ const Index = observer(({ store }) => {
             } else if (list[i].sex === '') {
                 Taro.showToast({ title: '请选择求职者性别', icon: 'none', })
                 return;
-            } else if (!list[i].phone || list[i].phone.length != 11) {
+            } else if ((!list[i].phone || list[i].phone.length != 11) && !phoneRule) {
                 Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
                 return;
             } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
                 Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
+                return;
+            }
+
+            if(phoneRule){   // 供应商和渠道录入求职者 手机号码非必填 手机号码、身份证选填一个
+                if((!list[i].phone || list[i].phone.length != 11) && (!list[i].idCardNo || list[i].idCardNo.length != 18)){
+                    Taro.showToast({ title: '请填写求职者手机号或身份证', icon: 'none', })
+                    return;
+                }
             }
         }
         console.log("list", list);
@@ -359,14 +368,14 @@ const Index = observer(({ store }) => {
                                         </View>
                                     </View>
                                     <View className='project_item project_item_border'>
-                                        <View className='project_item_label project_item_label_required'>手机号码</View>
+                                        <View className={`project_item_label ${route.params.phoneRule ? '' : 'project_item_label_required'}`}>手机号码</View>
                                         <View className='project_item_right'>
                                             <Input
                                                 type='number'
                                                 style={`width:400rpx;`}
                                                 className='new_input'
                                                 maxlength='11'
-                                                placeholder='输入求职者的手机号(必填）'
+                                                placeholder='输入求职者的手机号'
                                                 placeholderStyle='color: #777777;'
                                                 value={arrangList[index].phone}
                                                 onInput={(e) => setFormListData(index, 'phone', e.detail.value)}

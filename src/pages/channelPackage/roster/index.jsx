@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-27 17:44:25
+ * @LastEditTime: 2025-04-29 17:30:50
  * @Description:
  */
 
@@ -319,11 +319,11 @@ const Index = observer(({ store }) => {
 
     const goAddWorker = () => {
         const { recruitSerialCode, title } = route.params;
-        Taro.navigateTo({ url: `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${recruitSerialCode}&title=${title}&channelCode=${channelFilterSupplier.channelCode}` })
+        Taro.navigateTo({ url: `/pages/newPackage/newProjectWorker/index?phoneRule=1&recruitSerialCode=${recruitSerialCode}&title=${title}&channelCode=${channelFilterSupplier.channelCode}` })
     }
 
-    const changeStatus = (e, reason) => {
-        console.log("changeStatus", e, reason);
+    const changeStatus = (e, reason, date) => {
+        console.log("changeStatus", e, reason, date);
         setCurrentCliskstatus(e);
         let params = {
             uuid: editCustom.uuid,
@@ -331,6 +331,13 @@ const Index = observer(({ store }) => {
         }
         if (reason) {
             params.failReason = reason;
+        }
+        if (date) {
+            if (e === 'EMPLOYED') {       // 已入职
+                params.employedDate = date;
+            } else if (e === 'RESIGN') {   // 已离职
+                params.resignDate = date;
+            }
         }
 
         Taro.showLoading({ title: '提交中...' });
@@ -346,8 +353,8 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const changeStatusBatch = (e, reason) => {    // 批量修改状态
-        console.log("changeStatusBatch", e, reason);
+    const changeStatusBatch = (e, reason, date) => {    // 批量修改状态
+        console.log("changeStatusBatch", e, reason, date);
         if (chooseList.length === 0) {
             return Taro.showToast({ title: '请先选择用户', icon: 'none' });
         }
@@ -358,6 +365,13 @@ const Index = observer(({ store }) => {
             }
             if (reason) {
                 obj.failReason = reason;
+            }
+            if (date) {
+                if (e === 'EMPLOYED') {       // 已入职
+                    obj.employedDate = date;
+                } else if (e === 'RESIGN') {   // 已离职
+                    obj.resignDate = date;
+                }
             }
             return obj
         })
@@ -456,12 +470,12 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const newEditStatusFunc = (status, failReason) => {
-        console.log("newEditStatusFunc", status, failReason);
+    const newEditStatusFunc = (status, failReason, date) => {
+        console.log("newEditStatusFunc", status, failReason, date);
         if (batchOperations) {     // 批量修改
-            changeStatusBatch(status, failReason);
+            changeStatusBatch(status, failReason, date);
         } else {                   // 单个修改
-            changeStatus(status, failReason);
+            changeStatus(status, failReason, date);
         }
     }
 
@@ -614,7 +628,9 @@ const Index = observer(({ store }) => {
                                     <View className='item_title_index'>{index + 1}</View>
                                     <View className='item_title_left'>
                                         <View className='item_title_name'>{item.name}</View>
-                                        <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                                        {
+                                            item.phone &&  <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                                        }
                                         <View className='item_title_phone' onClick={(e) => callUser(e, item)}>{item.phone}</View>
                                     </View>
                                 </View>

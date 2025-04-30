@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-25 14:10:45
+ * @LastEditTime: 2025-04-30 09:36:19
  * @Description:
  */
 
@@ -86,13 +86,14 @@ const Index = observer(({ store }) => {
     }
 
     const getHistoryList = async (_pageNo) => {
-        const { uuid, phone } = route.params;
+        const { uuid, phone, idCardNo } = route.params;
         setRequestState(1);
         Taro.showLoading({ title: '加载中...' });
         let params = {
             pageNo: _pageNo,
             pageSize,
             phone,
+            idCardNo,
             seekState: type
         }
         const { code, data, msg } = await getUserSignUpList(params);

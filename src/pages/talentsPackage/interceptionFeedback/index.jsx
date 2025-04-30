@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-24 17:09:55
+ * @LastEditTime: 2025-04-29 13:51:38
  * @Description:
  */
 
@@ -11,7 +11,6 @@ import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Text, Textarea, Block, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { debounce } from '@/util/utils'
-
 import Navbar from '@/components/navbar';
 import './index.scss'
 
@@ -50,7 +49,7 @@ const Index = observer(({ store }) => {
         if (code === 200 && data?.length > 0) {
             setList(_pageNo === 1 ? data : [...list, ...data]);
             setgoonLoad(true);
-            setPageNo(data.pageNo);
+            // setPageNo(data.pageNo);
             setRequestState(2);
         } else {
             setgoonLoad(false);
@@ -114,10 +113,10 @@ const Index = observer(({ store }) => {
                         )
                     })
                 }
-                {
+                {/* {
                     list.length >= 9 &&
                     <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
-                }
+                } */}
                 {
                     list.length === 0 && requestState === 3 &&
                     <Taro.NoData></Taro.NoData>

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 11:12:00
+ * @LastEditTime: 2025-04-29 18:09:14
  * @Description:
  */
 
@@ -120,10 +120,17 @@ const Index = observer(({ store }) => {
             return setIsOpened(true)
         }
         if (!detail.signUp) {
+            const { inviteRole, q } = route.params;
+            let _signUpChannel='';
+            if(inviteRole || q){
+                _signUpChannel='WECHAT_MINI_SHARE';
+            }else{
+                _signUpChannel='IN_WECHAT_MINI';
+            }
             let params = {
                 source: 'SIGN',
                 recruitSerialCode: detail.recruitSerialCode,
-                signUpChannel: 'IN_WECHAT_MINI',
+                signUpChannel: _signUpChannel,
                 agentSerialCode: enterParams.agentSerialCode
             }
             console.log("报名——params", params, enterParams);
@@ -262,6 +269,7 @@ const Index = observer(({ store }) => {
 
             context.font = '49px';
             context.fillStyle = '#FF5C00';
+            let metricsWidth = context.measureText(detail.recruitSalaryRange.split('元/')[0]).width;
             context.fillText(detail.recruitSalaryRange.split('元/')[0], 54, 933);
             let metricsWidth = context.measureText(detail.recruitSalaryRange.split('元/')[0]).width;
             if (detail.recruitSalaryRange.split('元/')[1]) {

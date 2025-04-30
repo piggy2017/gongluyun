@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-25 10:32:08
+ * @LastEditTime: 2025-04-29 17:33:14
  * @Description:
  */
 
@@ -301,9 +301,9 @@ const Index = observer(({ store }) => {
 
     const chooseCompanyFunc = (obj, index) => {
         if (Object.keys(currentCompany).length === 0 || (currentCompany.companySerialCode !== obj.companySerialCode)) {
-            if(supplierListFilterJob.length === 1 && supplierListFilterJob[0].recruitSerialCode === ''){
+            if (supplierListFilterJob.length === 1 && supplierListFilterJob[0].recruitSerialCode === '') {
                 console.log('不用重新设置')
-            }else{
+            } else {
                 setSupplierListFilterJob([{
                     title: '全部岗位',
                     recruitSerialCode: '',
@@ -426,7 +426,10 @@ const Index = observer(({ store }) => {
                                             <View className='item_title_index'>{index + 1}</View>
                                             <View className='item_title_left'>
                                                 <View className='item_title_name'>{item.name}</View>
-                                                <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                                                {
+                                                    item.phone &&
+                                                    <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                                                }
                                                 <View className='item_title_phone' onClick={(e) => callUser(e, item)}>{item.phone}</View>
                                             </View>
 
@@ -437,6 +440,9 @@ const Index = observer(({ store }) => {
                                         <View className='roster_item_job'>{item.recruitTitle}</View>
                                         {
                                             item.sourceDesc && <View className='roster_item_job'>来源：{item.sourceDesc}</View>
+                                        }
+                                        {
+                                            item.cooperationModel && <View className='roster_item_job'>合作模式：{item.cooperationModel}</View>
                                         }
                                         <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
                                     </View>

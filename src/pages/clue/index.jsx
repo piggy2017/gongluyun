@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 11:55:54
- * @Description: 
+ * @LastEditTime: 2025-04-29 17:36:28
+ * @Description:
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
@@ -620,7 +620,10 @@ const Index = observer(({ store }) => {
                                 <View className='clue_item_title_source'>岗位浏览</View>
                               </>
                             }
-                            <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                            {
+                                item.phone &&
+                                <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                            }
                             <View className='item_title_phone' onClick={(e) => callFunc(e, item)}>{item.phone}</View>
                           </View>
                         </View>

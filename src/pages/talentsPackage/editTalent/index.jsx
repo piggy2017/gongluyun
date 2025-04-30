@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 15:21:18
+ * @LastEditTime: 2025-04-30 09:46:20
  * @Description: 人才库 - 编辑人才信息页面
  */
 
@@ -110,8 +110,8 @@ const Index = observer(({ store }) => {
         const errorMessages = [
             !params.source && '请选择求职者来源',
             // !(params.agentSerialCode || params.agentSerialCode === '') && '请为求职者分配跟进人',
-            (!params.phone || (params.phone && params.phone.length != 11)) && '请输入求职者手机号码',
-            (params.idCardNo && params.idCardNo.length != 18) && '请输入求职者18位身份证号码',
+            // (!params.phone || (params.phone && params.phone.length != 11)) && '请输入求职者手机号码',
+            // (params.idCardNo && params.idCardNo.length != 18) && '请输入求职者18位身份证号码',
         ].filter(Boolean);
 
         if (errorMessages.length > 0) {
@@ -119,6 +119,10 @@ const Index = observer(({ store }) => {
                 title: errorMessages[0],
                 icon: 'none',
             })
+        }
+        if ((!params.phone || params.phone.length != 11) && (!params.idCardNo || params.idCardNo.length != 18)) {
+            Taro.showToast({ title: '请填写求职者手机号或身份证', icon: 'none', })
+            return;
         }
 
         const { code, data, msg } = await (isUpdate ? clueUpdate(params) : clueInsert(params));
@@ -155,10 +159,10 @@ const Index = observer(({ store }) => {
 
             <View className='project_group'>
                 <View className='project_item'>
-                    <View className='project_item_label project_item_label_required'>手机号码</View>
+                    <View className='project_item_label'>手机号码</View>
                     <View className='project_item_right'>
                         <Input
-                            disabled
+                            // disabled
                             type='number'
                             maxlength='11'
                             className='new_input'
@@ -246,7 +250,7 @@ const Index = observer(({ store }) => {
                         confirmType='return'
                         value={formData.jobTypeName}
                         onInput={(e) => setFormData({ ...formData, jobTypeName: e.detail.value })}
-                        adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                        adjustPosition={true} //键盘弹起时，是否自动上推页面
                         show-confirm-bar
                         autoHeight
                         placeholder={`输入求职者的求职意向`}>
@@ -302,7 +306,7 @@ const Index = observer(({ store }) => {
                             confirmType='return'
                             value={formData.remark}
                             onInput={(e) => setFormData({ ...formData, remark: e.detail.value })}
-                            adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                            adjustPosition={true} //键盘弹起时，是否自动上推页面
                             show-confirm-bar
                             maxlength={500}
                             autoHeight
@@ -316,7 +320,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={saveWorker} className={`post_btn ${(formData.source && formData.phone) ? 'post_btn_active' : ''}`}>保存</View>
+                <View onClick={saveWorker} className={`post_btn ${(formData.source) ? 'post_btn_active' : ''}`}>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 

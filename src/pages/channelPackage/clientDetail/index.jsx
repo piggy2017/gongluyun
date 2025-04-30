@@ -3,7 +3,7 @@
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
  * @LastEditTime: 2025-04-21 16:45:37
- * @Description: 
+ * @Description:
  */
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
@@ -78,12 +78,19 @@ const Index = observer(({ store }) => {
         }
     }
 
-    const changeStatus = (e, _reason) => {
-        console.log("changeStatus", e, _reason);
+    const changeStatus = (e, _reason, date) => {
+        console.log("changeStatus", e, _reason, date);
         Taro.showLoading({ title: '提交中...' });
         let params = {
             uuid: clientInfos.uuid,
             seekState: e
+        }
+        if (date) {
+            if (e === 'EMPLOYED') {       // 已入职
+                params.employedDate = date;
+            } else if (e === 'RESIGN') {   // 已离职
+                params.resignDate = date;
+            }
         }
         if (_reason) {
             params.failReason = _reason;
@@ -153,9 +160,9 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const newEditStatusFunc = (status, failReason) => {
-        console.log("newEditStatusFunc", status, failReason);
-        changeStatus(status, failReason);
+    const newEditStatusFunc = (status, failReason, date) => {
+        console.log("newEditStatusFunc", status, failReason, date);
+        changeStatus(status, failReason, date);
     }
 
     return (
@@ -283,7 +290,7 @@ const Index = observer(({ store }) => {
                                         confirmType='return'
                                         value={reason}
                                         onInput={(e) => setReason(e.detail.value)}
-                                        adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                                        adjustPosition={true} //键盘弹起时，是否自动上推页面
                                         showConfirmBar={false}
                                         maxlength={50}
                                         autoHeight
@@ -324,7 +331,7 @@ const Index = observer(({ store }) => {
                                         confirmType='return'
                                         value={currentCooperationModel}
                                         onInput={(e) => setCurrentCooperationModel(e.detail.value)}
-                                        adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                                        adjustPosition={true} //键盘弹起时，是否自动上推页面
                                         show-confirm-bar
                                         maxlength={100}
                                         autoHeight

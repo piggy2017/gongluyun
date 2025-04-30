@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-21 15:08:26
+ * @LastEditTime: 2025-04-30 10:56:32
  * @Description: 人才库列表结果的item,需要传入 index，item
  */
 import React, { useState, useEffect } from 'react';
@@ -18,7 +18,7 @@ const TalentsItem = observer(({ store, index, item }) => {
 
     return (
         <>
-            <View className='talents_item' key={index} onClick={() => Taro.navigateTo({ url: `/pages/talentsPackage/signUpHistory/index?uuid=${item.uuid}&phone=${item.phone}` })}>
+            <View className='talents_item' key={index} onClick={() => Taro.navigateTo({ url: `/pages/talentsPackage/signUpHistory/index?uuid=${item.uuid ? item.uuid : ''}&phone=${item.phone}&idCardNo=${item.idCardNo ? item.idCardNo : ''}` })}>
                 <View className='talents_item_title'>
                     <View className='talents_item_title_left'>
                         <View className='talents_item_title_name'>{item.name}</View>
@@ -28,7 +28,9 @@ const TalentsItem = observer(({ store, index, item }) => {
                         e.stopPropagation();
                         Taro.makePhoneCall({ phoneNumber: item.phone })
                     }}>
-                        <Image src={`${Taro.$cdnUrl}/index/mine_icon7.webp`}></Image>
+                        {
+                            item.phone && <Image src={`${Taro.$cdnUrl}/index/mine_icon7.webp`}></Image>
+                        }
                         <View>{item.phone}</View>
                     </View>
                 </View>
