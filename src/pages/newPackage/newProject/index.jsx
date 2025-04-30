@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-30 09:58:03
+ * @LastEditTime: 2025-04-30 10:39:38
  * @Description:
  */
 
@@ -609,7 +609,7 @@ const Index = observer(({ store }) => {
                             onInput={(e) => setFormData({ ...formData, introduction: e.detail.value })}
                             adjustPosition={true} //键盘弹起时，是否自动上推页面
                             show-confirm-bar
-                            maxlength={500}
+                            maxlength={1000}
                             autoHeight
                             placeholder={`点击输入招工信息...`}
                         />
@@ -633,7 +633,7 @@ const Index = observer(({ store }) => {
                             onInput={(e) => setFormData({ ...formData, privateIntroduction: e.detail.value })}
                             adjustPosition={true} //键盘弹起时，是否自动上推页面
                             show-confirm-bar
-                            maxlength={500}
+                            maxlength={1000}
                             autoHeight
                             placeholder={`点击输入岗位详情...`}
                         />
