@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 18:09:14
+ * @LastEditTime: 2025-04-30 12:25:28
  * @Description:
  */
 
@@ -269,7 +269,6 @@ const Index = observer(({ store }) => {
 
             context.font = '49px';
             context.fillStyle = '#FF5C00';
-            let metricsWidth = context.measureText(detail.recruitSalaryRange.split('元/')[0]).width;
             context.fillText(detail.recruitSalaryRange.split('元/')[0], 54, 933);
             let metricsWidth = context.measureText(detail.recruitSalaryRange.split('元/')[0]).width;
             if (detail.recruitSalaryRange.split('元/')[1]) {
