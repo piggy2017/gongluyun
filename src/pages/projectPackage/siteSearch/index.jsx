@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-24 10:29:25
+ * @LastEditTime: 2025-05-07 16:35:49
  * @Description:
  */
 
@@ -220,7 +220,9 @@ const Index = observer(({ store }) => {
                                             <View className='item_title_index'>{index + 1}</View>
                                             <View className='item_title_left'>
                                                 <View className='item_title_name'>{item.name}</View>
-                                                <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                                                {
+                                                    item.phone && <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                                                }
                                                 <View className='item_title_phone' onClick={(e) => callUser(e, item)}>{item.phone}</View>
                                             </View>
                                         </View>
