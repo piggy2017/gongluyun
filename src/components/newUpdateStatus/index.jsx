@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-23 11:41:37
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-30 17:06:54
+ * @LastEditTime: 2025-05-07 16:42:36
  * @Description: 更改用户状态  未到面 已到面 面试失败 面试通过 已离职 已入职
  */
 
@@ -59,8 +59,8 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
         } else if (role === 'ON_SITE' || role === 'CHANNEL') {
             _statusList = list.filter(item => item.state !== 'PENDING' && item.state !== 'CONTACT' && item.state !== 'UNSUITABLE');
         } else if (role === 'CUSTOMER') {
-            // _statusList = list.splice(0, 3);
-            _statusList = list;
+            _statusList = list.splice(0, 3);
+            // _statusList = list;
         }
         if (_statusList.length > 0 && currentStatus) {
             _statusList.forEach(item => {
