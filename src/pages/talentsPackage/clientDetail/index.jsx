@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-28 18:30:44
+ * @LastEditTime: 2025-04-30 17:27:52
  * @Description:
  */
 import React, { useState, useEffect } from 'react'
@@ -240,11 +240,12 @@ const Index = observer(({ store }) => {
         } else {
             // setShowEditStatus(true);
             if (role === 'CUSTOMER') {
-                if (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'CONTACT' || clientInfos.seekState === 'UNSUITABLE') {
-                    setShowEditStatus(true);
-                } else {
-                    Taro.showToast({ title: '您无法修改', icon: 'none' });
-                }
+                setShowEditStatus(true);
+                // if (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'CONTACT' || clientInfos.seekState === 'UNSUITABLE') {
+                //     setShowEditStatus(true);
+                // } else {
+                //     Taro.showToast({ title: '您无法修改', icon: 'none' });
+                // }
             } else if (role === 'ON_SITE' || role === 'CHANNEL') {
                 if (clientInfos.seekState != 'PENDING' && clientInfos.seekState != 'CONTACT' && clientInfos.seekState != 'UNSUITABLE') {
                     setShowEditStatus(true);
@@ -263,8 +264,8 @@ const Index = observer(({ store }) => {
             return Taro.showToast({ title: '暂无权限', icon: 'none' });
         } else {
             if (role === 'CUSTOMER') {
-                Taro.showToast({ title: '您无法修改', icon: 'none' });
-                return;
+                // Taro.showToast({ title: '您无法修改', icon: 'none' });
+                // return;
             }
         }
         setShowExchangeModel(true);

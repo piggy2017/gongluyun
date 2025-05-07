@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 17:32:16
+ * @LastEditTime: 2025-04-30 17:30:30
  * @Description:
  */
 
@@ -215,12 +215,12 @@ const Index = observer(({ store }) => {
         if (batchOperations) return;
         e.stopPropagation();
         if (role === 'CUSTOMER') {
-            if (obj.seekState === 'PENDING' || obj.seekState === 'CONTACT' || obj.seekState === 'UNSUITABLE') {
-                setShowEditStatus(true);
-                setEditCustom(obj);
-            } else {
-                Taro.showToast({ title: '您无法修改', icon: 'none' });
-            }
+            setShowEditStatus(true);
+            setEditCustom(obj);
+            // if (obj.seekState === 'PENDING' || obj.seekState === 'CONTACT' || obj.seekState === 'UNSUITABLE') {
+            // } else {
+            //     Taro.showToast({ title: '您无法修改', icon: 'none' });
+            // }
         } else if (role === 'ON_SITE') {
             if (obj.seekState != 'PENDING' && obj.seekState != 'CONTACT' && obj.seekState != 'UNSUITABLE') {
                 setShowEditStatus(true);
@@ -605,6 +605,7 @@ const Index = observer(({ store }) => {
                                         if (!myPermissions.includes('14')) {
                                             return
                                         }
+
                                         showOptionFunc(e, item, index);
                                     }}>
                                         <View>{getStatus(item.seekState)}</View>
@@ -668,7 +669,7 @@ const Index = observer(({ store }) => {
                                 <View>全选</View>
                             </View>
                             {
-                                role === 'ADMIN' &&
+                                (role === 'ADMIN' || role === 'CUSTOMER') &&
                                 <View className='change_job_1' onClick={() => exchangeJobFunc()}>转项目</View>
                             }
 

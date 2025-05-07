@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 17:30:50
+ * @LastEditTime: 2025-05-07 11:09:36
  * @Description:
  */
 
@@ -63,17 +63,17 @@ const Index = observer(({ store }) => {
         { name: '已离职', state: 'RESIGN', },
         // { name: '可结算', state: 'SETTLEMENT', }
     ]);
-    const [currentTabIndex, setCurrentTabIndex] = useState(0);           // 当前选中的tab
+    const [currentTabIndex, setCurrentTabIndex] = useState(0);              // 当前选中的tab
     const [currentCliskstatus, setCurrentCliskstatus] = useState('');
-    const [batchOperations, setBatchOperations] = useState(false);       // 是否进行批量操作
-    const [chooseAll, setChooseAll] = useState(false);                   // 全选反选
+    const [batchOperations, setBatchOperations] = useState(false);          // 是否进行批量操作
+    const [chooseAll, setChooseAll] = useState(false);                      // 全选反选
     // const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示底部的操作选项
-    const [chooseList, setChooseList] = useState([]);                    // 选中的列表
-    const [showExportModel, setShowExportModel] = useState(false);       // 是否显示导出弹窗
-    const [editCustom, setEditCustom] = useState({});                    // 当前需要更改的客户信息
-    const [customRequestParams, setCustomRequestParams] = useState({});  // 当前请求参数
+    const [chooseList, setChooseList] = useState([]);                       // 选中的列表
+    const [showExportModel, setShowExportModel] = useState(false);          // 是否显示导出弹窗
+    const [editCustom, setEditCustom] = useState({});                       // 当前需要更改的客户信息
+    const [customRequestParams, setCustomRequestParams] = useState({});     // 当前请求参数
 
-    const [showFilterDate, setShowFilterDate] = useState(false);                  //  是否显示切换日期的弹窗
+    const [showFilterDate, setShowFilterDate] = useState(false);            //  是否显示切换日期的弹窗
     const [dateObj, setDateObj] = useState({
         dateRange: "",
         endDate: "",

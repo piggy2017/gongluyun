@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-22 11:28:19
- * @Description: 
+ * @LastEditTime: 2025-05-06 15:13:52
+ * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
@@ -15,13 +15,13 @@ import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce, throttleCustom } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
-import { contractsJobSelector,jobSelectorByPossess } from '@/util/api'
+import { contractsJobSelector, jobSelectorByPossess } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-        businessStore: { poorJobId, myClientJobId, setPoorJobId, setMyClientJobId, onSiteFilterJob, setOnSiteFilterJob }
+        businessStore: { poorJobId, myClientJobId, setPoorJobId, setMyClientJobId, onSiteFilterJob, setOnSiteFilterJob, channelListFilterJob, setchannelListFilterJob }
     } = store
     const router = useRouter();
 
@@ -38,7 +38,7 @@ const Index = observer(({ store }) => {
     const [title, setTitle] = useState('');
 
     useEffect(() => {
-        // type=1 线索-客户池筛选岗位   type=2 线索-我的客户筛选岗位   type=5 驻厂名单-选择岗位
+        // type=1 线索-客户池筛选岗位   type=2 线索-我的客户筛选岗位   type=5 驻厂名单-选择岗位  type=6 渠道名单tab选择岗位
         const { type, title } = router.params;
         console.log('type, title', type, title);
         setType(type);
@@ -76,7 +76,7 @@ const Index = observer(({ store }) => {
             for (let i = 0; i < data.responses.length; i++) {
                 data.responses[i].selected = false;
             }
-            if (router.params.type == 1 || router.params.type == 2 || router.params.type == 5) {
+            if (router.params.type == 1 || router.params.type == 2 || router.params.type == 5 || router.params.type == 6) {
                 if (_pageNo === 1) {
                     let obj = {
                         title: '全部岗位',
@@ -114,6 +114,16 @@ const Index = observer(({ store }) => {
                     } else {
                         for (let j = 0; j < onSiteFilterJob.length; j++) {
                             if (data.responses[i].recruitSerialCode == onSiteFilterJob[j].recruitSerialCode) {
+                                data.responses[i].selected = true;
+                            }
+                        }
+                    }
+                } else if (router.params.type == 6) {  // channelListFilterJob
+                    if (channelListFilterJob.length === 1 && channelListFilterJob[0].recruitSerialCode === '') {
+                        data.responses[i].selected = true;
+                    } else {
+                        for (let j = 0; j < channelListFilterJob.length; j++) {
+                            if (data.responses[i].recruitSerialCode == channelListFilterJob[j].recruitSerialCode) {
                                 data.responses[i].selected = true;
                             }
                         }
@@ -180,13 +190,17 @@ const Index = observer(({ store }) => {
             return;
         }
         let _hasAll = _filterList.filter(item => item.recruitSerialCode === '');
+        console.log("_filterList:", _filterList, "_hasAll:", _hasAll);
 
         if (type == 1) {
             setPoorJobId(_hasAll.length > 0 ? _hasAll : _filterList);
         } else if (type == 2) {
             setMyClientJobId(_hasAll.length > 0 ? _hasAll : _filterList);
-        }else if(type == 5){
+        } else if (type == 5) {
             setOnSiteFilterJob(_hasAll.length > 0 ? _hasAll : _filterList);
+        } else if (type == 6) {
+            console.log("type===6")
+            setchannelListFilterJob(_hasAll.length > 0 ? _hasAll : _filterList);
         }
 
         setTimeout(() => {

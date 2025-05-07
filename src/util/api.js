@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-30 12:23:15
+ * @LastEditTime: 2025-05-07 16:41:37
  * @Description:
  */
 
@@ -603,4 +603,8 @@ export const downloadClients = params => { // 我的客户导出功能
 };
 export const batchUpdateSupplier = params => { // 渠道给求职者批量设置供应商
     return http(API_BASE_URL + '/interview/batchUpdateSupplier', params, "POST", { "Content-Type": "application/json" });
+};
+
+export const getContractsCoopModels = params => { // 通过项目获取合作模式
+    return http(API_BASE_URL + '/contracts/getContractsCoopModels', params, "POST", { "Content-Type": "application/json" });
 };
