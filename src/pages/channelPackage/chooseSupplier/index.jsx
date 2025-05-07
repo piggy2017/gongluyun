@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 09:57:55
+ * @LastEditTime: 2025-05-06 11:22:47
  * @Description:
  */
 
@@ -59,7 +59,7 @@ const Index = observer(({ store }) => {
             pageNo: _pageNo,
             pageSize,
             searchInfo: searchValue,
-            contractsSerialCode: router.params.contractsSerialCode
+            contractsSerialCode: router.params.contractsSerialCode ? router.params.contractsSerialCode : ''
         }
         const { code, data } = await myChannelSelector(params);
         console.log("getClueList", code, data);

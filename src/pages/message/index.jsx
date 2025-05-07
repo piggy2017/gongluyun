@@ -246,7 +246,7 @@ const Message = observer(({ store }) => {
 
             <Taro.GlobalLogin isOpened={isOpened} onClose={onClose} />
 
-            <TabBar actCurrent={(role === 'SEEK' || role === 'CHANNEL') ? 1 : 3} />
+            <TabBar actCurrent={(role === 'SEEK') ? 1 : role === 'CHANNEL' ? 2 : 3} />
         </View>
     )
 })

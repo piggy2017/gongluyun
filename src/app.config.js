@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-24 13:57:38
+ * @LastEditTime: 2025-05-06 13:46:09
  * @Description:
  */
 export default defineAppConfig({
@@ -12,14 +12,16 @@ export default defineAppConfig({
         'pages/index/index',
         'pages/projectManage/index',
         'pages/clue/index',
-        'pages/onSiteList/index',
+        // 'pages/onSiteList/index',
         'pages/mine/index',
         'pages/login/index',
         'pages/supplierProject/index',
         'pages/workerIndex/index',           // 求职者首页
         'pages/channelIndex/index',          // 渠道首页
+        // 'pages/channelList/index',           // 渠道名单
         'pages/message/index',
         'pages/supplierlist/index',
+        'pages/channelOnsiteList/index',
     ],
     window: {
         backgroundTextStyle: 'light',
@@ -64,10 +66,10 @@ export default defineAppConfig({
                 'pagePath': 'pages/message/index',
                 "text": "消息"
             },
-            {
-                "pagePath": "pages/onSiteList/index",
-                "text": "名单"
-            },
+            // {
+            //     "pagePath": "pages/onSiteList/index",
+            //     "text": "名单"
+            // },
             {
                 'pagePath': 'pages/mine/index',
                 "text": "我的"
@@ -78,6 +80,14 @@ export default defineAppConfig({
             },
             {
                 'pagePath': 'pages/supplierlist/index',
+                "text": "名单"
+            },
+            // {
+            //     'pagePath': 'pages/channelList/index',
+            //     "text": "名单"
+            // },
+            {
+                'pagePath': 'pages/channelOnsiteList/index',
                 "text": "名单"
             },
         ]
@@ -204,6 +214,7 @@ export default defineAppConfig({
                 "clientDetail/index",             // 渠道详情
                 "chooseSupplier/index",           // 渠道查看项目名单-选择供应商
                 "newInterviewWorker/index",       // 渠道查看项目名单-新增求职者
+                "multipleSupplier/index",         // 渠道-名单 筛选供应商 - 多选
             ]
         }
     ]

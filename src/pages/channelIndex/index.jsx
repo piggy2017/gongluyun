@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-24 15:07:49
+ * @LastEditTime: 2025-05-06 10:53:34
  * @Description:
  */
 import React, { useState, useEffect } from 'react'
@@ -106,7 +106,7 @@ const Index = observer(({ store }) => {
     })
 
     return (
-        <View className='container'>
+        <View className='channel_container'>
             <View className='my_header'>
                 <View className='my_header_hr' style={`--statusBarHeight:${statusTitleHeight}px;`}></View>
                 <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
@@ -138,6 +138,7 @@ const Index = observer(({ store }) => {
                     }}
                     value={searchValue}></Input>
             </View>
+
 
             <View className='btns'>
                 <View className='btns_item' onClick={()=>{
