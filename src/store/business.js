@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-07 09:59:08
+ * @LastEditTime: 2025-05-07 15:26:36
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -254,8 +254,8 @@ const businessStore = observable({
 
     channelListSupplier: [     //  渠道名单tab中的 供应商筛选 --多选
         {
-            name: '全部供应商',
-            supplierSerialCode: '',
+            channelName: '全部供应商',
+            channelCode: '',
             selected: false
         }
     ],

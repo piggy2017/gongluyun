@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-06 15:34:54
+ * @LastEditTime: 2025-05-07 15:23:47
  * @Description:
  */
 
@@ -16,7 +16,7 @@ import { selectorQueryDomInfo, debounce, throttleCustom } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { mySupplierList } from '@/util/api'
+import { mySupplierList, myChannelList } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const router = useRouter();
@@ -58,10 +58,10 @@ const Index = observer(({ store }) => {
             pageNo: _pageNo,
             pageSize,
             companySerialCode: companyInfo.companySerialCode,
-            supplierSerialCode: '',
+            // supplierSerialCode: '',
             searchInfo: searchValue,
         }
-        const { code, data } = await mySupplierList(params);
+        const { code, data } = await myChannelList(params);
         console.log("getClueList", code, data);
         Taro.hideLoading();
         setIsRefresh(false);
@@ -71,18 +71,18 @@ const Index = observer(({ store }) => {
             }
             if (_pageNo === 1) {
                 let obj = {
-                    name: '全部供应商',
-                    supplierSerialCode: '',
+                    channelName: '全部供应商',
+                    channelCode: '',
                     selected: false
                 }
                 data.responses.unshift(obj);
             }
             for (let i = 0; i < data.responses.length; i++) {
-                if (channelListSupplier.length === 1 && channelListSupplier[0].supplierSerialCode === '') {
+                if (channelListSupplier.length === 1 && channelListSupplier[0].channelCode === '') {
                     data.responses[i].selected = true;
                 } else {
                     for (let j = 0; j < channelListSupplier.length; j++) {
-                        if (data.responses[i].supplierSerialCode == channelListSupplier[j].supplierSerialCode) {
+                        if (data.responses[i].channelCode == channelListSupplier[j].channelCode) {
                             data.responses[i].selected = true;
                         }
                     }
@@ -120,7 +120,7 @@ const Index = observer(({ store }) => {
     }
 
     const chooseFunc = throttleCustom((obj, index) => {
-        if (obj.supplierSerialCode === '') {
+        if (obj.channelCode === '') {
             setList(list.map(item => {
                 return {
                     ...item,
@@ -147,7 +147,7 @@ const Index = observer(({ store }) => {
             Taro.showToast({ title: '请选择供应商', icon: 'none' });
             return;
         }
-        let _hasAll = _filterList.filter(item => item.supplierSerialCode === '');
+        let _hasAll = _filterList.filter(item => item.channelCode === '');
         console.log("_filterList:", _filterList, "_hasAll:", _hasAll);
 
         setChannelListSupplier(_hasAll.length > 0 ? _hasAll : _filterList);
@@ -194,7 +194,7 @@ const Index = observer(({ store }) => {
                     list.length > 0 && list.map((item, index) => {
                         return (
                             <View key={index} className='list_item' onClick={() => chooseFunc(item, index)}>
-                                <View className='list_item_name'>{item.name}</View>
+                                <View className='list_item_name'>{item.channelName}</View>
                                 {
                                     item.selected ? <Image className='list_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image> : ''
                                 }

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-07 14:39:21
+ * @LastEditTime: 2025-05-07 15:22:29
  * @Description:
  */
 
@@ -245,9 +245,9 @@ const Index = observer(({ store }) => {
             _recruitSerialCodes = [];
         }
 
-        let _supplierSerialCodes = channelListSupplier.map(item => item.supplierSerialCode);
-        if (_supplierSerialCodes.length === 1 && _supplierSerialCodes[0] === '') {
-            _supplierSerialCodes = [];
+        let _channelCodes = channelListSupplier.map(item => item.channelCode);
+        if (_channelCodes.length === 1 && _channelCodes[0] === '') {
+            _channelCodes = [];
         }
         let params = {
             pageNo: _pageNo,
@@ -256,7 +256,7 @@ const Index = observer(({ store }) => {
             searchInfo: searchValue,
             // recruitSerialCode: channelListFilterJob.recruitSerialCode,
             recruitSerialCodes: _recruitSerialCodes,
-            supplierSerialCodes: _supplierSerialCodes,
+            channelCodes: _channelCodes,
             // agentSerialCode: onSiteFilterSUPPLIER.channelCode,
             source: '',
             dateRange: dateObj.dateRange,
@@ -625,7 +625,7 @@ const Index = observer(({ store }) => {
                     </View>
 
                     <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/channelPackage/multipleSupplier/index` }) }}>
-                        <View>{channelListSupplier.length === 1 ? channelListSupplier[0].name : channelListSupplier[0].name + '等' + channelListSupplier.length + '个供应商'}</View>
+                        <View>{channelListSupplier.length === 1 ? channelListSupplier[0].channelName : channelListSupplier[0].channelName + '等' + channelListSupplier.length + '个供应商'}</View>
                         <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
                     </View>
 
