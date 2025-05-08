@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-07 11:09:36
+ * @LastEditTime: 2025-05-08 14:58:18
  * @Description:
  */
 
@@ -629,13 +629,13 @@ const Index = observer(({ store }) => {
                                     <View className='item_title_left'>
                                         <View className='item_title_name'>{item.name}</View>
                                         {
-                                            item.phone &&  <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                                            item.phone && <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
                                         }
                                         <View className='item_title_phone' onClick={(e) => callUser(e, item)}>{item.phone}</View>
                                     </View>
                                 </View>
                                 <View className='roster_item_detail'>
-                                    <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.idCardNo) ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
+                                    <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.ethnicity) ? '·' : ''}{item.ethnicity ? item.ethnicity : ''}{item.ethnicity && item.idCardNo ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
                                     <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }} onClick={(e) => {
                                         if (!myPermissions.includes('14')) {
                                             return

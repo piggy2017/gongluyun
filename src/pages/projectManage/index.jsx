@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-03 13:34:26
+ * @LastEditTime: 2025-05-08 11:55:19
  * @Description: 
  */
 
@@ -11,21 +11,21 @@ import Taro, { useDidShow, useDidHide } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import TabBar from '@/components/tabBar';
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, throttleCustom } from '@/util/utils'
 import { AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 
 import WorkerJobType from '@/components/workerJobType';
 import './index.scss';
 
-import { contractsList } from '@/util/api';
+import { contractsList, getContractsInfo } from '@/util/api';
 
 const Index = observer(({ store }) => {
   const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
     userStore: { role, isLogin, companyVerified, myPermissions },
-    businessStore: { jobFilterAddress, setJobFilterAddress },
+    businessStore: { jobFilterAddress, setJobFilterAddress, setEditProjectInfo },
   } = store
   const [searchValue, setSearchValue] = useState('');
   const [searchHeight, setSearchHeight] = useState(34);
@@ -167,6 +167,22 @@ const Index = observer(({ store }) => {
     }
   }
 
+  const copyProjectFunc = async (obj) => {
+    console.log("copyProjectFunc-obj:", obj)
+    Taro.showLoading({ title: '加载中...' });
+    const { code, data, msg } = await getContractsInfo({ contractsSerialCode: obj.serialCode });
+    Taro.hideLoading();
+    if (code === 200) {
+      console.log("getProjectDetail_data", data);
+      setEditProjectInfo({
+        ...data,
+        fromCopy: true
+      });
+      Taro.navigateTo({ url: `/pages/newPackage/newProject/index` });
+    }
+
+  }
+
   return (
     <View className='container'>
       <View className='my_header'>
@@ -301,7 +317,7 @@ const Index = observer(({ store }) => {
                     </View>
                   </View>
 
-                  <View className='project_item_bottom'>
+                  <View className='project_item_bottom' style={`padding:${myPermissions.includes('9') ? '24rpx 60rpx' : '24rpx 110rpx'}`}>
                     <View className={`project_item_bottom_item ${myPermissions.includes('11') ? '' : 'project_item_bottom_item_g'}`} onClick={(e) => {
                       if (myPermissions.includes('11')) {
                         navigateFunc(e, 1, `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)
@@ -310,10 +326,17 @@ const Index = observer(({ store }) => {
                         Taro.showToast({ title: '暂无权限', icon: 'none' })
                       }
                     }}>名单</View>
+                    {
+                      myPermissions.includes('9') &&
+                      <View className={`project_item_bottom_item `} onClick={(e) => {
+                        e.stopPropagation();
+                        copyProjectFunc(item);
+                      }}>复制项目</View>
+                    }
                     <View className={`project_item_bottom_item ${myPermissions.includes('12') ? '' : 'project_item_bottom_item_g'}`} onClick={(e) => {
                       if (myPermissions.includes('12')) {
                         navigateFunc(e, 1, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)
-                      }else {
+                      } else {
                         e.stopPropagation();
                         Taro.showToast({ title: '暂无权限', icon: 'none' })
                       }

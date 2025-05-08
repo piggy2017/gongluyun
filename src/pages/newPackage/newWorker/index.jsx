@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 15:18:56
+ * @LastEditTime: 2025-05-08 14:10:09
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
-        businessStore: { addWorkerJobInfo, setAddWorkerJobInfo,workerSetCustomerInfo, editClientInfos, setEditClientInfos, sourceGroup },
+        businessStore: { addWorkerJobInfo, setAddWorkerJobInfo, workerSetCustomerInfo, editClientInfos, setEditClientInfos, sourceGroup },
         userStore: { role, userInfo: { userSerialCode } },
     } = store
     const [formData, setFormData] = useState({});
@@ -323,6 +323,18 @@ const Index = observer(({ store }) => {
                             placeholderStyle='color: #777777;'
                             value={formData.address}
                             onInput={(e) => setFormData({ ...formData, address: e.detail.value })}
+                        ></Input>
+                    </View>
+                </View>
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>民族</View>
+                    <View className='project_item_right'>
+                        <Input
+                            className='new_input'
+                            placeholder='输入用户民族'
+                            placeholderStyle='color: #777777;'
+                            value={formData.ethnicity}
+                            onInput={(e) => setFormData({ ...formData, ethnicity: e.detail.value })}
                         ></Input>
                     </View>
                 </View>
