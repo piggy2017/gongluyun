@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-18 18:02:29
+ * @LastEditTime: 2025-05-08 10:31:47
  * @Description: 
  */
 
@@ -24,6 +24,7 @@ const Index = observer(({ store }) => {
     const router = useRouter();
     const {
         userStore: { companyInfo },
+        businessStore: { siteObj, setSiteObj },
     } = store
 
     const [drainageDate, setDrainageDate] = useState('YESTERDAY');
@@ -60,11 +61,11 @@ const Index = observer(({ store }) => {
         getDashDrainageData();
         getDashFlowChannel();
         getDashEmployeeData();
-    }, [dateObj])
+    }, [dateObj, siteObj])
 
     useEffect(() => {
         getDashContractsData();
-    }, []);
+    }, [siteObj]);
 
     useEffect(() => {
         const query = Taro.createSelectorQuery();
@@ -89,6 +90,12 @@ const Index = observer(({ store }) => {
                 drawProgress(ctx, width, height, percent);
             });
     }, [percent]);
+
+    useEffect(() => {
+        return () => {
+            setSiteObj([]);
+        }
+    }, [])
 
     const customDateSelect = (e) => {      // 选择日期的回调
         console.log("自定义选择日期组件 customDateSelect", e);
@@ -123,7 +130,7 @@ const Index = observer(({ store }) => {
 
     const getDashContractsData = async () => {    // 获取项目概况
         Taro.showLoading({ title: '加载中...', mask: true })
-        const { code, data, msg } = await dashContractsData({ companySerialCode: companyInfo.companySerialCode });
+        const { code, data, msg } = await dashContractsData({ companySerialCode: companyInfo.companySerialCode, deptIdList: siteObj });
         Taro.hideLoading();
         console.log("获取项目概况", data);
         if (code === 200 && data) {
@@ -138,7 +145,8 @@ const Index = observer(({ store }) => {
             companySerialCode: companyInfo.companySerialCode,
             dateRange: dateObj.dateRange,
             startDate: dateObj.startDate ? dateObj.startDate + ' 00:00:00' : '',
-            endDate: dateObj.endDate ? dateObj.endDate + ' 23:59:59' : ''
+            endDate: dateObj.endDate ? dateObj.endDate + ' 23:59:59' : '',
+            deptIdList: siteObj
         }
         const { code, data, msg } = await dashDrainageData(params);
         console.log("获取引流与转化数据", data);
@@ -154,7 +162,8 @@ const Index = observer(({ store }) => {
             companySerialCode: companyInfo.companySerialCode,
             dateRange: dateObj.dateRange,
             startDate: dateObj.startDate ? dateObj.startDate + ' 00:00:00' : '',
-            endDate: dateObj.endDate ? dateObj.endDate + ' 23:59:59' : ''
+            endDate: dateObj.endDate ? dateObj.endDate + ' 23:59:59' : '',
+            deptIdList: siteObj
         }
         const { code, data, msg } = await dashFlowChannel(params);
         console.log("获取流量渠道数据", data);
@@ -171,7 +180,8 @@ const Index = observer(({ store }) => {
             companySerialCode: companyInfo.companySerialCode,
             dateRange: dateObj.dateRange,
             startDate: dateObj.startDate ? dateObj.startDate + ' 00:00:00' : '',
-            endDate: dateObj.endDate ? dateObj.endDate + ' 23:59:59' : ''
+            endDate: dateObj.endDate ? dateObj.endDate + ' 23:59:59' : '',
+            deptIdList: siteObj
         }
         const { code, data, msg } = await dashEmployeeData(params);
         console.log("获取员工数据", data);
@@ -182,11 +192,19 @@ const Index = observer(({ store }) => {
         }
     }
 
-
-
     return (
         <View className='container'>
-            <Navbar fixed placeholder bgColor='#FFFFFF' title='分析报表'></Navbar>
+            <Navbar fixed placeholder bgColor='#FFFFFF' title='分析报表' />
+
+            <View className='onsite_wrapper'>
+                <View>请选择站点</View>
+                <View className='site_filter' onClick={() => {
+                    Taro.navigateTo({ url: '/pages/newPackage/setSite/index' })
+                }}>
+                    <View>{siteObj.length > 0 ? `已选${siteObj.length}个站点` : '全部站点'}</View>
+                    <AtIcon value='chevron-down' size='14' color='#1678FF'></AtIcon>
+                </View>
+            </View>
 
             <View className='project_wrapper'>
                 <View className='project_title'>项目概况</View>
