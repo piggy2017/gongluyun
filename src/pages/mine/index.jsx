@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-07 16:47:47
+ * @LastEditTime: 2025-05-08 17:54:02
  * @Description:
  */
 import React, { useState, useEffect } from 'react'
@@ -203,7 +203,7 @@ const Index = observer(({ store }) => {
                         <View className='user_info_name'>
                             <Text>未登录</Text>
                         </View>
-                        <View className='user_info_compony'>点击登录后使用工路云</View>
+                        <View className='user_info_compony'>点击登录后使用千职万职</View>
                     </View>
                 </View> ||
                 <View className='user_info'>
@@ -240,19 +240,19 @@ const Index = observer(({ store }) => {
                 </View>
             }
 
-            {
+            {/* {
                 role === 'SUPPLIER' && !companyVerified &&
                 <View className='open_gongluyun' onClick={() => {
                     Taro.navigateTo({
                         url: '/pages/minePackage/companyAuth/index'
                     })
                 }}>
-                    <View className='open_gongluyun_title'>开通工路云</View>
+                    <View className='open_gongluyun_title'>开通千职万职</View>
                     <View className='open_gongluyun_desc'>70+人资企业的选择</View>
                     <View className='open_gongluyun_desc'>劳务供应链利器，从获客到交付全方位提效！</View>
                     <View className='open_gongluyun_btn'>立即开通</View>
                 </View>
-            }
+            } */}
 
             <View className='section_group'>
                 {
