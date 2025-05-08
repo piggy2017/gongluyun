@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-30 10:39:38
+ * @LastEditTime: 2025-05-08 12:01:14
  * @Description:
  */
 
@@ -88,7 +88,7 @@ const Index = observer(({ store }) => {
         if (editProjectInfo) {
             console.log("修改项目信息---editProjectInfo", editProjectInfo);
             let _editProjectInfo = JSON.parse(JSON.stringify(editProjectInfo));
-            setIsUpdate(true);
+            setIsUpdate(_editProjectInfo.fromCopy ? false : true);  // 是否来自于复制项目
 
             if (_editProjectInfo.jobImages) {
                 setImages(_editProjectInfo.jobImages);
@@ -331,6 +331,12 @@ const Index = observer(({ store }) => {
 
         console.log("params", params);
         Taro.showLoading({ title: '提交中...', mask: true });
+        if (!isUpdate) {
+            if (params.serialCode) {
+                delete params.recruitserialCode;
+                delete params.serialCode;
+            }
+        }
         const { code, data, msg } = await (isUpdate ? updateContracts(params) : contractsCreate(params));
         console.log("contractsCreate", code, data);
         if (code === 200) {
@@ -434,8 +440,8 @@ const Index = observer(({ store }) => {
                             confirmType='search'
                             onInput={(e) => setFormData({ ...formData, company: e.detail.value })}
                             onConfirm={(e) => {
-                                if (e.detail.value.length < 4) {
-                                    return Taro.showToast({ title: '请输入至少四个字符搜索', icon: 'none' })
+                                if (e.detail.value.length < 2) {
+                                    return Taro.showToast({ title: '请输入至少2个字符搜索', icon: 'none' })
                                 }
                                 getSearchList(e.detail.value);
                             }}

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 17:37:16
+ * @LastEditTime: 2025-05-08 15:04:50
  * @Description:
  */
 import React, { useState, useEffect } from 'react';
@@ -47,7 +47,7 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
                     <View className='userInfo_title'>
                         <View className='userInfo_title_left'>
                             <View className='userInfo_title_name'>{info.name}</View>
-                            <View>{info.age ? info.age + '岁' : ''}{(info.age && (info.sex === 0 || info.sex === 1)) ? '·' : ''}{info.sex === 0 ? '男' : info.sex === 1 ? '女' : '未知'}</View>
+                            <View>{info.age ? info.age + '岁' : ''}{(info.age && (info.sex === 0 || info.sex === 1)) ? '·' : ''}{info.sex === 0 ? '男' : info.sex === 1 ? '女' : '未知'}{info.ethnicity ? '·' + info.ethnicity : ''}</View>
                         </View>
                         {
                             ((info.seekState === 'PENDING' && !interview) || type == 2) &&

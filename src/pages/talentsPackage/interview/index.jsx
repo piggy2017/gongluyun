@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2024-11-22 17:12:32
+ * @LastEditTime: 2025-05-08 14:48:45
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter } from '@tarojs/taro';
-import { View, Image, Text, Input, ScrollView, Block } from '@tarojs/components'
+import { View, Image, Textarea, Input, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce, throttle } from '@/util/utils'
 
@@ -184,7 +184,63 @@ const Index = observer(({ store }) => {
                         ></Input>
                     </View>
                 </View>
+                <View className='choose_item flex-col-between'>
+                    <View className='choose_item_left flex-row-items'>
+                        <View className='choose_item_left_dot_1'></View>
+                        <View>民族</View>
+                    </View>
+                    <View className='choose_item_right flex-row-items'>
+                        <Input
+                            className='info_item_input'
+                            placeholder='输入用户民族(选填)'
+                            placeholderStyle='color: #777777;'
+                            value={formData.ethnicity}
+                            onInput={(e) => setFormData({ ...formData, ethnicity: e.detail.value })}
+                        ></Input>
+                    </View>
+                </View>
+                {/* <View className='choose_item flex-col-between'>
+                    <View className='choose_item_left flex-row-items'>
+                        <View className='choose_item_left_dot_1'></View>
+                        <View>备注</View>
+                    </View>
+                    <View className='choose_item_right flex-row-items'>
+                        <Input
+                            className='info_item_input'
+                            placeholder='输入备注(选填)'
+                            placeholderStyle='color: #777777;'
+                            value={formData.remark}
+                            onInput={(e) => setFormData({ ...formData, remark: e.detail.value })}
+                        ></Input>
+                    </View>
+                </View> */}
             </View>
+
+            <View className='project_group_2'>
+                <View className='project_item_textarea'>
+                    <View className='project_item_textarea_title'>
+                        <View className='project_item_textarea_title_left'>备注</View>
+                        {/* <View className='project_item_stick'>粘贴</View> */}
+                    </View>
+                    <View className='input_box'>
+                        <Textarea
+                            count={false}
+                            className='input_text'
+                            auto-height
+                            confirmType='return'
+                            value={formData.remark}
+                            onInput={(e) => setFormData({ ...formData, remark: e.detail.value })}
+                            adjustPosition={true} //键盘弹起时，是否自动上推页面 
+                            show-confirm-bar
+                            maxlength={500}
+                            autoHeight
+                            placeholder={`其他备注内容（选填）`}
+                        />
+                    </View>
+                </View>
+            </View>
+
+            <View style='height:140px;'></View>
 
             <Block>
                 <DatePicker type='Single' showPicker={showDatePicker} onClose={() => { setShowDatePicker(false) }} onSelectDate={datePickerSelect}></DatePicker>

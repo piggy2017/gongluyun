@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-06 13:40:00
+ * @LastEditTime: 2025-05-08 14:53:36
  * @Description:
  */
 
@@ -547,6 +547,41 @@ const Index = observer(({ store }) => {
                                                 value={arrangList[index].address}
                                                 onInput={(e) => setFormListData(index, 'address', e.detail.value)}
                                             ></Input>
+                                        </View>
+                                    </View>
+                                    <View className='project_item project_item_border'>
+                                        <View className='project_item_label'>民族</View>
+                                        <View className='project_item_right'>
+                                            <Input
+                                                className='new_input'
+                                                placeholder='输入用户民族'
+                                                placeholderStyle='color: #777777;'
+                                                value={arrangList[index].ethnicity}
+                                                onInput={(e) => setFormListData(index, 'ethnicity', e.detail.value)}
+                                            ></Input>
+                                        </View>
+                                    </View>
+                                    <View className='project_group_2 project_item_border'>
+                                        <View className='project_item_textarea'>
+                                            <View className='project_item_textarea_title'>
+                                                <View className='project_item_textarea_title_left'>备注</View>
+                                                {/* <View className='project_item_stick' onClick={() => readClipData()}>粘贴</View> */}
+                                            </View>
+                                            <View className='input_box'>
+                                                <Textarea
+                                                    count={false}
+                                                    className='input_text'
+                                                    auto-height
+                                                    confirmType='return'
+                                                    value={arrangList[index].remark}
+                                                    onInput={(e) => setFormListData(index, 'remark', e.detail.value)}
+                                                    adjustPosition={true} //键盘弹起时，是否自动上推页面
+                                                    show-confirm-bar
+                                                    maxlength={1000}
+                                                    autoHeight
+                                                    placeholder={`点击输入备注...`}
+                                                />
+                                            </View>
                                         </View>
                                     </View>
                                 </> ||

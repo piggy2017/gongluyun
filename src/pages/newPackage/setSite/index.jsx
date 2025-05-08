@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 14:04:57
+ * @LastEditTime: 2025-05-08 09:58:49
  * @Description: 添加、修改账号,设置站点
  */
 
@@ -45,6 +45,7 @@ const Index = observer(({ store }) => {
             setChoosedList(siteObj);
         }
     }, [siteObj]);
+    
 
     useEffect(() => {
         const { type } = router.params;

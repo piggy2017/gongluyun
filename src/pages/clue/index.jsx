@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 17:36:28
+ * @LastEditTime: 2025-05-08 15:06:03
  * @Description:
  */
 
@@ -287,7 +287,7 @@ const Index = observer(({ store }) => {
         if (data.responses[i].age == 0) {
           data.responses[i].age = null;
         }
-        const _arr = [data.responses[i].age ? data.responses[i].age + "岁" : data.responses[i].age, data.responses[i].sex === 0 ? "男" : data.responses[i].sex === 1 ? "女" : null, data.responses[i].idCardNo ? data.responses[i].idCardNo : null].filter(item => item != null && item != 0);
+        const _arr = [data.responses[i].age ? data.responses[i].age + "岁" : data.responses[i].age, data.responses[i].sex === 0 ? "男" : data.responses[i].sex === 1 ? "女" : null, data.responses[i].ethnicity ? data.responses[i].ethnicity : null, data.responses[i].idCardNo ? data.responses[i].idCardNo : null].filter(item => item != null && item != 0);
         // console.log("_arr", _arr);
         data.responses[i].detailInfo = _arr?.length > 0 ? _arr.join("·") : "";
       }
@@ -568,7 +568,7 @@ const Index = observer(({ store }) => {
                           </View>
                           {
                             (item.age || (item.sex === 0 || item.sex === 1)) &&
-                            <View className='clue_item_info'>{item.age ? item.age + '岁' : ''}{((item.sex === 0 || item.sex === 1) && item.age) ? '·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}</View>
+                            <View className='clue_item_info'>{item.age ? item.age + '岁' : ''}{((item.sex === 0 || item.sex === 1) && item.age) ? '·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.ethnicity) ? '·' : ''}{item.ethnicity ? item.ethnicity : ''}</View>
                           }
                           {
                             item.company ? <View className='clue_item_info'>{item.company}</View> : ''
@@ -621,8 +621,8 @@ const Index = observer(({ store }) => {
                               </>
                             }
                             {
-                                item.phone &&
-                                <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
+                              item.phone &&
+                              <Image src={`${Taro.$cdnUrl}/index/index_icon29.webp`}></Image>
                             }
                             <View className='item_title_phone' onClick={(e) => callFunc(e, item)}>{item.phone}</View>
                           </View>

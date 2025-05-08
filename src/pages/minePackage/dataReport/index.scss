@@ -58,6 +58,39 @@
         }
     }
 
+    .onsite_wrapper {
+        width: 100%;
+        background-color: #FFF;
+        border-radius: 10rpx;
+        padding: 36rpx;
+        margin-top: 22rpx;
+        @include flex-center(space-between);
+
+        >view {
+            color: #222222;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+        }
+
+        .site_filter{
+            @include flex-center();
+            color: #1678ff;
+            font-family: "PingFang SC";
+            font-size: 30rpx;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            width: fit-content;
+            view{
+                margin-right: 12rpx;
+            }
+        }
+
+    }
+
     .data_wrapper {
         width: 100%;
         background-color: #FFF;
@@ -452,11 +485,13 @@
 
         .employee_item {
             width: 616rpx;
-            height: 154rpx;
+            // height: 154rpx;
             margin-top: 16rpx;
-            padding: 22rpx 50rpx 22rpx 44rpx;
+            margin-left: 44rpx;
+            // padding: 22rpx 50rpx 22rpx 44rpx;
             // box-sizing: border-box;
             border-bottom: 1rpx solid #0000000a;
+            padding: 22rpx 0;
 
             .employee_item_name {
                 color: #222222;
