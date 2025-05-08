@@ -452,11 +452,13 @@
 
         .employee_item {
             width: 616rpx;
-            height: 154rpx;
+            // height: 154rpx;
             margin-top: 16rpx;
-            padding: 22rpx 50rpx 22rpx 44rpx;
+            margin-left: 44rpx;
+            // padding: 22rpx 50rpx 22rpx 44rpx;
             // box-sizing: border-box;
             border-bottom: 1rpx solid #0000000a;
+            padding: 22rpx 0;
 
             .employee_item_name {
                 color: #222222;
