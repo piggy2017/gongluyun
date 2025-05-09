@@ -121,7 +121,8 @@ const Message = observer(({ store }) => {
                 } catch (e) { }
 
             } else {
-                setLoadingState(3)
+                setLoadingState(3);
+                setMessageList([]);
             }
         }
         fetchData()

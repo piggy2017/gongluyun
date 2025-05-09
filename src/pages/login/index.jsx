@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-16 17:55:54
+ * @LastEditTime: 2025-05-09 15:56:11
  * @Description: 
  */
 
@@ -72,6 +72,7 @@ const Index = observer(({ store }) => {
                     // Taro.setStorageSync('role', result.data.user.userRole);
                     Taro.setStorageSync('userInfo', result.data.user);
                     setHxUser(result.data.hxUser);
+                    // loginhxIM(result.data.hxUser)
                     setIsLogin(1);
                     setUserInfo(result.data.user);
                     // setRole(result.data.user.userRole);
@@ -135,6 +136,8 @@ const Index = observer(({ store }) => {
                 Taro.setStorageSync('userInfo', data.user);
                 setIsLogin(1);
                 setUserInfo(data.user);
+                setHxUser(data.hxUser);
+                // loginhxIM(data.hxUser)
                 // setRole(data.user.userRole);
                 getRoleAndPermissionFunc();
                 // if (data.user.companyVerified) {

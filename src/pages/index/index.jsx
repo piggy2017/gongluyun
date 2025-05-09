@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-18 16:29:15
+ * @LastEditTime: 2025-05-09 15:05:47
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -436,7 +436,7 @@ const Index = observer(({ store }) => {
           }
           {
             myPermissions.includes('20') && role === 'ON_SITE' &&
-            <View className='entry_item' onClick={() => navigateFunc(1, '/pages/onSiteList/index', 2)}>
+            <View className='entry_item' onClick={() => navigateFunc(1, '/pages/channelOnsiteList/index', 2)}>
               <Image src={`${Taro.$cdnUrl}/supplier/supplier_index_7.webp`}></Image>
               <View>导出名单</View>
             </View>

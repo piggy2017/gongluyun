@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-08 17:54:02
+ * @LastEditTime: 2025-05-09 15:44:30
  * @Description:
  */
 import React, { useState, useEffect } from 'react'
@@ -22,6 +22,7 @@ const Index = observer(({ store }) => {
     const {
         ChatStore: { setUnReadTotal },
         baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight },
+        ChatStore: { setSessionList, setCursor, setHxUser },
         userStore: { isLogin, setIsLogin, role, setRole, userRoles, setToken, userInfo, setUserInfo, companyInfo, companyVerified, setCompanyVerified, refreshUserInfo, getRoleAndPermissionFunc, setMyPermissions, myPermissions },
     } = store
 
@@ -137,6 +138,11 @@ const Index = observer(({ store }) => {
             setCompanyVerified(false);
             setLoginoutSure(false);
             setUnReadTotal(0);
+            Taro.WebIM.conn.close();
+            setHxUser('');
+            setSessionList([]);
+            Taro.setStorageSync('hxUser', '');
+            Taro.setStorageSync('sessionList','');
             Taro.setStorageSync('token', '');
             Taro.setStorageSync('isLogin', 0);
             Taro.setStorageSync('role', '');
