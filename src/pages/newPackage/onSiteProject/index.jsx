@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-28 16:29:21
+ * @LastEditTime: 2025-05-09 09:25:52
  * @Description:
  */
 
@@ -214,7 +214,7 @@ const Index = observer(({ store }) => {
                             <Image className='job_item_choose' src={`${Taro.$cdnUrl}/index/index_icon2${item.selected ? 7 : 8}.webp`}></Image>
                             <View className='job_item_content'>
                                 <View className='job_item_name'>{item.title}</View>
-                                <View className='job_item_num'>公司：{item.compony}</View>
+                                <View className='job_item_num'>公司：{item.company}</View>
                                 <View className='job_item_num'>总需求：{item.numberRecruits}人</View>
                                 <View className='job_item_time'>{item.createDate}发布</View>
                             </View>
