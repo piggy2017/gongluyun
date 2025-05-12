@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-24 14:20:00
+ * @LastEditTime: 2025-05-12 16:18:40
  * @Description:
  */
 
@@ -69,7 +69,7 @@ const Index = observer(({ store }) => {
             for (let i = 0; i < data.responses.length; i++) {
                 data.responses[i].selected = false;
             }
-            if (_pageNo === 1) {
+            if (_pageNo === 1 && !searchValue) {
                 let obj = {
                     title: '全部岗位',
                     recruitSerialCode: '',

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-08 14:53:36
+ * @LastEditTime: 2025-05-12 14:39:35
  * @Description:
  */
 
@@ -191,16 +191,17 @@ const Index = observer(({ store }) => {
             } else if (list[i].sex === '') {
                 Taro.showToast({ title: '请选择求职者性别', icon: 'none', })
                 return;
-            } else if (!list[i].phone || list[i].phone.length != 11) {
-                Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
-                return;
-            } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
-                Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
-            }
+            } 
+            // else if (!list[i].phone || list[i].phone.length != 11) {
+            //     Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
+            //     return;
+            // } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
+            //     Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
+            // }
         }
 
-        if (arrangList.length == 4) {
-            return Taro.showToast({ title: '一次最多安排4位求职者的面试', icon: 'none', })
+        if (arrangList.length >= 15) {
+            return Taro.showToast({ title: '一次最多安排15位求职者的面试', icon: 'none', })
         }
         let _par = {
             ...interViewTemplate,
@@ -266,10 +267,10 @@ const Index = observer(({ store }) => {
                 Taro.showToast({ title: '请选择面试日期', icon: 'none', })
                 return;
             } else if (!list[i].name) {
-                Taro.showToast({ title: '请填写求职者姓名', icon: 'none', })
+                Taro.showToast({ title: `请填写第${i+1}位求职者姓名`, icon: 'none', })
                 return;
             } else if (list[i].sex === '') {
-                Taro.showToast({ title: '请选择求职者性别', icon: 'none', })
+                Taro.showToast({ title: `请选择第${i+1}位求职者性别`, icon: 'none', })
                 return;
             }
             // else if (list[i].phone && list[i].phone.length != 11) {
@@ -281,7 +282,7 @@ const Index = observer(({ store }) => {
             // }
 
             if ((!list[i].phone || list[i].phone.length != 11) && (!list[i].idCardNo || list[i].idCardNo.length != 18)) {
-                Taro.showToast({ title: '请填写求职者手机号或身份证', icon: 'none', })
+                Taro.showToast({ title: `请填写第${i+1}位求职者手机号或身份证`, icon: 'none', })
                 return;
             }
         }
@@ -605,7 +606,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={saveWorker} className={`post_btn ${(supplierInfo.supplierSerialCode && jobInfo.recruitSerialCode && interviewDate && arrangList[0].name && arrangList[0].phone && (arrangList[0].sex === 0 || arrangList[0].sex === 1)) ? 'post_btn_active' : ''}`}>保存</View>
+                <View onClick={saveWorker} className={`post_btn ${(supplierInfo.supplierSerialCode && jobInfo.recruitSerialCode && interviewDate && arrangList[0].name && (arrangList[0].sex === 0 || arrangList[0].sex === 1)) ? 'post_btn_active' : ''}`}>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 
