@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-12 13:51:07
+ * @LastEditTime: 2025-05-12 17:35:57
  * @Description:
  */
 
@@ -626,6 +626,9 @@ const Index = observer(({ store }) => {
                                 {
                                     item.remark &&
                                     <View className='roster_item_time'>备注：{item.remark}</View>
+                                }
+                                {
+                                    item.company && <View className='roster_item_time'>公司简称：{item.company}</View>
                                 }
 
                                 {

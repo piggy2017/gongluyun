@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-12 13:56:08
+ * @LastEditTime: 2025-05-12 17:35:46
  * @Description:
  */
 
@@ -549,6 +549,9 @@ const Index = observer(({ store }) => {
                     <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
                     {
                       item.remark && <View className='roster_item_time'>备注：{item.remark}</View>
+                    }
+                    {
+                      item.company && <View className='roster_item_time'>公司简称：{item.company}</View>
                     }
                   </View>
                   <View className='roster_item_wrap_right'>
