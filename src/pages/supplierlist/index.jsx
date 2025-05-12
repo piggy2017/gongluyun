@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-08 15:20:29
+ * @LastEditTime: 2025-05-12 17:36:12
  * @Description:
  */
 
@@ -445,6 +445,12 @@ const Index = observer(({ store }) => {
                                             item.cooperationModel && <View className='roster_item_job'>合作模式：{item.cooperationModel}</View>
                                         }
                                         <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
+                                        {
+                                            item.remark && <View className='roster_item_time'>备注：{item.remark}</View>
+                                        }
+                                        {
+                                            item.company && <View className='roster_item_time'>公司简称：{item.company}</View>
+                                        }
                                     </View>
                                     <View className='roster_item_wrap_right'>
                                         <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }}>

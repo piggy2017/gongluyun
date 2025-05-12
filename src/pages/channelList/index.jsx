@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-08 15:08:52
+ * @LastEditTime: 2025-05-12 17:34:29
  * @Description:
  */
 
@@ -579,7 +579,7 @@ const Index = observer(({ store }) => {
 
     const getChoosePattern = async () => {   // 批量设置合作模式
         console.log("选择的模式", chooseCoopsContent);
-        if(!chooseCoopsContent){
+        if (!chooseCoopsContent) {
             return Taro.showToast({ title: '请选择合作模式', icon: 'none' });
         }
         let _list = chooseList.map(item => {
@@ -725,6 +725,12 @@ const Index = observer(({ store }) => {
                                             item.cooperationModel && <View className='roster_item_coops'>合作模式：{item.cooperationModel}</View>
                                         }
                                         <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
+                                        {
+                                            item.remark && <View className='roster_item_time'>备注：{item.remark}</View>
+                                        }
+                                        {
+                                            item.company && <View className='roster_item_time'>公司简称：{item.company}</View>
+                                        }
                                     </View>
                                     <View className='roster_item_wrap_right'>
                                         <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }} onClick={(e) => {

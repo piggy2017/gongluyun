@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-08 14:54:06
+ * @LastEditTime: 2025-05-12 14:44:36
  * @Description:
  */
 
@@ -89,10 +89,10 @@ const Index = observer(({ store }) => {
                 Taro.showToast({ title: '请选择面试日期', icon: 'none', })
                 return;
             } else if (!list[i].name) {
-                Taro.showToast({ title: '请填写求职者姓名', icon: 'none', })
+                Taro.showToast({ title: `请填写第${i + 1}位求职者姓名`, icon: 'none', })
                 return;
             } else if (list[i].sex === '') {
-                Taro.showToast({ title: '请选择求职者性别', icon: 'none', })
+                Taro.showToast({ title: `请选择第${i + 1}位求职者性别`, icon: 'none', })
                 return;
             } else if ((!list[i].phone || list[i].phone.length != 11) && !phoneRule) {
                 Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
@@ -102,8 +102,8 @@ const Index = observer(({ store }) => {
             }
         }
 
-        if (arrangList.length >= 10) {
-            return Taro.showToast({ title: '一次最多安排10位求职者的面试', icon: 'none', })
+        if (arrangList.length >= 15) {
+            return Taro.showToast({ title: '一次最多安排15位求职者的面试', icon: 'none', })
         }
         let _par = {
             ...interViewTemplate,
@@ -174,22 +174,31 @@ const Index = observer(({ store }) => {
                 Taro.showToast({ title: '请选择面试日期', icon: 'none', })
                 return;
             } else if (!list[i].name) {
-                Taro.showToast({ title: '请填写求职者姓名', icon: 'none', })
+                Taro.showToast({ title: `请填写第${i + 1}位求职者姓名`, icon: 'none', })
                 return;
             } else if (list[i].sex === '') {
-                Taro.showToast({ title: '请选择求职者性别', icon: 'none', })
-                return;
-            } else if ((!list[i].phone || list[i].phone.length != 11) && !phoneRule) {
-                Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
-                return;
-            } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
-                Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
+                Taro.showToast({ title: `请选择第${i + 1}位求职者性别`, icon: 'none', })
                 return;
             }
+            // else if ((!list[i].phone || list[i].phone.length != 11) && !phoneRule) {
+            //     Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
+            //     return;
+            // } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
+            //     Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
+            //     return;
+            // }
 
-            if(phoneRule){   // 供应商和渠道录入求职者 手机号码非必填 手机号码、身份证选填一个
-                if((!list[i].phone || list[i].phone.length != 11) && (!list[i].idCardNo || list[i].idCardNo.length != 18)){
-                    Taro.showToast({ title: '请填写求职者手机号或身份证', icon: 'none', })
+            if (phoneRule) {   // 供应商和渠道录入求职者 手机号码非必填 手机号码、身份证选填一个
+                if ((!list[i].phone || list[i].phone.length != 11) && (!list[i].idCardNo || list[i].idCardNo.length != 18)) {
+                    Taro.showToast({ title: `请填写第${i + 1}位求职者手机号或身份证`, icon: 'none', })
+                    return;
+                }
+            } else {
+                if ((!list[i].phone || list[i].phone.length != 11)) {
+                    Taro.showToast({ title: `请填写第${i + 1}位求职者手机号`, icon: 'none', })
+                    return;
+                } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
+                    Taro.showToast({ title: `请填写第${i + 1}位求职者18位身份证号`, icon: 'none', })
                     return;
                 }
             }
@@ -509,7 +518,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={saveWorker} className={`post_btn ${(arrangList[0].interviewDate && arrangList[0].name && arrangList[0].phone && (arrangList[0].sex === 0 || arrangList[0].sex === 1)) ? 'post_btn_active' : ''}`}>保存</View>
+                <View onClick={saveWorker} className={`post_btn ${(arrangList[0].interviewDate && arrangList[0].name && (arrangList[0].sex === 0 || arrangList[0].sex === 1)) ? 'post_btn_active' : ''}`}>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 
