@@ -63,7 +63,7 @@ const Index = observer(({ store }) => {
     let url = `/pages/workerIndex/index?recruitSerialCode=''&inviteRole=SEEK&source=WECHAT_MINI_SHARE&agentSerialCode=${userInfo?.userSerialCode ? userInfo.userSerialCode : ''}`;
     return {
       title: '这儿有很多优质岗位,快来看看吧',
-      imageUrl: `${Taro.$baseCdnUrl}/entrust/share_back.jpeg`, // 图片 URL
+      imageUrl: `${Taro.$cdnUrl}/supplier/supplier_81.webp`, // 图片 URL
       path: url
     }
   })
