@@ -84,6 +84,7 @@ const Index = observer(({ store }) => {
             }
         }, 0);
     }, [])
+    
 
     const getClientDetail = async (_uuid, _phone) => {
         const { code, data, msg } = await cluegetUserInfo({ uuid: _uuid, phone: _phone });

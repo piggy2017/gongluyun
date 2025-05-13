@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-01-02 16:01:29
+ * @LastEditTime: 2025-05-13 18:06:09
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -78,10 +78,11 @@ const Index = observer(({ store }) => {
         }
     }
 
+    
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='rgba(237,243,254)' title='客户详情'></Navbar>
-            <WorkerInfo info={clientInfos} type={1} interview={true}></WorkerInfo>
+            <WorkerInfo info={clientInfos} type={3} interview={true}></WorkerInfo>
 
             <View className='client_status'>
                 <View className='client_status_title'>

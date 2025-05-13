@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-08 17:42:29
+ * @LastEditTime: 2025-05-13 11:02:29
  * @Description:
  */
 
@@ -17,6 +17,7 @@ import './index.scss'
 
 import NewUpdateStatus from '@/components/newUpdateStatus';
 import { contractsgetRoster, contractsSign, updateInterviewer } from '@/util/api'
+
 
 const Index = observer(({ store }) => {
     const {

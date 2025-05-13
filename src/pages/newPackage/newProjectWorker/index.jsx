@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-12 14:44:36
+ * @LastEditTime: 2025-05-13 15:20:47
  * @Description:
  */
 
@@ -94,12 +94,13 @@ const Index = observer(({ store }) => {
             } else if (list[i].sex === '') {
                 Taro.showToast({ title: `请选择第${i + 1}位求职者性别`, icon: 'none', })
                 return;
-            } else if ((!list[i].phone || list[i].phone.length != 11) && !phoneRule) {
-                Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
-                return;
-            } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
-                Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
-            }
+            } 
+            // else if ((!list[i].phone || list[i].phone.length != 11) && !phoneRule) {
+            //     Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
+            //     return;
+            // } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
+            //     Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
+            // }
         }
 
         if (arrangList.length >= 15) {
@@ -188,19 +189,20 @@ const Index = observer(({ store }) => {
             //     return;
             // }
 
-            if (phoneRule) {   // 供应商和渠道录入求职者 手机号码非必填 手机号码、身份证选填一个
-                if ((!list[i].phone || list[i].phone.length != 11) && (!list[i].idCardNo || list[i].idCardNo.length != 18)) {
-                    Taro.showToast({ title: `请填写第${i + 1}位求职者手机号或身份证`, icon: 'none', })
-                    return;
-                }
-            } else {
-                if ((!list[i].phone || list[i].phone.length != 11)) {
-                    Taro.showToast({ title: `请填写第${i + 1}位求职者手机号`, icon: 'none', })
-                    return;
-                } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
-                    Taro.showToast({ title: `请填写第${i + 1}位求职者18位身份证号`, icon: 'none', })
-                    return;
-                }
+            // if (phoneRule) {   // 供应商和渠道录入求职者 手机号码非必填 手机号码、身份证选填一个
+            // } else {
+            //     if ((!list[i].phone || list[i].phone.length != 11)) {
+            //         Taro.showToast({ title: `请填写第${i + 1}位求职者手机号`, icon: 'none', })
+            //         return;
+            //     } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
+            //         Taro.showToast({ title: `请填写第${i + 1}位求职者18位身份证号`, icon: 'none', })
+            //         return;
+            //     }
+            // }
+
+            if ((!list[i].phone || list[i].phone.length != 11) && (!list[i].idCardNo || list[i].idCardNo.length != 18)) {
+                Taro.showToast({ title: `请填写第${i + 1}位求职者手机号或身份证`, icon: 'none', })
+                return;
             }
         }
         console.log("list", list);
@@ -377,7 +379,7 @@ const Index = observer(({ store }) => {
                                         </View>
                                     </View>
                                     <View className='project_item project_item_border'>
-                                        <View className={`project_item_label ${route.params.phoneRule ? '' : 'project_item_label_required'}`}>手机号码</View>
+                                        <View className={`project_item_label`}>手机号码</View>
                                         <View className='project_item_right'>
                                             <Input
                                                 type='number'

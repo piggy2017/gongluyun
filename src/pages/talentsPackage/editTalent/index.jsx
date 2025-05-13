@@ -2,11 +2,11 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-30 09:46:20
+ * @LastEditTime: 2025-05-13 17:28:25
  * @Description: 人才库 - 编辑人才信息页面
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, Textarea, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
@@ -20,15 +20,17 @@ import SourcePicker from '@/components/sourcePcker';
 
 import { clueInsert, clueUpdate } from '@/util/api'
 import './index.scss'
+import { resolve } from 'path';
 
 
 const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
-        businessStore: { workerSetCustomerInfo, editClientInfos, setEditClientInfos, sourceGroup },
-        userStore: { userInfo: { userSerialCode } },
+        businessStore: { workerSetCustomerInfo, editClientInfos, setEditClientInfos, sourceGroup, editRecommendInfo, setEditRecommendInfo },
+        userStore: { userInfo: { userSerialCode }, role },
     } = store
+    let [forceUpdate, refreshForceUpdate] = useReducer(x => x + 1, 0);
     const [formData, setFormData] = useState({});
 
     const [chooseJob, setChooseJob] = useState(false);  // 选择岗位类型的弹窗
@@ -56,6 +58,13 @@ const Index = observer(({ store }) => {
                 _obj.source = _obj.value;
                 setSourceObj(_obj);
             }
+            if (editClientInfos.agentSerialCode) {
+                setEditRecommendInfo({
+                    agentName: editClientInfos.agentName,
+                    agentSerialCode: editClientInfos.agentSerialCode,
+                    init: true
+                })
+            }
 
             if (editClientInfos.jobTypes && editClientInfos.jobTypes.length > 0) {
                 setJobTypes(editClientInfos.jobTypes);
@@ -75,6 +84,12 @@ const Index = observer(({ store }) => {
             setEditClientInfos(null);
         }
     }, [editClientInfos, sourceGroup]);
+
+    useEffect(() => {
+        if (editRecommendInfo.agentSerialCode && !editRecommendInfo.init) {
+            setFormData({ ...formData, agentSerialCode: editRecommendInfo.agentSerialCode, agentName: editRecommendInfo.agentName });
+        }
+    }, [editRecommendInfo])
 
     useEffect(() => {
         if (workerSetCustomerInfo.name) {
@@ -104,22 +119,10 @@ const Index = observer(({ store }) => {
         let params = {
             ...formData,
             entryChannel: route.params.entryChannel,
-            interviewArranged: formData.interviewDate ? true : false  // route.params.entryChannel === 'TALENT_POOL' ? true : formData.interviewDate ? true : false
+            //interviewArranged: formData.interviewDate ? true : false  // route.params.entryChannel === 'TALENT_POOL' ? true : formData.interviewDate ? true : false
         }
+        delete params.interviewDate;
         console.log("params", params);
-        const errorMessages = [
-            !params.source && '请选择求职者来源',
-            // !(params.agentSerialCode || params.agentSerialCode === '') && '请为求职者分配跟进人',
-            // (!params.phone || (params.phone && params.phone.length != 11)) && '请输入求职者手机号码',
-            // (params.idCardNo && params.idCardNo.length != 18) && '请输入求职者18位身份证号码',
-        ].filter(Boolean);
-
-        if (errorMessages.length > 0) {
-            return Taro.showToast({
-                title: errorMessages[0],
-                icon: 'none',
-            })
-        }
         if ((!params.phone || params.phone.length != 11) && (!params.idCardNo || params.idCardNo.length != 18)) {
             Taro.showToast({ title: '请填写求职者手机号或身份证', icon: 'none', })
             return;
@@ -136,6 +139,21 @@ const Index = observer(({ store }) => {
         }
     }, 200)
 
+    const stick = (type) => {
+        Taro.getClipboardData({
+            success: function (res) {
+                console.log('res', res);
+                setFormData(formData => {
+                    return {
+                        ...formData,
+                        [type]: res.data
+                    }
+                })
+                refreshForceUpdate();
+            }
+        })
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#F4F4F4' title='编辑信息'></Navbar>
@@ -149,12 +167,19 @@ const Index = observer(({ store }) => {
                     </View>
                 </View> */}
                 <View className='project_item'>
-                    <View className='project_item_label project_item_label_required'>来源</View>
-                    <View className='project_item_right' onClick={() => setShowSourcePicker(true)}>
-                        <Text className={`${formData.source ? 'project_item_text_active' : 'project_item_text'}`}>{formData.source ? sourceObj.name : '选择求职者来源(必填)'}</Text>
+                    <View className='project_item_label'>推荐人</View>
+                    <View className='project_item_right' onClick={() => {
+                        if (role === 'ADMIN' || role === 'CHANNEL') {
+                            Taro.navigateTo({
+                                url: `/pages/talentsPackage/chooseRecomment/index`
+                            })
+                        }
+                    }}>
+                        <Text className={`${formData.agentName ? 'project_item_text_active' : 'project_item_text'}`}>{formData.agentName ? formData.agentName : '选择推荐人'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
+
             </View>
 
             <View className='project_group'>
@@ -171,6 +196,7 @@ const Index = observer(({ store }) => {
                             value={formData.phone}
                             onInput={(e) => setFormData({ ...formData, phone: e.detail.value })}
                         ></Input>
+                        <View className='paste_btn' onClick={() => stick('phone')}>粘贴</View>
                     </View>
                 </View>
                 <View className='project_item project_item_border'>
@@ -207,6 +233,50 @@ const Index = observer(({ store }) => {
                     </View>
                 </View>
                 <View className='project_item project_item_border'>
+                    <View className='project_item_label'>身份证号</View>
+                    <View className='project_item_right'>
+                        <Input
+                            type='idcard'
+                            maxlength='18'
+                            className='new_input'
+                            placeholder='输入真实身份证号'
+                            placeholderStyle='color: #777777;'
+                            value={formData.idCardNo}
+                            onInput={(e) => setFormData({ ...formData, idCardNo: e.detail.value })}
+                        ></Input>
+                        <View className='paste_btn' onClick={() => stick('idCardNo')}>粘贴</View>
+                    </View>
+                </View>
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>银行卡号</View>
+                    <View className='project_item_right'>
+                        <Input
+                            type='idcard'
+                            maxlength='20'
+                            className='new_input'
+                            placeholder='输入银行卡号'
+                            placeholderStyle='color: #777777;'
+                            value={formData.bankCard}
+                            onInput={(e) => setFormData({ ...formData, bankCard: e.detail.value })}
+                        ></Input>
+                        <View className='paste_btn' onClick={() => stick('bankCard')}>粘贴</View>
+                    </View>
+                </View>
+
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>民族</View>
+                    <View className='project_item_right'>
+                        <Input
+                            className='new_input'
+                            placeholder='请输入用户民族'
+                            placeholderStyle='color: #777777;'
+                            value={formData.ethnicity}
+                            onInput={(e) => setFormData({ ...formData, ethnicity: e.detail.value })}
+                        ></Input>
+                    </View>
+                </View>
+
+                <View className='project_item project_item_border'>
                     <View className='project_item_label'>联系地址</View>
                     <View className='project_item_right'>
                         <Input
@@ -218,6 +288,13 @@ const Index = observer(({ store }) => {
                             value={formData.address}
                             onInput={(e) => setFormData({ ...formData, address: e.detail.value })}
                         ></Input>
+                    </View>
+                </View>
+                <View className='project_item project_item_border' onClick={() => setChooseJob(true)}>
+                    <View className='project_item_label'>岗位偏好</View>
+                    <View className='project_item_right' >
+                        <Text className={`${jobTypes.length > 0 ? 'project_item_text_active' : 'project_item_text'}`}>{jobTypes.length > 0 ? jobTypeNames : '选择求职意向'}</Text>
+                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
             </View>
@@ -234,13 +311,7 @@ const Index = observer(({ store }) => {
                     </View>
                 </View> */}
 
-                <View className='project_item project_item_border' onClick={() => setChooseJob(true)}>
-                    <View className='project_item_label'>岗位偏好</View>
-                    <View className='project_item_right' >
-                        <Text className={`${jobTypes.length > 0 ? 'project_item_text_active' : 'project_item_text'}`}>{jobTypes.length > 0 ? jobTypeNames : '选择求职意向'}</Text>
-                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
-                    </View>
-                </View>
+
 
                 {/* <View className='project_item_job project_item_border'>
                     <View className='project_item_label'>求职意向</View>
@@ -258,20 +329,6 @@ const Index = observer(({ store }) => {
                     </Textarea>
                 </View> */}
 
-                <View className='project_item project_item_border'>
-                    <View className='project_item_label'>身份证号</View>
-                    <View className='project_item_right'>
-                        <Input
-                            type='idcard'
-                            maxlength='18'
-                            className='new_input'
-                            placeholder='输入真实身份证号'
-                            placeholderStyle='color: #777777;'
-                            value={formData.idCardNo}
-                            onInput={(e) => setFormData({ ...formData, idCardNo: e.detail.value })}
-                        ></Input>
-                    </View>
-                </View>
 
                 {/* <View className='project_item project_item_border'>
                     <View className='project_item_label'>已安排面试</View>
@@ -320,7 +377,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={saveWorker} className={`post_btn ${(formData.source) ? 'post_btn_active' : ''}`}>保存</View>
+                <View onClick={saveWorker} className={`post_btn post_btn_active`}>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 

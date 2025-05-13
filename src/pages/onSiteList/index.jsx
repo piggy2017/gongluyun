@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-12 17:35:46
+ * @LastEditTime: 2025-05-13 11:05:16
  * @Description:
  */
 
 import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro';
-import { View, Image, Button, ScrollView, Text, Block, RootPortal, Textarea } from '@tarojs/components'
+import { View, Image, Button, ScrollView, Text, Block, Input, RootPortal, Textarea } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
@@ -442,9 +442,21 @@ const Index = observer(({ store }) => {
       <View className='my_header'>
         <View className='my_header_hr' style={`--statusBarHeight:${statusTitleHeight}px;`}></View>
         <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
-          <View className='search_content' onClick={() => { Taro.navigateTo({ url: `/pages/projectPackage/siteSearch/index` }) }}>
+          <View className='search_content' onClick={() => {
+            // Taro.navigateTo({ url: `/pages/projectPackage/siteSearch/index` })
+          }}>
             <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
-            <View className='search_input_view'>搜索姓名、手机号、身份证号</View>
+            {/* <View className='search_input_view'>搜索姓名、手机号、身份证号</View> */}
+            <Input className='search_input'
+              placeholder='搜索姓名、手机号、身份证号'
+              confirmType='search'
+              placeholderStyle='color: #777777;'
+              onInput={(e) => { setSearchValue(e.detail.value) }}
+              onConfirm={(e) => {
+                getList(1);
+                setgoonLoad(true);
+              }}
+              value={searchValue}></Input>
           </View>
         </View>
       </View>

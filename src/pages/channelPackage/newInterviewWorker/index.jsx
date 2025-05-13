@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-12 14:39:35
+ * @LastEditTime: 2025-05-13 13:39:21
  * @Description:
  */
 
@@ -82,6 +82,10 @@ const Index = observer(({ store }) => {
     }, [])
 
     useEffect(() => {
+        console.log("jobList发生了变化", jobList);
+    }, [jobList])
+
+    useEffect(() => {
         if (supplierInfo.supplierSerialCode) {
             // getJobList(1);
             // setJobInfo({});
@@ -145,7 +149,7 @@ const Index = observer(({ store }) => {
                     item.selected = true;
                 }
             })
-            setJobList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
+            setJobList(_pageNo === 1 ? data.responses : [...jobList, ...data.responses]);
             setGoonLoad2(true);
             setPageNo2(data.pageNo);
             setRequestStateJob(2);

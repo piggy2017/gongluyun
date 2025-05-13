@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-07 15:26:36
+ * @LastEditTime: 2025-05-13 15:55:31
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -252,7 +252,7 @@ const businessStore = observable({
     },
 
 
-    channelListSupplier: [     //  渠道名单tab中的 供应商筛选 --多选
+    channelListSupplier: [ //  渠道名单tab中的 供应商筛选 --多选
         {
             channelName: '全部供应商',
             channelCode: '',
@@ -262,6 +262,15 @@ const businessStore = observable({
     setChannelListSupplier(value) {
         businessStore.channelListSupplier = value;
     },
+
+    editRecommendInfo: { // 修改推荐人信息
+        agentName: "",
+        agentSerialCode: "",
+        init: false    // 是否是进入修改页面,由初始化数据所引起的改变
+    },
+    setEditRecommendInfo(value) {
+        businessStore.editRecommendInfo = value;
+    }
 });
 
 export default businessStore

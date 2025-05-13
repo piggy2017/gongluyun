@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-08 14:10:09
+ * @LastEditTime: 2025-05-13 10:52:54
  * @Description: 
  */
 
@@ -125,18 +125,11 @@ const Index = observer(({ store }) => {
             interviewArranged: formData.interviewDate ? true : false  // route.params.entryChannel === 'TALENT_POOL' ? true : formData.interviewDate ? true : false
         }
         console.log("params", params);
-        const errorMessages = [
-            !params.source && '请选择求职者来源',
-            // !(params.agentSerialCode || params.agentSerialCode === '') && '请为求职者分配跟进人',
-            (!params.phone || (params.phone && params.phone.length != 11)) && '请输入11位手机号码',
-            (params.idCardNo && params.idCardNo.length != 18) && '请输入18位身份证号码',
-        ].filter(Boolean);
 
-        if (errorMessages.length > 0) {
-            return Taro.showToast({
-                title: errorMessages[0],
-                icon: 'none',
-            })
+        if (!params.source) {
+            return Taro.showToast({ title: `请选择求职者来源`, icon: 'none', })
+        } else if ((!params.phone || params.phone.length != 11) && (!params.idCardNo || params.idCardNo.length != 18)) {
+            return Taro.showToast({ title: `请填写求职者手机号或身份证`, icon: 'none', });
         }
 
         if (route.params.onSite && !isUpdate) {   // 来自于驻场的录入
@@ -266,7 +259,7 @@ const Index = observer(({ store }) => {
             <View className='project_group_l'>基本信息</View>
             <View className='project_group project_group2'>
                 <View className='project_item project_item_stick'>
-                    <View className='project_item_label project_item_label_required'>手机号码</View>
+                    <View className='project_item_label'>手机号码</View>
                     <View className='project_item_right'>
                         <Input
                             type='number'
@@ -443,7 +436,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={saveWorker} className={`post_btn ${(formData.source && formData.phone) ? 'post_btn_active' : ''}`}>保存</View>
+                <View onClick={saveWorker} className={`post_btn ${(formData.source) ? 'post_btn_active' : ''}`}>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 
