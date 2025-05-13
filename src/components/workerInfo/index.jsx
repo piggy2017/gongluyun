@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-08 15:04:50
+ * @LastEditTime: 2025-05-13 17:47:14
  * @Description:
  */
 import React, { useState, useEffect } from 'react';
@@ -14,13 +14,15 @@ import { callUp } from '@/util/api';
 
 const WorkerInfo = observer(({ store, info, interview, type }) => {
     const {
-        businessStore: { setEditClientInfos }
+        businessStore: { setEditClientInfos },
+        userStore: { isLogin, role, userInfo, companyInfo, }
     } = store
 
-    const goEdit = () => {
+    const goEdit = () => { 
         setEditClientInfos(info);
-        Taro.navigateTo({
-            url: type === 1 ? '/pages/newPackage/newWorker/index' : '/pages/talentsPackage/editTalent/index'
+        Taro.navigateTo({  // type=2 来自于人才库的编辑
+            // url: type === 1 ? '/pages/newPackage/newWorker/index' : '/pages/talentsPackage/editTalent/index'
+            url: type === 1 ? '/pages/talentsPackage/editTalent/index' : '/pages/talentsPackage/editTalentOld/index'
         });
     }
 
@@ -47,10 +49,18 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
                     <View className='userInfo_title'>
                         <View className='userInfo_title_left'>
                             <View className='userInfo_title_name'>{info.name}</View>
-                            <View>{info.age ? info.age + '岁' : ''}{(info.age && (info.sex === 0 || info.sex === 1)) ? '·' : ''}{info.sex === 0 ? '男' : info.sex === 1 ? '女' : '未知'}{info.ethnicity ? '·' + info.ethnicity : ''}</View>
+                            {
+                                info.phone &&
+                                <View className='userInfo_title_phone' onClick={() => callUser(info)}>
+                                    <Image className='tel_img' src={`${Taro.$cdnUrl}/index/mine_icon7.webp`}></Image>
+                                    <View>{info.phone}</View>
+                                </View>
+                            }
+                            {/* <View>{info.age ? info.age + '岁' : ''}{(info.age && (info.sex === 0 || info.sex === 1)) ? '·' : ''}{info.sex === 0 ? '男' : info.sex === 1 ? '女' : '未知'}{info.ethnicity ? '·' + info.ethnicity : ''}</View> */}
                         </View>
                         {
-                            ((info.seekState === 'PENDING' && !interview) || type == 2) &&
+                            // ((info.seekState === 'PENDING' && !interview) || type == 2) &&
+                            ((type == 1 || type == 2) && (role === 'ADMIN' || role === 'ON_SITE' || role === 'CHANNEL')) &&
                             <View className='userInfo_title_right' onClick={goEdit}>
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon41.webp`}></Image>
                                 <View>编辑</View>
@@ -58,27 +68,28 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
                         }
                     </View>
                     {
-                        type === 1 && interview &&
-                        <>
-                        </> ||
-                        <View className='userInfo_tel flex-row-items' onClick={() => callUser(info)}>
-                            {
-                                info.phone &&
-                                <Image className='tel_img' src={`${Taro.$cdnUrl}/index/mine_icon7.webp`}></Image>
-                            }
-                            <View>{info.phone}</View>
-                        </View>
+                        // type === 1 && interview &&
+                        // <>
+                        // </> ||
+                        // <View className='userInfo_tel flex-row-items' onClick={() => callUser(info)}>
+                        //     {
+                        //         info.phone &&
+                        //         <Image className='tel_img' src={`${Taro.$cdnUrl}/index/mine_icon7.webp`}></Image>
+                        //     }
+                        //     <View>{info.phone}</View>
+                        // </View>
                     }
+                    <View className='userInfo_baseinfo'>{info.age ? info.age + '岁' : ''}{info.age && (info.sex === 0 || info.sex === 1) ? '·' : ''}{info.sex === 0 ? '男' : info.sex === 1 ? '女' : ''}{((info.sex === 0 || info.sex === 1) && info.ethnicity) ? '·' : ''}{info.ethnicity ? info.ethnicity : ''}{info.ethnicity && info.idCardNo ? '·' : ''}{info.idCardNo ? info.idCardNo : ''}</View>
 
 
                     <View className='userInfo_item'>
-                        <Image className='userInfo_item_img' src={`${Taro.$cdnUrl}/index/mine_icon8.webp`}></Image>
+                        {/* <Image className='userInfo_item_img' src={`${Taro.$cdnUrl}/index/mine_icon8.webp`}></Image> */}
                         <View className='userInfo_item_content'><Text className='userInfo_item_content_label'>来源：</Text>{info.sourceDesc}</View>
                     </View>
                     {
                         info.jobTypes && info.jobTypes.length > 0 &&
                         <View className='userInfo_item'>
-                            <Image className='userInfo_item_img' src={`${Taro.$cdnUrl}/index/mine_icon9.webp`}></Image>
+                            {/* <Image className='userInfo_item_img' src={`${Taro.$cdnUrl}/index/mine_icon9.webp`}></Image> */}
                             <View className='userInfo_item_content'><Text className='userInfo_item_content_label'>岗位意向：</Text>
                                 {
                                     info.jobTypes.map((i, idx) => {
@@ -92,9 +103,20 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
                     }
 
                     {
+                        info.company && <View className='userInfo_item'>
+                            <View className='userInfo_item_content'><Text className='userInfo_item_content_label'>公司简称：</Text>{info.company}</View>
+                        </View>
+                    }
+                    {
+                        info.bankCard && <View className='userInfo_item'>
+                            <View className='userInfo_item_content'><Text className='userInfo_item_content_label'>银行卡号：</Text>{info.bankCard}</View>
+                        </View>
+                    }
+
+                    {
                         info.remark &&
                         <View className='userInfo_item'>
-                            <Image className='userInfo_item_img' src={`${Taro.$cdnUrl}/index/mine_icon10.webp`}></Image>
+                            {/* <Image className='userInfo_item_img' src={`${Taro.$cdnUrl}/index/mine_icon10.webp`}></Image> */}
                             <View className='userInfo_item_content'><Text className='userInfo_item_content_label'>备注：</Text>{info.remark}</View>
                         </View>
                     }

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-09 15:05:47
+ * @LastEditTime: 2025-05-13 13:36:03
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -26,9 +26,7 @@ const Index = observer(({ store }) => {
 
   const [drainageDate, setDrainageDate] = useState('TODAY');
   // const [drainageDate, setDrainageDate] = useState('YESTERDAY');
-  const [drainageInfo, setDrainageInfo] = useState('');      // 迎流数据
   const [transformDate, setTransformDate] = useState('YESTERDAY');
-  const [convertInfo, setConvertInfo] = useState('');        // 转化数据
   const [showAddType, setShowAddType] = useState(false);
 
   const [todayData, setTodayData] = useState('');        //  今日数据
@@ -135,23 +133,23 @@ const Index = observer(({ store }) => {
     }
   }, [isLogin])
 
-  useEffect(() => {
-    if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
-      getTodayData();
-      getPoorData();
-      getDashDrainageData();
-      // getconvertData();
-    }
-    if (role === 'CUSTOMER') {   // 客服
-      getCustomerTodo();
-      getPoorData();
-      getDashDrainageData();
-    }
-    if (role === 'ON_SITE') {    // 驻场
-      getOnSiteToDo();
-      getOnSiteData();
-    }
-  }, [isLogin, role]);
+  // useEffect(() => {
+  //   if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
+  //     getTodayData();
+  //     getPoorData();
+  //     getDashDrainageData();
+  //     // getconvertData();
+  //   }
+  //   if (role === 'CUSTOMER') {   // 客服
+  //     getCustomerTodo();
+  //     getPoorData();
+  //     getDashDrainageData();
+  //   }
+  //   if (role === 'ON_SITE') {    // 驻场
+  //     getOnSiteToDo();
+  //     getOnSiteData();
+  //   }
+  // }, [isLogin, role]);
 
   useEffect(() => {
     if (isLogin && (role === 'ADMIN' || role === 'SEEK' || role === 'CUSTOMER')) {

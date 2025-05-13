@@ -29,6 +29,24 @@
                 line-height: normal;
                 margin-right: 10rpx;
             }
+
+            .userInfo_title_phone {
+                @include flex-center(flex-start);
+                margin-left: 26rpx;
+                color: #1678ff;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                    flex-shrink: 0;
+                    margin-right: 4rpx;
+                }
+            }
         }
 
         .userInfo_title_right {
@@ -64,6 +82,16 @@
             height: 44rpx;
             margin-right: 2rpx;
         }
+    }
+
+    .userInfo_baseinfo {
+        color: #222222;
+        font-family: "PingFang SC";
+        font-size: 28rpx;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        padding: 22rpx 40rpx 0 24rpx;
     }
 
     .userInfo_item {

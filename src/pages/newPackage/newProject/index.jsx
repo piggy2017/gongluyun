@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-08 12:01:14
+ * @LastEditTime: 2025-05-13 15:54:16
  * @Description:
  */
 
@@ -428,6 +428,7 @@ const Index = observer(({ store }) => {
                         <View onClick={() => setFormData({ ...formData, trafficType: 'PRIVATE' })} className={`traffic_item ${formData.trafficType === 'PRIVATE' ? 'traffic_item_active' : ''}`}>私有流量</View>
                     </View>
                 </View>
+
 
                 <View className='project_item project_item_border'>
                     <View className='project_item_label project_item_label_required'>企业名称</View>

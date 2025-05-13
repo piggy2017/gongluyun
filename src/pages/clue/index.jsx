@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-08 15:06:03
+ * @LastEditTime: 2025-05-13 18:02:54
  * @Description:
  */
 
@@ -382,7 +382,7 @@ const Index = observer(({ store }) => {
 
   const goClueDetail = (obj, index) => {
     Taro.navigateTo({
-      url: `/pages/talentsPackage/clueDetail/index?uid=${obj.uuid}&phone=${obj.phone}`
+      url: `/pages/talentsPackage/clueDetail/index?uid=${obj.uuid}&phone=${obj.phone}&fromClue=1`
     })
   }
 

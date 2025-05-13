@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 09:42:32
+ * @LastEditTime: 2025-05-13 18:03:53
  * @Description:
  */
 
 import http from "./request"
 
-export const env = 'test';
+export const env = 'prod';
 const base = env === 'prod' ? 'https://sa-api.apujiyu.com' : 'https://sa-test.apujiyu.com/'
 export const API_BASE_URL = base + "/mini"
 // const API_BASE_URL_JOB = "https://testios.joymian.com/jobfly/order"
@@ -607,4 +607,8 @@ export const batchUpdateSupplier = params => { // 渠道给求职者批量设置
 
 export const getContractsCoopModels = params => { // 通过项目获取合作模式
     return http(API_BASE_URL + '/contracts/getContractsCoopModels', params, "POST", { "Content-Type": "application/json" });
+};
+
+export const findAgentByName = params => { // 获取推荐人信息
+    return http(API_BASE_URL + '/clue/findAgentByName', params, "POST", { "Content-Type": "application/json" });
 };
