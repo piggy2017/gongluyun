@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 11:24:34
+ * @LastEditTime: 2025-05-14 13:36:15
  * @Description:
  */
 
@@ -515,14 +515,14 @@ const Index = observer(({ store }) => {
       </View>
 
       {
-        role != 'CUSTOMER' && role != 'ON_SITE' &&
+        // role != 'CUSTOMER' && role != 'ON_SITE' &&
         <>
           {
             (!detail.cooperationModels || detail.cooperationModels?.length === 0) &&
             <View className='set_supplier_wrapper'>
               <View className='set_supplier_wrapper_left'>供应链</View>
               <View className='set_supplier_wrapper_right' onClick={() => {
-                if (myPermissions.includes('10')) {
+                if (myPermissions.includes('17')) {
                   setProjectPatternInfo({
                     contractsSerialCode: detail.serialCode,
                     title: detail.title,
@@ -545,7 +545,7 @@ const Index = observer(({ store }) => {
               <View className='get_supplier_wrapper_title'>供应链</View>
               <View className='get_supplier_wrapper_content'>
                 <View className='get_supplier_wrapper_content_item' onClick={() => {
-                  if (myPermissions.includes('10')) {
+                  if (myPermissions.includes('17')) {
                     setProjectPatternInfo({
                       contractsSerialCode: detail.serialCode,
                       title: detail.title,
@@ -569,7 +569,7 @@ const Index = observer(({ store }) => {
                 </View>
 
                 <View className='get_supplier_wrapper_content_item' onClick={() => {
-                  if (myPermissions.includes('10')) {
+                  if (myPermissions.includes('18')) {
                     Taro.navigateTo({
                       url: `/pages/supplierPackage/projectSuppliers/index?contractsSerialCode=${detail.serialCode}&title=${detail.title}&recruitSerialCode=${detail.recruitSerialCode}&cooperationModels=${JSON.stringify(detail.cooperationModels ? detail.cooperationModels : [])}`
                     })

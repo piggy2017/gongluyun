@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-06 17:39:27
+ * @LastEditTime: 2025-05-14 13:46:38
  * @Description: 项目详情中查看供应商列表
  */
 
@@ -15,7 +15,7 @@ import { selectorQueryDomInfo, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { myChannelSelector,mySupplierListByContracts } from '@/util/api';
+import { myChannelSelector, mySupplierListByContracts } from '@/util/api';
 
 const Index = observer(({ store }) => {
     const route = useRouter();
@@ -194,6 +194,14 @@ const Index = observer(({ store }) => {
                             </View>
                         )
                     })
+                }
+                {
+                    list.length >= 5 &&
+                    <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
+                }
+                {
+                    list.length === 0 && requestState === 3 &&
+                    <Taro.NoData></Taro.NoData>
                 }
             </ScrollView>
 
