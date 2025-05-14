@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 11:05:16
+ * @LastEditTime: 2025-05-14 17:29:01
  * @Description:
  */
 
@@ -62,7 +62,8 @@ const Index = observer(({ store }) => {
   const [batchOperations, setBatchOperations] = useState(false);       // 是否进行批量操作
   const [chooseAll, setChooseAll] = useState(false);                   // 全选反选
   const [showbottomOptions, setShowbottomOptions] = useState(false);   // 是否显示底部的操作选项
-  const [chooseList, setChooseList] = useState([]);                    // 选中的列表
+  const [chooseList, setChooseList] = useState([]);                    // 选中的uuid列表
+  const [chooseObjList, setChooseObjList] = useState([]);              // 选中的列表
   const [showFilterDate, setShowFilterDate] = useState(false);         // 是否显示切换日期的弹窗
 
   const [showExportModel, setShowExportModel] = useState(false);       // 是否显示导出弹窗
@@ -83,6 +84,10 @@ const Index = observer(({ store }) => {
   useDidShow(() => {
     getList(1);
   })
+
+  useEffect(() => {
+    console.log("chooseObjList_发生了变化:", chooseObjList);
+  }, [chooseObjList])
 
   useEffect(() => {
     getList(1);
@@ -145,6 +150,14 @@ const Index = observer(({ store }) => {
     Taro.hideLoading();
     setIsRefresh(false);
     if (code === 200 && data.responses?.length > 0) {
+      if (batchOperations && chooseObjList.length > 0) {
+        let _uuids = chooseObjList.map(item => item.uuid);
+        for (let i = 0; i < data.responses.length; i++) {
+          if (_uuids.includes(data.responses[i].uuid)) {
+            data.responses[i].isChoosed = true;
+          }
+        }
+      }
       setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
       setgoonLoad(true);
       setPageNo(data.pageNo);
@@ -206,9 +219,32 @@ const Index = observer(({ store }) => {
 
   const chooeAllFunc = () => {      // 全选、反选
     if (chooseAll) {
-      setChooseList([])
+      setChooseList([]);
+      // setChooseObjList([]);  // 
+      setChooseObjList(chooseObjList => {
+        let _list = JSON.parse(JSON.stringify(chooseObjList));
+        // let _uuidList = list.map(item => item.uuid);
+        // _list = _list.filter(item => {
+        //   if (!_uuidList.includes(item.uuid)) {
+        //     return item
+        //   }
+        // });
+        // console.log('反选后', _list);
+        // return _list
+        const arr2Ids = new Set(list.map(item => item.uuid));
+        const arr3 = _list.filter(item => !arr2Ids.has(item.uuid));
+        return arr3
+      })
     } else {
-      setChooseList(list.map(item => item.uuid))
+      setChooseList(list.map(item => item.uuid));
+      // setChooseObjList(list);
+      setChooseObjList(chooseObjList => {
+        let _list = JSON.parse(JSON.stringify(chooseObjList));
+        const arr3 = Array.from(
+          [..._list, ...list].reduce((map, obj) => map.set(obj.uuid, obj), new Map()).values()
+        );
+        return arr3;
+      })
     }
     setChooseAll(!chooseAll);
     setList(list => {
@@ -228,8 +264,18 @@ const Index = observer(({ store }) => {
     }
   }
 
-  const chooseItemFunc = (obj, index) => {
+  const chooseItemFunc = (obj, index) => {   // 选中某一项
+    console.log('选中某一项_obj', obj);
     if (batchOperations) {
+      if (obj.isChoosed) {  // 如果当前是选中的,则移除
+        setChooseObjList(chooseObjList => {
+          return chooseObjList.filter(item => item.uuid !== obj.uuid);
+        })
+      } else {
+        setChooseObjList(chooseObjList => {
+          return [...chooseObjList, obj];
+        })
+      }
       setList(list => {
         let _list = list.map((item, i) => {
           if (i === index) {
@@ -237,7 +283,7 @@ const Index = observer(({ store }) => {
           }
           return item
         })
-        setChooseList(_list.filter(item => item.isChoosed).map(item => item.uuid))
+        setChooseList(_list.filter(item => item.isChoosed).map(item => item.uuid));
         return _list
       })
     } else {
@@ -250,6 +296,7 @@ const Index = observer(({ store }) => {
   const doneBtn = () => {    // 点击完成按钮
     setShowbottomOptions(false);
     setBatchOperations(false);
+    // setChooseObjList([]);
   }
 
   const signUpFunc = async (e, obj, index) => {
@@ -620,8 +667,8 @@ const Index = observer(({ store }) => {
                 <View>全选</View>
               </View>
               <View
-                className={`footer_btn ${chooseList.length > 0 ? 'footer_btn_active' : ''}`}
-                onClick={() => editBtnFunc()}>修改状态 {chooseList.length > 0 ? chooseList.length : ''}</View>
+                className={`footer_btn ${chooseObjList.length > 0 ? 'footer_btn_active' : ''}`}
+                onClick={() => editBtnFunc()}>修改状态 {chooseObjList.length > 0 ? chooseObjList.length : ''}</View>
             </View>
             <View style={`height:${bottomSafeAreaHeight}px;`}></View>
           </View>
