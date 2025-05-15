@@ -595,8 +595,6 @@
                 padding: 20rpx;
                 border-top: 1px solid #f4f4f4;
 
-
-                // max-height: 260rpx;
                 .footer_wrapper_chooseObjList_wrap_title {
                     @include flex-center(space-between);
                     font-family: PingFangSC-Medium;
@@ -619,9 +617,9 @@
                 display: flex;
                 flex-flow: row wrap;
                 background-color: #ffffff;
-                // padding: 20rpx;
                 max-height: 200rpx;
                 gap: 10rpx 10rpx;
+                overflow-y: scroll;
 
                 .footer_wrapper_chooseObjList_item {
                     padding: 0 20rpx;

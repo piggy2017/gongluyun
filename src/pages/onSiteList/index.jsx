@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 16:54:17
+ * @LastEditTime: 2025-05-15 17:15:32
  * @Description:
  */
 
@@ -86,10 +86,6 @@ const Index = observer(({ store }) => {
     })
 
     useEffect(() => {
-        console.log("chooseObjList_发生了变化:", chooseObjList);
-    }, [chooseObjList])
-
-    useEffect(() => {
         getList(1);
     }, [currentTab, dateObj, onSiteFilterJob, onSiteFilterSUPPLIER, dataSource])
 
@@ -109,19 +105,18 @@ const Index = observer(({ store }) => {
     }, [batchOperations])
 
     useEffect(() => {
-        console.log("chooseList", chooseList);
-        if (chooseList.length === 0) {
+        console.log("chooseObjList_发生了变化", chooseObjList);
+        if (chooseObjList.length === 0) {
             setShowbottomOptions(false);
         }
-    }, [chooseList])
+    }, [chooseObjList])
 
     const customDateSelect = (e) => {      // 选择日期的回调
         console.log("自定义选择日期组件 customDateSelect", e);
         setDateObj(e);
     }
 
-
-    const getList = throttleCustom(async (_pageNo) => {    // 获取名单列表
+    const getList = throttleCustom(async (_pageNo, type) => {    // 获取名单列表,  type 是否是更改状态后的请求
         setRequestState(1);
         Taro.showLoading({ title: '加载中...' });
         let _recruitSerialCodes = onSiteFilterJob.map(item => item.recruitSerialCode);
@@ -150,7 +145,7 @@ const Index = observer(({ store }) => {
         Taro.hideLoading();
         setIsRefresh(false);
         if (code === 200 && data.responses?.length > 0) {
-            if (batchOperations && chooseObjList.length > 0) {
+            if (batchOperations && chooseObjList.length > 0 && !type) {
                 let _uuids = chooseObjList.map(item => item.uuid);
                 for (let i = 0; i < data.responses.length; i++) {
                     if (_uuids.includes(data.responses[i].uuid)) {
@@ -195,6 +190,7 @@ const Index = observer(({ store }) => {
         setCurrentTab(item);
         setBatchOperations(false);
         setChooseList([]);
+        setChooseObjList([]);
         setChooseAll(false);
         setShowbottomOptions(false);
     }
@@ -220,24 +216,14 @@ const Index = observer(({ store }) => {
     const chooeAllFunc = () => {      // 全选、反选
         if (chooseAll) {
             setChooseList([]);
-            // setChooseObjList([]);  //
             setChooseObjList(chooseObjList => {
                 let _list = JSON.parse(JSON.stringify(chooseObjList));
-                // let _uuidList = list.map(item => item.uuid);
-                // _list = _list.filter(item => {
-                //   if (!_uuidList.includes(item.uuid)) {
-                //     return item
-                //   }
-                // });
-                // console.log('反选后', _list);
-                // return _list
                 const arr2Ids = new Set(list.map(item => item.uuid));
                 const arr3 = _list.filter(item => !arr2Ids.has(item.uuid));
                 return arr3
             })
         } else {
             setChooseList(list.map(item => item.uuid));
-            // setChooseObjList(list);
             setChooseObjList(chooseObjList => {
                 let _list = JSON.parse(JSON.stringify(chooseObjList));
                 const arr3 = Array.from(
@@ -257,7 +243,7 @@ const Index = observer(({ store }) => {
     }
 
     const editBtnFunc = () => {                // 点击下方的修改状态按钮
-        if (chooseList.length > 0) {
+        if (chooseObjList.length > 0) {
             // setShowbottomOptions(!showbottomOptions);
             setShowEditStatus(true);
             setEditCustom({});
@@ -283,7 +269,7 @@ const Index = observer(({ store }) => {
                     }
                     return item
                 })
-                setChooseList(_list.filter(item => item.isChoosed).map(item => item.uuid));
+                // setChooseList(_list.filter(item => item.isChoosed).map(item => item.uuid));
                 return _list
             })
         } else {
@@ -343,7 +329,7 @@ const Index = observer(({ store }) => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
-                getList(1);
+                getList(1, 1);
             } else {
                 Taro.showToast({ title: res.msg, icon: 'none' })
             }
@@ -379,10 +365,12 @@ const Index = observer(({ store }) => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
-                getList(1);
+                getList(1, 1);
                 setChooseList([]);
+                setChooseObjList([]);
                 setChooseAll(false);
                 setShowbottomOptions(false);
+                forceUpdate();
             } else {
                 Taro.showToast({ title: res.msg, icon: 'none' })
             }
@@ -507,7 +495,7 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const clearChoosed=()=>{    // 清空所有的选中数据
+    const clearChoosed = () => {    // 清空所有的选中数据
         setChooseObjList([]);
         setChooseList([]);
         setChooseAll(false);
