@@ -2,14 +2,14 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-12 17:42:08
+ * @LastEditTime: 2025-05-15 17:23:40
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter, usePageScroll } from '@tarojs/taro';
 import { View, Text, Input, Picker, Image, Block, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { debounce, throttleCustom } from '@/util/utils'
+import { debounce, throttle, throttleCustom } from '@/util/utils'
 
 import TabBar from '@/components/tabBar';
 import WorkerJobType from '@/components/workerJobType';
@@ -185,6 +185,10 @@ const Index = observer(({ store }) => {
             return setIsOpened(true)
         }
     }
+    const searchFunc = throttle(() => {
+        getList(1);
+        setgoonLoad(true);
+    }, 300);
 
     return (
         <View className='container'>
@@ -205,10 +209,7 @@ const Index = observer(({ store }) => {
                     confirmType='search'
                     placeholderStyle='color: #777777;'
                     onInput={(e) => { setSearchValue(e.detail.value) }}
-                    onConfirm={(e) => {
-                        setgoonLoad(true);
-                        getList(1);
-                    }}
+                    onConfirm={searchFunc}
                     value={searchValue}></Input>
             </View>
 

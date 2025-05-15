@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 18:02:54
+ * @LastEditTime: 2025-05-15 14:32:47
  * @Description:
  */
 
@@ -10,7 +10,7 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useDidShow, useDidHide } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce, getStatus, getColor, throttleCustom } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, throttle, getStatus, getColor, throttleCustom } from '@/util/utils'
 
 import TabBar from '@/components/tabBar';
 import { AtIcon } from 'taro-ui'
@@ -216,7 +216,7 @@ const Index = observer(({ store }) => {
     }
   }, 200)
 
-  const getClueList = async (_pageNo) => {   // 获取线索池列表
+  const getClueList = throttleCustom(async (_pageNo) => {   // 获取线索池列表
     setRequestState(1);
     Taro.showLoading({ title: '加载中...' });
     let _recruitSerialCodes = poorJobId.map(item => item.recruitSerialCode);
@@ -252,9 +252,9 @@ const Index = observer(({ store }) => {
         setTotalCount(0);
       }
     }
-  }
+  }, 1000)
 
-  const getClientList = async (_pageNo) => {  // 获取我的客户列表
+  const getClientList = throttleCustom(async (_pageNo) => {  // 获取我的客户列表
     setRequestState(1);
     Taro.showLoading({ title: '加载中...' });
     let _seekStates = filterState.map(item => item.state);
@@ -305,7 +305,7 @@ const Index = observer(({ store }) => {
         setMyClientCount(0);
       }
     }
-  }
+  }, 1000);
 
   const customDateSelect = (e) => {      // 选择日期的回调
     console.log("自定义选择日期组件 customDateSelect", e);
@@ -327,7 +327,7 @@ const Index = observer(({ store }) => {
     setFilterState(e);
   }
 
-  const getClient = async (e, obj, idx) => {   // 领取客户
+  const getClient = throttleCustom(async (e, obj, idx) => {   // 领取客户
     console.log("getClient obj, idx", obj, idx);
     e.stopPropagation();
 
@@ -362,7 +362,7 @@ const Index = observer(({ store }) => {
         forceUpdate();
       }
     }
-  }
+  }, 500)
 
   const callFunc = (e, obj) => {
     e.stopPropagation();
@@ -427,6 +427,16 @@ const Index = observer(({ store }) => {
     }
   }
 
+  const searchFunc = throttle(() => {
+    if (type === '线索池') {
+      setgoonLoad(true);
+      getClueList(1);
+    } else if (type === '我的客户') {
+      setgoonLoad(true);
+      getClientList(1);
+    }
+  }, 300);
+
   return (
     <View className='container'>
       <View className='my_header'>
@@ -449,10 +459,7 @@ const Index = observer(({ store }) => {
               confirmType='search'
               placeholderStyle='color: #777777;'
               onInput={(e) => { setSearchValue(e.detail.value) }}
-              onConfirm={() => {
-                setgoonLoad(true);
-                getClueList(1);
-              }}
+              onConfirm={searchFunc}
               value={searchValue}></Input>
           </View> ||
           <View className='search_content_client'>
@@ -464,10 +471,7 @@ const Index = observer(({ store }) => {
                 confirmType='search'
                 placeholderStyle='color: #777777;'
                 onInput={(e) => { setSearchValue(e.detail.value) }}
-                onConfirm={() => {
-                  setgoonLoad(true);
-                  getClientList(1);
-                }}
+                onConfirm={searchFunc}
                 value={searchValue}></Input>
             </View>
             <View className='search_content_client_export' onClick={exportAllFunc}>导出</View>
