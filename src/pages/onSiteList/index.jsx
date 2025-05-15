@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 13:38:51
+ * @LastEditTime: 2025-05-15 15:24:12
  * @Description:
  */
 
@@ -661,7 +661,11 @@ const Index = observer(({ store }) => {
           batchOperations &&
           <View className='footer_wrapper'>
             <View className='footer_wrapper_top' style={`height:16rpx;`}>
-
+              <View className='footer_wrapper_chooseObjList'>
+                {
+                  // chooseObjList.length>0 && 
+                }
+              </View>
             </View>
             <View className='footer_wrapper_content'>
               <View className='footer_wrapper_left' onClick={() => chooeAllFunc()}>
