@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 11:07:56
+ * @LastEditTime: 2025-05-15 10:35:08
  * @Description:
  */
 
@@ -10,7 +10,7 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro';
 import { View, Image, Button, ScrollView, Text, Block, RootPortal, Input, Textarea } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
+import { selectorQueryDomInfo, throttleCustom, throttle, debounce, getStatus, getColor } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -237,7 +237,7 @@ const Index = observer(({ store }) => {
     }
 
     // 获取名单列表
-    const getList = async (_pageNo) => {    // 获取名单列表
+    const getList = throttleCustom(async (_pageNo) => {    // 获取名单列表
         setRequestState(1);
         Taro.showLoading({ title: '加载中...' });
         let _recruitSerialCodes = channelListFilterJob.map(item => item.recruitSerialCode);
@@ -283,7 +283,7 @@ const Index = observer(({ store }) => {
                 setList([]);
             }
         }
-    }
+    }, 1000);
 
     // 滑动到底部时加载下一页的数据
     const handleScrollToLower = debounce((type) => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
@@ -604,6 +604,19 @@ const Index = observer(({ store }) => {
         })
     }
 
+    const searchFunc = throttle((type) => {
+        if (type === 1) {
+            getList(1);
+            setgoonLoad(true);
+        } else if (type === 2) {
+            setGoonLoad2(true);
+            getSupplierList(1);
+        } else if (type === 3) {
+            setGoonLoad3(true);
+            getCoopModels(1);
+        }
+    }, 500);
+
     return (
         <View className='container'>
             <View className='my_header'>
@@ -619,10 +632,7 @@ const Index = observer(({ store }) => {
                             confirmType='search'
                             placeholderStyle='color: #777777;'
                             onInput={(e) => { setSearchValue(e.detail.value) }}
-                            onConfirm={(e) => {
-                                getList(1);
-                                setgoonLoad(true);
-                            }}
+                            onConfirm={() => searchFunc(1)}
                             value={searchValue}></Input>
                     </View>
                 </View>
@@ -857,10 +867,7 @@ const Index = observer(({ store }) => {
                                         confirmType='search'
                                         placeholderStyle='color: #777777;'
                                         onInput={(e) => { setSupplierValue(e.detail.value) }}
-                                        onConfirm={() => {
-                                            setGoonLoad2(true);
-                                            getSupplierList(1);
-                                        }}
+                                        onConfirm={() => searchFunc(2)}
                                         value={supplierValue}></Input>
                                 </View>
                                 <ScrollView scrollY
@@ -917,10 +924,7 @@ const Index = observer(({ store }) => {
                                         confirmType='search'
                                         placeholderStyle='color: #777777;'
                                         onInput={(e) => { setModelValue(e.detail.value) }}
-                                        onConfirm={() => {
-                                            setGoonLoad3(true);
-                                            getCoopModels(1);
-                                        }}
+                                        onConfirm={() => searchFunc(3)}
                                         value={modelValue}></Input>
                                 </View>
                                 <ScrollView scrollY

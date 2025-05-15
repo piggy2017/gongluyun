@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-14 17:29:01
+ * @LastEditTime: 2025-05-15 11:01:49
  * @Description:
  */
 
@@ -10,7 +10,7 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro';
 import { View, Image, Button, ScrollView, Text, Block, Input, RootPortal, Textarea } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, throttleCustom, throttle, getStatus, getColor } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -121,7 +121,7 @@ const Index = observer(({ store }) => {
   }
 
 
-  const getList = async (_pageNo) => {    // 获取名单列表
+  const getList = throttleCustom(async (_pageNo) => {    // 获取名单列表
     setRequestState(1);
     Taro.showLoading({ title: '加载中...' });
     let _recruitSerialCodes = onSiteFilterJob.map(item => item.recruitSerialCode);
@@ -171,7 +171,7 @@ const Index = observer(({ store }) => {
         setList([]);
       }
     }
-  }
+  }, 1000)
 
   const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
     console.log('滑动到了最底部');
@@ -484,6 +484,11 @@ const Index = observer(({ store }) => {
     })
   }
 
+  const searchFunc = throttle(() => {
+    getList(1);
+    setgoonLoad(true);
+  },1000)
+
   return (
     <View className='container'>
       <View className='my_header'>
@@ -499,10 +504,7 @@ const Index = observer(({ store }) => {
               confirmType='search'
               placeholderStyle='color: #777777;'
               onInput={(e) => { setSearchValue(e.detail.value) }}
-              onConfirm={(e) => {
-                getList(1);
-                setgoonLoad(true);
-              }}
+              onConfirm={() => searchFunc()}
               value={searchValue}></Input>
           </View>
         </View>
