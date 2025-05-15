@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-12 17:35:57
+ * @LastEditTime: 2025-05-15 11:25:49
  * @Description:
  */
 
@@ -10,7 +10,7 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Button, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
+import { selectorQueryDomInfo, throttleCustom, throttle, debounce, getStatus, getColor } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -154,7 +154,7 @@ const Index = observer(({ store }) => {
         }
     }, [chooseList])
 
-    const getList = async (_pageNo) => {    // 获取名单列表
+    const getList = throttleCustom(async (_pageNo) => {    // 获取名单列表
         const { recruitSerialCode } = route.params;
         setRequestState(1);
         Taro.showLoading({ title: '加载中...' });
@@ -164,9 +164,6 @@ const Index = observer(({ store }) => {
             seekState: tabList[currentTabIndex].state,
             searchInfo: searchValue,
             recruitSerialCode,
-            // source: sourceObj.source,
-            // agentSerialCode: rosterFilterSupplier.userSerialCode,
-            // supplierSerialCode: rosterFilterSupplier.supplierSerialCode,
             channelCode: rosterFilterSupplier.channelCode,
             dateRange: dateObj.dateRange,
             startDate: dateObj.startDate,
@@ -192,7 +189,7 @@ const Index = observer(({ store }) => {
                 setList([]);
             }
         }
-    }
+    }, 1000)
 
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
@@ -467,6 +464,11 @@ const Index = observer(({ store }) => {
         })
     }
 
+    const searchFunc = throttle(() => {
+        getList(1);
+        setgoonLoad(true);
+    }, 300);
+
     return (
         <View className='container'>
             <View className='my_header'>
@@ -486,10 +488,7 @@ const Index = observer(({ store }) => {
                         confirmType='search'
                         placeholderStyle='color: #777777;'
                         onInput={(e) => { setSearchValue(e.detail.value) }}
-                        onConfirm={(e) => {
-                            setgoonLoad(true);
-                            getList(1);
-                        }}
+                        onConfirm={searchFunc}
                         value={searchValue}></Input>
                 </View>
                 <View className='filter_wrapper'>

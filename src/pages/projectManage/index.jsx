@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 10:49:23
+ * @LastEditTime: 2025-05-15 13:39:03
  * @Description: 
  */
 
@@ -186,7 +186,7 @@ const Index = observer(({ store }) => {
     }
     getList(1);
     setgoonLoad(true);
-  }, 1000)
+  }, 200)
 
   return (
     <View className='container'>

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 11:01:49
+ * @LastEditTime: 2025-05-15 13:38:51
  * @Description:
  */
 
@@ -10,7 +10,7 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro';
 import { View, Image, Button, ScrollView, Text, Block, Input, RootPortal, Textarea } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce, throttleCustom, throttle, getStatus, getColor } from '@/util/utils'
+import { selectorQueryDomInfo, throttleCustom, throttle, debounce, getStatus, getColor } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -487,7 +487,7 @@ const Index = observer(({ store }) => {
   const searchFunc = throttle(() => {
     getList(1);
     setgoonLoad(true);
-  },1000)
+  }, 300);
 
   return (
     <View className='container'>
@@ -504,7 +504,7 @@ const Index = observer(({ store }) => {
               confirmType='search'
               placeholderStyle='color: #777777;'
               onInput={(e) => { setSearchValue(e.detail.value) }}
-              onConfirm={() => searchFunc()}
+              onConfirm={searchFunc}
               value={searchValue}></Input>
           </View>
         </View>

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 10:35:08
+ * @LastEditTime: 2025-05-15 11:59:07
  * @Description:
  */
 
@@ -615,7 +615,7 @@ const Index = observer(({ store }) => {
             setGoonLoad3(true);
             getCoopModels(1);
         }
-    }, 500);
+    }, 300);
 
     return (
         <View className='container'>
