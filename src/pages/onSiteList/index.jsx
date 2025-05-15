@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 16:22:52
+ * @LastEditTime: 2025-05-15 16:49:06
  * @Description:
  */
 
@@ -354,12 +354,12 @@ const Index = observer(({ store }) => {
         if (dataSource === 'OWN_REPORT') {
             return Taro.showToast({ title: '该数据您无法修改', icon: 'none' });
         }
-        if (chooseList.length === 0) {
+        if (chooseObjList.length === 0) {
             return Taro.showToast({ title: '请先选择用户', icon: 'none' });
         }
-        let _list = chooseList.map(item => {
+        let _list = chooseObjList.map(item => {
             let obj = {
-                uuid: item,
+                uuid: item.uuid,
                 seekState: state
             }
             if (reason) {
@@ -508,7 +508,16 @@ const Index = observer(({ store }) => {
     }
 
     const clearChoosed=()=>{    // 清空所有的选中数据
-        
+        setChooseObjList([]);
+        setChooseList([]);
+        setChooseAll(false);
+        setList(list => {
+            list = list.map(item => {
+                item.isChoosed = false;
+                return item;
+            })
+            return list;
+        })
     }
 
     return (
