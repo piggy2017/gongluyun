@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-07 15:23:47
+ * @LastEditTime: 2025-05-15 14:13:58
  * @Description:
  */
 
@@ -12,7 +12,7 @@ import { View, Image, Input, ScrollView, Text, Block, Picker } from '@tarojs/com
 import { observer, inject } from 'mobx-react';
 import { AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
-import { selectorQueryDomInfo, debounce, throttleCustom } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, throttle, throttleCustom } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
@@ -156,6 +156,11 @@ const Index = observer(({ store }) => {
         }, 300);
     }
 
+    const searchFunc = throttle(() => {
+        setgoonLoad(true);
+        getList(1);
+    }, 300);
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='transparent' title='选择供应商'></Navbar>
@@ -168,10 +173,7 @@ const Index = observer(({ store }) => {
                         confirmType='search'
                         placeholderStyle='color: #777777;'
                         onInput={(e) => { setSearchValue(e.detail.value) }}
-                        onConfirm={(e) => {
-                            setgoonLoad(true);
-                            getList(1);
-                        }}
+                        onConfirm={searchFunc}
                         value={searchValue}></Input>
                 </View>
 
