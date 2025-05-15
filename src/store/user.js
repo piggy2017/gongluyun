@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 17:16:05
+ * @LastEditTime: 2025-05-15 11:08:20
  * @Description: 用于存放用户的相关信息
  */
 
@@ -16,6 +16,9 @@ import {
     checkSupplier,
     getTemplateIds
 } from '@/util/api'
+import {
+    throttleCustom
+} from '@/util/utils'
 import Taro from '@tarojs/taro';
 const userStore = observable({
     role: Taro.getStorageSync('role') ? Taro.getStorageSync('role') : '', // SUPPLIER   SEEK    // 管理员:1-ADMIN  客服:2-CUSTOMER  驻场:3-ON_SITE  SEEK:5-求职者 SUPPLIER:4-供应商  6-CHANNEL 渠道
@@ -26,8 +29,8 @@ const userStore = observable({
     userInfo: Taro.getStorageSync('userInfo') ? Taro.getStorageSync('userInfo') : '',
     companyInfo: Taro.getStorageSync('companyInfo') ? Taro.getStorageSync('companyInfo') : '',
     userRoles: Taro.getStorageSync('userRoles') ? Taro.getStorageSync('userRoles') : [], // 用户所拥有的公司下面的所有角色列表
-    
-    refreshUserInfo(callback) { // 统一刷新用户信息
+
+    refreshUserInfo: throttleCustom((callback) => { // 统一刷新用户信息
         userCenter({}).then(res => {
             console.log("refreshUserInfo用户信息res:", res);
             if (res?.code === 200) {
@@ -35,19 +38,17 @@ const userStore = observable({
                 Taro.setStorageSync('userInfo', res?.data?.userInfo);
                 userStore.companyInfo = res?.data;
                 userStore.companyVerified = res?.data?.companyVerified;
-                // userStore.role = res?.data?.userInfo.userRole;
-                // Taro.setStorageSync('role', res?.data?.userInfo.userRole);
                 Taro.setStorageSync('companyInfo', res.data);
-                if(res.data.userInfo.roles){
-                    userStore.userRoles = res?.data?.userInfo.roles.map(item=>{
-                        if(item.roleName==='ADMIN'){
-                            item.name='管理员'
-                        }else if(item.roleName==='CUSTOMER'){
-                            item.name='客服'
-                        }else  if(item.roleName==='ON_SITE'){
-                            item.name='驻场'
-                        }else  if(item.roleName==='CHANNEL'){
-                            item.name='渠道'
+                if (res.data.userInfo.roles) {
+                    userStore.userRoles = res?.data?.userInfo.roles.map(item => {
+                        if (item.roleName === 'ADMIN') {
+                            item.name = '管理员'
+                        } else if (item.roleName === 'CUSTOMER') {
+                            item.name = '客服'
+                        } else if (item.roleName === 'ON_SITE') {
+                            item.name = '驻场'
+                        } else if (item.roleName === 'CHANNEL') {
+                            item.name = '渠道'
                         }
                         return item
                     })
@@ -58,21 +59,21 @@ const userStore = observable({
                 }
             }
         })
-    },
+    }, 1000),
 
     setUserRoles(value) {
         userStore.userRoles = value
     },
 
     subTemplates: [], // 用户的可订阅消息模板列表
-    getSubTemplates() {
+    getSubTemplates: throttleCustom(() => {
         getTemplateIds({}).then(res => {
             console.log("用户的可订阅消息模板列表getSubTemplates:", res)
             if (res.code === 200) {
                 userStore.subTemplates = res.data;
             }
         })
-    },
+    }, 1000),
 
 
     roles: [ // 角色和角色id的对应关系
@@ -94,7 +95,7 @@ const userStore = observable({
         },
     ],
     permissions: [], // 角色和权限的对应关系
-    getRoleAndPermissionFunc() {
+    getRoleAndPermissionFunc: throttleCustom(() => {
         getRoleAndPermission({}).then(res => {
             console.log("getRoleAndPermissionFunc", res);
             const {
@@ -112,10 +113,10 @@ const userStore = observable({
                 userStore.permissions = permissions;
             }
         })
-    },
+    }, 1000),
 
     myPermissions: [], // 当前用户所拥有的权限列表
-    setMyPermissions() {
+    setMyPermissions: throttleCustom(() => {
         getRoleAndPermissionByUserId({}).then(res => {
             const {
                 code,
@@ -127,7 +128,7 @@ const userStore = observable({
                 userStore.myPermissions = permissions;
             }
         })
-    },
+    }, 1000),
 
     setCompanyVerified(value) {
         userStore.companyVerified = value
@@ -152,17 +153,17 @@ const userStore = observable({
 
     supplierCompanyInfo: { // 供应商的公司信息
         companyVerified: false,
-        channelCode:'',
+        channelCode: '',
         logo: null,
         name: null,
         serialCode: null
     },
-    getSupplierCompanyInfo(callback) { // 获取供应商信息
+    getSupplierCompanyInfo: throttleCustom((callback) => { // 获取供应商信息
         checkSupplier({}).then(res => {
             userStore.supplierCompanyInfo = res.data;
             if (callback) callback(res.data);
         })
-    },
+    }, 1000),
     setSupplierCompanyInfo(value) {
         userStore.supplierCompanyInfo = value
     },
