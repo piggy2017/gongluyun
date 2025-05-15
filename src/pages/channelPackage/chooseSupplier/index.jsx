@@ -1,8 +1,9 @@
+
 /*
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-06 11:22:47
+ * @LastEditTime: 2025-05-15 14:17:59
  * @Description:
  */
 
@@ -12,7 +13,7 @@ import { View, Image, Input, ScrollView, Text, Block, Picker } from '@tarojs/com
 import { observer, inject } from 'mobx-react';
 import { AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { selectorQueryDomInfo, throttleCustom, throttle, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
@@ -52,7 +53,7 @@ const Index = observer(({ store }) => {
         getList(1);
     }, [])
 
-    const getList = async (_pageNo) => {
+    const getList = throttleCustom(async (_pageNo) => {
         setRequestState(1);
         Taro.showLoading({ title: '加载中...' });
         let params = {
@@ -94,7 +95,7 @@ const Index = observer(({ store }) => {
                 setList([]);
             }
         }
-    }
+    }, 1000)
 
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
@@ -132,6 +133,11 @@ const Index = observer(({ store }) => {
         }, 300);
     }
 
+    const searchFunc = throttle(() => {
+        setgoonLoad(true);
+        getList(1);
+    }, 300);
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='transparent' title='选择供应商'></Navbar>
@@ -144,13 +150,9 @@ const Index = observer(({ store }) => {
                         confirmType='search'
                         placeholderStyle='color: #777777;'
                         onInput={(e) => { setSearchValue(e.detail.value) }}
-                        onConfirm={(e) => {
-                            setgoonLoad(true);
-                            getList(1);
-                        }}
+                        onConfirm={searchFunc}
                         value={searchValue}></Input>
                 </View>
-
             </View>
 
             <ScrollView

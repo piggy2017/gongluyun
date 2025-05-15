@@ -2,17 +2,15 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 16:26:26
+ * @LastEditTime: 2025-05-15 14:43:28
  * @Description:
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter } from '@tarojs/taro';
-import { View, Image, Input, ScrollView, Text, Block, Picker } from '@tarojs/components'
+import { View, Image, Input, ScrollView } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { AtIcon } from 'taro-ui'
-import "taro-ui/dist/style/components/icon.scss";
-import { selectorQueryDomInfo, debounce } from '@/util/utils'
+import { selectorQueryDomInfo, throttle, debounce } from '@/util/utils'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
@@ -125,6 +123,10 @@ const Index = observer(({ store }) => {
         }, 300);
     }
 
+    const searchFunc = throttle(() => {
+        getList(1);
+    }, 300);
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='transparent' title='选择推荐人'></Navbar>
@@ -137,9 +139,7 @@ const Index = observer(({ store }) => {
                         confirmType='search'
                         placeholderStyle='color: #777777;'
                         onInput={(e) => { setSearchValue(e.detail.value) }}
-                        onConfirm={(e) => {
-                            getList(1);
-                        }}
+                        onConfirm={searchFunc}
                         value={searchValue}></Input>
                 </View>
             </View>
