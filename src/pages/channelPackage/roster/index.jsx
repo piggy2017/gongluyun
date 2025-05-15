@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-12 17:35:28
+ * @LastEditTime: 2025-05-15 11:41:43
  * @Description:
  */
 
@@ -10,7 +10,7 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Button, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
+import { selectorQueryDomInfo, throttleCustom, throttle, debounce, getStatus, getColor } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -155,7 +155,7 @@ const Index = observer(({ store }) => {
     }, [chooseList])
 
 
-    const getSupplierList = async (_pageNo) => {
+    const getSupplierList = throttleCustom(async (_pageNo) => {
         let params = {
             pageNo: _pageNo,
             pageSize: pageSize2,
@@ -184,19 +184,9 @@ const Index = observer(({ store }) => {
                 setSupplierList([]);
             }
         }
-    }
-    const handleScrollToLower2 = debounce(() => {    // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
-        if (goonLoad2) {
-            getSupplierList(pageNo2 + 1);
-        }
-    }, 500);
+    }, 1000)
 
-    const handleScrollToUpper2 = debounce(() => {    // 滑动到最顶部,触发下拉刷新
-        setIsRefresh2(true);
-        getSupplierList(1);
-    }, 200);
-
-    const getList = async (_pageNo) => {    // 获取名单列表
+    const getList = throttleCustom(async (_pageNo) => {    // 获取名单列表
         const { recruitSerialCode } = route.params;
         setRequestState(1);
         Taro.showLoading({ title: '加载中...' });
@@ -232,19 +222,26 @@ const Index = observer(({ store }) => {
                 setList([]);
             }
         }
-    }
+    }, 1000)
 
-    const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
+    const handleScrollToLower = debounce((type) => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
-        if (goonLoad) {
+        if (type === 1 && goonLoad) {
             getList(pageNo + 1);
+        } else if (type === 2 && goonLoad2) {
+            getSupplierList(pageNo2 + 1);
         }
     }, 500);
 
-    const handleScrollToUpper = debounce(() => {  // 滑动到最顶部,触发下拉刷新
+    const handleScrollToUpper = debounce((type) => {  // 滑动到最顶部,触发下拉刷新
         console.log('下拉刷新');
-        setIsRefresh(true);
-        getList(1);
+        if (type === 1) {
+            setIsRefresh(true);
+            getList(1);
+        } else if (type === 2) {
+            setIsRefresh2(true);
+            getSupplierList(1);
+        }
     }, 200);
 
     const getHeight = () => {
@@ -517,6 +514,16 @@ const Index = observer(({ store }) => {
         }
     }
 
+    const searchFunc = throttle((type) => {
+        if (type === 1) {
+            getList(1);
+            setgoonLoad(true);
+        } else if (type === 2) {
+            setGoonLoad2(true);
+            getSupplierList(1);
+        }
+    }, 300);
+
     return (
         <View className='container'>
             <View className='my_header'>
@@ -536,10 +543,7 @@ const Index = observer(({ store }) => {
                         confirmType='search'
                         placeholderStyle='color: #777777;'
                         onInput={(e) => { setSearchValue(e.detail.value) }}
-                        onConfirm={(e) => {
-                            setgoonLoad(true);
-                            getList(1);
-                        }}
+                        onConfirm={() => searchFunc(1)}
                         value={searchValue}></Input>
                 </View>
                 <View className='filter_wrapper'>
@@ -616,8 +620,8 @@ const Index = observer(({ store }) => {
                 enablePassive
                 refresherEnabled
                 refresherTriggered={isRefresh}
-                onScrollToLower={handleScrollToLower}
-                onRefresherRefresh={handleScrollToUpper}
+                onScrollToLower={() => handleScrollToLower(1)}
+                onRefresherRefresh={() => handleScrollToUpper(1)}
                 lowerThreshold={300}
             >
                 {
@@ -755,10 +759,7 @@ const Index = observer(({ store }) => {
                                         confirmType='search'
                                         placeholderStyle='color: #777777;'
                                         onInput={(e) => { setSupplierValue(e.detail.value) }}
-                                        onConfirm={() => {
-                                            setgoonLoad(true);
-                                            getSupplierList(1);
-                                        }}
+                                        onConfirm={() => searchFunc(2)}
                                         value={supplierValue}></Input>
                                 </View>
                                 <ScrollView scrollY
@@ -768,8 +769,8 @@ const Index = observer(({ store }) => {
                                     enablePassive
                                     refresherEnabled
                                     refresherTriggered={isRefresh2}
-                                    onScrollToLower={handleScrollToLower2}
-                                    onRefresherRefresh={handleScrollToUpper2}
+                                    onScrollToLower={() => handleScrollToLower(2)}
+                                    onRefresherRefresh={() => handleScrollToUpper(2)}
                                     lowerThreshold={300}>
                                     {
                                         supplierList.length > 0 && supplierList.map((item, index) => {
@@ -782,7 +783,7 @@ const Index = observer(({ store }) => {
                                     }
                                     {
                                         supplierList.length >= 7 &&
-                                        <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
+                                        <Taro.LoadMore goonLoad={goonLoad2}></Taro.LoadMore>
                                     }
                                     {
                                         supplierList.length === 0 && requestState2 === 3 &&

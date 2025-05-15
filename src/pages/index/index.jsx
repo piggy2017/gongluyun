@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 13:36:03
+ * @LastEditTime: 2025-05-15 11:07:48
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -11,7 +11,7 @@ import { View, Text, Input, Picker, Image, ScrollView } from '@tarojs/components
 import { observer, inject } from 'mobx-react';
 import TabBar from '@/components/tabBar';
 import './index.scss'
-
+import { throttleCustom } from '@/util/utils'
 import {
   workbenchtodayData, workbenchcluePool, todo, onSiteTodayData, customerTodo, dashDrainageData, feedBackInfoSta
 } from '@/util/api'
@@ -82,7 +82,7 @@ const Index = observer(({ store }) => {
       }
       if (role === 'CUSTOMER') {   // 客服
         getCustomerTodo();
-        getPoorData();
+        // getPoorData();
         getDashDrainageData();
       }
       if (role === 'ON_SITE') {  // 驻场
@@ -100,21 +100,21 @@ const Index = observer(({ store }) => {
 
   useDidShow(() => {
     if (isLogin) {
-      refreshUserInfo();
-      // getUserRole();
-      setMyPermissions();
+      // refreshUserInfo();
+      // setMyPermissions();
+      throttleFunc();
       setSourceList();
     }
-    if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
+    if (isLogin && role === 'ADMIN') {
       getTodayData();
-      getPoorData();
-      getDashDrainageData();
+      // getDashDrainageData();
       // getconvertData();
+      getPoorData();
     }
     if (role === 'CUSTOMER') {   // 客服
       getCustomerTodo();
-      getPoorData();
-      getDashDrainageData();
+      // getPoorData();
+      // getDashDrainageData();
     }
     if (role === 'ON_SITE') {    // 驻场
       getOnSiteToDo();
@@ -124,35 +124,28 @@ const Index = observer(({ store }) => {
 
   useEffect(() => {
     if (isLogin) {
-      refreshUserInfo();
-      // getUserRole();
-      setMyPermissions();
-      setSourceList();
+      // refreshUserInfo();
+      // setMyPermissions();
+      throttleFunc();
+      // setSourceList();
 
-      getfeedbackData();
+      if (role === 'ADMIN') {
+        getfeedbackData();
+      }
     }
   }, [isLogin])
 
-  // useEffect(() => {
-  //   if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
-  //     getTodayData();
-  //     getPoorData();
-  //     getDashDrainageData();
-  //     // getconvertData();
-  //   }
-  //   if (role === 'CUSTOMER') {   // 客服
-  //     getCustomerTodo();
-  //     getPoorData();
-  //     getDashDrainageData();
-  //   }
-  //   if (role === 'ON_SITE') {    // 驻场
-  //     getOnSiteToDo();
-  //     getOnSiteData();
-  //   }
-  // }, [isLogin, role]);
+  const throttleFunc = throttleCustom(() => {
+    refreshUserInfo();
+    setMyPermissions();
+    if(role === 'ADMIN' || role === 'CUSTOMER'){
+      getDashDrainageData();
+    }
+  }, 500)
+
 
   useEffect(() => {
-    if (isLogin && (role === 'ADMIN' || role === 'SEEK' || role === 'CUSTOMER')) {
+    if (isLogin && (role === 'ADMIN' || role === 'CUSTOMER')) {
       getDashDrainageData();
     }
   }, [drainageDate])
@@ -172,7 +165,7 @@ const Index = observer(({ store }) => {
   }
 
 
-  const getDashDrainageData = async () => {      // 获取引流与转化数据
+  const getDashDrainageData = throttleCustom(async () => {      // 获取引流与转化数据
     const { code, data, msg } = await dashDrainageData({ companySerialCode: companyInfo.companySerialCode, dateRange: drainageDate });
     console.log("获取引流与转化数据", data);
     if (code === 200 && data) {
@@ -180,7 +173,7 @@ const Index = observer(({ store }) => {
     } else {
       Taro.showToast({ title: msg, icon: 'none', duration: 2000 })
     }
-  }
+  },500)
 
   const getCustomerTodo = async () => {    // 获取客服待办
     const { code, data } = await customerTodo({ type: 'EMPLOYING_UNIT', companySerialCode: companyInfo.companySerialCode, dateRange: 'TODAY' });

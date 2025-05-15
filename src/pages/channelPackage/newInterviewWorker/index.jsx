@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 13:39:21
+ * @LastEditTime: 2025-05-15 11:44:53
  * @Description:
  */
 
@@ -17,7 +17,7 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
-import { debounce } from '@/util/utils'
+import { throttleCustom, throttle, debounce } from '@/util/utils'
 import { batchInsert, parsePerson, mySupplierList, getContractsBySupplierAndCompany, contractsList } from '@/util/api'
 import './index.scss'
 
@@ -92,7 +92,7 @@ const Index = observer(({ store }) => {
         }
     }, [supplierInfo])
 
-    const getSupplierList = async (_pageNo) => {
+    const getSupplierList = throttleCustom(async (_pageNo) => {
         let params = {
             pageNo: _pageNo,
             pageSize,
@@ -124,9 +124,9 @@ const Index = observer(({ store }) => {
                 setList([]);
             }
         }
-    }
+    }, 1000);
 
-    const getJobList = async (_pageNo) => {
+    const getJobList = throttleCustom(async (_pageNo) => {
         let params = {
             pageNo: _pageNo,
             pageSize,
@@ -160,7 +160,7 @@ const Index = observer(({ store }) => {
                 setJobList([]);
             }
         }
-    }
+    }, 1000);
 
 
     const datePickerSelect = (e) => {
@@ -195,7 +195,7 @@ const Index = observer(({ store }) => {
             } else if (list[i].sex === '') {
                 Taro.showToast({ title: '请选择求职者性别', icon: 'none', })
                 return;
-            } 
+            }
             // else if (!list[i].phone || list[i].phone.length != 11) {
             //     Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
             //     return;
@@ -271,10 +271,10 @@ const Index = observer(({ store }) => {
                 Taro.showToast({ title: '请选择面试日期', icon: 'none', })
                 return;
             } else if (!list[i].name) {
-                Taro.showToast({ title: `请填写第${i+1}位求职者姓名`, icon: 'none', })
+                Taro.showToast({ title: `请填写第${i + 1}位求职者姓名`, icon: 'none', })
                 return;
             } else if (list[i].sex === '') {
-                Taro.showToast({ title: `请选择第${i+1}位求职者性别`, icon: 'none', })
+                Taro.showToast({ title: `请选择第${i + 1}位求职者性别`, icon: 'none', })
                 return;
             }
             // else if (list[i].phone && list[i].phone.length != 11) {
@@ -286,7 +286,7 @@ const Index = observer(({ store }) => {
             // }
 
             if ((!list[i].phone || list[i].phone.length != 11) && (!list[i].idCardNo || list[i].idCardNo.length != 18)) {
-                Taro.showToast({ title: `请填写第${i+1}位求职者手机号或身份证`, icon: 'none', })
+                Taro.showToast({ title: `请填写第${i + 1}位求职者手机号或身份证`, icon: 'none', })
                 return;
             }
         }
@@ -350,27 +350,35 @@ const Index = observer(({ store }) => {
         }
     }
 
-    const handleScrollToLower = debounce(() => {    // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
-        if (goonLoad) {
+    const handleScrollToLower = debounce((type) => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
+        console.log('滑动到了最底部');
+        if (type === 1 && goonLoad) {
             getSupplierList(pageNo + 1);
-        }
-    }, 500);
-
-    const handleScrollToUpper = debounce(() => {    // 滑动到最顶部,触发下拉刷新
-        setIsRefresh(true);
-        getSupplierList(1);
-    }, 200);
-
-    const handleScrollToLowerJob = debounce(() => {    // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
-        if (goonLoad2) {
+        } else if (type === 2 && goonLoad2) {
             getJobList(pageNo2 + 1);
         }
     }, 500);
 
-    const handleScrollToUpperJob = debounce(() => {    // 滑动到最顶部,触发下拉刷新
-        setIsRefresh2(true);
-        getJobList(1);
+    const handleScrollToUpper = debounce((type) => {  // 滑动到最顶部,触发下拉刷新
+        console.log('下拉刷新');
+        if (type === 1) {
+            setIsRefresh(true);
+            getSupplierList(1);
+        } else if (type === 2) {
+            setIsRefresh2(true);
+            getJobList(1);
+        }
     }, 200);
+
+    const searchFunc = throttle((type) => {
+        if (type === 1) {
+            setgoonLoad(true);
+            getSupplierList(1);
+        } else if (type === 2) {
+            setGoonLoad2(true);
+            getJobList(1);
+        }
+    }, 300);
 
     return (
         <View className='container'>
@@ -666,10 +674,7 @@ const Index = observer(({ store }) => {
                                         confirmType='search'
                                         placeholderStyle='color: #777777;'
                                         onInput={(e) => { setSearchValue(e.detail.value) }}
-                                        onConfirm={() => {
-                                            setgoonLoad(true);
-                                            getSupplierList(1);
-                                        }}
+                                        onConfirm={() => searchFunc(1)}
                                         value={searchValue}></Input>
                                 </View>
                                 <ScrollView scrollY
@@ -679,8 +684,8 @@ const Index = observer(({ store }) => {
                                     enablePassive
                                     refresherEnabled
                                     refresherTriggered={isRefresh}
-                                    onScrollToLower={handleScrollToLower}
-                                    onRefresherRefresh={handleScrollToUpper}
+                                    onScrollToLower={() => handleScrollToLower(1)}
+                                    onRefresherRefresh={() => handleScrollToUpper(1)}
                                     lowerThreshold={300}>
                                     {
                                         list.length > 0 && list.map((item, index) => {
@@ -739,10 +744,7 @@ const Index = observer(({ store }) => {
                                         confirmType='search'
                                         placeholderStyle='color: #777777;'
                                         onInput={(e) => { setJobValue(e.detail.value) }}
-                                        onConfirm={() => {
-                                            setGoonLoad2(true);
-                                            getJobList(1);
-                                        }}
+                                        onConfirm={() => searchFunc(2)}
                                         value={jobValue}></Input>
                                 </View>
                                 <ScrollView scrollY
@@ -752,8 +754,8 @@ const Index = observer(({ store }) => {
                                     enablePassive
                                     refresherEnabled
                                     refresherTriggered={isRefresh2}
-                                    onScrollToLower={handleScrollToLowerJob}
-                                    onRefresherRefresh={handleScrollToUpperJob}
+                                    onScrollToLower={() => handleScrollToLower(2)}
+                                    onRefresherRefresh={() => handleScrollToUpper(2)}
                                     lowerThreshold={300}>
                                     {
                                         jobList.length > 0 && jobList.map((item, index) => {

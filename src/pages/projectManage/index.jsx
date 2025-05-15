@@ -2,26 +2,22 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-08 11:55:19
+ * @LastEditTime: 2025-05-15 11:16:18
  * @Description: 
  */
 
-import React, { useState, useEffect, useReducer } from 'react'
+import React, { useState, useEffect } from 'react'
 import Taro, { useDidShow, useDidHide } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import TabBar from '@/components/tabBar';
-import { selectorQueryDomInfo, debounce, throttleCustom } from '@/util/utils'
-import { AtIcon } from 'taro-ui'
-import "taro-ui/dist/style/components/icon.scss";
-
+import { selectorQueryDomInfo, debounce, throttle, throttleCustom } from '@/util/utils'
 import WorkerJobType from '@/components/workerJobType';
-import './index.scss';
+import TabBar from '@/components/tabBar';
 
 import { contractsList, getContractsInfo } from '@/util/api';
+import './index.scss';
 
 const Index = observer(({ store }) => {
-  const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
   const {
     baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
     userStore: { role, isLogin, companyVerified, myPermissions },
@@ -86,7 +82,7 @@ const Index = observer(({ store }) => {
     getList(1);
   }, [type, jobTypes, jobFilterAddress]);
 
-  const getList = async (_pageNo) => {
+  const getList = throttleCustom(async (_pageNo) => {
     setRequestState(1);
     Taro.showLoading({ title: '加载中...' });
     let params = {
@@ -113,7 +109,7 @@ const Index = observer(({ store }) => {
         setList([]);
       }
     }
-  }
+  }, 1000);
 
   const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
     console.log('滑动到了最底部');
@@ -183,6 +179,15 @@ const Index = observer(({ store }) => {
 
   }
 
+  const searchFunc = throttle(() => {
+    if (!isLogin || !companyVerified) {
+      loginOrAuth();
+      return
+    }
+    getList(1);
+    setgoonLoad(true);
+  }, 200)
+
   return (
     <View className='container'>
       <View className='my_header'>
@@ -207,14 +212,7 @@ const Index = observer(({ store }) => {
               disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
               placeholderStyle='color: #777777;'
               onInput={(e) => { setSearchValue(e.detail.value) }}
-              onConfirm={(e) => {
-                if (!isLogin || !companyVerified) {
-                  loginOrAuth();
-                  return
-                }
-                getList(1);
-                setgoonLoad(true);
-              }}
+              onConfirm={() => searchFunc()}
               value={searchValue}></Input>
           </View>
           {
