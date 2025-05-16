@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-16 14:02:08
+ * @LastEditTime: 2025-05-16 16:17:23
  * @Description: 
  */
 
@@ -10,21 +10,16 @@ import React, { useState, useEffect } from 'react'
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, Textarea, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { reverseGeocoder } from '@/util/getLocation';
 import { throttle } from '@/util/utils'
 
 import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import SourcePicker from '@/components/sourcePcker';
+import ScanIdCard from '@/components/scanIdCard';
 
-import { clueInsert, clueUpdate, parsePerson, fetchOssConfig, clueIdcard } from '@/util/api'
+import { clueInsert, clueUpdate, parsePerson } from '@/util/api'
 import './index.scss'
-
-import { AtActionSheet, AtActionSheetItem } from 'taro-ui'
-import "taro-ui/dist/style/components/action-sheet.scss";
-import crypto from 'crypto-js';
-import Base64 from '@/util/base64'
 
 
 const Index = observer(({ store }) => {
@@ -172,7 +167,7 @@ const Index = observer(({ store }) => {
             Taro.showLoading({ title: '提交中...', mask: true });
         }
         console.log("params_params", params);
-
+        // return
         const { code, data, msg } = await (isUpdate ? clueUpdate(params) : clueInsert(params));
         Taro.hideLoading();
         if (code === 200) {
@@ -219,93 +214,27 @@ const Index = observer(({ store }) => {
         }
     }
 
-    const chooseImageFn = async (type) => {
-        const res = await Taro.chooseImage({
-            count: 1,
-            sizeType: ['original', 'compressed'],
-            sourceType: ['album', 'camera'],
-        });
-        const tempFilePaths = res.tempFilePaths;
-        console.log(tempFilePaths, 'tempFilePaths')
-        changeAvatar(type, tempFilePaths);
-    }
 
-    const computeSignature = (accessKeySecret, canonicalString) => {
-        return crypto.enc.Base64.stringify(crypto.HmacSHA1(canonicalString, accessKeySecret));
-    }
-
-    const changeAvatar = async (type, arr) => {
-        Taro.showLoading({
-            title: '上传中',
-            mask: true
-        })
-        try {
-            const result = await fetchOssConfig({ type: 'IDCARD', bucket: 'apu-mini' });
-            if (result.code === 200) {
-                let { ossServiceDomain, accessKeyId, urlPath, accessKeySecret, securityToken } = result.data;
-                const date = new Date();
-                date.setHours(date.getHours() + 1);
-                const policyText = {
-                    expiration: date.toISOString(),
-                    conditions: [
-                        ["content-length-range", 0, 1024 * 1024 * 1024],
-                    ],
-                };
-                console.log(1)
-                const policy = Base64.encode(JSON.stringify(policyText));
-                console.log(policy, "policy")
-                const signature = computeSignature(accessKeySecret, policy);
-                console.log(signature, "signature")
-                const params = {
-                    'key': `${urlPath}${Date.now()}-${Math.random() * 1000000}.jpg`,
-                    'policy': policy,
-                    'OSSAccessKeyId': accessKeyId,
-                    'success_action_status': '200',
-                    'Signature': signature,
-                    'x-oss-security-token': securityToken,
-                };
-                console.log(arr[0], "arr[0]")
-                // 返回 Promise 对象
-                Taro.uploadFile({
-                    url: ossServiceDomain,
-                    filePath: arr[0],
-                    name: 'file',
-                    formData: params,
-                    success(res) {
-                        // let info = { ...res, url: params.key }
-                        console.log("图片上传成功", res);
-                        Taro.hideLoading();
-                        let imgUrl = ossServiceDomain + '/' + params.key;
-                        if (type == 1) {          // 身份证正面
-                            setIdCardFrontSrc(imgUrl);
-                            discernIdCardFn(imgUrl, 1);
-                        } else if (type == 2) {    // 身份证背面
-                            setIdCardBackSrc(imgUrl);
-                            discernIdCardFn(imgUrl, 2);
-                        }
-                    },
-                    fail(err) {
-                        console.log(err)
-                    }
-                });
-            }
-        } catch (e) { }
-    };
-
-    const discernIdCardFn = async (imgUrl, type) => {
-        let params = {
-            photo: true,
-            url: imgUrl,
-            idcardSide: type === 1 ? 'front' : 'back'
+    const setIdcardSrc = (src, type) => {
+        console.log("身份证上传成功的设置src的回调函数", src, type);
+        if (type === 1) {
+            setFormData({
+                ...formData,
+                frontUrl: src
+            });
+        } else {
+            setFormData({
+                ...formData,
+                backUrl: src
+            });
         }
-        const { code, data, msg } = await clueIdcard(params);
-        console.log("身份证识别", code, data, msg);
     }
 
-    const previewImg=(imgSrc) => {
-        Taro.previewImage({
-            current: imgSrc,            // 当前显示图片的链接
-            urls: [imgSrc]              // 需要预览的图片列表
+    const setScanInfos = (obj) => {
+        console.log("身份证上传成功后识别成功的回调函数", obj);
+        setFormData({
+            ...formData,
+            ...obj
         })
     }
 
@@ -482,6 +411,49 @@ const Index = observer(({ store }) => {
                     </Textarea>
                 </View> */}
 
+                {/* <View className='project_upload_idCard project_item_border'>
+                    <View className='project_item_title'>上传身份证</View>
+                    <View className='upload_wrapper'>
+                        {
+                            !idCardFrontSrc &&
+                            <View className='upload_item' onClick={() => chooseImageFn(1)}>
+                                <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_21.webp`}></Image>
+                                <View>上传正面</View>
+                            </View> ||
+                            <View className='uploaded_item'>
+                                <Image onClick={() => previewImg(idCardFrontSrc)} src={idCardFrontSrc}></Image>
+                                <View className='re_upload' onClick={() => chooseImageFn(1)}>重传图片</View>
+                            </View>
+                        }
+                        {
+                            !idCardBackSrc &&
+                            <View className='upload_item' onClick={() => chooseImageFn(2)}>
+                                <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_21.webp`}></Image>
+                                <View>上传背面</View>
+                            </View> ||
+                            <View className='uploaded_item'>
+                                <Image onClick={() => previewImg(idCardBackSrc)} src={idCardBackSrc}></Image>
+                                <View className='re_upload' onClick={() => chooseImageFn(2)}>重传图片</View>
+                            </View>
+                        }
+                    </View>
+                    {
+                        formData.issueDate &&
+                        <View className='upload_infos'>
+                            <View className='upload_infos_label'>证件有效期限</View>
+                            <View>{formData.issueDate}-{formData.expirationDate}</View>
+                        </View>
+                    }
+                </View> */}
+                <ScanIdCard
+                    initfrontUrl=''
+                    initbackUrl=''
+                    issueDate=''
+                    expirationDate=''
+                    setIdcardSrc={setIdcardSrc}
+                    setScanInfos={setScanInfos}
+                ></ScanIdCard>
+
                 <View className='project_item project_item_border'>
                     <View className='project_item_label'>身份证号</View>
                     <View className='project_item_right'>
@@ -494,34 +466,6 @@ const Index = observer(({ store }) => {
                             value={formData.idCardNo}
                             onInput={(e) => setFormData({ ...formData, idCardNo: e.detail.value })}
                         ></Input>
-                    </View>
-                </View>
-
-                <View className='project_upload_idCard project_item_border'>
-                    <View className='project_item_title'>上传身份证</View>
-                    <View className='upload_wrapper'>
-                        {
-                            !idCardFrontSrc &&
-                            <View className='upload_item' onClick={() => chooseImageFn(1)}>
-                                <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_21.webp`}></Image>
-                                <View>上传正面</View>
-                            </View> ||
-                            <View className='uploaded_item'>
-                                <Image onClick={()=>previewImg(idCardFrontSrc)} src={idCardFrontSrc}></Image>
-                                <View className='re_upload' onClick={() => chooseImageFn(1)}>重传图片</View>
-                            </View>
-                        }
-                        {
-                            !idCardBackSrc &&
-                            <View className='upload_item' onClick={() => chooseImageFn(2)}>
-                                <Image onClick={()=>previewImg(idCardBackSrc)} src={`${Taro.$cdnUrl}/newIndex/newIndex_21.webp`}></Image>
-                                <View>上传背面</View>
-                            </View> ||
-                            <View className='uploaded_item'>
-                                <Image src={idCardBackSrc}></Image>
-                                <View className='re_upload' onClick={() => chooseImageFn(2)}>重传图片</View>
-                            </View>
-                        }
                     </View>
                 </View>
 

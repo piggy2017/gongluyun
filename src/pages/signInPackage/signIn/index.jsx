@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-21 09:30:54
+ * @LastEditTime: 2025-05-16 16:26:05
  * @Description: 
  */
 
@@ -13,6 +13,7 @@ import { observer, inject } from 'mobx-react';
 import { decryptData, encryptData } from '@/util/crypto'
 import Navbar from '@/components/navbar';
 import './index.scss'
+import ScanIdCard from '@/components/scanIdCard';
 
 import { contractsSign, getUserInfoByPhone, qrSign } from '@/util/api'
 
@@ -28,6 +29,8 @@ const Index = observer(({ store }) => {
     const [formData, setFormData] = useState({});
     const [fromAll, setFromAll] = useState(false);
     const [recruitNames, setRecruitNames] = useState([]);
+
+    const [companySerialCode, setCompanySerialCode] = useState('');
 
     useEffect(() => {
         console.log("signinSelectJob", signinSelectJob);
@@ -85,7 +88,10 @@ const Index = observer(({ store }) => {
         const { q } = router.params;
         let _q = decodeURIComponent(q);
         console.log("q", _q);
-        const { title, recruitSerialCode, isAll, list } = getQueryString(_q);   // isAll 是否是项目管理中的全部岗位 list 二维码中的岗位列表
+        const { title, recruitSerialCode, isAll, list, companySerialCode } = getQueryString(_q);   // isAll 是否是项目管理中的全部岗位 list 二维码中的岗位列表
+        if(companySerialCode){
+            setCompanySerialCode(companySerialCode);
+        }
         if (isAll) {
             setFromAll(true);
             let _parseList = JSON.parse(list);
@@ -107,13 +113,13 @@ const Index = observer(({ store }) => {
                 const { code, data } = res;
                 if (code === 200 && data) {
                     console.log("存在用户信息");
-                    const { phone, name, sex, idCardNo } = data;
+                    const { phone, name, sex, idCardNo, backUrl, frontUrl, expirationDate, issueDate } = data;
                     setFormData({
                         ...formData,
                         phone: decryptData(userInfo.phone),
                         name,
                         sex,
-                        idCardNo,
+                        idCardNo, backUrl, frontUrl, expirationDate, issueDate,
                         title: title,
                         interviewDate
                     });
@@ -182,6 +188,29 @@ const Index = observer(({ store }) => {
     //     });
     // }
 
+    const setIdcardSrc = (src, type) => {
+        console.log("身份证上传成功的设置src的回调函数", src, type);
+        if (type === 1) {
+            setFormData({
+                ...formData,
+                frontUrl: src
+            });
+        } else {
+            setFormData({
+                ...formData,
+                backUrl: src
+            });
+        }
+    }
+
+    const setScanInfos = (obj) => {
+        console.log("身份证上传成功后识别成功的回调函数", obj);
+        setFormData({
+            ...formData,
+            ...obj
+        })
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#FFFFFF' title='扫码签到'></Navbar>
@@ -219,6 +248,16 @@ const Index = observer(({ store }) => {
                                 <View onClick={() => setFormData({ ...formData, sex: 1 })} className={`option_item ${formData.sex === 1 ? 'option_item_active' : ''}`}>女</View>
                             </View>
                         </View>
+
+                        <ScanIdCard
+                            initfrontUrl={formData?.frontUrl}
+                            initbackUrl={formData?.backUrl}
+                            issueDate={formData?.issueDate}
+                            expirationDate={formData?.expirationDate}
+                            setIdcardSrc={setIdcardSrc}
+                            setScanInfos={setScanInfos}
+                            companySerialCode={companySerialCode}
+                        ></ScanIdCard>
 
                         <View className='employee_item'>
                             <View className='employee_item_label'>身份证号</View>

@@ -17,6 +17,7 @@ import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import SourcePicker from '@/components/sourcePcker';
+import ScanIdCard from '@/components/scanIdCard';
 
 import { clueInsert, clueUpdate } from '@/util/api'
 import './index.scss'
@@ -135,6 +136,29 @@ const Index = observer(({ store }) => {
             Taro.showToast({ title: msg, icon: 'none', });
         }
     }, 200)
+
+    const setIdcardSrc = (src, type) => {
+        console.log("身份证上传成功的设置src的回调函数", src, type);
+        if (type === 1) {
+            setFormData({
+                ...formData,
+                frontUrl: src
+            });
+        } else {
+            setFormData({
+                ...formData,
+                backUrl: src
+            });
+        }
+    }
+
+    const setScanInfos = (obj) => {
+        console.log("身份证上传成功后识别成功的回调函数", obj);
+        setFormData({
+            ...formData,
+            ...obj
+        })
+    }
 
     return (
         <View className='container'>
@@ -257,6 +281,15 @@ const Index = observer(({ store }) => {
 
                     </Textarea>
                 </View> */}
+
+                <ScanIdCard
+                    initfrontUrl={formData?.frontUrl}
+                    initbackUrl={formData?.backUrl}
+                    issueDate={formData?.issueDate}
+                    expirationDate={formData?.expirationDate}
+                    setIdcardSrc={setIdcardSrc}
+                    setScanInfos={setScanInfos}
+                ></ScanIdCard>
 
                 <View className='project_item project_item_border'>
                     <View className='project_item_label'>身份证号</View>

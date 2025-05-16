@@ -17,6 +17,8 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
+import ScanIdCard from '@/components/scanIdCard';
+
 import { throttleCustom, throttle, debounce } from '@/util/utils'
 import { batchInsert, parsePerson, mySupplierList, getContractsBySupplierAndCompany, contractsList } from '@/util/api'
 import './index.scss'
@@ -380,6 +382,28 @@ const Index = observer(({ store }) => {
         }
     }, 300);
 
+    const setIdcardSrc = (src, type, index) => {
+        console.log("身份证上传成功的设置src的回调函数", src, type);
+        if (type === 1) {
+            setFormListData(index, 'frontUrl', src)
+        } else {
+            setFormListData(index, 'backUrl', src)
+        }
+    }
+
+    const setScanInfos = (obj, index) => {
+        console.log("身份证上传成功后识别成功的回调函数", obj);
+        setArrangList(arrangList => {
+            const _list = JSON.parse(JSON.stringify(arrangList));
+            _list[index] = {
+                ..._list[index],
+                ...obj
+            }
+            return _list;
+        })
+        forceUpdate();
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#F4F4F4' title='录入面试信息'></Navbar>
@@ -520,6 +544,16 @@ const Index = observer(({ store }) => {
                                             <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                                         </View>
                                     </View>
+
+                                    <ScanIdCard
+                                        initfrontUrl=''
+                                        initbackUrl=''
+                                        issueDate=''
+                                        expirationDate=''
+                                        setIdcardSrc={(src, type) => setIdcardSrc(src, type, index)}
+                                        setScanInfos={(obj) => setScanInfos(obj, index)}
+                                    ></ScanIdCard>
+
                                     <View className='project_item project_item_border'>
                                         <View className='project_item_label'>身份证号</View>
                                         <View className='project_item_right'>
