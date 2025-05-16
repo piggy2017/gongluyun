@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 17:19:26
+ * @LastEditTime: 2025-05-16 17:50:34
  * @Description:
  */
 
@@ -611,4 +611,7 @@ export const getContractsCoopModels = params => { // 通过项目获取合作模
 
 export const findAgentByName = params => { // 获取推荐人信息
     return http(API_BASE_URL + '/clue/findAgentByName', params, "POST", { "Content-Type": "application/json" });
+};
+export const clueIdcard = params => { // 获取推荐人信息
+    return http(API_BASE_URL + '/clue/idcard', params, "POST", { "Content-Type": "application/json" });
 };

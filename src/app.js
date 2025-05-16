@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-23 14:39:08
+ * @LastEditTime: 2025-05-16 17:21:50
  * @Description:
  */
 import {
@@ -26,6 +26,9 @@ import ChoosePattern from '@/components/choosePattern';
 import LoadMore from '@/components/loadMore';
 import NoData from '@/components/noData';
 import SubscribeMsg from '@/components/subscribeMsg';
+import AddError from '@/components/addError';
+
+
 import { decryptData, encryptData } from '@/util/crypto'
 import {
     getQueryString
@@ -78,6 +81,7 @@ function App({
         Taro.LoadMore = LoadMore;
         Taro.NoData = NoData;
         Taro.SubscribeMsg = SubscribeMsg;
+        Taro.AddError = AddError;
     }, [])
 
     useEffect(() => {

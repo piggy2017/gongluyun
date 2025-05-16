@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 10:52:54
+ * @LastEditTime: 2025-05-16 17:36:58
  * @Description: 
  */
 
@@ -10,13 +10,13 @@ import React, { useState, useEffect } from 'react'
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Image, Text, Input, Textarea, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { reverseGeocoder } from '@/util/getLocation';
 import { throttle } from '@/util/utils'
 
 import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import SourcePicker from '@/components/sourcePcker';
+import ScanIdCard from '@/components/scanIdCard';
 
 import { clueInsert, clueUpdate, parsePerson } from '@/util/api'
 import './index.scss'
@@ -45,7 +45,10 @@ const Index = observer(({ store }) => {
     const [jobTypes, setJobTypes] = useState([]);
     const [isUpdate, setIsUpdate] = useState(false);
 
-    const [aiRecognize, setAiRecognize] = useState('');  // AI识别内容
+    const [aiRecognize, setAiRecognize] = useState('');         // AI识别内容
+
+    const [showAddError, setShowAddError] = useState(false);   // 备注弹窗
+    const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
         if (editClientInfos) {
@@ -163,7 +166,7 @@ const Index = observer(({ store }) => {
             Taro.showLoading({ title: '提交中...', mask: true });
         }
         console.log("params_params", params);
-
+        // return
         const { code, data, msg } = await (isUpdate ? clueUpdate(params) : clueInsert(params));
         Taro.hideLoading();
         if (code === 200) {
@@ -173,6 +176,9 @@ const Index = observer(({ store }) => {
                     delta: (isUpdate && params.agentSerialCode === '') ? 2 : 1
                 });
             }, 1500);
+        } else if (code === 8608) {
+            setShowAddError(true);
+            setErrorMsg(msg);
         } else {
             Taro.showToast({ title: msg, icon: 'none', });
         }
@@ -208,6 +214,30 @@ const Index = observer(({ store }) => {
         } else {
             Taro.showToast({ title: msg, icon: 'none', });
         }
+    }
+
+
+    const setIdcardSrc = (src, type) => {
+        console.log("身份证上传成功的设置src的回调函数", src, type);
+        if (type === 1) {
+            setFormData({
+                ...formData,
+                frontUrl: src
+            });
+        } else {
+            setFormData({
+                ...formData,
+                backUrl: src
+            });
+        }
+    }
+
+    const setScanInfos = (obj) => {
+        console.log("身份证上传成功后识别成功的回调函数", obj);
+        setFormData({
+            ...formData,
+            ...obj
+        })
     }
 
     return (
@@ -383,6 +413,49 @@ const Index = observer(({ store }) => {
                     </Textarea>
                 </View> */}
 
+                {/* <View className='project_upload_idCard project_item_border'>
+                    <View className='project_item_title'>上传身份证</View>
+                    <View className='upload_wrapper'>
+                        {
+                            !idCardFrontSrc &&
+                            <View className='upload_item' onClick={() => chooseImageFn(1)}>
+                                <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_21.webp`}></Image>
+                                <View>上传正面</View>
+                            </View> ||
+                            <View className='uploaded_item'>
+                                <Image onClick={() => previewImg(idCardFrontSrc)} src={idCardFrontSrc}></Image>
+                                <View className='re_upload' onClick={() => chooseImageFn(1)}>重传图片</View>
+                            </View>
+                        }
+                        {
+                            !idCardBackSrc &&
+                            <View className='upload_item' onClick={() => chooseImageFn(2)}>
+                                <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_21.webp`}></Image>
+                                <View>上传背面</View>
+                            </View> ||
+                            <View className='uploaded_item'>
+                                <Image onClick={() => previewImg(idCardBackSrc)} src={idCardBackSrc}></Image>
+                                <View className='re_upload' onClick={() => chooseImageFn(2)}>重传图片</View>
+                            </View>
+                        }
+                    </View>
+                    {
+                        formData.issueDate &&
+                        <View className='upload_infos'>
+                            <View className='upload_infos_label'>证件有效期限</View>
+                            <View>{formData.issueDate}-{formData.expirationDate}</View>
+                        </View>
+                    }
+                </View> */}
+                <ScanIdCard
+                    initfrontUrl=''
+                    initbackUrl=''
+                    issueDate=''
+                    expirationDate=''
+                    setIdcardSrc={setIdcardSrc}
+                    setScanInfos={setScanInfos}
+                ></ScanIdCard>
+
                 <View className='project_item project_item_border'>
                     <View className='project_item_label'>身份证号</View>
                     <View className='project_item_right'>
@@ -468,6 +541,10 @@ const Index = observer(({ store }) => {
 
             <Block>
                 <SourcePicker initData={sourceObj} type='1' showPicker={showSourcePicker} onClose={() => { setShowSourcePicker(false) }} onChange={sourcePickerSelect}></SourcePicker>
+            </Block>
+
+            <Block>
+                <Taro.AddError showPicker={showAddError} errorMsg={errorMsg} onClose={()=>{setShowAddError(false)}}></Taro.AddError>
             </Block>
 
         </View>

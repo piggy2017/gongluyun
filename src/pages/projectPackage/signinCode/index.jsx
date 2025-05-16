@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-21 14:06:27
+ * @LastEditTime: 2025-05-16 17:56:59
  * @Description: 
  */
 
@@ -22,6 +22,7 @@ const Index = observer(({ store }) => {
 
     const {
         baseStore: { bottomSafeAreaHeight },
+        userStore: { companyInfo },
     } = store
 
     const [codesrc, setCodesrc] = useState('');
@@ -62,7 +63,8 @@ const Index = observer(({ store }) => {
             // https://sa-api.apujiyu.com/signIn 正式环境
             
             let _url = env == 'prod' ? 'https://sa-api.apujiyu.com/signInQZWZ' : 'https://sa-test.apujiyu.com/signInTestQZWZ'
-            let _text = _isAll ? `${_url}?isAll=${_isAll}&list=${_list}` : `${_url}?title=${_title}&recruitSerialCode=${_recruitSerialCode}`
+            let _text = _isAll ? `${_url}?isAll=${_isAll}&companySerialCode=${companyInfo.companySerialCode}&list=${_list}` : `${_url}?title=${_title}&companySerialCode=${companyInfo.companySerialCode}&recruitSerialCode=${_recruitSerialCode}`
+
             drawQrcode({
                 canvas: canvas,
                 canvasId: 'myCanvas',

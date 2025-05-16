@@ -2,7 +2,7 @@
  * @Author: yinzhengchao yinzhengchao@apujiyu.com
  * @Date: 2024-01-24 18:11:08
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 20:42:08
+ * @LastEditTime: 2025-05-16 17:57:03
  * @FilePath: /apu_mini/src/util/request.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -21,11 +21,13 @@ export default function request(url, data, method, header) {
     } = userStore
     let {
         brand
-    } = Taro.getSystemInfoSync();   //  手机厂商
+    } = Taro.getSystemInfoSync(); //  手机厂商
+    let role = Taro.getStorageSync('role');
     header = {
         accessToken: token, //token,
         channel: brand,
-        appid:'wx2db45616d470ac07'
+        appid:'wx2db45616d470ac07',
+        userRole: role,
     }
     return new Promise((resolve, reject) => {
         Taro.request({
@@ -39,10 +41,10 @@ export default function request(url, data, method, header) {
                     if (res.data.code !== 200 && url.includes(API_BASE_URL)) {
                         Taro.hideLoading()
                         if (res.data.showMsg) {
-                            Taro.showToast({
-                                title: res.data.showMsg,
-                                icon: 'none'
-                            })
+                            // Taro.showToast({
+                            //     title: res.data.showMsg,
+                            //     icon: 'none'
+                            // })
                         }
                     }
                     if (res.data.code == 7001 || res.data.code == 7002) {
@@ -57,9 +59,9 @@ export default function request(url, data, method, header) {
                         console.log("当前页面", pages[0].route);
                         if (pages[0].route !== "pages/supplierProject/index") {
                             Taro.redirectTo({
-                              url: '/pages/launch/index',
+                                url: '/pages/launch/index',
                             })
-                          }
+                        }
                         // Taro.redirectTo({
                         //     url: '/pages/launch/index',
                         // })
