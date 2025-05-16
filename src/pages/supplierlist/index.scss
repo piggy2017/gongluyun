@@ -420,6 +420,20 @@
                 @include ellipsis;
             }
 
+            .roster_item_job_m {
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                margin-bottom: 8rpx;
+                width: 450rpx;
+                overflow-wrap: break-word;
+                word-break: break-word;
+                white-space: normal;
+            }
+
             .roster_item_time {
                 // padding: 12rpx 0 0 56rpx;
                 color: #999999;
@@ -704,7 +718,8 @@
                         padding: 0 24rpx;
                         @include ellipsis;
                     }
-                    .sup_item_active{
+
+                    .sup_item_active {
                         color: #1678ff;
                         background: #E8F2FF;
                     }

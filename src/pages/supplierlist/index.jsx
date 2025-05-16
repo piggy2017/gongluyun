@@ -444,7 +444,7 @@ const Index = observer(({ store }) => {
                                             item.sourceDesc && <View className='roster_item_job'>来源：{item.sourceDesc}</View>
                                         }
                                         {
-                                            item.cooperationModel && <View className='roster_item_job'>合作模式：{item.cooperationModel}</View>
+                                            item.cooperationModel && <View className='roster_item_job_m'>合作模式：{item.cooperationModel}</View>
                                         }
                                         <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
                                         {/* {
