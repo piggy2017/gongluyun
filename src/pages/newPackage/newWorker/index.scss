@@ -555,4 +555,49 @@
         }
     }
 
+    .error_model_wrap {
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.4);
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        @include flex-center;
+
+        .error_model_content_wrap {
+            width: 640rpx;
+            padding: 20rpx;
+            border-radius: 12rpx;
+            background-color: #ffffff;
+
+            .error_model_content {
+                max-height: 800rpx;
+                overflow-y: scroll;
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 45rpx;
+            }
+
+            .error_model_btn {
+                border-radius: 8rpx;
+                background: #1678FF;
+                width: 580rpx;
+                margin: 20rpx auto 0 auto;
+                height: 86rpx;
+                color: #ffffff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 30rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                line-height: 86rpx;
+            }
+        }
+    }
+
 }

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-16 16:17:23
+ * @LastEditTime: 2025-05-16 17:36:58
  * @Description: 
  */
 
@@ -47,9 +47,8 @@ const Index = observer(({ store }) => {
 
     const [aiRecognize, setAiRecognize] = useState('');         // AI识别内容
 
-    const [idCardFrontSrc, setIdCardFrontSrc] = useState('');   // 身份证正面照片
-    const [idCardBackSrc, setIdCardBackSrc] = useState('');     // 身份证背面照片
-    const [idCardDate, setIdCardDate] = useState('');           // 身份证有效时间
+    const [showAddError, setShowAddError] = useState(false);   // 备注弹窗
+    const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
         if (editClientInfos) {
@@ -177,6 +176,9 @@ const Index = observer(({ store }) => {
                     delta: (isUpdate && params.agentSerialCode === '') ? 2 : 1
                 });
             }, 1500);
+        } else if (code === 8608) {
+            setShowAddError(true);
+            setErrorMsg(msg);
         } else {
             Taro.showToast({ title: msg, icon: 'none', });
         }
@@ -539,6 +541,10 @@ const Index = observer(({ store }) => {
 
             <Block>
                 <SourcePicker initData={sourceObj} type='1' showPicker={showSourcePicker} onClose={() => { setShowSourcePicker(false) }} onChange={sourcePickerSelect}></SourcePicker>
+            </Block>
+
+            <Block>
+                <Taro.AddError showPicker={showAddError} errorMsg={errorMsg} onClose={()=>{setShowAddError(false)}}></Taro.AddError>
             </Block>
 
         </View>

@@ -78,6 +78,9 @@ const Index = observer(({ store }) => {
     const [searchValue, setSearchValue] = useState('');
     const [jobValue, setJobValue] = useState('');
 
+    const [showAddError, setShowAddError] = useState(false);   // 备注弹窗
+    const [errorMsg, setErrorMsg] = useState('');
+
     useEffect(() => {
         getSupplierList(1);
         getJobList(1);
@@ -301,7 +304,12 @@ const Index = observer(({ store }) => {
             setTimeout(() => {
                 Taro.navigateBack({ delta: 1 });
             }, 1500);
-        } else {
+        } else if (code === 8608) {
+            setShowAddError(true);
+            setErrorMsg(msg);
+        } 
+        else if(code!=200 && code != 8608) {
+            console.log(3)
             Taro.showToast({ title: msg, icon: 'none', })
         }
     }
@@ -827,6 +835,10 @@ const Index = observer(({ store }) => {
                         </View>
                     </AtFloatLayout>
                 }
+            </Block>
+
+            <Block>
+                <Taro.AddError showPicker={showAddError} errorMsg={errorMsg} onClose={()=>{setShowAddError(false)}}></Taro.AddError>
             </Block>
         </View>
     )

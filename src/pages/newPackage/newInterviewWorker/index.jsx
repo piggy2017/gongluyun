@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-16 15:39:53
+ * @LastEditTime: 2025-05-16 17:46:35
  * @Description:
  */
 
@@ -55,6 +55,9 @@ const Index = observer(({ store }) => {
     const [allOpen, setAllOpen] = useState(true);
 
     const [aiRecognize, setAiRecognize] = useState('');  // AI识别内容
+
+    const [showAddError, setShowAddError] = useState(false);   // 备注弹窗
+    const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
         return () => {
@@ -197,7 +200,12 @@ const Index = observer(({ store }) => {
             setTimeout(() => {
                 Taro.navigateBack({ delta: 1 });
             }, 1500);
-        } else {
+        } else if (code === 8608) {
+            setShowAddError(true);
+            setErrorMsg(msg);
+        } 
+        else if(code!=200 && code != 8608) {
+            console.log(3)
             Taro.showToast({ title: msg, icon: 'none', })
         }
     }
@@ -541,6 +549,10 @@ const Index = observer(({ store }) => {
 
             <Block>
                 <DatePicker type='Single' showPicker={showDatePicker} onClose={() => { setShowDatePicker(false) }} onSelectDate={datePickerSelect}></DatePicker>
+            </Block>
+
+            <Block>
+                <Taro.AddError showPicker={showAddError} errorMsg={errorMsg} onClose={()=>{setShowAddError(false)}}></Taro.AddError>
             </Block>
 
         </View>

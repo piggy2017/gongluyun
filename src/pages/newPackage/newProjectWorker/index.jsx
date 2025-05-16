@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-16 16:36:37
+ * @LastEditTime: 2025-05-16 17:45:39
  * @Description:
  */
 
@@ -57,6 +57,9 @@ const Index = observer(({ store }) => {
     const [showPatternModel, setShowPatternModel] = useState(false);
     const [currentPattren, setCurrentPattren] = useState('');
     const [currentIndex, setCurrentIndex] = useState(0);
+
+    const [showAddError, setShowAddError] = useState(false);   // 备注弹窗
+    const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
         const { cooperationModels, phoneRule } = route.params;
@@ -216,7 +219,12 @@ const Index = observer(({ store }) => {
             setTimeout(() => {
                 Taro.navigateBack({ delta: 1 });
             }, 1500);
-        } else {
+        } else if (code === 8608) {
+            setShowAddError(true);
+            setErrorMsg(msg);
+        } 
+        else if(code!=200 && code != 8608) {
+            console.log(3)
             Taro.showToast({ title: msg, icon: 'none', })
         }
     }
@@ -594,6 +602,10 @@ const Index = observer(({ store }) => {
                     route.params.cooperationModels &&
                     <Taro.ChoosePattern initItem={currentPattren} list={JSON.parse(route.params.cooperationModels)} showPicker={showPatternModel} onClose={() => setShowPatternModel(false)} onchange={getChoosePattern}></Taro.ChoosePattern>
                 }
+            </Block>
+
+            <Block>
+                <Taro.AddError showPicker={showAddError} errorMsg={errorMsg} onClose={()=>{setShowAddError(false)}}></Taro.AddError>
             </Block>
 
         </View>
