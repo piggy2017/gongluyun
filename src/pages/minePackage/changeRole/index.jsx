@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-11 13:53:19
+ * @LastEditTime: 2025-05-16 11:32:28
  * @Description: 
  */
 
@@ -16,7 +16,7 @@ import './index.scss'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight },
-        userStore: { supplierCompanyInfo, getSupplierCompanyInfo, refreshUserInfo, setRole, role, getSubTemplates }
+        userStore: { supplierCompanyInfo, getSupplierCompanyInfo, refreshUserInfo, setRole, role, getSubTemplates, setMyPermissions }
     } = store
 
     useEffect(() => {
@@ -95,6 +95,7 @@ const Index = observer(({ store }) => {
         const { code, data, msg } = await switchRoles({ userRole: type === 1 ? 'SEEK' : type === 2 ? 'ADMIN' : 'SUPPLIER' });
         if (code === 200) {
             getSubTemplates();
+            setMyPermissions();
             if (calback) calback(data);
         } else {
             Taro.showToast({

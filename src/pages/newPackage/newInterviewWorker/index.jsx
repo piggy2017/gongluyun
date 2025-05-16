@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 10:46:41
+ * @LastEditTime: 2025-05-16 17:46:35
  * @Description:
  */
 
@@ -14,6 +14,7 @@ import { observer, inject } from 'mobx-react';
 import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
+import ScanIdCard from '@/components/scanIdCard';
 
 import { batchInsert, parsePerson } from '@/util/api'
 import './index.scss'
@@ -54,6 +55,9 @@ const Index = observer(({ store }) => {
     const [allOpen, setAllOpen] = useState(true);
 
     const [aiRecognize, setAiRecognize] = useState('');  // AI识别内容
+
+    const [showAddError, setShowAddError] = useState(false);   // 备注弹窗
+    const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
         return () => {
@@ -99,7 +103,7 @@ const Index = observer(({ store }) => {
             } else if (list[i].sex === '') {
                 Taro.showToast({ title: `请选择第${i + 1}位求职者性别`, icon: 'none', })
                 return;
-            } 
+            }
             // else if (!list[i].phone || list[i].phone.length != 11) {
             //     Taro.showToast({ title: `请填写第${i + 1}位求职者手机号`, icon: 'none', })
             //     return;
@@ -175,7 +179,7 @@ const Index = observer(({ store }) => {
             } else if (list[i].sex === '') {
                 Taro.showToast({ title: `请选择第${i + 1}位求职者性别`, icon: 'none', })
                 return;
-            } 
+            }
             // else if (!list[i].phone || list[i].phone.length != 11) {
             //     Taro.showToast({ title: `请填写第${i + 1}位求职者手机号`, icon: 'none', })
             //     return;
@@ -196,7 +200,12 @@ const Index = observer(({ store }) => {
             setTimeout(() => {
                 Taro.navigateBack({ delta: 1 });
             }, 1500);
-        } else {
+        } else if (code === 8608) {
+            setShowAddError(true);
+            setErrorMsg(msg);
+        } 
+        else if(code!=200 && code != 8608) {
+            console.log(3)
             Taro.showToast({ title: msg, icon: 'none', })
         }
     }
@@ -245,6 +254,28 @@ const Index = observer(({ store }) => {
         } else {
             Taro.showToast({ title: msg, icon: 'none', });
         }
+    }
+
+    const setIdcardSrc = (src, type, index) => {
+        console.log("身份证上传成功的设置src的回调函数", src, type);
+        if (type === 1) {
+            setFormListData(index, 'frontUrl', src)
+        } else {
+            setFormListData(index, 'backUrl', src)
+        }
+    }
+
+    const setScanInfos = (obj, index) => {
+        console.log("身份证上传成功后识别成功的回调函数", obj);
+        setArrangList(arrangList => {
+            const _list = JSON.parse(JSON.stringify(arrangList));
+            _list[index] = {
+                ..._list[index],
+                ...obj
+            }
+            return _list;
+        })
+        forceUpdate();
     }
 
     return (
@@ -376,6 +407,14 @@ const Index = observer(({ store }) => {
                                             <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                                         </View>
                                     </View>
+                                    <ScanIdCard
+                                        initfrontUrl=''
+                                        initbackUrl=''
+                                        issueDate=''
+                                        expirationDate=''
+                                        setIdcardSrc={(src, type) => setIdcardSrc(src, type, index)}
+                                        setScanInfos={(obj) => setScanInfos(obj, index)}
+                                    ></ScanIdCard>
                                     <View className='project_item project_item_border'>
                                         <View className='project_item_label'>身份证号</View>
                                         <View className='project_item_right'>
@@ -510,6 +549,10 @@ const Index = observer(({ store }) => {
 
             <Block>
                 <DatePicker type='Single' showPicker={showDatePicker} onClose={() => { setShowDatePicker(false) }} onSelectDate={datePickerSelect}></DatePicker>
+            </Block>
+
+            <Block>
+                <Taro.AddError showPicker={showAddError} errorMsg={errorMsg} onClose={()=>{setShowAddError(false)}}></Taro.AddError>
             </Block>
 
         </View>

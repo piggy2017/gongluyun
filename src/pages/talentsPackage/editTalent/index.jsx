@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 17:28:25
+ * @LastEditTime: 2025-05-16 16:01:02
  * @Description: 人才库 - 编辑人才信息页面
  */
 
@@ -17,10 +17,10 @@ import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import SourcePicker from '@/components/sourcePcker';
+import ScanIdCard from '@/components/scanIdCard';
 
 import { clueInsert, clueUpdate } from '@/util/api'
 import './index.scss'
-import { resolve } from 'path';
 
 
 const Index = observer(({ store }) => {
@@ -154,6 +154,29 @@ const Index = observer(({ store }) => {
         })
     }
 
+    const setIdcardSrc = (src, type) => {
+        console.log("身份证上传成功的设置src的回调函数", src, type);
+        if (type === 1) {
+            setFormData({
+                ...formData,
+                frontUrl: src
+            });
+        } else {
+            setFormData({
+                ...formData,
+                backUrl: src
+            });
+        }
+    }
+
+    const setScanInfos = (obj) => {
+        console.log("身份证上传成功后识别成功的回调函数", obj);
+        setFormData({
+            ...formData,
+            ...obj
+        })
+    }
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#F4F4F4' title='编辑信息'></Navbar>
@@ -232,6 +255,14 @@ const Index = observer(({ store }) => {
                         ></Input>
                     </View>
                 </View>
+                <ScanIdCard
+                    initfrontUrl={formData?.frontUrl}
+                    initbackUrl={formData?.backUrl}
+                    issueDate={formData?.issueDate}
+                    expirationDate={formData?.expirationDate}
+                    setIdcardSrc={setIdcardSrc}
+                    setScanInfos={setScanInfos}
+                ></ScanIdCard>
                 <View className='project_item project_item_border'>
                     <View className='project_item_label'>身份证号</View>
                     <View className='project_item_right'>
