@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-16 17:36:58
+ * @LastEditTime: 2025-05-19 10:19:47
  * @Description: 
  */
 
@@ -292,7 +292,6 @@ const Index = observer(({ store }) => {
                     <View className='project_item_label'>手机号码</View>
                     <View className='project_item_right'>
                         <Input
-                            type='number'
                             disabled={isUpdate ? true : false}
                             maxlength='11'
                             className='new_input new_input_phone'
@@ -327,8 +326,6 @@ const Index = observer(({ store }) => {
                     <View className='project_item_label'>年龄</View>
                     <View className='project_item_right'>
                         <Input
-                            type='number'
-                            // maxlength='18'
                             className='new_input'
                             placeholder='请输入用户年龄'
                             placeholderStyle='color: #777777;'
@@ -460,7 +457,6 @@ const Index = observer(({ store }) => {
                     <View className='project_item_label'>身份证号</View>
                     <View className='project_item_right'>
                         <Input
-                            type='idcard'
                             maxlength='18'
                             className='new_input'
                             placeholder='输入真实身份证号'

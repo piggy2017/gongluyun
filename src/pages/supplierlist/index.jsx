@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 14:38:58
+ * @LastEditTime: 2025-05-19 11:33:01
  * @Description:
  */
 
@@ -330,6 +330,20 @@ const Index = observer(({ store }) => {
         getList(1);
     }, 300);
 
+    const copyFunc = (e, obj) => {
+        console.log("obj", obj)
+        e.stopPropagation();
+        Taro.setClipboardData({
+            data: obj.cooperationModel,
+            success: () => {
+                Taro.showToast({
+                    title: '复制成功',
+                    icon: 'none'
+                })
+            }
+        })
+    }
+
 
     return (
         <View className='container'>
@@ -459,6 +473,10 @@ const Index = observer(({ store }) => {
                                             <View>{getStatus(item.seekState, 1)}</View>
                                         </View>
                                     </View>
+                                    {
+                                        item.cooperationModel &&
+                                        <View className='item_title_copy' onClick={(e) => copyFunc(e, item)}>复制合作模式</View>
+                                    }
                                 </View>
                             </View>
                         )
