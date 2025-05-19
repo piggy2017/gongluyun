@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 14:37:53
+ * @LastEditTime: 2025-05-19 11:32:31
  * @Description:
  */
 
@@ -25,7 +25,7 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-        userStore: { myPermissions, supplierCompanyInfo },
+        userStore: { role, supplierCompanyInfo },
         businessStore: { rosterFilterSupplier },
     } = store
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
@@ -158,7 +158,7 @@ const Index = observer(({ store }) => {
                 setList([]);
             }
         }
-    },1000)
+    }, 1000)
 
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
@@ -370,6 +370,20 @@ const Index = observer(({ store }) => {
         setgoonLoad(true);
     }, 300);
 
+    const copyFunc = (e, obj) => {
+        console.log("obj", obj)
+        e.stopPropagation();
+        Taro.setClipboardData({
+            data: obj.cooperationModel,
+            success: () => {
+                Taro.showToast({
+                    title: '复制成功',
+                    icon: 'none'
+                })
+            }
+        })
+    }
+
     return (
         <View className='container'>
             <View className='my_header'>
@@ -522,6 +536,11 @@ const Index = observer(({ store }) => {
 
                                 {
                                     batchOperations && <Image className='roster_item_choose' src={`${Taro.$cdnUrl}/index/index_icon2${item.isChoosed ? 7 : 8}.webp`}></Image>
+                                }
+
+                                {
+                                    item.cooperationModel && role === 'SUPPLIER' &&
+                                    <View className='item_title_copy' onClick={(e) => copyFunc(e, item)}>复制合作模式</View>
                                 }
                             </View>
                         )

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 11:44:53
+ * @LastEditTime: 2025-05-19 10:10:45
  * @Description:
  */
 
@@ -531,7 +531,6 @@ const Index = observer(({ store }) => {
                                         <View className='project_item_right'>
                                             <Input
                                                 style={`width:400rpx;`}
-                                                type='number'
                                                 className='new_input'
                                                 maxlength='11'
                                                 placeholder='输入求职者的手机号'
@@ -566,7 +565,7 @@ const Index = observer(({ store }) => {
                                         <View className='project_item_label'>身份证号</View>
                                         <View className='project_item_right'>
                                             <Input
-                                                type='idcard'
+                                                // type='idcard'
                                                 maxlength='18'
                                                 className='new_input'
                                                 placeholder='输入真实身份证号(选填）'
@@ -580,7 +579,6 @@ const Index = observer(({ store }) => {
                                         <View className='project_item_label'>年龄</View>
                                         <View className='project_item_right'>
                                             <Input
-                                                type='number'
                                                 // maxlength='18'
                                                 className='new_input'
                                                 placeholder='输入用户年龄'
