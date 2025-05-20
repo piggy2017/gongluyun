@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 17:27:39
+ * @LastEditTime: 2025-05-20 13:58:30
  * @Description:
  */
 export default defineAppConfig({
@@ -217,6 +217,7 @@ export default defineAppConfig({
                 "chooseSupplier/index",           // 渠道查看项目名单-选择供应商
                 "newInterviewWorker/index",       // 渠道查看项目名单-新增求职者
                 "multipleSupplier/index",         // 渠道-名单 筛选供应商 - 多选
+                "newSupplier/index",              // 渠道- 新增供应商
             ]
         }
     ]

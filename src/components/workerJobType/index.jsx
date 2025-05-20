@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-30 10:53:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-13 11:01:21
+ * @LastEditTime: 2025-05-15 15:37:59
  * @Description:  求职者选择求职偏好
  */
 /* eslint-disable react/jsx-key */
