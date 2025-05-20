@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 15:28:23
+ * @LastEditTime: 2025-05-19 15:00:56
  * @Description:
  */
 
@@ -102,6 +102,8 @@ const Index = observer(({ store }) => {
     ]);
     const [showCoopsModel, setShowCoopModel] = useState(false);        // 是否显示选择合作模式的弹窗
     const [chooseCoopsContent, setChooseCoopsContent] = useState('');  // 选择的合作模式
+
+    const [chooseObjList, setChooseObjList] = useState([]);              // 选中的列表
     // 页面加载时获取名单列表
     useDidShow(() => {
         getList(1);
@@ -157,12 +159,19 @@ const Index = observer(({ store }) => {
     }, [batchOperations])
 
     // 监听chooseList的变化，如果chooseList为空，则隐藏底部的操作选项
+    // useEffect(() => {
+    //     console.log("chooseList", chooseList);
+    //     if (chooseList.length === 0) {
+    //         setShowbottomOptions(false);
+    //     }
+    // }, [chooseList])
+
     useEffect(() => {
-        console.log("chooseList", chooseList);
-        if (chooseList.length === 0) {
+        console.log("chooseObjList_发生了变化", chooseObjList);
+        if (chooseObjList.length === 0) {
             setShowbottomOptions(false);
         }
-    }, [chooseList])
+    }, [chooseObjList])
 
     // 选择日期的回调函数
     const customDateSelect = (e) => {      // 选择日期的回调
@@ -237,7 +246,7 @@ const Index = observer(({ store }) => {
     }
 
     // 获取名单列表
-    const getList = throttleCustom(async (_pageNo) => {    // 获取名单列表
+    const getList = throttleCustom(async (_pageNo, type) => {    // 获取名单列表
         setRequestState(1);
         Taro.showLoading({ title: '加载中...' });
         let _recruitSerialCodes = channelListFilterJob.map(item => item.recruitSerialCode);
@@ -270,6 +279,14 @@ const Index = observer(({ store }) => {
         Taro.hideLoading();
         setIsRefresh(false);
         if (code === 200 && data.responses?.length > 0) {
+            if (batchOperations && chooseObjList.length > 0 && !type) {
+                let _uuids = chooseObjList.map(item => item.uuid);
+                for (let i = 0; i < data.responses.length; i++) {
+                    if (_uuids.includes(data.responses[i].uuid)) {
+                        data.responses[i].isChoosed = true;
+                    }
+                }
+            }
             setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
             setgoonLoad(true);
             setPageNo(data.pageNo);
@@ -323,6 +340,7 @@ const Index = observer(({ store }) => {
         setCurrentTab(item);
         setBatchOperations(false);
         setChooseList([]);
+        setChooseObjList([]);
         setChooseAll(false);
         setShowbottomOptions(false);
     }
@@ -347,9 +365,22 @@ const Index = observer(({ store }) => {
     // 全选、反选
     const chooeAllFunc = () => {      // 全选、反选
         if (chooseAll) {
-            setChooseList([])
+            setChooseList([]);
+            setChooseObjList(chooseObjList => {
+                let _list = JSON.parse(JSON.stringify(chooseObjList));
+                const arr2Ids = new Set(list.map(item => item.uuid));
+                const arr3 = _list.filter(item => !arr2Ids.has(item.uuid));
+                return arr3
+            });
         } else {
-            setChooseList(list.map(item => item.uuid))
+            setChooseList(list.map(item => item.uuid));
+            setChooseObjList(chooseObjList => {
+                let _list = JSON.parse(JSON.stringify(chooseObjList));
+                const arr3 = Array.from(
+                    [..._list, ...list].reduce((map, obj) => map.set(obj.uuid, obj), new Map()).values()
+                );
+                return arr3;
+            });
         }
         setChooseAll(!chooseAll);
         setList(list => {
@@ -363,7 +394,7 @@ const Index = observer(({ store }) => {
 
     // 点击下方的修改状态按钮
     const editBtnFunc = () => {                // 点击下方的修改状态按钮
-        if (chooseList.length > 0) {
+        if (chooseObjList.length > 0) {
             // setShowbottomOptions(!showbottomOptions);
             setShowEditStatus(true);
             setEditCustom({});
@@ -373,6 +404,25 @@ const Index = observer(({ store }) => {
     // 选择名单
     const chooseItemFunc = (obj, index) => {
         if (batchOperations) {
+            // setList(list => {
+            //     let _list = list.map((item, i) => {
+            //         if (i === index) {
+            //             item.isChoosed = !item.isChoosed
+            //         }
+            //         return item
+            //     })
+            //     setChooseList(_list.filter(item => item.isChoosed).map(item => item.uuid))
+            //     return _list
+            // })
+            if (obj.isChoosed) {  // 如果当前是选中的,则移除
+                setChooseObjList(chooseObjList => {
+                    return chooseObjList.filter(item => item.uuid !== obj.uuid);
+                })
+            } else {
+                setChooseObjList(chooseObjList => {
+                    return [...chooseObjList, obj];
+                })
+            }
             setList(list => {
                 let _list = list.map((item, i) => {
                     if (i === index) {
@@ -380,7 +430,7 @@ const Index = observer(({ store }) => {
                     }
                     return item
                 })
-                setChooseList(_list.filter(item => item.isChoosed).map(item => item.uuid))
+                // setChooseList(_list.filter(item => item.isChoosed).map(item => item.uuid));
                 return _list
             })
         } else {
@@ -418,7 +468,7 @@ const Index = observer(({ store }) => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
-                getList(1);
+                getList(1, 1);
             } else {
                 Taro.showToast({ title: res.msg, icon: 'none' })
             }
@@ -427,12 +477,12 @@ const Index = observer(({ store }) => {
 
     // 批量修改状态
     const batchChangeState = (state, reason, date) => {    // 批量修改状态
-        if (chooseList.length === 0) {
+        if (chooseObjList.length === 0) {
             return Taro.showToast({ title: '请先选择用户', icon: 'none' });
         }
-        let _list = chooseList.map(item => {
+        let _list = chooseObjList.map(item => {
             let obj = {
-                uuid: item,
+                uuid: item.uuid,
                 seekState: state
             }
             if (reason) {
@@ -452,8 +502,9 @@ const Index = observer(({ store }) => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
-                getList(1);
+                getList(1, 1);
                 setChooseList([]);
+                setChooseObjList([]);
                 setChooseAll(false);
                 setShowbottomOptions(false);
             } else {
@@ -520,7 +571,7 @@ const Index = observer(({ store }) => {
             console.log(111)
             return Taro.showToast({ title: '暂无数据', icon: 'none' });
         }
-        if (chooseList.length === 0) {
+        if (chooseObjList.length === 0) {
             console.log(222)
             return Taro.showToast({ title: '请先选择用户', icon: 'none' });
         }
@@ -557,7 +608,7 @@ const Index = observer(({ store }) => {
         //     return _obj
         // })
         let params = {
-            uuids: chooseList,
+            uuids: chooseObjList.map(item => item.uuid),
             supplierSerialCode: obj.supplierSerialCode
         }
         Taro.showLoading({ title: '提交中...' });
@@ -568,7 +619,9 @@ const Index = observer(({ store }) => {
             Taro.showToast({ title: '更新成功', icon: 'none' })
             setChooseList([]);
             setChooseAll(false);
-            getList(1);
+            getList(1, 1);
+            setChooseObjList([]);
+            setShowbottomOptions(false);
             setTimeout(() => {
                 setShowSupplierModel(false);
             }, 500);
@@ -582,9 +635,9 @@ const Index = observer(({ store }) => {
         if (!chooseCoopsContent) {
             return Taro.showToast({ title: '请选择合作模式', icon: 'none' });
         }
-        let _list = chooseList.map(item => {
+        let _list = chooseObjList.map(item => {
             let obj = {
-                uuid: item,
+                uuid: item.uuid,
                 cooperationModel: chooseCoopsContent
             }
             return obj
@@ -594,10 +647,12 @@ const Index = observer(({ store }) => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
-                getList(1);
+                getList(1, 1);
                 setChooseList([]);
                 setChooseAll(false);
                 setShowCoopModel(false);
+                setChooseObjList([]);
+                setShowbottomOptions(false);
             } else {
                 Taro.showToast({ title: res.msg, icon: 'none' })
             }
@@ -616,6 +671,37 @@ const Index = observer(({ store }) => {
             getCoopModels(1);
         }
     }, 300);
+
+    const clearChoosed = () => {    // 清空所有的选中数据
+        setChooseObjList([]);
+        setChooseList([]);
+        setChooseAll(false);
+        setList(list => {
+            list = list.map(item => {
+                item.isChoosed = false;
+                return item;
+            })
+            return list;
+        })
+    }
+
+    const deletechooseObjItem = (obj, index) => {  // 删除选中的数据
+        console.log("触发 deletechooseObjItem :", obj, index)
+        setChooseObjList(chooseObjList => {
+            chooseObjList = chooseObjList.filter(item => item.uuid != obj.uuid);
+            return chooseObjList;
+        })
+
+        setList(list => {
+            list = list.map(item => {
+                if (item.uuid === obj.uuid) {
+                    item.isChoosed = false;
+                }
+                return item;
+            })
+            return list;
+        })
+    }
 
     return (
         <View className='container'>
@@ -804,6 +890,27 @@ const Index = observer(({ store }) => {
                     batchOperations &&
                     <View className='footer_wrapper_c'>
                         <View className='footer_wrapper_top' style='height:16rpx;'>
+                            {
+                                chooseObjList.length > 0 &&
+                                <View className='footer_wrapper_chooseObjList_wrap'>
+                                    <View className='footer_wrapper_chooseObjList_wrap_title'>
+                                        <View>已选数据</View>
+                                        <View onClick={clearChoosed} className='footer_wrapper_chooseObjList_wrap_title_clear'>清空</View>
+                                    </View>
+                                    <View className='footer_wrapper_chooseObjList'>
+                                        {
+                                            chooseObjList.length > 0 && chooseObjList.map((item, index) => {
+                                                return (
+                                                    <View className='footer_wrapper_chooseObjList_item' key={item.uuid}>
+                                                        {item.name}
+                                                        <AtIcon value='close' size='10' color='#1678FF' onClick={() => deletechooseObjItem(item, index)}></AtIcon>
+                                                    </View>
+                                                )
+                                            })
+                                        }
+                                    </View>
+                                </View>
+                            }
                         </View>
                         <View className='footer_wrapper_content'>
                             <View className='footer_wrapper_left' onClick={() => chooeAllFunc()}>
@@ -812,7 +919,7 @@ const Index = observer(({ store }) => {
                             </View>
 
                             <View className='footer_wrapper_pattern' onClick={() => {
-                                if (chooseList.length === 0) {
+                                if (chooseObjList.length === 0) {
                                     return Taro.showToast({ title: '请先选择用户', icon: 'none' });
                                 }
                                 setShowSupplierModel(true);
@@ -821,7 +928,7 @@ const Index = observer(({ store }) => {
                             <View className='footer_wrapper_pattern' onClick={setPatternFunc}>合作模式</View>
 
                             <View
-                                className={`footer_btn ${chooseList.length > 0 ? 'footer_btn_active' : ''}`}
+                                className={`footer_btn ${chooseObjList.length > 0 ? 'footer_btn_active' : ''}`}
                                 onClick={() => {
                                     if (myPermissions.includes('14')) {
                                         editBtnFunc();
