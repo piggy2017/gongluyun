@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-19 14:39:21
+ * @LastEditTime: 2025-05-20 16:45:40
  * @Description:
  */
 
@@ -283,7 +283,16 @@ const Index = observer(({ store }) => {
     const doneBtn = () => {    // 点击完成按钮
         setShowbottomOptions(false);
         setBatchOperations(false);
-        // setChooseObjList([]);
+        setChooseObjList([]);
+        setChooseList([]);
+        setChooseAll(false);
+        setList(list=>{
+            let _list = list.map(item => {
+                item.isChoosed = false;
+                return item
+            })
+            return _list
+        })
     }
 
     const signUpFunc = async (e, obj, index) => {
@@ -692,9 +701,9 @@ const Index = observer(({ store }) => {
                                         {
                                             chooseObjList.length > 0 && chooseObjList.map((item, index) => {
                                                 return (
-                                                    <View className='footer_wrapper_chooseObjList_item' key={item.uuid}>
+                                                    <View className='footer_wrapper_chooseObjList_item' key={item.uuid} onClick={() => deletechooseObjItem(item, index)}>
                                                         {item.name}
-                                                        <AtIcon value='close' size='10' color='#1678FF' onClick={() => deletechooseObjItem(item, index)}></AtIcon>
+                                                        <AtIcon value='close' size='10' color='#1678FF' ></AtIcon>
                                                     </View>
                                                 )
                                             })

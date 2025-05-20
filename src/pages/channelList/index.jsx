@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-19 15:00:56
+ * @LastEditTime: 2025-05-20 16:46:04
  * @Description:
  */
 
@@ -444,6 +444,16 @@ const Index = observer(({ store }) => {
     const doneBtn = () => {    // 点击完成按钮
         setShowbottomOptions(false);
         setBatchOperations(false);
+        setChooseList([]);
+        setChooseObjList([]);
+        setChooseAll(false);
+        setList(list=>{
+            let _list = list.map(item=>{
+                item.isChoosed = false;
+                return item;
+            })
+            return _list;
+        })
     }
 
     // 单个修改状态
@@ -567,10 +577,10 @@ const Index = observer(({ store }) => {
 
     const setPatternFunc = () => {
         console.log("电击 合作模式 按钮");
-        if (list.length === 0) {
-            console.log(111)
-            return Taro.showToast({ title: '暂无数据', icon: 'none' });
-        }
+        // if (list.length === 0) {
+        //     console.log(111)
+        //     return Taro.showToast({ title: '暂无数据', icon: 'none' });
+        // }
         if (chooseObjList.length === 0) {
             console.log(222)
             return Taro.showToast({ title: '请先选择用户', icon: 'none' });
@@ -901,9 +911,9 @@ const Index = observer(({ store }) => {
                                         {
                                             chooseObjList.length > 0 && chooseObjList.map((item, index) => {
                                                 return (
-                                                    <View className='footer_wrapper_chooseObjList_item' key={item.uuid}>
+                                                    <View className='footer_wrapper_chooseObjList_item' key={item.uuid} onClick={() => deletechooseObjItem(item, index)}>
                                                         {item.name}
-                                                        <AtIcon value='close' size='10' color='#1678FF' onClick={() => deletechooseObjItem(item, index)}></AtIcon>
+                                                        <AtIcon value='close' size='10' color='#1678FF'></AtIcon>
                                                     </View>
                                                 )
                                             })

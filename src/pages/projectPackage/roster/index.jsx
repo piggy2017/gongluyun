@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 11:25:49
+ * @LastEditTime: 2025-05-20 16:38:39
  * @Description:
  */
 
@@ -465,6 +465,7 @@ const Index = observer(({ store }) => {
     }
 
     const searchFunc = throttle(() => {
+        setChooseList([]);
         getList(1);
         setgoonLoad(true);
     }, 300);
@@ -525,7 +526,11 @@ const Index = observer(({ store }) => {
                     {
                         tabList.map((item, index) => {
                             return (
-                                <View onClick={() => setCurrentTabIndex(index)} className={`tab_item ${currentTabIndex === index ? 'tab_item_active' : ''} `} key={index}>{item.name}</View>
+                                <View onClick={() => {
+                                    if(currentTabIndex === index) return;
+                                    setCurrentTabIndex(index);
+                                    setChooseList([]);
+                                }} className={`tab_item ${currentTabIndex === index ? 'tab_item_active' : ''} `} key={index}>{item.name}</View>
                             )
                         })
                     }
