@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-20 16:46:04
+ * @LastEditTime: 2025-05-20 17:20:10
  * @Description:
  */
 
@@ -209,6 +209,7 @@ const Index = observer(({ store }) => {
             setRequestState3(3);
             if (_pageNo === 1) {
                 setModelList([]);
+                setChooseCoopsContent('');
             }
         }
     }
@@ -642,6 +643,10 @@ const Index = observer(({ store }) => {
 
     const getChoosePattern = async () => {   // 批量设置合作模式
         console.log("选择的模式", chooseCoopsContent);
+        if(modelList.length === 0) {
+            setChooseCoopsContent('');
+            return Taro.showToast({ title: '暂无数据', icon: 'none' });
+        }
         if (!chooseCoopsContent) {
             return Taro.showToast({ title: '请选择合作模式', icon: 'none' });
         }
@@ -663,6 +668,7 @@ const Index = observer(({ store }) => {
                 setShowCoopModel(false);
                 setChooseObjList([]);
                 setShowbottomOptions(false);
+                setChooseCoopsContent('');
             } else {
                 Taro.showToast({ title: res.msg, icon: 'none' })
             }
