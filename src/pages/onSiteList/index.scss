@@ -586,6 +586,59 @@
         .footer_wrapper_top {
             position: relative;
 
+            .footer_wrapper_chooseObjList_wrap {
+                width: 100%;
+                position: absolute;
+                z-index: 14;
+                bottom: 4px;
+                background-color: #ffffff;
+                padding: 20rpx;
+                border-top: 1px solid #f4f4f4;
+
+                .footer_wrapper_chooseObjList_wrap_title {
+                    @include flex-center(space-between);
+                    font-family: PingFangSC-Medium;
+                    font-weight: 500;
+                    font-size: 28rpx;
+                    color: #222222;
+                    padding-bottom: 10rpx;
+
+                    .footer_wrapper_chooseObjList_wrap_title_clear {
+                        font-family: PingFangSC-Regular;
+                        font-weight: 500;
+                        font-size: 28rpx;
+                        color: #0483FF;
+                    }
+
+                }
+            }
+
+            .footer_wrapper_chooseObjList {
+                display: flex;
+                flex-flow: row wrap;
+                background-color: #ffffff;
+                max-height: 200rpx;
+                gap: 10rpx 10rpx;
+                overflow-y: scroll;
+
+                .footer_wrapper_chooseObjList_item {
+                    padding: 0 20rpx;
+                    height: 60rpx;
+                    background: #1678ff1a;
+                    border-radius: 4rpx;
+                    @include flex-center();
+                    font-family: "PingFang SC";
+                    font-weight: 500;
+                    font-size: 24rpx;
+                    color: #1678ff;
+
+                    .at-icon {
+                        margin-left: 10rpx;
+                    }
+                }
+
+            }
+
             .footer_wrapper_top_position {
                 position: absolute;
                 z-index: 14;

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-19 10:34:48
+ * @LastEditTime: 2025-05-20 17:37:11
  * @Description:
  */
 
@@ -614,4 +614,8 @@ export const findAgentByName = params => { // 获取推荐人信息
 };
 export const clueIdcard = params => { // 获取推荐人信息
     return http(API_BASE_URL + '/clue/idcard', params, "POST", { "Content-Type": "application/json" });
+};
+
+export const supplierAdd = params => { // 【供应商】新增供应商
+    return http(API_BASE_URL + '/supplier/add', params, "POST", { "Content-Type": "application/json" });
 };

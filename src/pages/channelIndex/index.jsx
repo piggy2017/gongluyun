@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-07 15:19:33
+ * @LastEditTime: 2025-05-20 15:33:08
  * @Description:
  */
 import React, { useState, useEffect } from 'react'
@@ -38,10 +38,14 @@ const Index = observer(({ store }) => {
         }
     }, [isLogin])
 
-    useEffect(() => {
-        console.log('供应商管理页面,companyInfo', userInfo, companyInfo);
+    // useEffect(() => {
+    //     console.log('供应商管理页面,companyInfo', userInfo, companyInfo);
+    //     getList(1)
+    // }, [])
+
+    useDidShow(() => {
         getList(1)
-    }, [])
+    })
 
     const getList = async (_pageNo) => {
         let params = {
@@ -141,7 +145,7 @@ const Index = observer(({ store }) => {
 
 
             <View className='btns'>
-                <View className='btns_item' onClick={()=>{
+                <View className='btns_item' onClick={() => {
                     Taro.navigateTo({ url: `/pages/channelPackage/newInterviewWorker/index` })
                 }}>
                     <Image src={`${Taro.$cdnUrl}/supplier/supplier_97.webp`}></Image>
@@ -151,6 +155,12 @@ const Index = observer(({ store }) => {
                     <Image src={`${Taro.$cdnUrl}/supplier/supplier_96.webp`}></Image>
                     <View>邀请供应商</View>
                 </Button>
+                <View className='btns_item' onClick={() => {
+                    Taro.navigateTo({ url: `/pages/channelPackage/newSupplier/index` })
+                }}>
+                    <Image src={`${Taro.$cdnUrl}/supplier/supplier_98.webp`}></Image>
+                    <View>创建供应商</View>
+                </View>
             </View>
 
             <View className='supplier_title'>
