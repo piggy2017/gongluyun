@@ -3,7 +3,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-10 14:35:24
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 14:17:59
+ * @LastEditTime: 2025-05-21 10:23:38
  * @Description:
  */
 
@@ -172,7 +172,7 @@ const Index = observer(({ store }) => {
                     list.length > 0 && list.map((item, index) => {
                         return (
                             <View key={index} className='list_item' onClick={() => chooseFunc(item, index)}>
-                                <View className='list_item_name'>{item.channelName}</View>
+                                <View className='list_item_name'>{item.channelName}{item.channelCode ? '-' + item.channelCode : ''}</View>
                                 {
                                     item.selected ? <Image className='list_item_choose' src={`${Taro.$cdnUrl}/index/index_icon34.webp`}></Image> : ''
                                 }

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-20 17:37:18
+ * @LastEditTime: 2025-05-21 14:00:34
  * @Description:
  */
 
@@ -15,7 +15,6 @@ import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
-
 
 import TabBar from '@/components/tabBar';
 import CustomDate from '@/components/customDate';
@@ -577,6 +576,9 @@ const Index = observer(({ store }) => {
                 <View className='search_total'>
                     <View className='search_total_left'>共计 <Text>{totalCount}</Text> 人</View>
                     <View className='search_total_right_wrap'>
+                        <View className='search_total_right_item' onClick={()=>{
+                            Taro.navigateTo({ url: '/pages/newPackage/scanMultiple/index' })
+                        }}>批量识别</View>
                         <View className='search_total_right_item' onClick={() => Taro.navigateTo({ url: '/pages/newPackage/newWorker/index?entryChannel=SOURCE&onSite=1' })}>
                             <Image src={`${Taro.$cdnUrl}/index/index_icon48.webp`}></Image>
                             <View>新增</View>

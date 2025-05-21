@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 15:55:31
+ * @LastEditTime: 2025-05-21 14:40:09
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -14,6 +14,7 @@ import {
     clueSource
 } from '@/util/api'
 import Taro from '@tarojs/taro';
+
 const businessStore = observable({
     poorJobId: [ // 客户池的岗位筛选结果
         {
@@ -270,7 +271,18 @@ const businessStore = observable({
     },
     setEditRecommendInfo(value) {
         businessStore.editRecommendInfo = value;
+    },
+
+
+    scanFilterJob: { // 安排面试-选择报名岗位
+        title: '',
+        recruitSerialCode: '',
+        selected: false,
+    },
+    setScanFilterJob(value) {
+        businessStore.scanFilterJob = value;
     }
+
 });
 
 export default businessStore
