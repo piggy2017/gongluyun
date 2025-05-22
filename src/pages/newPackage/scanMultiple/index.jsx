@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-21 14:55:13
+ * @LastEditTime: 2025-05-22 10:23:55
  * @Description: 
  */
 
@@ -17,7 +17,7 @@ import Navbar from '@/components/navbar';
 import Base64 from '@/util/base64'
 import './index.scss'
 
-import { companyUpdate, fetchOssConfig } from '@/util/api'
+import { companyUpdate, fetchOssConfig, authSign } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const {
@@ -145,18 +145,37 @@ const Index = observer(({ store }) => {
         }
 
         let params = {
-            ...formData,
-            imageUrls: images
+            recruitSerialCode: scanFilterJob.recruitSerialCode,
+            authInfos: images.map(item => {
+                return {
+                    idcardSide: 'front',
+                    url: item,
+                    source: 'sign',
+                    photo: true,
+                }
+            })
         }
         Taro.showLoading({ title: '提交中...' });
-        const { code, data, msg } = await companyUpdate(params);
+        const { code, data, msg } = await authSign(params);
         Taro.hideLoading();
         if (code === 200) {
-            if (msg) {
+            const { authFailMsg, authSuccList } = data;
+            if (authFailMsg) {
                 setShowAddError(true);
-                setErrorMsg(msg);
+                setErrorMsg(authFailMsg);
+                if (authSuccList && authSuccList.length > 0) {
+                    setImages(images => {
+                        let _list = images.filter((item, index) => {
+                            if (!authSuccList.includes(index + 1)) {
+                                return item;
+                            }
+                        })
+                        return _list;
+                    })
+                }
             } else {
                 Taro.showToast({ title: '提交成功', icon: 'none' });
+                setImages([]);
                 setTimeout(() => {
                     Taro.navigateBack({ delta: 1 });
                 }, 1500);
@@ -221,7 +240,7 @@ const Index = observer(({ store }) => {
             </View>
 
             <Block>
-                <Taro.AddError showPicker={showAddError} errorMsg={errorMsg} onClose={()=>{setShowAddError(false)}}></Taro.AddError>
+                <Taro.AddError showPicker={showAddError} errorMsg={errorMsg} onClose={() => { setShowAddError(false) }}></Taro.AddError>
             </Block>
         </View>
     )

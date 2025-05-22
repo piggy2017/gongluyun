@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 11:07:48
+ * @LastEditTime: 2025-05-22 14:21:44
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -380,7 +380,7 @@ const Index = observer(({ store }) => {
             myPermissions.includes('5') &&
             <View className='entry_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/dataReport/index')}>
               <Image src={`${Taro.$cdnUrl}/supplier/supplier_index_2.webp`}></Image>
-              <View>员工数据</View>
+              <View>数据看板</View>
             </View>
           }
           {
