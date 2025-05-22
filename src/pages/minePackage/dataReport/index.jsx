@@ -2,22 +2,22 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-08 10:31:47
+ * @LastEditTime: 2025-05-22 18:06:59
  * @Description: 
  */
 
 import React, { useState, useEffect, useReducer, useRef } from 'react'
 import Taro, { useRouter, usePullDownRefresh } from '@tarojs/taro';
-import { View, Image, Text, Canvas, Block } from '@tarojs/components'
+import { View, Image, Text, Input, Canvas, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
-
+import { throttle } from '@/util/utils'
 import CustomDate from '@/components/customDate';
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { dashContractsData, dashDrainageData, dashFlowChannel, dashEmployeeData } from '@/util/api'
+import { dashContractsData, dashDrainageData, dashFlowChannel, dashEmployeeData, exportEmployeeData } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
@@ -27,9 +27,7 @@ const Index = observer(({ store }) => {
         businessStore: { siteObj, setSiteObj },
     } = store
 
-    const [drainageDate, setDrainageDate] = useState('YESTERDAY');
-    const [employeeDate, setEmployeeDate] = useState('YESTERDAY');
-    const [flowDate, setFlowDate] = useState('YESTERDAY');
+    const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const [percent, setPercent] = useState(0);
     const canvasId = 'progressCanvas';
     const canvasRef = useRef(null);
@@ -45,6 +43,8 @@ const Index = observer(({ store }) => {
         startDate: ""
     });
     const [showFilterDate, setShowFilterDate] = useState(false);                  //  线索池是否显示切换日期的弹窗
+    const [searchValue, setSearchValue] = useState('');
+    const [customRequestParams, setCustomRequestParams] = useState({});  // 当前请求参数
 
     usePullDownRefresh(() => {
         console.log("下拉刷新");
@@ -181,8 +181,10 @@ const Index = observer(({ store }) => {
             dateRange: dateObj.dateRange,
             startDate: dateObj.startDate ? dateObj.startDate + ' 00:00:00' : '',
             endDate: dateObj.endDate ? dateObj.endDate + ' 23:59:59' : '',
-            deptIdList: siteObj
+            deptIdList: siteObj,
+            searchInfo: searchValue,
         }
+        setCustomRequestParams({ ...params });
         const { code, data, msg } = await dashEmployeeData(params);
         console.log("获取员工数据", data);
         if (code === 200 && data) {
@@ -192,9 +194,48 @@ const Index = observer(({ store }) => {
         }
     }
 
+    const searchFunc = throttle(() => {
+        getDashEmployeeData();
+    }, 300);
+
+    const exportAllFunc = async () => {
+        Taro.showLoading({ title: '导出中...' });
+        let params = { ...customRequestParams };
+        const { code, data, msg } = await exportEmployeeData(params);
+        console.log("downloadRoster", code, data, msg);
+        Taro.hideLoading();
+        if (code === 200) {
+            let _downLoadSrc = data;
+            wx.downloadFile({
+                url: _downLoadSrc,
+                success: function (result) {
+                    console.log("下载文件成功", result)
+                    if (Taro.getSystemInfoSync().platform === 'android') {
+                        Taro.showToast({ title: '点击右上方的按钮然后保存至手机', icon: 'none', duration: 3000 });
+                    } else {
+                        Taro.showToast({ title: '点击右上方的按钮然后分享至微信进行查看', icon: 'none', duration: 3000 });
+                    }
+                    const filePath = result.tempFilePath;  // 临时文件路径
+                    setTimeout(() => {
+                        forceUpdate();
+                        wx.openDocument({
+                            filePath: filePath,
+                            showMenu: true, // 预览文件右上方的...
+                            success: function (response) {
+                                console.log('打开文档成功', response)
+                            }
+                        })
+                    }, 3000);
+                }
+            })
+        } else {
+            Taro.showToast({ title: msg, icon: 'none' })
+        }
+    }
+
     return (
         <View className='container'>
-            <Navbar fixed placeholder bgColor='#FFFFFF' title='分析报表' />
+            <Navbar fixed placeholder bgColor='#FFFFFF' title='数据看板' />
 
             <View className='onsite_wrapper'>
                 <View>请选择站点</View>
@@ -327,42 +368,76 @@ const Index = observer(({ store }) => {
                 <View className='employee_wrapper'>
                     <View className='stream_title'>
                         <View>员工数据</View>
-                        {/* <View className='stream_title_right'>
-                            <View onClick={() => { setEmployeeDate('YESTERDAY') }} className={`title_right_item ${employeeDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
-                            <View onClick={() => { setEmployeeDate('THIS_WEEK') }} className={`title_right_item ${employeeDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
-                            <View onClick={() => { setEmployeeDate('LAST_WEEK') }} className={`title_right_item ${employeeDate === 'LAST_WEEK' ? 'title_right_item_active' : ''}`}>上周</View>
-                            <View onClick={() => { setEmployeeDate('THIS_MONTH') }} className={`title_right_item ${employeeDate === 'THIS_MONTH' ? 'title_right_item_active' : ''}`}>本月</View>
-                        </View> */}
+                        <View className='stream_title_right_export' onClick={exportAllFunc}>
+                            <Image src={`${Taro.$cdnUrl}/supplier/supplier_99.webp`}></Image>
+                            <View>导出</View>
+                        </View>
                     </View>
-                    <View className='employee_list'>
-                        {
-                            employeeList.length > 0 && employeeList.map((item, index) => {
-                                return (
-                                    <View className='employee_item' key={index}>
-                                        <View className='employee_item_name'>{item.operator}</View>
-                                        <View className='employee_item_datas'>
-                                            <View className='employee_item_datas_item'>
-                                                <View>{item.newSignup}</View>
-                                                <View className='employee_item_datas_item_label'>录入线索</View>
-                                            </View>
-                                            <View className='employee_item_datas_item'>
-                                                <View>{item.followupContact}</View>
-                                                <View className='employee_item_datas_item_label'>跟进客户</View>
-                                            </View>
-                                            <View className='employee_item_datas_item'>
-                                                <View>{item.newInterview}</View>
-                                                <View className='employee_item_datas_item_label'>安排面试</View>
-                                            </View>
-                                            <View className='employee_item_datas_item'>
-                                                <View>{item.finalEntry}</View>
-                                                <View className='employee_item_datas_item_label'>成功入职</View>
-                                            </View>
+                    <View className='search_content'>
+                        <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+                        <Input className='search_input'
+                            // disabled={(!isLogin || (role === 'SEEK' && !companyVerified)) ? true : false}
+                            placeholder='搜索姓名、手机号'
+                            confirmType='search'
+                            placeholderStyle='color: #777777;'
+                            onInput={(e) => { setSearchValue(e.detail.value) }}
+                            onConfirm={searchFunc}
+                            value={searchValue}></Input>
+                    </View>
+
+                    {
+                        employeeList.length > 0 && employeeList.map((item, index) => {
+                            return (
+                                <View className='employee_data_item' key={index}>
+                                    <View className='employee_data_item_title'>
+                                        <View>{item.operator}</View>
+                                        <View>负责总人数：{item.newSignup}人</View>
+                                    </View>
+                                    <View className='employee_data_line1'>
+                                        <View className='employee_data_line1_item'>
+                                            <View>{item.contactedNum}人</View>
+                                            <View className='employee_data_line1_item_label'>已联系</View>
+                                        </View>
+                                        <View className='employee_data_line1_item'>
+                                            <View>{item.newInterview}人</View>
+                                            <View className='employee_data_line1_item_label'>安排面试</View>
+                                        </View>
+                                        <View className='employee_data_line1_item'>
+                                            <View>{item.actualArrival}人</View>
+                                            <View className='employee_data_line1_item_label'>实际到面</View>
                                         </View>
                                     </View>
-                                )
-                            })
-                        }
-                    </View>
+
+                                    <View className='employee_data_line2'>
+                                        <View className='employee_data_line2_item'>
+                                            <View>{item.interviewPass}人</View>
+                                            <View className='employee_data_line2_item_label'>面试通过</View>
+                                        </View>
+                                        <View className='employee_data_line2_item'>
+                                            <View>{item.finalEntry}人</View>
+                                            <View className='employee_data_line2_item_label'>最终入职</View>
+                                        </View>
+                                    </View>
+                                    <View className='hr'></View>
+                                    <View className='employee_data_persent'>
+                                        <View className='employee_data_persent_item'>
+                                            <View className='employee_data_persent_num'>{item.interviewRate}<Text>%</Text></View>
+                                            <View className='employee_data_persent_item_label'>面试转化率</View>
+                                        </View>
+                                        <View className='employee_data_persent_item'>
+                                            <View className='employee_data_persent_num'>{item.arrivalRate}<Text>%</Text></View>
+                                            <View className='employee_data_persent_item_label'>到面转化率</View>
+                                        </View>
+                                        <View className='employee_data_persent_item'>
+                                            <View className='employee_data_persent_num'>{item.employedRate}<Text>%</Text></View>
+                                            <View className='employee_data_persent_item_label'>最终转化率</View>
+                                        </View>
+                                    </View>
+                                </View>
+                            )
+                        })
+                    }
+
                 </View>
             </View>
 

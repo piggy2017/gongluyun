@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-19 10:10:45
+ * @LastEditTime: 2025-05-22 10:50:09
  * @Description:
  */
 
@@ -257,6 +257,9 @@ const Index = observer(({ store }) => {
 
     const saveWorker = async () => {
         // const { recruitSerialCode } = route.params;
+        if (arrangList.length == 0) {
+            return Taro.showToast({ title: '请先填写求职者信息', icon: 'none', })
+        }
         let list = arrangList.map(item => {
             item.recruitSerialCode = jobInfo.recruitSerialCode ? jobInfo.recruitSerialCode : '';
             item.supplierSerialCode = supplierInfo.supplierSerialCode ? supplierInfo.supplierSerialCode : '';
@@ -307,8 +310,8 @@ const Index = observer(({ store }) => {
         } else if (code === 8608) {
             setShowAddError(true);
             setErrorMsg(msg);
-        } 
-        else if(code!=200 && code != 8608) {
+        }
+        else if (code != 200 && code != 8608) {
             console.log(3)
             Taro.showToast({ title: msg, icon: 'none', })
         }
@@ -487,7 +490,7 @@ const Index = observer(({ store }) => {
             </View>
 
             {
-                arrangList.map((item, index) => {
+                arrangList.length > 0 && arrangList.map((item, index) => {
                     return (
                         <View className='project_group' key={index}>
                             <View className='project_group_sort'>
@@ -495,7 +498,8 @@ const Index = observer(({ store }) => {
 
                                 <View className='project_group_sort_rightWrap'>
                                     {
-                                        index != 0 && <View className='project_group_sort_delete' onClick={() => deleteItemFunc(index)}>删除</View>
+                                        // index != 0 && 
+                                        <View className='project_group_sort_delete' onClick={() => deleteItemFunc(index)}>删除</View>
                                     }
                                     <View className='project_group_sort_right' onClick={() => openItemFunc(index)}>
                                         <Image className={`${arrangList[index].isOpen ? 'eidt_icon' : ''}`} src={`${Taro.$cdnUrl}/newIndex/newIndex_4.webp`}></Image>
@@ -658,13 +662,13 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={saveWorker} className={`post_btn ${(supplierInfo.supplierSerialCode && jobInfo.recruitSerialCode && interviewDate && arrangList[0].name && (arrangList[0].sex === 0 || arrangList[0].sex === 1)) ? 'post_btn_active' : ''}`}>保存</View>
+                <View onClick={saveWorker} className={`post_btn ${(supplierInfo.supplierSerialCode && jobInfo.recruitSerialCode && interviewDate && arrangList[0]?.name && (arrangList[0]?.sex === 0 || arrangList[0]?.sex === 1)) ? 'post_btn_active' : ''}`}>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 
             <Block>
                 <WorkerJobType isShow={chooseJob}
-                    initData={(arrangList[activeIndex].jobTypes && arrangList[activeIndex].jobTypes.length > 0) ? arrangList[activeIndex].jobTypes : []}
+                    initData={(arrangList[activeIndex]?.jobTypes && arrangList[activeIndex]?.jobTypes.length > 0) ? arrangList[activeIndex]?.jobTypes : []}
                     multiple={true}
                     onClose={(e) => {
                         if (e && e.length) {
@@ -836,7 +840,7 @@ const Index = observer(({ store }) => {
             </Block>
 
             <Block>
-                <Taro.AddError showPicker={showAddError} errorMsg={errorMsg} onClose={()=>{setShowAddError(false)}}></Taro.AddError>
+                <Taro.AddError showPicker={showAddError} errorMsg={errorMsg} onClose={() => { setShowAddError(false) }}></Taro.AddError>
             </Block>
         </View>
     )
