@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-22 14:21:44
+ * @LastEditTime: 2025-05-28 14:24:44
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -644,7 +644,7 @@ const Index = observer(({ store }) => {
           (role === "ADMIN" || role === "CUSTOMER") &&
           <View className='stream_wrapper'>
             <View className='stream_title'>
-              <View>引流与转化</View>
+              <View>招聘漏斗</View>
               <View className='stream_title_right'>
                 <View onClick={() => { setDrainageDate('TODAY') }} className={`title_right_item ${drainageDate === 'TODAY' ? 'title_right_item_active' : ''}`}>今日</View>
                 <View onClick={() => { setDrainageDate('YESTERDAY') }} className={`title_right_item ${drainageDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>

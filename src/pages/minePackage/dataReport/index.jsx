@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-27 10:29:05
+ * @LastEditTime: 2025-05-28 14:24:42
  * @Description: 
  */
 
@@ -292,7 +292,7 @@ const Index = observer(({ store }) => {
                 </View>
                 <View className='stream_wrapper'>
                     <View className='stream_title'>
-                        <View>引流与转化</View>
+                        <View>招聘漏斗</View>
                         {/* <View className='stream_title_right'>
                             <View onClick={() => { setDrainageDate('YESTERDAY') }} className={`title_right_item ${drainageDate === 'YESTERDAY' ? 'title_right_item_active' : ''}`}>昨日</View>
                             <View onClick={() => { setDrainageDate('THIS_WEEK') }} className={`title_right_item ${drainageDate === 'THIS_WEEK' ? 'title_right_item_active' : ''}`}>本周</View>
@@ -383,7 +383,7 @@ const Index = observer(({ store }) => {
 
                 <View className='employee_wrapper'>
                     <View className='stream_title'>
-                        <View>员工数据</View>
+                        <View>公海领取数据</View>
                         <View className='stream_title_right_export' onClick={exportAllFunc}>
                             <Image src={`${Taro.$cdnUrl}/supplier/supplier_99.webp`}></Image>
                             <View>导出</View>

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-21 14:40:09
+ * @LastEditTime: 2025-05-28 13:50:05
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -274,11 +274,7 @@ const businessStore = observable({
     },
 
 
-    scanFilterJob: { // 安排面试-选择报名岗位
-        title: '',
-        recruitSerialCode: '',
-        selected: false,
-    },
+    scanFilterJob: [],   // 驻场批量识别-选择岗位
     setScanFilterJob(value) {
         businessStore.scanFilterJob = value;
     }

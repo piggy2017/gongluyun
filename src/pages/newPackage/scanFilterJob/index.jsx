@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-21 14:43:21
+ * @LastEditTime: 2025-05-28 14:17:44
  * @Description:
  */
 
@@ -20,7 +20,7 @@ import { jobSelectorByPossess } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight },
+        baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
         businessStore: { scanFilterJob, setScanFilterJob }
     } = store
     const router = useRouter();
@@ -65,11 +65,16 @@ const Index = observer(({ store }) => {
             for (let i = 0; i < data.responses.length; i++) {
                 data.responses[i].selected = false;
             }
-            for (let i = 0; i < data.responses.length; i++) {
-                if (data.responses[i].recruitSerialCode == scanFilterJob.recruitSerialCode) {
-                    data.responses[i].selected = true;
+            if (scanFilterJob.length > 0) {
+                for (let i = 0; i < scanFilterJob.length; i++) {
+                    for (let j = 0; j < data.responses.length; j++) {
+                        if (scanFilterJob[i].recruitSerialCode == data.responses[j].recruitSerialCode) {
+                            data.responses[j].selected = true;
+                        }
+                    }
                 }
             }
+
 
             setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
             setgoonLoad(true);
@@ -85,7 +90,7 @@ const Index = observer(({ store }) => {
     }
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + searchHeight + 10}px)`;
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + searchHeight + 10 + bottomSafeAreaHeight}px - 116rpx)`;
     }
 
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
@@ -101,27 +106,33 @@ const Index = observer(({ store }) => {
         getList(1);
     }, 200);
 
-    const chooseItem = (obj, index) => {
-        // 点击选中当前项,取消其他项的选中
+    const chooseItem = (obj, index) => {   // 选择岗位-多选
         setList(list => {
-            let _list = list.map((item, i) => {
-                item.selected = false;
-                return item
+            let _list = list.map((item, _index) => {
+                if (_index === index) {
+                    item.selected = !item.selected;
+                }
+                return item;
             })
-            _list[index].selected = true
-            return _list
+            return _list;
         })
-        setScanFilterJob(obj);
-
-        setTimeout(() => {
-            Taro.navigateBack({ delta: 1 });
-        }, 300);
     }
 
     const searchFunc = throttle(() => {
         getList(1);
         setgoonLoad(true);
     }, 300);
+
+    const postDataFunc = () => {
+        let _list = list.filter(item => item.selected);
+        if (_list.length === 0) {
+            return Taro.showToast({ title: '请选择签到岗位', icon: 'none' });
+        }
+        setScanFilterJob(_list);
+        Taro.navigateBack({
+            delta: 1,
+        });
+    }
 
     return (
         <View className='container'>
@@ -179,6 +190,12 @@ const Index = observer(({ store }) => {
                     <Taro.NoData></Taro.NoData>
                 }
             </ScrollView>
+
+            <View className='page_bottom'>
+                <View style='height:20rpx;'></View>
+                <View className='post_btn' onClick={postDataFunc}>确定</View>
+                <View style={`height:${bottomSafeAreaHeight}px;`}></View>
+            </View>
         </View>
     )
 })

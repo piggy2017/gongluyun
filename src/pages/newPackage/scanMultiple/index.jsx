@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-22 10:23:55
+ * @LastEditTime: 2025-05-28 13:52:27
  * @Description: 
  */
 
@@ -29,14 +29,16 @@ const Index = observer(({ store }) => {
     const [showAddError, setShowAddError] = useState(false);   // 备注弹窗
     const [errorMsg, setErrorMsg] = useState('');
 
+
     useEffect(() => {
         return () => {
             setImages([]);
-            setScanFilterJob({
-                title: '',
-                recruitSerialCode: '',
-                selected: false,
-            });
+            setScanFilterJob([]);
+            // { // 安排面试-选择报名岗位
+            //     title: '',
+            //     recruitSerialCode: '',
+            //     selected: false,
+            // },
         }
     }, []);
 
@@ -137,7 +139,7 @@ const Index = observer(({ store }) => {
     }
 
     const handleSubmit = async () => {
-        if (!scanFilterJob.recruitSerialCode) {
+        if (scanFilterJob.length === 0) {   // recruitSerialCode
             return Taro.showToast({ title: '请选择签到岗位', icon: 'none' });
         }
         if (images.length === 0) {
@@ -145,7 +147,9 @@ const Index = observer(({ store }) => {
         }
 
         let params = {
-            recruitSerialCode: scanFilterJob.recruitSerialCode,
+            recruitSerialCodes: scanFilterJob.map(item => {
+                return item.recruitSerialCode;
+            }),
             authInfos: images.map(item => {
                 return {
                     idcardSide: 'front',
@@ -204,7 +208,7 @@ const Index = observer(({ store }) => {
                             url: '/pages/newPackage/scanFilterJob/index'
                         })
                     }}>
-                        <Text className={`${scanFilterJob.recruitSerialCode ? 'project_item_text_active' : 'project_item_text'}`}>{scanFilterJob.recruitSerialCode ? scanFilterJob.title : '选择签到的岗位'}</Text>
+                        <Text className={`${scanFilterJob.length > 0 ? 'project_item_text_active' : 'project_item_text'}`}>{scanFilterJob.length === 0 ? '选择签到的岗位' : scanFilterJob.length === 1 ? scanFilterJob[0].title : scanFilterJob[0].title + '等' + scanFilterJob.length + '个岗位'}</Text>
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
