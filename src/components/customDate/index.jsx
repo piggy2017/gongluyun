@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-05 15:39:11
  * @LastEditors: 孙林
- * @LastEditTime: 2025-02-18 17:50:40
+ * @LastEditTime: 2025-05-27 10:09:55
  * @Description: 自定义选择日期或者日期范围
  */
 import React, { useState, useEffect, useReducer } from 'react';
@@ -25,8 +25,8 @@ const CustomDate = observer(({ showPicker, defaultToday, onClose, onChange, stor
         { text: "昨日", code: "YESTERDAY" },
         { text: "本周", code: "THIS_WEEK" },
         { text: "上周", code: "LAST_WEEK" },
-        { text: "本月", code: "THIS_MONTH" },
-        { text: "上月", code: "LAST_MONTH" },
+        { text: "明天", code: "TOMORROW" },
+        { text: "后天", code: "AFTER_TOMORROW" },
     ];
     useEffect(() => {
         if(defaultToday){

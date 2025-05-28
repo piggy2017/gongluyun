@@ -171,7 +171,8 @@
             font-weight: 500;
             line-height: normal;
         }
-        .collaborate_pattern_content{
+
+        .collaborate_pattern_content {
             padding: 0 26rpx;
             display: flex;
             flex-flow: row nowrap;
@@ -182,7 +183,8 @@
             font-style: normal;
             font-weight: 400;
             line-height: 51rpx;
-            .collaborate_pattern_content_dot{
+
+            .collaborate_pattern_content_dot {
                 width: 10rpx;
                 height: 10rpx;
                 border-radius: 50%;
@@ -201,13 +203,24 @@
         padding-bottom: 14rpx;
 
         .project_interview_title {
-            padding: 32rpx 0 30rpx 24rpx;
+            padding: 32rpx 24rpx 30rpx 24rpx;
             color: #222222;
             font-family: "PingFang SC";
             font-size: 30rpx;
             font-style: normal;
             font-weight: 500;
             line-height: normal;
+            @include flex-center(space-between);
+
+            .project_title_copy {
+                color: #1678ff;
+                text-align: right;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+            }
         }
 
         .project_interview_item {
@@ -263,7 +276,8 @@
             font-weight: 500;
             line-height: normal;
             padding: 0 24rpx;
-            .project_title_copy{
+
+            .project_title_copy {
                 color: #1678ff;
                 text-align: right;
                 font-family: "PingFang SC";
@@ -329,7 +343,8 @@
             line-height: normal;
             padding: 32rpx 30rpx 0 30rpx;
             @include flex-center(space-between);
-            .project_title_copy{
+
+            .project_title_copy {
                 color: #1678ff;
                 text-align: right;
                 font-family: "PingFang SC";
@@ -371,9 +386,8 @@
                 padding: 0 40rpx 0 30rpx;
             }
         }
-        .project_pattern_item2{
-            
-        }
+
+        .project_pattern_item2 {}
 
         .project_pattern_rule {
             padding: 0 30rpx;

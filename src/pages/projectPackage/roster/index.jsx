@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-20 16:38:39
+ * @LastEditTime: 2025-05-27 10:20:01
  * @Description:
  */
 
@@ -26,7 +26,7 @@ import { contractsgetRoster, updateInterviewer, batchUpdateInterviewer, download
 const Index = observer(({ store }) => {
     const route = useRouter();
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
+        baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight, platform },
         userStore: { myPermissions, role },
         businessStore: { rosterFilterSupplier, setRosterFilterSupplier, exchangeJobInfo, setExchangeJobInfo },
     } = store
@@ -383,14 +383,42 @@ const Index = observer(({ store }) => {
         Taro.hideLoading();
         if (code === 200) {
             let _downLoadSrc = data;
+            // if (platform === 'pc') {
+            //     console.log("PC_下载文件", _downLoadSrc);
+            //     Taro.setClipboardData({
+            //         data: _downLoadSrc,
+            //         success: () => {
+            //             Taro.showToast({
+            //                 title: '文件地址已复制到粘贴板,可下载查看',
+            //                 icon: 'none'
+            //             })
+            //             setShowExportModel(false);
+            //         }
+            //     })
+            //     return;
+            // }
             wx.downloadFile({
                 url: _downLoadSrc,
                 success: function (result) {
                     console.log("下载文件成功", result)
-                    if (Taro.getSystemInfoSync().platform === 'android') {
-                        Taro.showToast({ title: '点击右上方的按钮然后保存至手机', icon: 'none', duration: 3000 });
+                    if (platform === 'pc') {
+                        Taro.setClipboardData({
+                            data: _downLoadSrc,
+                            success: () => {
+                                Taro.showToast({
+                                    title: '下载地址已复制到粘贴板,可下载查看',
+                                    icon: 'none',
+                                    duration: 3000
+                                })
+                                setShowExportModel(false);
+                            }
+                        })
                     } else {
-                        Taro.showToast({ title: '点击右上方的按钮然后分享至微信进行查看', icon: 'none', duration: 3000 });
+                        if (Taro.getSystemInfoSync().platform === 'android') {
+                            Taro.showToast({ title: '点击右上方的按钮然后保存至手机', icon: 'none', duration: 3000 });
+                        } else {
+                            Taro.showToast({ title: '点击右上方的按钮然后分享至微信进行查看', icon: 'none', duration: 3000 });
+                        }
                     }
                     const filePath = result.tempFilePath;  // 临时文件路径
                     setShowExportModel(false);
@@ -527,7 +555,7 @@ const Index = observer(({ store }) => {
                         tabList.map((item, index) => {
                             return (
                                 <View onClick={() => {
-                                    if(currentTabIndex === index) return;
+                                    if (currentTabIndex === index) return;
                                     setCurrentTabIndex(index);
                                     setChooseList([]);
                                 }} className={`tab_item ${currentTabIndex === index ? 'tab_item_active' : ''} `} key={index}>{item.name}</View>
