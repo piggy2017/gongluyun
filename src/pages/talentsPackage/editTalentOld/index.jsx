@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-30 09:46:20
+ * @LastEditTime: 2025-05-26 11:13:12
  * @Description: 人才库 - 编辑人才信息页面
  */
 
@@ -187,7 +187,7 @@ const Index = observer(({ store }) => {
                     <View className='project_item_right'>
                         <Input
                             // disabled
-                            type='number'
+                            // type='number'
                             maxlength='11'
                             className='new_input'
                             placeholder='输入求职者的手机号'
@@ -220,7 +220,7 @@ const Index = observer(({ store }) => {
                     <View className='project_item_label'>年龄</View>
                     <View className='project_item_right'>
                         <Input
-                            type='number'
+                            // type='number'
                             // maxlength='18'
                             className='new_input'
                             placeholder='请输入用户年龄'
@@ -295,7 +295,7 @@ const Index = observer(({ store }) => {
                     <View className='project_item_label'>身份证号</View>
                     <View className='project_item_right'>
                         <Input
-                            type='idcard'
+                            // type='idcard'
                             maxlength='18'
                             className='new_input'
                             placeholder='输入真实身份证号'

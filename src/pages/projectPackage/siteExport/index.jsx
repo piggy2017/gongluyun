@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2024-12-05 17:00:15
+ * @LastEditTime: 2025-05-27 10:09:27
  * @Description: 
  */
 
@@ -27,8 +27,8 @@ const Index = observer(({ store }) => {
         { text: "昨日", code: "YESTERDAY" },
         { text: "本周", code: "THIS_WEEK" },
         { text: "上周", code: "LAST_WEEK" },
-        { text: "本月", code: "THIS_MONTH" },
-        { text: "上月", code: "LAST_MONTH" },
+        { text: "明天", code: "TOMORROW" },
+        { text: "后天", code: "AFTER_TOMORROW" },
     ];
 
     const [tabList, setTabList] = useState([

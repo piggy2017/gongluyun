@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-25 13:57:28
+ * @LastEditTime: 2025-05-27 10:46:47
  * @Description:
  */
 
@@ -129,9 +129,23 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const copyFunc = (text) => {
+    const copyFunc = (text, type) => {
+        let _text = '';
+        if (type) {    // 复制面试相关信息
+            if (detail.interviewInfo) {
+                _text += detail.interviewInfo.interviewContactName + ' ' + detail.interviewInfo.interviewContactPhone + '\n'
+            }
+            if (detail.interviewAddress) {
+                _text += detail.interviewAddress + '\n'
+            }
+            if (detail.interviewDate) {
+                _text += detail.interviewDate + '\n'
+            }
+        } else {
+            _text = text;
+        }
         Taro.setClipboardData({
-            data: text,
+            data: _text,
             success: () => {
                 Taro.showToast({
                     title: '复制成功',
@@ -249,7 +263,10 @@ const Index = observer(({ store }) => {
                     </View>
 
                     <View className='project_interview'>
-                        <View className='project_interview_title'>面试信息</View>
+                        <View className='project_interview_title'>
+                            <View>面试信息</View>
+                            <View className='project_title_copy' onClick={() => copyFunc(detail, 1)}>一键复制</View>
+                        </View>
                         <View className='project_interview_item'>
                             <Image src={`${Taro.$cdnUrl}/supplier/supplier_12.webp`}></Image>
                             {

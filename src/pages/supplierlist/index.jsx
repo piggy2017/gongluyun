@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-19 11:33:01
+ * @LastEditTime: 2025-05-27 10:30:29
  * @Description:
  */
 
@@ -24,7 +24,7 @@ import { contractsgetRoster, downloadRoster, getCoopCompanyByChannel, getContrac
 const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const {
-        baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight, setKeyBoardHeight },
+        baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, bottomSafeAreaHeight, platform },
         businessStore: { setMyClientParams, supplierListFilterJob, setSupplierListFilterJob },
         userStore: { supplierCompanyInfo, getSupplierCompanyInfo }
     } = store
@@ -275,10 +275,23 @@ const Index = observer(({ store }) => {
                 url: _downLoadSrc,
                 success: function (result) {
                     console.log("下载文件成功", result)
-                    if (Taro.getSystemInfoSync().platform === 'android') {
-                        Taro.showToast({ title: '点击右上方的按钮然后保存至手机', icon: 'none', duration: 3000 });
+                    if (platform === 'pc') {
+                        Taro.setClipboardData({
+                            data: _downLoadSrc,
+                            success: () => {
+                                Taro.showToast({
+                                    title: '下载地址已复制到粘贴板,可下载查看',
+                                    icon: 'none',
+                                    duration: 3000
+                                })
+                            }
+                        })
                     } else {
-                        Taro.showToast({ title: '点击右上方的按钮然后分享至微信进行查看', icon: 'none', duration: 3000 });
+                        if (Taro.getSystemInfoSync().platform === 'android') {
+                            Taro.showToast({ title: '点击右上方的按钮然后保存至手机', icon: 'none', duration: 3000 });
+                        } else {
+                            Taro.showToast({ title: '点击右上方的按钮然后分享至微信进行查看', icon: 'none', duration: 3000 });
+                        }
                     }
                     const filePath = result.tempFilePath;  // 临时文件路径
                     setShowExportModel(false);
