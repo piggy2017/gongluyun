@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-05-16 14:58:27
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-16 16:27:32
+ * @LastEditTime: 2025-05-29 17:02:34
  * @Description: 上传身份证并识别信息
  */
 import { useState, useEffect } from 'react';
@@ -76,11 +76,8 @@ const ScanIdCard = observer(({ initfrontUrl, initbackUrl, issueDate, expirationD
                         ["content-length-range", 0, 1024 * 1024 * 1024],
                     ],
                 };
-                console.log(1)
                 const policy = Base64.encode(JSON.stringify(policyText));
-                console.log(policy, "policy")
                 const signature = computeSignature(accessKeySecret, policy);
-                console.log(signature, "signature")
                 const params = {
                     'key': `${urlPath}${Date.now()}-${Math.random() * 1000000}.jpg`,
                     'policy': policy,
