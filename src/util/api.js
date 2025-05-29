@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-28 18:05:37
+ * @LastEditTime: 2025-05-29 09:28:38
  * @Description:
  */
 
 import http from "./request"
 
-export const env = 'prod';
+export const env = 'test';
 const base = env === 'prod' ? 'https://sa-api.apujiyu.com' : 'https://sa-test.apujiyu.com/'
 export const API_BASE_URL = base + "/mini"
 // const API_BASE_URL_JOB = "https://testios.joymian.com/jobfly/order"
