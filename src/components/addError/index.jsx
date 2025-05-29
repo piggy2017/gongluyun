@@ -2,8 +2,8 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-05-16 14:58:27
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-16 17:19:15
- * @Description: 上传身份证并识别信息
+ * @LastEditTime: 2025-05-29 17:07:19
+ * @Description: 批量录入求职者,撞单报错弹窗
  */
 import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';

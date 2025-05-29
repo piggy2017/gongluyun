@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-20 17:37:15
+ * @LastEditTime: 2025-05-29 17:41:08
  * @Description:
  */
 
@@ -24,7 +24,7 @@ import { cluePool, cluemyClients, clueReceive, callUp, downloadClients } from '@
 
 const Index = observer(({ store }) => {
   const {
-    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
+    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, platform },
     userStore: { isLogin, role, companyVerified, myPermissions },
     businessStore: { poorJobId, myClientJobId, myClientParams, setMyClientParams, sourceList }
   } = store
@@ -404,10 +404,23 @@ const Index = observer(({ store }) => {
         url: _downLoadSrc,
         success: function (result) {
           console.log("下载文件成功", result)
-          if (Taro.getSystemInfoSync().platform === 'android') {
-            Taro.showToast({ title: '点击右上方的按钮然后保存至手机', icon: 'none', duration: 3000 });
+          if (platform === 'pc') {
+            Taro.setClipboardData({
+              data: _downLoadSrc,
+              success: () => {
+                Taro.showToast({
+                  title: '下载地址已复制到粘贴板,可下载查看',
+                  icon: 'none',
+                  duration: 3000
+                })
+              }
+            })
           } else {
-            Taro.showToast({ title: '点击右上方的按钮然后分享至微信进行查看', icon: 'none', duration: 3000 });
+            if (Taro.getSystemInfoSync().platform === 'android') {
+              Taro.showToast({ title: '点击右上方的按钮然后保存至手机', icon: 'none', duration: 3000 });
+            } else {
+              Taro.showToast({ title: '点击右上方的按钮然后分享至微信进行查看', icon: 'none', duration: 3000 });
+            }
           }
           const filePath = result.tempFilePath;  // 临时文件路径
           setTimeout(() => {
