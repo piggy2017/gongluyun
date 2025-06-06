@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 11:44:14
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-29 16:55:45
+ * @LastEditTime: 2025-05-30 14:53:43
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ const Index = observer(({ store }) => {
     } = store
 
     const [images, setImages] = useState([]);                      // 选择的照片
-    const [showAddError, setShowAddError] = useState(false);   // 备注弹窗
+    const [showAddError, setShowAddError] = useState(false);       // 备注弹窗
     const [errorMsg, setErrorMsg] = useState('');
 
 
