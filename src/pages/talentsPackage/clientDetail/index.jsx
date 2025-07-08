@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-30 17:27:52
+ * @LastEditTime: 2025-07-03 11:33:27
  * @Description:
  */
 import React, { useState, useEffect } from 'react'
@@ -95,12 +95,13 @@ const Index = observer(({ store }) => {
                 title: data.recruitTitle,
                 recruitSerialCode: data.recruitSerialCode,
             })
-            setDateText(data.interviewDate || '');
-            // if (data.seekState === 'EMPLOYED') {
-            //     setDateText(data.employedDate);
-            // } else if (data.seekState === 'RESIGN') {
-            //     setDateText(data.resignDate);
-            // }
+            if (data.seekState === 'EMPLOYED') {
+                setDateText(data.employedDate);
+            } else if (data.seekState === 'RESIGN') {
+                setDateText(data.resignDate);
+            }else{
+                setDateText(data.interviewDate || '');
+            }
         } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }

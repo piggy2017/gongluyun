@@ -2,14 +2,16 @@
 
 .job_layout_boss {
     .at-float-layout__container {
-        height: 70vh !important;
-        max-height: 70vh !important;
+        height: 75vh !important;
+        max-height: 75vh !important;
         background-color: transparent;
+
         .layout-body {
             max-height: 100% !important;
             height: 100% !important;
             padding: 0 !important;
-            .layout-body__content{
+
+            .layout-body__content {
                 max-height: 100% !important;
                 height: 100% !important;
             }
@@ -18,6 +20,28 @@
         .owne_box {
             width: 100%;
             height: 100%;
+
+            .search_box_wrap {
+                width: 100%;
+                background-color: #ffffff;
+                padding: 30rpx 0 20rpx 0;
+
+                .search_box {
+                    width: 670rpx;
+                    height: 80rpx;
+                    flex-shrink: 0;
+                    background-color: #F4F4F4;
+                    border-radius: 40rpx;
+                    margin: 0 auto;
+                    @include flex-center(flex-start);
+
+                    image {
+                        width: 32rpx;
+                        height: 32rpx;
+                        margin: 0 10rpx 0 30rpx;
+                    }
+                }
+            }
 
             .type_title {
                 width: 100%;
@@ -74,7 +98,7 @@
 
             .type_content {
                 width: 100%;
-                height: 100%;
+                height: 90%;
                 background-color: #fff;
                 position: relative;
                 z-index: 1;
@@ -138,6 +162,7 @@
                     // padding-top: 40rpx;
                     width: 100%;
                     height: 86%;
+                    position: relative;
                     @include flex-center(flex-start);
 
                     .left_nav {
@@ -229,6 +254,31 @@
                             }
                         }
                     }
+
+                    .full_search {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        background-color: #fff;
+                        width: 100%;
+                        height: 100%;
+
+                        .search_item {
+                            width: 100%;
+                            padding: 40rpx;
+                            border-bottom: 1rpx solid #EEE;
+
+                            >view {
+                                color: #222222;
+                                font-size: 32rpx;
+                            }
+
+                            >view:nth-child(2) {
+                                font-size: 22rpx;
+                                color: #CCCCCC;
+                            }
+                        }
+                    }
                 }
 
                 .close_popup {
@@ -314,12 +364,14 @@
                             font-family: "PingFang SC";
                             font-size: 32rpx;
                         }
-                        >view:nth-child(1){
+
+                        >view:nth-child(1) {
                             background: #ffffff;
                             color: rgb(22, 120, 255);
                             margin-left: 20rpx;
                         }
-                        >view:nth-child(2){
+
+                        >view:nth-child(2) {
                             background: #0483FF;
                             color: #fff;
                             margin-left: 20rpx;

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-27 10:29:42
+ * @LastEditTime: 2025-07-08 11:52:11
  * @Description:
  */
 
@@ -119,10 +119,23 @@ const Index = observer(({ store }) => {
     const getList = throttleCustom(async (_pageNo, type) => {    // 获取名单列表,  type 是否是更改状态后的请求
         setRequestState(1);
         Taro.showLoading({ title: '加载中...' });
-        let _recruitSerialCodes = onSiteFilterJob.map(item => item.recruitSerialCode);
+        let _recruitSerialCodes = [];
+        _recruitSerialCodes = onSiteFilterJob.map(item => item.recruitSerialCode);
         if (_recruitSerialCodes.length === 1 && _recruitSerialCodes[0] === '') {
             _recruitSerialCodes = [];
         }
+        // if (dataSource == 'ONSITE_DATA') {
+        //     _recruitSerialCodes = onSiteFilterJob.map(item => item.recruitSerialCode);
+        //     if (_recruitSerialCodes.length === 1 && _recruitSerialCodes[0] === '') {
+        //         _recruitSerialCodes = [];
+        //     }
+        // }else{
+        //     _recruitSerialCodes = channelListFilterJob.map(item => item.recruitSerialCode);
+        //     if (_recruitSerialCodes.length === 1 && _recruitSerialCodes[0] === '') {
+        //         _recruitSerialCodes = [];
+        //     }
+        // }
+
         let params = {
             pageNo: _pageNo,
             pageSize,
@@ -285,7 +298,7 @@ const Index = observer(({ store }) => {
         setChooseObjList([]);
         setChooseList([]);
         setChooseAll(false);
-        setList(list=>{
+        setList(list => {
             let _list = list.map(item => {
                 item.isChoosed = false;
                 return item
@@ -530,6 +543,14 @@ const Index = observer(({ store }) => {
         })
     }
 
+    const goFilterJob = () => {
+        if (dataSource == 'ONSITE_DATA') {
+            Taro.navigateTo({ url: `/pages/talentsPackage/multipleFilterJob/index?type=5&title=选择岗位` })
+        } else {
+            Taro.navigateTo({ url: `/pages/talentsPackage/multipleFilterJob/index?type=6&title=选择岗位` })
+        }
+    }
+
     return (
         <View className='container'>
             <View className='my_header'>
@@ -553,7 +574,9 @@ const Index = observer(({ store }) => {
 
             <View className='search_wrapper'>
                 <View className='filter_wrapper'>
-                    <View className='filter_wrap_item' onClick={() => { Taro.navigateTo({ url: `/pages/talentsPackage/multipleFilterJob/index?type=5&title=选择岗位` }) }}>
+                    <View className='filter_wrap_item' onClick={() => {
+                        Taro.navigateTo({ url: `/pages/talentsPackage/multipleFilterJob/index?type=5&title=选择岗位&myData=${dataSource == 'OWN_REPORT' ? 1 : ''}` })
+                    }}>
                         <View>{onSiteFilterJob.length === 1 ? onSiteFilterJob[0].title : onSiteFilterJob[0].title + '等' + onSiteFilterJob.length + '个岗位'}</View>
                         <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>
                     </View>
@@ -589,7 +612,7 @@ const Index = observer(({ store }) => {
                 <View className='search_total'>
                     <View className='search_total_left'>共计 <Text>{totalCount}</Text> 人</View>
                     <View className='search_total_right_wrap'>
-                        <View className='search_total_right_item' onClick={()=>{
+                        <View className='search_total_right_item' onClick={() => {
                             Taro.navigateTo({ url: '/pages/newPackage/scanMultiple/index' })
                         }}>批量识别</View>
                         <View className='search_total_right_item' onClick={() => Taro.navigateTo({ url: '/pages/newPackage/newWorker/index?entryChannel=SOURCE&onSite=1' })}>
