@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-06-27 14:30:49
+ * @LastEditTime: 2025-07-08 17:35:29
  * @Description:
  */
 import React, { useState, useEffect } from 'react'
@@ -263,12 +263,13 @@ const Index = observer(({ store }) => {
     const exchangeJob = () => {
         if (!myPermissions.includes('14')) {
             return Taro.showToast({ title: '暂无权限', icon: 'none' });
-        } else {
-            if (role === 'CUSTOMER') {
-                Taro.showToast({ title: '您无法修改', icon: 'none' });
-                return;
-            }
-        }
+        } 
+        // else {
+        //     if (role === 'CUSTOMER') {
+        //         Taro.showToast({ title: '您无法修改', icon: 'none' });
+        //         return;
+        //     }
+        // }
         setShowExchangeModel(true);
     }
 
