@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-08 11:54:05
+ * @LastEditTime: 2025-07-10 09:39:44
  * @Description:
  */
 
@@ -82,7 +82,7 @@ const Index = observer(({ store }) => {
                 data.responses[i].selected = false;
             }
             let types = [1, 2, 5, 6, 7, 8];
-            if (types.includes(router.params.type) && !searchValue) {
+            if (types.includes(Number(router.params.type)) && !searchValue) {
                 if (_pageNo === 1) {
                     let obj = {
                         title: '全部岗位',

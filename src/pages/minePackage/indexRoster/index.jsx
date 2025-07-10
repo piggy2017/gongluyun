@@ -2,14 +2,14 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-07-07 11:42:26
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-08 11:45:34
+ * @LastEditTime: 2025-07-09 16:35:41
  * @Description: 
  */
 
 
 import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro';
-import { View, Image, Button, ScrollView, Text, Block, Input, RootPortal, Textarea } from '@tarojs/components'
+import { View, Image, Button, ScrollView, Text, Block, Input } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, throttleCustom, throttle, debounce, getStatus, getColor } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
@@ -18,16 +18,16 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import './index.scss'
 
 import CustomDate from '@/components/customDate';
-import NewUpdateStatus from '@/components/newUpdateStatus';
+import IndexRosterUpdateStatus from '@/components/indexRosterUpdateStatus';
 
-import { contractsgetRoster, contractsSign, updateInterviewer, batchUpdateInterviewer, downloadRoster } from '@/util/api'
+import { employedList, contractsgetRoster, contractsSign, updateInterviewer, batchUpdateInterviewer, downloadRoster } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
     const {
         userStore: { role },
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight, platform },
-        businessStore: { channelListSupplier, setChannelListSupplier, adminRosterFilterJob, setAdminRosterFilterJob, onsiteRosterFilterJob, setOnsiteRosterFilterJob
+        businessStore: { setEditClientInfos, channelListSupplier, setChannelListSupplier, adminRosterFilterJob, setAdminRosterFilterJob, onsiteRosterFilterJob, setOnsiteRosterFilterJob
         },
     } = store
 
@@ -67,8 +67,6 @@ const Index = observer(({ store }) => {
         filterTime: "全部日期",
         startDate: ""
     });
-
-    const [dataSource, setDataSource] = useState('ONSITE_DATA');   // 由谁录入的求职者 ONSITE_DATA-他人上报数据 OWN_REPORT-由我上报数据
     const [showEditStatus, setShowEditStatus] = useState(false);
 
     useDidShow(() => {
@@ -152,16 +150,14 @@ const Index = observer(({ store }) => {
             pageSize,
             seekState: tabList[currentTab].state,
             searchInfo: searchValue,
-            // recruitSerialCode: onSiteFilterJob.recruitSerialCode,
             recruitSerialCodes: _recruitSerialCodes,
             channelCodes: _channelCodes,
-            source: '',
             dateRange: dateObj.dateRange,
             startDate: dateObj.startDate,
             endDate: dateObj.endDate,
         }
         console.log("params", params);
-        const { code, data } = await contractsgetRoster(params);
+        const { code, data } = await employedList(params);
         console.log("获取名单列表", code, data);
         setCustomRequestParams({ ...params });
         Taro.hideLoading();
@@ -219,6 +215,7 @@ const Index = observer(({ store }) => {
 
     const showOptionFunc = (e, obj, index) => {
         if (batchOperations) return;
+        if (obj.seekState === 'RESIGN') return;   // 已离职的状态不可修改
         e.stopPropagation();
         setShowEditStatus(true);
         setEditCustom(obj);
@@ -262,6 +259,10 @@ const Index = observer(({ store }) => {
     }
 
     const editBtnFunc = () => {                // 点击下方的修改状态按钮
+        if (currentTab === 2) {  // 已离职不可修改
+            Taro.showToast({ title: '当前状态不可修改', icon: 'none', duration: 2000 });
+            return;
+        }
         if (chooseObjList.length > 0) {
             // setShowbottomOptions(!showbottomOptions);
             setShowEditStatus(true);
@@ -292,9 +293,9 @@ const Index = observer(({ store }) => {
                 return _list
             })
         } else {
-            Taro.navigateTo({
-                url: `/pages/talentsPackage/clientDetail/index?uid=${obj.uuid}&myClientCount=${totalCount}&index=${index * 1 + 1}&type=1&notEdit=${dataSource === 'OWN_REPORT' ? 1 : ''}`
-            })
+            // Taro.navigateTo({
+            //     url: `/pages/talentsPackage/clientDetail/index?uid=${obj.uuid}&myClientCount=${totalCount}&index=${index * 1 + 1}&type=1&notEdit=${dataSource === 'OWN_REPORT' ? 1 : ''}`
+            // })
         }
     }
 
@@ -311,23 +312,6 @@ const Index = observer(({ store }) => {
             })
             return _list
         })
-    }
-
-    const signUpFunc = async (e, obj, index) => {
-        if (batchOperations) return;
-        e.stopPropagation();
-        const { uuid } = obj;
-        Taro.showLoading({ title: '签到中...' });
-        const { code, data, msg } = await contractsSign({ uuid });
-        Taro.hideLoading();
-        if (code === 200) {
-            Taro.showToast({ title: '签到成功', icon: 'none', duration: 2000 });
-            setTimeout(() => {
-                getList(1);
-            }, 1500);
-        } else {
-            Taro.showToast({ title: msg, icon: 'none', duration: 2000 });
-        }
     }
 
     const changeItemState = (state, reason, date) => {    // 单个修改状态
@@ -459,30 +443,6 @@ const Index = observer(({ store }) => {
         }
     }
 
-    const copyFunc = (e, obj) => {
-        console.log("obj", obj)
-        e.stopPropagation();
-        let _sex = obj.sex === 0 ? '男' : obj.sex === 1 ? '女' : ''
-        let _text = '';
-        _text += '姓名:' + obj.name + '\n'
-        _text += '手机号码:' + obj.phone + '\n'
-        _text += '年龄:' + obj.age + '\n'
-        _text += '性别:' + _sex + '\n'
-        _text += '身份证号:' + (obj.idCardNo ? obj.idCardNo : '') + '\n'
-        _text += '面试时间:' + obj.interviewDate + '\n'
-
-        console.log("复制的内容:", _text);
-        Taro.setClipboardData({
-            data: _text,
-            success: () => {
-                Taro.showToast({
-                    title: '复制成功',
-                    icon: 'none'
-                })
-            }
-        })
-    }
-
     const searchFunc = throttle(() => {
         getList(1);
         setgoonLoad(true);
@@ -523,13 +483,23 @@ const Index = observer(({ store }) => {
         Taro.navigateTo({ url: `/pages/talentsPackage/multipleFilterJob/index?type=${role === 'ADMIN' ? 7 : 8}&title=选择岗位` })
     }
 
+    const goEdit = (e, item) => {
+        e.stopPropagation();
+        setEditClientInfos({ ...item });
+        setTimeout(() => {
+            Taro.navigateTo({
+                url: `/pages/minePackage/indexRosterEdit/index`
+            })
+        }, 500);
+    }
+
     return (
         <View className='container'>
             <View className='my_header'>
                 <View className='my_header_hr' style={`--statusBarHeight:${statusTitleHeight}px;`}></View>
                 <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
                     <Image className='my_header_back' src={Taro.$cdnBackIcon} onClick={() => {
-                        Taro.navigateBack({ delta: 1 }); 
+                        Taro.navigateBack({ delta: 1 });
                     }}></Image>
                     <View className='search_content'>
                         <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
@@ -640,32 +610,45 @@ const Index = observer(({ store }) => {
 
                                         </View>
                                         <View className='roster_item_detail'>
-                                            <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.ethnicity) ? '·' : ''}{item.ethnicity ? item.ethnicity : ''}{item.ethnicity && item.idCardNo ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
+                                            <View className='roster_item_detail_content'>{item.age ? item.age + '岁·' : ''}{item.sex === 0 ? '男' : item.sex === 1 ? '女' : ''}{((item.sex === 0 || item.sex === 1) && item.idCardNo) ? '·' : ''}{item.idCardNo ? item.idCardNo : ''}</View>
                                         </View>
                                         <View className='roster_item_job'>{item.recruitTitle}</View>
                                         {
                                             item.sourceDesc && <View className='roster_item_job'>来源：{item.sourceDesc}</View>
                                         }
-                                        <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
+                                        {
+                                            item.interviewDate && <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
+                                        }
+                                        {
+                                            item.employedDate && <View className='roster_item_time'>入职时间：{item.employedDate}</View>
+                                        }
+                                        {
+                                            item.resignDate && <View className='roster_item_time'>离职时间：{item.resignDate}</View>
+                                        }
                                         {
                                             item.remark && <View className='roster_item_time'>备注：{item.remark}</View>
                                         }
                                         {
-                                            item.company && <View className='roster_item_time'>公司简称：{item.company}</View>
+                                            item.agentName && <View className='roster_item_time'>推荐人：{item.agentName}</View>
+                                        }
+                                        {
+                                            item.companyName && <View className='roster_item_time'>公司简称：{item.companyName}</View>
+                                        }
+                                        {
+                                            item.emergencyContact && <View className='roster_item_time'>紧急联系人：{item.emergencyContact} {item.emergencyPhoneNo}</View>
                                         }
                                     </View>
                                     <View className='roster_item_wrap_right'>
-                                        {
-                                            item.seekState === 'SCHEDULED_INTERVIEW' &&
-                                            <View className='roster_item_detail_status1' onClick={(e) => signUpFunc(e, item, index)}>签到</View> ||
-                                            <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }} onClick={(e) => showOptionFunc(e, item, index)}>
-                                                <View>{getStatus(item.seekState, 1)}</View>
+                                        <View className='roster_item_detail_status' style={{ color: getColor(item.seekState) }} onClick={(e) => showOptionFunc(e, item, index)}>
+                                            <View>{getStatus(item.seekState, 1)}</View>
+                                            {
+                                                item.seekState === 'EMPLOYED' &&
                                                 <AtIcon value='chevron-down' size='14' color={getColor(item.seekState)}></AtIcon>
-                                            </View>
-                                        }
+                                            }
+                                        </View>
                                     </View>
 
-                                    <View className='item_title_copy' onClick={(e) => copyFunc(e, item)}>一键复制</View>
+                                    <View className='item_title_copy' onClick={(e) => goEdit(e, item)}>编辑</View>
                                 </View>
                                 {
                                     batchOperations && <Image className='roster_item_choose' src={`${Taro.$cdnUrl}/index/index_icon2${item.isChoosed ? 7 : 8}.webp`}></Image>
@@ -691,7 +674,7 @@ const Index = observer(({ store }) => {
 
             {/* 新的修改状态 */}
             <Block>
-                <NewUpdateStatus showPicker={showEditStatus} currentStatus={editCustom?.seekState} onClose={() => { setShowEditStatus(false) }} onChange={newEditStatusFunc}></NewUpdateStatus>
+                <IndexRosterUpdateStatus showPicker={showEditStatus} currentStatus={editCustom?.seekState} onClose={() => { setShowEditStatus(false) }} onChange={newEditStatusFunc}></IndexRosterUpdateStatus>
             </Block>
 
             {/* 底部操作栏 */}

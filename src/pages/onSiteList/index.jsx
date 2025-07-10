@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-08 11:52:11
+ * @LastEditTime: 2025-07-10 09:40:13
  * @Description:
  */
 
@@ -543,13 +543,6 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const goFilterJob = () => {
-        if (dataSource == 'ONSITE_DATA') {
-            Taro.navigateTo({ url: `/pages/talentsPackage/multipleFilterJob/index?type=5&title=选择岗位` })
-        } else {
-            Taro.navigateTo({ url: `/pages/talentsPackage/multipleFilterJob/index?type=6&title=选择岗位` })
-        }
-    }
 
     return (
         <View className='container'>

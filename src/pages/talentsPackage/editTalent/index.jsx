@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-26 11:13:15
+ * @LastEditTime: 2025-07-09 13:45:45
  * @Description: 人才库 - 编辑人才信息页面
  */
 
@@ -202,7 +202,6 @@ const Index = observer(({ store }) => {
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
-
             </View>
 
             <View className='project_group'>

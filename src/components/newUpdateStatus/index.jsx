@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-23 11:41:37
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-04 11:56:50
+ * @LastEditTime: 2025-07-09 16:26:31
  * @Description: 更改用户状态  未到面 已到面 面试失败 面试通过 已离职 已入职
  */
 
@@ -72,12 +72,6 @@ const NewUpdateStatus = observer(({ showPicker, onChange, currentStatus, bottomH
         }
         setStatusList(_statusList);
     }, [role, currentStatus])
-
-    // useEffect(() => {
-    //     if (currentStatus) {
-    //         setStatus(currentStatus);
-    //     }
-    // }, [currentStatus])
 
     const chooseStatusFunc = (obj, index) => {
         console.log("chooseStatusFunc", obj, index);

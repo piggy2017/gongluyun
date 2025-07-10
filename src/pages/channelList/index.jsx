@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-27 10:24:29
+ * @LastEditTime: 2025-07-10 10:18:06
  * @Description:
  */
 
@@ -104,6 +104,7 @@ const Index = observer(({ store }) => {
     const [chooseCoopsContent, setChooseCoopsContent] = useState('');  // 选择的合作模式
 
     const [chooseObjList, setChooseObjList] = useState([]);              // 选中的列表
+    const [showCoopCopy, setShowCoopCopy] = useState(false);            // 是否显示一键粘贴
     // 页面加载时获取名单列表
     useDidShow(() => {
         getList(1);
@@ -204,12 +205,14 @@ const Index = observer(({ store }) => {
             setGoonLoad3(true);
             setPageNo3(data.pageNo);
             setRequestState3(2);
+            setShowCoopCopy(false);
         } else {
             setGoonLoad3(false);
             setRequestState3(3);
             if (_pageNo === 1) {
                 setModelList([]);
                 setChooseCoopsContent('');
+                setShowCoopCopy(true);
             }
         }
     }
@@ -448,8 +451,8 @@ const Index = observer(({ store }) => {
         setChooseList([]);
         setChooseObjList([]);
         setChooseAll(false);
-        setList(list=>{
-            let _list = list.map(item=>{
+        setList(list => {
+            let _list = list.map(item => {
                 item.isChoosed = false;
                 return item;
             })
@@ -571,7 +574,7 @@ const Index = observer(({ store }) => {
                             Taro.showToast({ title: '点击右上方的按钮然后分享至微信进行查看', icon: 'none', duration: 3000 });
                         }
                     }
-                    
+
                     const filePath = result.tempFilePath;  // 临时文件路径
                     setShowExportModel(false);
                     setTimeout(() => {
@@ -593,19 +596,13 @@ const Index = observer(({ store }) => {
 
     const setPatternFunc = () => {
         console.log("电击 合作模式 按钮");
-        // if (list.length === 0) {
-        //     console.log(111)
-        //     return Taro.showToast({ title: '暂无数据', icon: 'none' });
-        // }
+
         if (chooseObjList.length === 0) {
             console.log(222)
             return Taro.showToast({ title: '请先选择用户', icon: 'none' });
         }
-
         // 先判断是否选择了岗位,必须先选择了岗位
         // 判断是否有合作模式,如果有合作模式,则弹窗
-        // setShowCoopModel(true);
-        // return
         console.log('channelListFilterJob', channelListFilterJob)
         if (channelListFilterJob.length === 1 && channelListFilterJob[0].recruitSerialCode === "") {
             console.log(333)
@@ -658,7 +655,7 @@ const Index = observer(({ store }) => {
 
     const getChoosePattern = async () => {   // 批量设置合作模式
         console.log("选择的模式", chooseCoopsContent);
-        if(modelList.length === 0) {
+        if (modelList.length === 0) {
             setChooseCoopsContent('');
             return Taro.showToast({ title: '暂无数据', icon: 'none' });
         }
@@ -731,6 +728,25 @@ const Index = observer(({ store }) => {
                 return item;
             })
             return list;
+        })
+    }
+
+    const goStic = () => {
+        Taro.getClipboardData({
+            success: function (res) {
+                console.log('res')
+                // setFormListData(index, 'phone', res.data);
+                setModelList(modelList => {
+                    let _modelList = JSON.parse(JSON.stringify(modelList));
+                    let obj = {
+                        content: res.data,
+                        selected: false,
+                        isEdit: false
+                    }
+                    _modelList.unshift(obj)
+                    return _modelList;
+                })
+            }
         })
     }
 
@@ -1055,16 +1071,23 @@ const Index = observer(({ store }) => {
                                     <View>选择合作模式</View>
                                     <AtIcon value='close' size='14' color='#222222' onClick={() => { setShowCoopModel(false) }}></AtIcon>
                                 </View>
-                                <View className='search_content'>
-                                    <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
-                                    <Input className='search_input'
-                                        placeholder='搜索合作模式'
-                                        confirmType='search'
-                                        placeholderStyle='color: #777777;'
-                                        onInput={(e) => { setModelValue(e.detail.value) }}
-                                        onConfirm={() => searchFunc(3)}
-                                        value={modelValue}></Input>
+                                <View className='search_content_wrap'>
+                                    <View className='search_content' style={`width:${showCoopCopy ? 580 : 694}rpx;`}>
+                                        <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+                                        <Input className='search_input'
+                                            placeholder='搜索合作模式'
+                                            confirmType='search'
+                                            placeholderStyle='color: #777777;'
+                                            onInput={(e) => { setModelValue(e.detail.value) }}
+                                            onConfirm={() => searchFunc(3)}
+                                            value={modelValue}></Input>
+                                    </View>
+                                    {
+                                        showCoopCopy &&
+                                        <View className='no_data_copy' onClick={goStic}>粘贴</View>
+                                    }
                                 </View>
+
                                 <ScrollView scrollY
                                     className='sup_scrollWrapper sup_scrollWrapper2'
                                     scrollWithAnimation
@@ -1075,6 +1098,7 @@ const Index = observer(({ store }) => {
                                     onScrollToLower={() => handleScrollToLower(3)}
                                     onRefresherRefresh={() => handleScrollToUpper(3)}
                                     lowerThreshold={300}>
+
                                     {
                                         modelList.length > 0 && modelList.map((item, index) => {
                                             return (
@@ -1135,7 +1159,7 @@ const Index = observer(({ store }) => {
                                     }
                                     {
                                         modelList.length === 0 && requestState3 === 3 &&
-                                        <Taro.NoData></Taro.NoData>
+                                        <Taro.NoData padding='150'></Taro.NoData>
                                     }
                                 </ScrollView>
 

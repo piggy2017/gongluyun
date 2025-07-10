@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-03 11:16:02
+ * @LastEditTime: 2025-07-09 14:49:12
  * @Description:
  */
 
@@ -621,6 +621,10 @@ export const supplierAdd = params => { // 【供应商】新增供应商
 };
 export const authSign = params => { // 身份证批量识别签到
     return http(API_BASE_URL + '/contracts/authSign', params, "POST", { "Content-Type": "application/json" });
+};
+
+export const employedList = params => { // 入职列表
+    return http(API_BASE_URL + '/contracts/employedList', params, "POST", { "Content-Type": "application/json" });
 };
 
 
