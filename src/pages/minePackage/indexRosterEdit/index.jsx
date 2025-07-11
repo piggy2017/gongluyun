@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-07-09 14:03:52
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-09 16:42:48
+ * @LastEditTime: 2025-07-10 14:47:25
  * @Description: 
  */
 
@@ -84,7 +84,7 @@ const Index = observer(({ store }) => {
     const datePickerSelect = (e) => {
         console.log("seleceDate", e);
         // setDateText(e);
-        setFormData({ ...formData, interviewDate: e })
+        setFormData({ ...formData, contractExpiry: e })
     }
 
     const sourcePickerSelect = (e) => {
@@ -385,8 +385,8 @@ const Index = observer(({ store }) => {
                             className='new_input'
                             placeholder='请输入结算专员'
                             placeholderStyle='color: #777777;'
-                            value={formData.settlementofficer}
-                            onInput={(e) => setFormData({ ...formData, settlementofficer: e.detail.value })}
+                            value={formData.settlementOfficer}
+                            onInput={(e) => setFormData({ ...formData, settlementOfficer: e.detail.value })}
                         ></Input>
                     </View>
                 </View>
@@ -401,7 +401,14 @@ const Index = observer(({ store }) => {
 
                 <View className='project_item project_item_border'>
                     <View className='project_item_label'>合同到期日期</View>
-                    <View className='project_item_right'>
+                    <View className='project_item_right' onClick={() => {
+                        setShowDatePicker(true);
+                    }}>
+                        <Text className={`${formData.contractExpiry ? 'project_item_text_active' : 'project_item_text'}`}>{formData.contractExpiry ? formData.contractExpiry : '合同到期日期'}</Text>
+                        <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
+                    </View>
+
+                    {/* <View className='project_item_right'>
                         <Input
                             className='new_input'
                             placeholder='请输入合同到期日期'
@@ -409,7 +416,7 @@ const Index = observer(({ store }) => {
                             value={formData.contractExpiry}
                             onInput={(e) => setFormData({ ...formData, contractExpiry: e.detail.value })}
                         ></Input>
-                    </View>
+                    </View> */}
                 </View>
 
                 <View className='project_item project_item_border'>
@@ -524,7 +531,7 @@ const Index = observer(({ store }) => {
             </View>
 
             <Block>
-                <WorkerJobType isShow={chooseJob}
+                {/* <WorkerJobType isShow={chooseJob}
                     initData={(jobTypes && jobTypes.length > 0) ? jobTypes : []}
                     multiple={true}
                     onClose={(e) => {
@@ -542,7 +549,7 @@ const Index = observer(({ store }) => {
                         }
                         setChooseJob(false);
                     }}
-                ></WorkerJobType>
+                ></WorkerJobType> */}
             </Block>
 
             <Block>

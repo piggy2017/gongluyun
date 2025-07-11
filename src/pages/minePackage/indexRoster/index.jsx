@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-07-07 11:42:26
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-09 16:35:41
+ * @LastEditTime: 2025-07-10 11:50:15
  * @Description: 
  */
 
@@ -20,7 +20,7 @@ import './index.scss'
 import CustomDate from '@/components/customDate';
 import IndexRosterUpdateStatus from '@/components/indexRosterUpdateStatus';
 
-import { employedList, contractsgetRoster, contractsSign, updateInterviewer, batchUpdateInterviewer, downloadRoster } from '@/util/api'
+import { employedList, contractsgetRoster, contractsSign, updateInterviewer, batchUpdateInterviewer, downloadRoster,exportRoster } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
@@ -397,8 +397,8 @@ const Index = observer(({ store }) => {
         let params = { ...customRequestParams };
         delete params.pageNo;
         delete params.pageSize;
-        const { code, data, msg } = await downloadRoster(params);
-        console.log("downloadRoster", code, data, msg);
+        const { code, data, msg } = await exportRoster(params);
+        console.log("exportRoster", code, data, msg);
         Taro.hideLoading();
         if (code === 200) {
             let _downLoadSrc = data;

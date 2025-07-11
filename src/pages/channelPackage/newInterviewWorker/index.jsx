@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-09 17:22:10
+ * @LastEditTime: 2025-07-11 09:31:40
  * @Description:
  */
 
@@ -819,7 +819,7 @@ const Index = observer(({ store }) => {
                                                 }} className={`sup_item ${item.selected ? 'sup_item_active' : ''}`} key={index}>
                                                     {/* {item.title} */}
                                                     <View>{item.title}</View>
-                                                    <View>{item.company}</View>
+                                                    <View>{item.companyShortName}</View>
                                                 </View>
                                             )
                                         })

@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-09 14:49:12
+ * @LastEditTime: 2025-07-11 13:54:11
  * @Description:
  */
 
 import http from "./request"
 
-export const env = 'test';
+export const env = 'prod';
 const base = env === 'prod' ? 'https://sa-api.apujiyu.com' : 'https://sa-test.apujiyu.com/'
 export const API_BASE_URL = base + "/mini"
 // const API_BASE_URL_JOB = "https://testios.joymian.com/jobfly/order"
@@ -625,6 +625,9 @@ export const authSign = params => { // 身份证批量识别签到
 
 export const employedList = params => { // 入职列表
     return http(API_BASE_URL + '/contracts/employedList', params, "POST", { "Content-Type": "application/json" });
+};
+export const exportRoster = params => { // 入职列表
+    return http(API_BASE_URL + '/contracts/exportRoster', params, "POST", { "Content-Type": "application/json" });
 };
 
 
