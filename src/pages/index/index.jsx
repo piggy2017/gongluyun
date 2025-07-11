@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-28 14:24:44
+ * @LastEditTime: 2025-07-07 11:50:13
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -26,7 +26,6 @@ const Index = observer(({ store }) => {
 
   const [drainageDate, setDrainageDate] = useState('TODAY');
   // const [drainageDate, setDrainageDate] = useState('YESTERDAY');
-  const [transformDate, setTransformDate] = useState('YESTERDAY');
   const [showAddType, setShowAddType] = useState(false);
 
   const [todayData, setTodayData] = useState('');        //  今日数据
@@ -53,7 +52,7 @@ const Index = observer(({ store }) => {
   }, [isLogin, role, userInfo]);
 
   Taro.useShareAppMessage(res => {
-    console.log("求职者分享 userInfo.userSerialCode", userInfo, userInfo?.userSerialCode);
+    console.log("首页分享 userInfo.userSerialCode", userInfo, userInfo?.userSerialCode);
     if (res.from === 'button') {
       // 来自页面内转发按钮
       console.log(res.target)
@@ -78,11 +77,9 @@ const Index = observer(({ store }) => {
         getTodayData();
         getPoorData();
         getDashDrainageData();
-        // getconvertData();
       }
       if (role === 'CUSTOMER') {   // 客服
         getCustomerTodo();
-        // getPoorData();
         getDashDrainageData();
       }
       if (role === 'ON_SITE') {  // 驻场
@@ -95,26 +92,19 @@ const Index = observer(({ store }) => {
       // 数据加载完成后停止下拉刷新
       Taro.stopPullDownRefresh();
     }, 1500);
-    // Taro.stopPullDownRefresh();
   })
 
   useDidShow(() => {
     if (isLogin) {
-      // refreshUserInfo();
-      // setMyPermissions();
       throttleFunc();
       setSourceList();
     }
     if (isLogin && role === 'ADMIN') {
       getTodayData();
-      // getDashDrainageData();
-      // getconvertData();
       getPoorData();
     }
     if (role === 'CUSTOMER') {   // 客服
       getCustomerTodo();
-      // getPoorData();
-      // getDashDrainageData();
     }
     if (role === 'ON_SITE') {    // 驻场
       getOnSiteToDo();
@@ -138,11 +128,7 @@ const Index = observer(({ store }) => {
 
   useEffect(() => {
     if (isLogin) {
-      // refreshUserInfo();
-      // setMyPermissions();
       throttleFunc();
-      // setSourceList();
-
       if (role === 'ADMIN') {
         getfeedbackData();
       }
@@ -152,7 +138,7 @@ const Index = observer(({ store }) => {
   const throttleFunc = throttleCustom(() => {
     refreshUserInfo();
     setMyPermissions();
-    if(role === 'ADMIN' || role === 'CUSTOMER'){
+    if (role === 'ADMIN' || role === 'CUSTOMER') {
       getDashDrainageData();
     }
   }, 500)
@@ -164,12 +150,6 @@ const Index = observer(({ store }) => {
     }
   }, [drainageDate])
 
-  useEffect(() => {
-    if (isLogin && (role === 'ADMIN' || role === 'SEEK')) {
-      // getconvertData();
-    }
-  }, [transformDate])
-
   const getfeedbackData = async () => {
     const { code, data } = await feedBackInfoSta({});
     console.log("获取反馈数据-getfeedbackData:", code, data);
@@ -177,7 +157,6 @@ const Index = observer(({ store }) => {
       setFeedbackInfo(data);
     }
   }
-
 
   const getDashDrainageData = throttleCustom(async () => {      // 获取引流与转化数据
     const { code, data, msg } = await dashDrainageData({ companySerialCode: companyInfo.companySerialCode, dateRange: drainageDate });
@@ -187,7 +166,7 @@ const Index = observer(({ store }) => {
     } else {
       Taro.showToast({ title: msg, icon: 'none', duration: 2000 })
     }
-  },500)
+  }, 500)
 
   const getCustomerTodo = async () => {    // 获取客服待办
     const { code, data } = await customerTodo({ type: 'EMPLOYING_UNIT', companySerialCode: companyInfo.companySerialCode, dateRange: 'TODAY' });
@@ -280,6 +259,7 @@ const Index = observer(({ store }) => {
       })
     }
   }
+
   const getRole = (type) => {
     if (type === 'ADMIN') {
       return '管理员'
@@ -439,60 +419,15 @@ const Index = observer(({ store }) => {
               <View>新增招聘</View>
             </View>
           }
+
+          {
+            (role === 'ADMIN' || role === 'ON_SITE') &&
+            <View className='entry_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/indexRoster/index')}>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_90.webp`}></Image>
+              <View>花名册</View>
+            </View>
+          }
         </View>
-
-        {
-          // (role === "ADMIN" || role === "CUSTOMER") &&
-          // <View className='btn_wrapper'>
-          //   {
-          //     role === "ADMIN" &&
-          //     <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/talentsPackage/talents/index')}>
-          //       <Image src={`${Taro.$cdnUrl}/index/index_icon4.webp`}></Image>
-          //       <View>人才库</View>
-          //     </View>
-          //   }
-
-          //   <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/minePackage/dataReport/index')}>
-          //     <Image src={`${Taro.$cdnUrl}/index/index_icon5.webp`}></Image>
-          //     <View>员工数据</View>
-          //   </View>
-          //   {
-          //     role === "ADMIN" &&
-          //     <View className='btn_wrap_item' onClick={() => navigateVerifiedFunc('/pages/supplierPackage/supplierManage/index')}>
-          //       <Image src={`${Taro.$cdnUrl}/supplier/supplier_1.webp`}></Image>
-          //       <View>供应商</View>
-          //     </View>
-          //   }
-          // </View>
-        }
-
-        {
-          // (role === "ADMIN" || role === "CUSTOMER") &&
-          // <View className='enter_wrapper'>
-          //   <View className='enter_wrap_item' onClick={() => navigateVerifiedFunc('/pages/newPackage/newWorker/index?entryChannel=SOURCE')}>
-          //     <Image src={`${Taro.$cdnUrl}/index/index_icon6.webp`}></Image>
-          //     <View>录入求职线索</View>
-          //   </View>
-          //   <View className='enter_wrap_item' style={`margin-left:190rpx;`} onClick={feedBackList}>
-          //     <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
-          //     <View>录入面试信息</View>
-          //   </View>
-          // </View>
-        }
-
-        {
-          // role === 'ON_SITE' &&  // /pages/talentsPackage/filterJob/index?type=6&title=选择岗位  
-          // <View className='enter_wrapper'>
-          //   <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/newPackage/onSiteProject/index?type=2')}>
-          //     <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
-          //     <View>签到码</View>
-          //   </View>
-          //   <View className='enter_wrap_item' onClick={() => navigateFunc(1, '/pages/onSiteList/index', 2)}>
-          //     <Image src={`${Taro.$cdnUrl}/index/index_icon7.webp`}></Image>
-          //     <View>导出名单</View>
-          //   </View>
-          // </View>
-        }
 
         {
           role === "ADMIN" &&

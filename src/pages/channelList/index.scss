@@ -860,6 +860,24 @@
                     line-height: normal;
                 }
 
+                .search_content_wrap{
+                    @include flex-center(space-between);
+                    margin: 0 auto;
+                    width: 694rpx;
+                    .no_data_copy{
+                        width: 100rpx;
+                        height: 60rpx;
+                        color: #FFF;
+                        font-family: "PingFang SC";
+                        font-size: 28rpx;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: 60rpx;
+                        background-color: #0483FF;
+                        border-radius: 8rpx;
+                        text-align: center;
+                    }
+                }
                 .search_content {
                     width: 694rpx;
                     height: 68rpx;
