@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-10 09:40:13
+ * @LastEditTime: 2025-07-14 10:25:00
  * @Description:
  */
 
@@ -568,7 +568,7 @@ const Index = observer(({ store }) => {
             <View className='search_wrapper'>
                 <View className='filter_wrapper'>
                     <View className='filter_wrap_item' onClick={() => {
-                        Taro.navigateTo({ url: `/pages/talentsPackage/multipleFilterJob/index?type=5&title=选择岗位&myData=${dataSource == 'OWN_REPORT' ? 1 : ''}` })
+                        Taro.navigateTo({ url: `/pages/talentsPackage/multipleFilterJob/index?type=5&title=选择岗位&myData=${dataSource == 'OWN_REPORT' ? 1 : ''}&dateRange=${dateObj.dateRange}&startDate=${dateObj.startDate}&endDate=${dateObj.endDate}` })
                     }}>
                         <View>{onSiteFilterJob.length === 1 ? onSiteFilterJob[0].title : onSiteFilterJob[0].title + '等' + onSiteFilterJob.length + '个岗位'}</View>
                         <AtIcon value='chevron-down' size='14' color='#000000'></AtIcon>

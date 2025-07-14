@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-10 09:39:44
+ * @LastEditTime: 2025-07-14 10:24:57
  * @Description:
  */
 
@@ -70,6 +70,9 @@ const Index = observer(({ store }) => {
 
         if (router.params.type == 5 && router.params.myData == 1) {
             params.dataType = 'OWN_REPORT';
+            params.dateRange = router.params.dateRange;
+            params.startDate = router.params.startDate;
+            params.endDate = router.params.endDate;
         }
 
         const { code, data } = await ((router.params.type == 5 || router.params.type == 8) ? jobSelectorByPossess(params) : contractsJobSelector(params));
