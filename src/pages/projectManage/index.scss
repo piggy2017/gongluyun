@@ -113,7 +113,7 @@
         }
     }
 
-    .filter_wrapper{
+    .filter_wrapper {
         padding: 32rpx 100rpx 36rpx 100rpx;
         @include flex-center(space-between);
         color: #000000;
@@ -123,6 +123,7 @@
         font-style: normal;
         font-weight: 400;
         line-height: normal;
+
         .filter_item {
             @include flex-center(flex-start);
 
@@ -235,7 +236,7 @@
                 }
             }
 
-            .project_item_compony{
+            .project_item_compony {
                 padding-left: 24rpx;
                 margin-top: 16rpx;
                 color: #666666;
@@ -295,7 +296,8 @@
                 font-weight: 500;
                 line-height: normal;
                 @include flex-center(space-between);
-                .project_item_bottom_item_g{
+
+                .project_item_bottom_item_g {
                     color: #777777;
                 }
             }
@@ -303,6 +305,69 @@
 
         .project_item:first-child {
             margin-top: 0rpx;
+        }
+
+        .Internal_item {
+            margin: 0 auto 20rpx auto;
+            width: 710rpx;
+            flex-shrink: 0;
+            background-color: #FFF;
+            border-radius: 20rpx;
+            padding-bottom: 20rpx;
+
+            .Internal_item_title {
+                padding: 26rpx 26rpx 0 24rpx;
+                color: #222222;
+                font-family: "PingFang SC";
+                font-size: 32rpx;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                @include flex-center(flex-start);
+
+                .Internal_item_title_sort {
+                    margin-right: 20rpx;
+                }
+
+                .Internal_item_title_unit {
+                    width: 650rpx;
+                    @include ellipsis();
+                }
+            }
+
+            .Internal_item_job {
+                padding: 12rpx 26rpx 0 24rpx;
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                @include ellipsis();
+            }
+
+            .Internal_item_content {
+                padding: 12rpx 26rpx 0 24rpx;
+                color: #666666;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                text{
+                    color:#F00000 ;
+                }
+            }
+
+            .Internal_item_update {
+                padding: 12rpx 26rpx 0 24rpx;
+                color: #999999;
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+            }
         }
     }
 }
