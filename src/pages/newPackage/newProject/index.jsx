@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-15 14:47:00
+ * @LastEditTime: 2025-07-15 15:22:13
  * @Description:
  */
 
@@ -485,7 +485,7 @@ const Index = observer(({ store }) => {
                 </View>
 
                 <View className='project_item project_item_border'>
-                    <View className='project_item_label'>内部绩效</View>
+                    <View className='project_item_label'>绩效管理</View>
                     <View className='project_item_right'>
                         <Input
                             type='number'
