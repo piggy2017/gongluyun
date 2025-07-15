@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 13:39:03
+ * @LastEditTime: 2025-07-15 14:54:38
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useDidShow, useDidHide } from '@tarojs/taro';
-import { View, Image, Input, ScrollView, Block } from '@tarojs/components'
+import { View, Image, Input, ScrollView, Block, Text } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce, throttle, throttleCustom } from '@/util/utils'
 import WorkerJobType from '@/components/workerJobType';
@@ -37,6 +37,7 @@ const Index = observer(({ store }) => {
 
   const [jobTypes, setJobTypes] = useState([]);          // 岗位类型
   const [chooseJob, setChooseJob] = useState(false);     // 选择岗位类型的弹窗
+  const [InternalPerformanceList, setInternalPerformanceList] = useState([]);
 
   useDidShow(() => {
     const _projectSearchValue = Taro.getStorageSync('projectSearchValue');
@@ -98,7 +99,11 @@ const Index = observer(({ store }) => {
     Taro.hideLoading();
     setIsRefresh(false);
     if (code === 200 && data?.responses?.length > 0) {
-      setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
+      if (type) {
+        setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
+      } else {
+        setInternalPerformanceList(_pageNo === 1 ? data.responses : [...InternalPerformanceList, ...data.responses]);
+      }
       setgoonLoad(true);
       setPageNo(data.pageNo);
       setRequestState(2);
@@ -106,7 +111,11 @@ const Index = observer(({ store }) => {
       setgoonLoad(false);
       setRequestState(3);
       if (_pageNo === 1) {
-        setList([]);
+        if (type) {
+          setList([]);
+        } else {
+          setInternalPerformanceList([]);
+        }
       }
     }
   }, 1000);
@@ -195,6 +204,7 @@ const Index = observer(({ store }) => {
         <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
           <View onClick={() => setTypeFunc('PROCESSING')} className={`header_item ${type === 'PROCESSING' ? 'header_item_active' : ''}`}>进行中</View>
           <View onClick={() => setTypeFunc('COMPLETED')} className={`header_item ${type === 'COMPLETED' ? 'header_item_active' : ''}`}>暂停面试</View>
+          <View onClick={() => setTypeFunc('')} className={`header_item ${type === '' ? 'header_item_active' : ''}`}>内部绩效</View>
         </View>
       </View>
       <View className='search_wrapper'>
@@ -270,89 +280,120 @@ const Index = observer(({ store }) => {
           lowerThreshold={300}
         >
           {
-            list.length > 0 && list.map((item, index) => {
-              return (
-                <View className='project_item' key={index} onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/projectDetail/index?contractsSerialCode=${item.serialCode}`)}>
-                  <View className='project_item_title'>
-                    <View className='project_item_title_left'>
-                      <View className='project_item_title_left_name'>{item.title}</View>
+            type === '' &&
+            <>
+              {
+                InternalPerformanceList.length > 0 && InternalPerformanceList.map((item, index) => {
+                  return (
+                    <View className='Internal_item' key={index} onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/projectDetail/index?contractsSerialCode=${item.serialCode}`)}>
+                      <View className='Internal_item_title'>
+                        <View className='Internal_item_title_sort'>{index * 1 + 1}</View>
+                        <View className='Internal_item_title_unit'>{item.company}</View>
+                      </View>
+                      <View className='Internal_item_job'>岗位：{item.title}</View>
+                      <View className='Internal_item_content'>内部绩效：<Text>{item.internalPerformance ? item.internalPerformance : '未填'}</Text></View>
+                      <View className='Internal_item_update'>更新时间：{item.updateDate ? item.updateDate : item.createDate}</View>
                     </View>
-                    {
-                      role != 'CUSTOMER' &&
-                      <>
+                  )
+                })
+              }
+              {
+                InternalPerformanceList.length >= 4 &&
+                <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
+              }
+
+              {
+                InternalPerformanceList.length === 0 && requestState === 3 &&
+                <Taro.NoData></Taro.NoData>
+              }
+            </> ||
+            <>
+              {
+                list.length > 0 && list.map((item, index) => {
+                  return (
+                    <View className='project_item' key={index} onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/projectDetail/index?contractsSerialCode=${item.serialCode}`)}>
+                      <View className='project_item_title'>
+                        <View className='project_item_title_left'>
+                          <View className='project_item_title_left_name'>{item.title}</View>
+                        </View>
                         {
-                          type === 'PROCESSING' && myPermissions.includes('8') &&
-                          <View className='project_item_title_right' onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/signinCode/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>
-                            <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
-                            <View>签到码</View>
-                          </View> ||
-                          type != 'PROCESSING' &&
-                          <View className='project_item_title_right_end'>已暂停</View>
+                          role != 'CUSTOMER' &&
+                          <>
+                            {
+                              type === 'PROCESSING' && myPermissions.includes('8') &&
+                              <View className='project_item_title_right' onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/signinCode/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)}>
+                                <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`}></Image>
+                                <View>签到码</View>
+                              </View> ||
+                              type != 'PROCESSING' &&
+                              <View className='project_item_title_right_end'>已暂停</View>
+                            }
+                          </>
                         }
-                      </>
-                    }
-                  </View>
-                  {
-                    item.company && <View className='project_item_compony'>{item.company}</View>
-                  }
-
-                  <View className='data_wrapper' style={`margin-top:${item.company ? '10rpx' : '18rpx'}`}>
-                    <View className='data_item'>
-                      <View className='data_item_value'>{item.numberRecruits}</View>
-                      <View className='data_item_label'>总需求</View>
-                    </View>
-                    <View className='data_item'>
-                      <View className='data_item_value'>{item.numberOnJob}</View>
-                      <View className='data_item_label'>在职人数</View>
-                    </View>
-                    <View className='data_item'>
-                      <View className='data_item_value'>{item.leaveRate}%</View>
-                      <View className='data_item_label'>离职率</View>
-                    </View>
-                    <View className='data_item'>
-                      <View className='data_item_value'>{item.supplierCount}</View>
-                      <View className='data_item_label'>供应商</View>
-                    </View>
-                  </View>
-
-                  <View className='project_item_bottom' style={`padding:${myPermissions.includes('9') ? '24rpx 60rpx' : '24rpx 110rpx'}`}>
-                    <View className={`project_item_bottom_item ${myPermissions.includes('11') ? '' : 'project_item_bottom_item_g'}`} onClick={(e) => {
-                      if (myPermissions.includes('11')) {
-                        navigateFunc(e, 1, `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)
-                      } else {
-                        e.stopPropagation();
-                        Taro.showToast({ title: '暂无权限', icon: 'none' })
+                      </View>
+                      {
+                        item.company && <View className='project_item_compony'>{item.company}</View>
                       }
-                    }}>名单</View>
-                    {
-                      myPermissions.includes('9') &&
-                      <View className={`project_item_bottom_item `} onClick={(e) => {
-                        e.stopPropagation();
-                        copyProjectFunc(item);
-                      }}>复制项目</View>
-                    }
-                    <View className={`project_item_bottom_item ${myPermissions.includes('12') ? '' : 'project_item_bottom_item_g'}`} onClick={(e) => {
-                      if (myPermissions.includes('12')) {
-                        navigateFunc(e, 1, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)
-                      } else {
-                        e.stopPropagation();
-                        Taro.showToast({ title: '暂无权限', icon: 'none' })
-                      }
-                    }}>录入求职者</View>
-                  </View>
-                </View>
-              )
-            })
-          }
 
-          {
-            list.length >= 4 &&
-            <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
-          }
+                      <View className='data_wrapper' style={`margin-top:${item.company ? '10rpx' : '18rpx'}`}>
+                        <View className='data_item'>
+                          <View className='data_item_value'>{item.numberRecruits}</View>
+                          <View className='data_item_label'>总需求</View>
+                        </View>
+                        <View className='data_item'>
+                          <View className='data_item_value'>{item.numberOnJob}</View>
+                          <View className='data_item_label'>在职人数</View>
+                        </View>
+                        <View className='data_item'>
+                          <View className='data_item_value'>{item.leaveRate}%</View>
+                          <View className='data_item_label'>离职率</View>
+                        </View>
+                        <View className='data_item'>
+                          <View className='data_item_value'>{item.supplierCount}</View>
+                          <View className='data_item_label'>供应商</View>
+                        </View>
+                      </View>
 
-          {
-            list.length === 0 && requestState === 3 &&
-            <Taro.NoData></Taro.NoData>
+                      <View className='project_item_bottom' style={`padding:${myPermissions.includes('9') ? '24rpx 60rpx' : '24rpx 110rpx'}`}>
+                        <View className={`project_item_bottom_item ${myPermissions.includes('11') ? '' : 'project_item_bottom_item_g'}`} onClick={(e) => {
+                          if (myPermissions.includes('11')) {
+                            navigateFunc(e, 1, `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)
+                          } else {
+                            e.stopPropagation();
+                            Taro.showToast({ title: '暂无权限', icon: 'none' })
+                          }
+                        }}>名单</View>
+                        {
+                          myPermissions.includes('9') &&
+                          <View className={`project_item_bottom_item `} onClick={(e) => {
+                            e.stopPropagation();
+                            copyProjectFunc(item);
+                          }}>复制项目</View>
+                        }
+                        <View className={`project_item_bottom_item ${myPermissions.includes('12') ? '' : 'project_item_bottom_item_g'}`} onClick={(e) => {
+                          if (myPermissions.includes('12')) {
+                            navigateFunc(e, 1, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)
+                          } else {
+                            e.stopPropagation();
+                            Taro.showToast({ title: '暂无权限', icon: 'none' })
+                          }
+                        }}>录入求职者</View>
+                      </View>
+                    </View>
+                  )
+                })
+              }
+
+              {
+                list.length >= 4 &&
+                <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
+              }
+
+              {
+                list.length === 0 && requestState === 3 &&
+                <Taro.NoData></Taro.NoData>
+              }
+            </>
           }
         </ScrollView>
       }
