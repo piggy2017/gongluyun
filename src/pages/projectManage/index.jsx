@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-15 14:54:38
+ * @LastEditTime: 2025-07-15 15:22:07
  * @Description: 
  */
 
@@ -204,7 +204,7 @@ const Index = observer(({ store }) => {
         <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
           <View onClick={() => setTypeFunc('PROCESSING')} className={`header_item ${type === 'PROCESSING' ? 'header_item_active' : ''}`}>进行中</View>
           <View onClick={() => setTypeFunc('COMPLETED')} className={`header_item ${type === 'COMPLETED' ? 'header_item_active' : ''}`}>暂停面试</View>
-          <View onClick={() => setTypeFunc('')} className={`header_item ${type === '' ? 'header_item_active' : ''}`}>内部绩效</View>
+          <View onClick={() => setTypeFunc('')} className={`header_item ${type === '' ? 'header_item_active' : ''}`}>绩效管理</View>
         </View>
       </View>
       <View className='search_wrapper'>
@@ -291,7 +291,7 @@ const Index = observer(({ store }) => {
                         <View className='Internal_item_title_unit'>{item.company}</View>
                       </View>
                       <View className='Internal_item_job'>岗位：{item.title}</View>
-                      <View className='Internal_item_content'>内部绩效：<Text>{item.internalPerformance ? item.internalPerformance : '未填'}</Text></View>
+                      <View className='Internal_item_content'>绩效管理：<Text>{item.internalPerformance ? item.internalPerformance : '未填'}</Text></View>
                       <View className='Internal_item_update'>更新时间：{item.updateDate ? item.updateDate : item.createDate}</View>
                     </View>
                   )
