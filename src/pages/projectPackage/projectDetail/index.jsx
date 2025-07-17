@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-04 11:59:17
+ * @LastEditTime: 2025-07-17 09:54:34
  * @Description:
  */
 
@@ -91,6 +91,9 @@ const Index = observer(({ store }) => {
       data.introductions = replaceNewLinesWithBr(data.introduction);
       if (data.privateIntroduction) {
         data.privateIntroductions = replaceNewLinesWithBr(data.privateIntroduction);
+      }
+      if(data.internalPerformance){
+        data.internalPerformances = replaceNewLinesWithBr(data.internalPerformance);
       }
       setDetail(data);
       if (!codesrc) {  // 如果还没绘制过二维码，则绘制
@@ -719,6 +722,19 @@ const Index = observer(({ store }) => {
           </View>
           <View className='job_introduce'>
             {detail.company}
+          </View>
+        </View>
+      }
+
+      {
+        detail.internalPerformance &&
+        <View className='interview_info'>
+          <View className='project_title'>
+            <View>绩效管理</View>
+            <View className='project_title_copy' onClick={() => copyFunc(detail.internalPerformance)}>一键复制</View>
+          </View>
+          <View className='job_introduce'>
+            <RichText nodes={detail.internalPerformances}></RichText>
           </View>
         </View>
       }
