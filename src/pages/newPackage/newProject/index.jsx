@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-15 15:22:13
+ * @LastEditTime: 2025-07-21 15:06:11
  * @Description:
  */
 
@@ -488,7 +488,6 @@ const Index = observer(({ store }) => {
                     <View className='project_item_label'>绩效管理</View>
                     <View className='project_item_right'>
                         <Input
-                            type='number'
                             className='new_input'
                             placeholder='请输入内部绩效'
                             placeholderStyle='color: #999999;'
