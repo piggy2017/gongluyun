@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:09:50
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-28 13:50:05
+ * @LastEditTime: 2025-07-07 16:54:34
  * @Description: 用于存放业务相关的数据,例如:岗位筛选的结果
  */
 
@@ -267,17 +267,41 @@ const businessStore = observable({
     editRecommendInfo: { // 修改推荐人信息
         agentName: "",
         agentSerialCode: "",
-        init: false    // 是否是进入修改页面,由初始化数据所引起的改变
+        init: false // 是否是进入修改页面,由初始化数据所引起的改变
     },
     setEditRecommendInfo(value) {
         businessStore.editRecommendInfo = value;
     },
 
 
-    scanFilterJob: [],   // 驻场批量识别-选择岗位
+    scanFilterJob: [], // 驻场批量识别-选择岗位
     setScanFilterJob(value) {
         businessStore.scanFilterJob = value;
-    }
+    },
+
+
+
+    adminRosterFilterJob: [ // 首页的花名册-管理角色-筛选岗位
+        {
+            title: '全部岗位',
+            recruitSerialCode: '',
+            selected: false
+        }
+    ],
+    setAdminRosterFilterJob(value) {
+        businessStore.adminRosterFilterJob = value;
+    },
+
+    onsiteRosterFilterJob: [ // 首页的花名册-驻场角色-筛选岗位
+        {
+            title: '全部岗位',
+            recruitSerialCode: '',
+            selected: false
+        }
+    ],
+    setOnsiteRosterFilterJob(value) {
+        businessStore.onsiteRosterFilterJob = value;
+    },
 
 });
 

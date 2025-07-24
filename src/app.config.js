@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-21 14:40:54
+ * @LastEditTime: 2025-07-09 16:10:01
  * @Description:
  */
 export default defineAppConfig({
@@ -169,6 +169,8 @@ export default defineAppConfig({
                 "dataReport/index",               // 数据报表
                 "sourcePool/index",               // 资源池
                 "changeRole/index",               // 切换当前角色
+                "indexRoster/index",              // 管理员-驻场 在首页的花名册入口
+                "indexRosterEdit/index",          // 供应商-驻场 在首页的花名册入口  -- 编辑信息页面
             ]
         },
         {

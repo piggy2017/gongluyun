@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-30 10:53:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 15:37:59
+ * @LastEditTime: 2025-07-03 11:00:54
  * @Description:  求职者选择求职偏好
  */
 /* eslint-disable react/jsx-key */
@@ -11,22 +11,23 @@ import Taro from '@tarojs/taro';
 import { observer, inject } from 'mobx-react';
 import { AtFloatLayout, AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/float-layout.scss";
-import { View, Image, ScrollView } from '@tarojs/components';
-import { jobTypeList } from '@/util/api'
+import { View, Input, Image, Text, ScrollView } from '@tarojs/components';
+import { jobTypeList, jobAssoc } from '@/util/api';
+import { throttle } from '@/util/utils';
+
 import './index.scss';
 
 const WorkerJobType = observer(({ store, isShow, initData, onClose }) => {
-
-    useEffect(() => {
-        console.log('ChooseJob 组建中间听到 isShow', isShow)
-    }, [isShow])
-
     const {
     } = store
     const [fullJobTypeList, setFullJobTypeList] = useState([])
     const [chooseJobItem, setChooseJob] = useState([]);
     const [chooseCurrent, setChooseCurrent] = useState({});
     const [navCurrent, setNavCurrent] = useState('nav-0');
+    const [keyWords, setKeyWords] = useState('');
+    const [isSearch, setIsSearch] = useState([]);
+
+
     useEffect(() => {
         const fetchData = async () => {
             let params = {
@@ -43,6 +44,7 @@ const WorkerJobType = observer(({ store, isShow, initData, onClose }) => {
         return () => {
         }
     }, [])
+
     useEffect(() => {
         const fetchData = async () => {
             if (fullJobTypeList.length) {
@@ -54,6 +56,7 @@ const WorkerJobType = observer(({ store, isShow, initData, onClose }) => {
             // componentWillUnmount
         }
     }, [])
+
     useEffect(() => {
         const fetchData = async () => {
             if (isShow) {
@@ -65,6 +68,7 @@ const WorkerJobType = observer(({ store, isShow, initData, onClose }) => {
             // componentWillUnmount
         }
     }, [isShow])
+
     const setInit = (data) => {
         console.log('页面中传递进来的initData', initData)
         if (initData.length) {
@@ -92,16 +96,50 @@ const WorkerJobType = observer(({ store, isShow, initData, onClose }) => {
         }
         setFullJobTypeList([...data])
     }
+
     const submit = () => {
         onClose(chooseJobItem)
     }
+
     const getActive = (l) => {
         let index = chooseJobItem.findIndex(item => item.id === l.id)
         return index > -1 ? true : false
     }
+
+    const getHeight = () => {
+        return `calc(100% - 130rpx)`;
+    }
+
+    const searchFunc = throttle(async () => {  // 搜索
+        if (!keyWords) return setIsSearch([])
+        let params = {
+            job_name: keyWords
+        }
+        let res = await jobAssoc(params)
+        console.log("获取搜索结果", res);
+        if (res.code === 200) {
+            console.log(res.data)
+            setIsSearch(res.data)
+        } else {
+            setIsSearch([])
+        }
+    }, 300);
+
     return <AtFloatLayout isOpened={isShow} className='job_layout_boss' catchMove onClose={() => onClose()}>
         <View className='owne_box'>
-            <View className='type_content'>
+            <View className='search_box_wrap'>
+                <View className='search_box'>
+                    <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+                    <Input className='info_input'
+                        adjustPosition
+                        placeholder='输入岗位'
+                        value={keyWords}
+                        onConfirm={searchFunc}
+                        onInput={(e) => setKeyWords(e.target.value)}></Input>
+                </View>
+            </View>
+
+            <View className='type_content' style={{ height: getHeight() }}>
                 <View className='full-time' style={{ paddingBottom: `${chooseJobItem.length ? '138rpx' : 0}` }}>
                     <ScrollView scrollIntoView={navCurrent} scrollY className='left_nav'>
                         {
@@ -167,6 +205,51 @@ const WorkerJobType = observer(({ store, isShow, initData, onClose }) => {
                         }
 
                     </ScrollView>
+                    {
+                        isSearch.length ?
+                            <View className='full_search'>
+                                {
+                                    isSearch.map((item, index) => {
+                                        return <View className='search_item' key={index} onClick={() => {
+                                            console.log("点击搜索结果", item);
+                                            if (chooseJobItem.length >= 5) {
+                                                return Taro.showToast({
+                                                    title: '最多选择5个',
+                                                    icon: 'none'
+                                                })
+                                            }
+                                            let ids = chooseJobItem.map(i => i.id);
+                                            let idx = ids.indexOf(item.job_type_id);
+                                            fullJobTypeList.forEach((parent) => {
+                                                parent.children.forEach(child => {
+                                                    child.children.forEach(h => {
+                                                        if (h.id === item.job_type_id) {
+                                                            parent.chooseNum = (parent.chooseNum || 0) + (idx > -1 ? -1 : 1);
+                                                        }
+                                                    })
+                                                });
+                                            });
+
+                                            setFullJobTypeList([...fullJobTypeList])
+                                            setChooseJob([...chooseJobItem, { id: item.job_type_id, name: item.job_type }])
+                                            setIsSearch([])
+                                            setKeyWords('')
+                                        }}
+                                        >
+                                            <View>
+                                                {
+                                                    item.job_type.split('').map(r => {
+                                                        return <Text key={r} style={{ color: keyWords.includes(r) ? 'red' : '' }}>{r}</Text>
+                                                    })
+                                                }
+                                            </View>
+                                            <View>{item.industry}-{item.category}{item.job_type}</View>
+                                        </View>
+                                    })
+                                }
+                            </View>
+                            : ''
+                    }
                 </View>
                 <View className='close_popup'>
                     {

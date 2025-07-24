@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 14:45:18
+ * @LastEditTime: 2025-07-14 10:24:57
  * @Description:
  */
 
@@ -19,7 +19,9 @@ import { contractsJobSelector, jobSelectorByPossess } from '@/util/api'
 const Index = observer(({ store }) => {
     const {
         baseStore: { statusTitleHeight, contenTitleHeight, bottomSafeAreaHeight },
-        businessStore: { poorJobId, myClientJobId, setPoorJobId, setMyClientJobId, onSiteFilterJob, setOnSiteFilterJob, channelListFilterJob, setchannelListFilterJob }
+        businessStore: { poorJobId, myClientJobId, setPoorJobId, setMyClientJobId, onSiteFilterJob, setOnSiteFilterJob, channelListFilterJob, setchannelListFilterJob,
+            adminRosterFilterJob, setAdminRosterFilterJob, onsiteRosterFilterJob, setOnsiteRosterFilterJob
+        }
     } = store
     const router = useRouter();
 
@@ -37,6 +39,7 @@ const Index = observer(({ store }) => {
 
     useEffect(() => {
         // type=1 线索-客户池筛选岗位   type=2 线索-我的客户筛选岗位   type=5 驻厂名单-选择岗位  type=6 渠道名单tab选择岗位
+        // type=7 首页花名册-管理员筛选岗位   type=8 首页花名册-驻厂筛选岗位
         const { type, title } = router.params;
         console.log('type, title', type, title);
         setType(type);
@@ -65,7 +68,14 @@ const Index = observer(({ store }) => {
             searchInfo: searchValue
         }
 
-        const { code, data } = await (router.params.type == 5 ? jobSelectorByPossess(params) : contractsJobSelector(params));
+        if (router.params.type == 5 && router.params.myData == 1) {
+            params.dataType = 'OWN_REPORT';
+            params.dateRange = router.params.dateRange;
+            params.startDate = router.params.startDate;
+            params.endDate = router.params.endDate;
+        }
+
+        const { code, data } = await ((router.params.type == 5 || router.params.type == 8) ? jobSelectorByPossess(params) : contractsJobSelector(params));
         console.log("getClueList", code, data);
         Taro.hideLoading();
         setIsRefresh(false);
@@ -74,7 +84,8 @@ const Index = observer(({ store }) => {
             for (let i = 0; i < data.responses.length; i++) {
                 data.responses[i].selected = false;
             }
-            if ((router.params.type == 1 || router.params.type == 2 || router.params.type == 5 || router.params.type == 6) && !searchValue) {
+            let types = [1, 2, 5, 6, 7, 8];
+            if (types.includes(Number(router.params.type)) && !searchValue) {
                 if (_pageNo === 1) {
                     let obj = {
                         title: '全部岗位',
@@ -122,6 +133,26 @@ const Index = observer(({ store }) => {
                     } else {
                         for (let j = 0; j < channelListFilterJob.length; j++) {
                             if (data.responses[i].recruitSerialCode == channelListFilterJob[j].recruitSerialCode) {
+                                data.responses[i].selected = true;
+                            }
+                        }
+                    }
+                } else if (router.params.type == 7) {  // adminRosterFilterJob
+                    if (adminRosterFilterJob.length === 1 && adminRosterFilterJob[0].recruitSerialCode === '') {
+                        data.responses[i].selected = true;
+                    } else {
+                        for (let j = 0; j < adminRosterFilterJob.length; j++) {
+                            if (data.responses[i].recruitSerialCode == adminRosterFilterJob[j].recruitSerialCode) {
+                                data.responses[i].selected = true;
+                            }
+                        }
+                    }
+                } else if (router.params.type == 8) {  // onsiteRosterFilterJob
+                    if (onsiteRosterFilterJob.length === 1 && onsiteRosterFilterJob[0].recruitSerialCode === '') {
+                        data.responses[i].selected = true;
+                    } else {
+                        for (let j = 0; j < onsiteRosterFilterJob.length; j++) {
+                            if (data.responses[i].recruitSerialCode == onsiteRosterFilterJob[j].recruitSerialCode) {
                                 data.responses[i].selected = true;
                             }
                         }
@@ -199,6 +230,10 @@ const Index = observer(({ store }) => {
         } else if (type == 6) {
             console.log("type===6")
             setchannelListFilterJob(_hasAll.length > 0 ? _hasAll : _filterList);
+        } else if (type == 7) {
+            setAdminRosterFilterJob(_hasAll.length > 0 ? _hasAll : _filterList);
+        } else if (type == 8) {
+            setOnsiteRosterFilterJob(_hasAll.length > 0 ? _hasAll : _filterList);
         }
 
         setTimeout(() => {

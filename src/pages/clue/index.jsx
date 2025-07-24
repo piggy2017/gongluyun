@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-29 17:41:08
+ * @LastEditTime: 2025-07-04 11:57:53
  * @Description:
  */
 
@@ -12,11 +12,11 @@ import { View, Image, Input, ScrollView, Text, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
 import { selectorQueryDomInfo, debounce, throttle, getStatus, getColor, throttleCustom } from '@/util/utils'
 
-import TabBar from '@/components/tabBar';
 import { AtIcon } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import './index.scss'
 
+import TabBar from '@/components/tabBar';
 import CustomDate from '@/components/customDate';
 import SourcePicker from '@/components/sourcePcker';
 import StatusPicker from '@/components/statusPicker';
@@ -659,6 +659,11 @@ const Index = observer(({ store }) => {
                           <View className='roster_item_time'>录入时间：{item.createDate}</View> ||
                           item.interviewDate &&
                           <View className='roster_item_time'>面试时间：{item.interviewDate}</View>
+                        }
+
+                        {
+                          item.remark &&
+                          <View className='roster_item_time'>备注：{item.remark}</View>
                         }
                       </View>
 

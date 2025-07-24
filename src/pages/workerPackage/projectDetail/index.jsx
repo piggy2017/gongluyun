@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-29 18:09:14
+ * @LastEditTime: 2025-07-11 09:33:21
  * @Description:
  */
 
@@ -376,8 +376,8 @@ const Index = observer(({ store }) => {
             jobReq: detail.jobReq,
             tags: detail.tags,
             userAvatar: detail.userAvatar ? detail.userAvatar : '',
-            areaName: detail.areaName,
-            createDate: detail.createDate,
+            areaName: detail.areaName ? detail.areaName : '',
+            createDate: detail.createDate ? detail.createDate : '',
             serialCode: detail.contractsSerialCode ? detail.contractsSerialCode : '',       // 发送岗位卡片消息后,企业端需要用serialCode查询岗位详情
             distance: detail.distance ? detail.distance : '',
             phone: detail.recruitPhone ? decryptData(detail.recruitPhone) : '',

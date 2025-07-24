@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 18:06:09
+ * @LastEditTime: 2025-07-07 17:03:06
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -21,7 +21,6 @@ const Index = observer(({ store }) => {
     const route = useRouter();
     const {
         baseStore: { bottomSafeAreaHeight },
-        businessStore: { myClientParams }
     } = store
     const [uuid, setUuid] = useState('');
 
