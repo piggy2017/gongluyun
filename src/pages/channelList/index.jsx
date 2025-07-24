@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-10-08 15:27:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-10 10:18:06
+ * @LastEditTime: 2025-07-24 13:45:08
  * @Description:
  */
 
@@ -1172,7 +1172,7 @@ const Index = observer(({ store }) => {
                 }
             </Block>
 
-            <TabBar actCurrent={1} />
+            <TabBar actCurrent={2} />
         </View>
     )
 })

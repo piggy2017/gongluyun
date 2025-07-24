@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-17 17:02:55
+ * @LastEditTime: 2025-07-24 14:10:51
  * @Description:
  */
 
@@ -457,7 +457,7 @@ const Index = observer(({ store }) => {
       <View className='project_baseInfo'>
         <View className='project_name'>{detail.title}</View>
         {
-          myPermissions.includes('10') &&
+          myPermissions.includes('10') && role != 'CHANNEL' &&
           <Image onClick={goEditProject} className='edit_icon' src={`${Taro.$cdnUrl}/supplier/supplier_50.webp`}></Image>
         }
 
@@ -485,17 +485,21 @@ const Index = observer(({ store }) => {
       <View className='project_datas'>
         <View className='project_title'>
           <View>交付数据</View>
-          <View className='project_more' onClick={(e) => {
-            if (myPermissions.includes('11')) {
-              navigateFunc(e, `/pages/projectPackage/roster/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)
-            } else {
-              e.stopPropagation();
-              Taro.showToast({ title: '暂无权限', icon: 'none' })
-            }
-          }}>
-            <View>查看名单</View>
-            <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
-          </View>
+          {
+            role != 'CHANNEL' &&
+            <View className='project_more' onClick={(e) => {
+              if (myPermissions.includes('11')) {
+                navigateFunc(e, `/pages/projectPackage/roster/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)
+              } else {
+                e.stopPropagation();
+                Taro.showToast({ title: '暂无权限', icon: 'none' })
+              }
+            }}>
+              <View>查看名单</View>
+              <Image src={`${Taro.$cdnUrl}/index/index_icon21.webp`}></Image>
+            </View>
+          }
+
         </View>
         <View className='project_datas_content'>
           <View className='project_datas_item'>
@@ -591,7 +595,7 @@ const Index = observer(({ store }) => {
           }
         </>
       }
-      
+
       {
         detail.internalPerformance &&
         <View className='interview_info'>
@@ -619,6 +623,9 @@ const Index = observer(({ store }) => {
             if (!myPermissions.includes('19')) {
               return Taro.showToast({ title: '暂无权限', icon: 'none' });
             }
+            if (role === 'CHANNEL') {
+              return Taro.showToast({ title: '当前角色无法修改', icon: 'none' });
+            }
             Taro.navigateTo({
               url: `/pages/newPackage/chooseInterview/index?recruitSerialCode=${detail.recruitSerialCode}&serialCode=${detail.serialCode}`
             })
@@ -644,6 +651,9 @@ const Index = observer(({ store }) => {
             if (!myPermissions.includes('19')) {
               return Taro.showToast({ title: '暂无权限', icon: 'none' });
             }
+            if (role === 'CHANNEL') {
+              return Taro.showToast({ title: '当前角色无法修改', icon: 'none' });
+            }
             Taro.navigateTo({
               url: `/pages/newPackage/setOnsite/index?recruitSerialCode=${detail.recruitSerialCode}&serialCode=${detail.serialCode}`
             })
@@ -664,6 +674,9 @@ const Index = observer(({ store }) => {
             if (!myPermissions.includes('19')) {
               return Taro.showToast({ title: '暂无权限', icon: 'none' });
             }
+            if (role === 'CHANNEL') {
+              return Taro.showToast({ title: '当前角色无法修改', icon: 'none' });
+            }
             setShowAddress(true);
           }}>
             {
@@ -679,6 +692,9 @@ const Index = observer(({ store }) => {
           <View className='interview_item_content' onClick={() => {
             if (!myPermissions.includes('19')) {
               return Taro.showToast({ title: '暂无权限', icon: 'none' });
+            }
+            if (role === 'CHANNEL') {
+              return Taro.showToast({ title: '当前角色无法修改', icon: 'none' });
             }
             setShowDate(true);
           }}>
@@ -756,68 +772,59 @@ const Index = observer(({ store }) => {
 
       <View style={`height:300rpx;`}></View>
 
-      <View className='project_btns'>
-        <View style={`height:20rpx;`}></View>
-        <View className='btn_wrap'>
-          {
-            detail.status === 'PROCESSING' &&
-            <View className='btn_item' onClick={() => {
-              if (myPermissions.includes('15')) {
-                stopJob();
-              } else {
-                Taro.showToast({ title: '暂无权限', icon: 'none' });
-              }
-            }}>
-              <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_12.webp`}></Image>
-              <View>暂停面试</View>
-            </View> ||
-            detail.status === 'COMPLETED' &&
-            <View className='btn_item' onClick={() => {
-              if (myPermissions.includes('15')) {
-                startJob();
-              } else {
-                Taro.showToast({ title: '暂无权限', icon: 'none' });
-              }
-            }}>
-              <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_13.webp`}></Image>
-              <View>恢复面试</View>
-            </View>
-          }
-
-          {
-            myPermissions.includes('11') &&
-            <View className='btn_item' onClick={(e) => navigateFunc(e, `/pages/projectPackage/roster/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>
-              <Image src={`${Taro.$cdnUrl}/supplier/supplier_51.webp`}></Image>
-              <View>名单</View>
-            </View>
-          }
-
-
-          {/* <Button className='btn_item' open-type='share'>
-            <Image src={`${Taro.$cdnUrl}/supplier/supplier_52.webp`}></Image>
-            <View>分享</View>
-          </Button> */}
-          <View className='btn_item' onClick={() => setShowShareModel(true)}>
-            <Image src={`${Taro.$cdnUrl}/supplier/supplier_52.webp`}></Image>
-            <View>分享</View>
-          </View>
-          {
-            // myPermissions.includes('5') &&
-            // <View className='btn_item' onClick={goEditProject}>
-            //   <Image src={`${Taro.$cdnUrl}/index/index_icon26.webp`}></Image>
-            //   <View>编辑</View>
-            // </View>
-          }
-          <View className='add_worker' onClick={(e) => {
-            if (myPermissions.includes('12')) {
-              navigateFunc(e, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)
-            } else {
-              Taro.showToast({ title: '暂无权限', icon: 'none' });
+      {
+        role != 'CHANNEL' &&
+        <View className='project_btns'>
+          <View style={`height:20rpx;`}></View>
+          <View className='btn_wrap'>
+            {
+              detail.status === 'PROCESSING' &&
+              <View className='btn_item' onClick={() => {
+                if (myPermissions.includes('15')) {
+                  stopJob();
+                } else {
+                  Taro.showToast({ title: '暂无权限', icon: 'none' });
+                }
+              }}>
+                <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_12.webp`}></Image>
+                <View>暂停面试</View>
+              </View> ||
+              detail.status === 'COMPLETED' &&
+              <View className='btn_item' onClick={() => {
+                if (myPermissions.includes('15')) {
+                  startJob();
+                } else {
+                  Taro.showToast({ title: '暂无权限', icon: 'none' });
+                }
+              }}>
+                <Image src={`${Taro.$cdnUrl}/newIndex/newIndex_13.webp`}></Image>
+                <View>恢复面试</View>
+              </View>
             }
-          }}>录入求职者</View>
+
+            {
+              myPermissions.includes('11') &&
+              <View className='btn_item' onClick={(e) => navigateFunc(e, `/pages/projectPackage/roster/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)}>
+                <Image src={`${Taro.$cdnUrl}/supplier/supplier_51.webp`}></Image>
+                <View>名单</View>
+              </View>
+            }
+            <View className='btn_item' onClick={() => setShowShareModel(true)}>
+              <Image src={`${Taro.$cdnUrl}/supplier/supplier_52.webp`}></Image>
+              <View>分享</View>
+            </View>
+
+            <View className='add_worker' onClick={(e) => {
+              if (myPermissions.includes('12')) {
+                navigateFunc(e, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${detail.recruitSerialCode}&title=${detail.title}`)
+              } else {
+                Taro.showToast({ title: '暂无权限', icon: 'none' });
+              }
+            }}>录入求职者</View>
+          </View>
+          <View style={`height:${bottomSafeAreaHeight}px;`}></View>
         </View>
-        <View style={`height:${bottomSafeAreaHeight}px;`}></View>
-      </View>
+      }
 
       <Block>
         {
