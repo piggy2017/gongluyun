@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-15 15:22:07
+ * @LastEditTime: 2025-07-24 13:59:20
  * @Description: 
  */
 
@@ -226,16 +226,14 @@ const Index = observer(({ store }) => {
               value={searchValue}></Input>
           </View>
           {
-            myPermissions.includes('8') &&
+            myPermissions.includes('8') && role != 'CHANNEL' &&
             <Image src={`${Taro.$cdnUrl}/index/index_icon40.webp`} className='sign_code_all' onClick={
               (e) => navigateFunc(e, 1, `/pages/newPackage/onSiteProject/index?type=2`)}
-            // /pages/newPackage/onSiteProject/index?type=1
-            // /pages/projectPackage/signinCode/index?isAll=1
             ></Image>
           }
 
           {
-            myPermissions.includes('9') &&
+            myPermissions.includes('9') && role != 'CHANNEL' &&
             <Image className='add_icon' src={`${Taro.$cdnUrl}/index/index_icon3.webp`} onClick={(e) => navigateFunc(e, 1, '/pages/newPackage/newProject/index')}></Image>
           }
         </View>
@@ -317,7 +315,7 @@ const Index = observer(({ store }) => {
                           <View className='project_item_title_left_name'>{item.title}</View>
                         </View>
                         {
-                          role != 'CUSTOMER' &&
+                          role != 'CUSTOMER' && role != 'CHANNEL' &&
                           <>
                             {
                               type === 'PROCESSING' && myPermissions.includes('8') &&
@@ -354,31 +352,35 @@ const Index = observer(({ store }) => {
                         </View>
                       </View>
 
-                      <View className='project_item_bottom' style={`padding:${myPermissions.includes('9') ? '24rpx 60rpx' : '24rpx 110rpx'}`}>
-                        <View className={`project_item_bottom_item ${myPermissions.includes('11') ? '' : 'project_item_bottom_item_g'}`} onClick={(e) => {
-                          if (myPermissions.includes('11')) {
-                            navigateFunc(e, 1, `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)
-                          } else {
-                            e.stopPropagation();
-                            Taro.showToast({ title: '暂无权限', icon: 'none' })
+                      {
+                        role != 'CHANNEL' &&
+                        <View className='project_item_bottom' style={`padding:${myPermissions.includes('9') ? '24rpx 60rpx' : '24rpx 110rpx'}`}>
+                          <View className={`project_item_bottom_item ${myPermissions.includes('11') ? '' : 'project_item_bottom_item_g'}`} onClick={(e) => {
+                            if (myPermissions.includes('11')) {
+                              navigateFunc(e, 1, `/pages/projectPackage/roster/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)
+                            } else {
+                              e.stopPropagation();
+                              Taro.showToast({ title: '暂无权限', icon: 'none' })
+                            }
+                          }}>名单</View>
+                          {
+                            myPermissions.includes('9') &&
+                            <View className={`project_item_bottom_item `} onClick={(e) => {
+                              e.stopPropagation();
+                              copyProjectFunc(item);
+                            }}>复制项目</View>
                           }
-                        }}>名单</View>
-                        {
-                          myPermissions.includes('9') &&
-                          <View className={`project_item_bottom_item `} onClick={(e) => {
-                            e.stopPropagation();
-                            copyProjectFunc(item);
-                          }}>复制项目</View>
-                        }
-                        <View className={`project_item_bottom_item ${myPermissions.includes('12') ? '' : 'project_item_bottom_item_g'}`} onClick={(e) => {
-                          if (myPermissions.includes('12')) {
-                            navigateFunc(e, 1, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)
-                          } else {
-                            e.stopPropagation();
-                            Taro.showToast({ title: '暂无权限', icon: 'none' })
-                          }
-                        }}>录入求职者</View>
-                      </View>
+                          <View className={`project_item_bottom_item ${myPermissions.includes('12') ? '' : 'project_item_bottom_item_g'}`} onClick={(e) => {
+                            if (myPermissions.includes('12')) {
+                              navigateFunc(e, 1, `/pages/newPackage/newProjectWorker/index?recruitSerialCode=${item.recruitSerialCode}&title=${item.title}`)
+                            } else {
+                              e.stopPropagation();
+                              Taro.showToast({ title: '暂无权限', icon: 'none' })
+                            }
+                          }}>录入求职者</View>
+                        </View>
+                      }
+
                     </View>
                   )
                 })

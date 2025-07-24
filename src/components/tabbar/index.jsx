@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 10:02:33
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-06 10:07:21
+ * @LastEditTime: 2025-07-24 13:44:44
  * @Description:
  */
 
@@ -136,15 +136,20 @@ const Index = observer(({ store, actCurrent }) => {
                     break;
                 case 1:
                     Taro.switchTab({
-                        url: '/pages/channelOnsiteList/index'
+                        url: '/pages/projectManage/index'
                     });
                     break;
                 case 2:
                     Taro.switchTab({
-                        url: '/pages/message/index'
+                        url: '/pages/channelOnsiteList/index'
                     });
                     break;
                 case 3:
+                    Taro.switchTab({
+                        url: '/pages/message/index'
+                    });
+                    break;
+                case 4:
                     Taro.switchTab({
                         url: '/pages/mine/index'
                     });
@@ -208,6 +213,7 @@ const Index = observer(({ store, actCurrent }) => {
         } else if (role === 'CHANNEL') {  // 渠道
             return [
                 { title: '供应商', image: getdefalutIcon(7), selectedImage: getSelectIcon(7) },
+                { title: '项目管理', image: getdefalutIcon(2), selectedImage: getSelectIcon(2) },
                 { title: '名单', image: getdefalutIcon(5), selectedImage: getSelectIcon(5) },
                 { title: '消息', text: unReadTotal || '', max: 99, image: getdefalutIcon(8), selectedImage: getSelectIcon(8) },
                 { title: '我的', image: getdefalutIcon(4), selectedImage: getSelectIcon(4) },

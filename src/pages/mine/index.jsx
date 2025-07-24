@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-20 17:37:16
+ * @LastEditTime: 2025-07-24 13:46:48
  * @Description:
  */
 import React, { useState, useEffect } from 'react'
@@ -363,7 +363,7 @@ const Index = observer(({ store }) => {
                 {/* <View className='mine_desc'>助力企业数字化转型</View> role === 'SUPPLIER' ||  */}
             </View>
 
-            <TabBar actCurrent={(role === 'SEEK' || role === 'SUPPLIER') ? 2 : role === 'CHANNEL' ? 3 : 4} />
+            <TabBar actCurrent={(role === 'SEEK' || role === 'SUPPLIER') ? 2 : role === 'CHANNEL' ? 4 : 4} />
             <Taro.SubscribeMsg></Taro.SubscribeMsg>
 
             <AtModal
