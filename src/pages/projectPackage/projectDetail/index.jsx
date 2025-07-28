@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-24 14:10:51
+ * @LastEditTime: 2025-07-28 10:27:32
  * @Description:
  */
 
@@ -457,7 +457,7 @@ const Index = observer(({ store }) => {
       <View className='project_baseInfo'>
         <View className='project_name'>{detail.title}</View>
         {
-          myPermissions.includes('10') && role != 'CHANNEL' &&
+          myPermissions.includes('10') &&
           <Image onClick={goEditProject} className='edit_icon' src={`${Taro.$cdnUrl}/supplier/supplier_50.webp`}></Image>
         }
 
