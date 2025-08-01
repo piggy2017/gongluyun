@@ -543,3 +543,16 @@ export const getColor = (status) => {
 export function replaceNewLinesWithBr(text) {
     return text.replace(/\n/g, "<br>").replace(/↵/g, "<br>");
 }
+
+
+export function compareVersion(v1, v2) {   // 工具函数：版本比较
+    const arr1 = v1.split('.');
+    const arr2 = v2.split('.');
+    for (let i = 0; i < Math.max(arr1.length, arr2.length); i++) {
+        const num1 = parseInt(arr1[i] || 0);
+        const num2 = parseInt(arr2[i] || 0);
+        if (num1 > num2) return 1;
+        if (num1 < num2) return -1;
+    }
+    return 0;
+}

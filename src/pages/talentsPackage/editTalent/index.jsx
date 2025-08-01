@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-09 13:45:45
+ * @LastEditTime: 2025-08-01 14:20:41
  * @Description: 人才库 - 编辑人才信息页面
  */
 
@@ -18,6 +18,7 @@ import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import SourcePicker from '@/components/sourcePcker';
 import ScanIdCard from '@/components/scanIdCard';
+import UploadResume from '@/components/uploadResume';
 
 import { clueInsert, clueUpdate } from '@/util/api'
 import './index.scss'
@@ -327,6 +328,16 @@ const Index = observer(({ store }) => {
                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                     </View>
                 </View>
+
+                <UploadResume
+                    deleteResume={() => {
+                        setFormData({ ...formData, resumeUrl: '', resumeName: '' });
+                    }}
+                    getUploadInfo={(src, name) => {
+                        setFormData({ ...formData, resumeUrl: src, resumeName: name });
+                    }}
+                    resumeName={formData.resumeName}
+                    resumeUrl={formData.resumeUrl}></UploadResume>
             </View>
             <View className='project_group'>
                 {/* <View className='project_item project_item_border' onClick={() => {

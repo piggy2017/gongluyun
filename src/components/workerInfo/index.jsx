@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-13 17:47:14
+ * @LastEditTime: 2025-08-01 14:16:50
  * @Description:
  */
 import React, { useState, useEffect } from 'react';
@@ -15,10 +15,11 @@ import { callUp } from '@/util/api';
 const WorkerInfo = observer(({ store, info, interview, type }) => {
     const {
         businessStore: { setEditClientInfos },
-        userStore: { isLogin, role, userInfo, companyInfo, }
+        userStore: { isLogin, role, userInfo, companyInfo, },
+        baseStore: { phonePlatform, platform },
     } = store
 
-    const goEdit = () => { 
+    const goEdit = () => {
         setEditClientInfos(info);
         Taro.navigateTo({  // type=2 来自于人才库的编辑
             // url: type === 1 ? '/pages/newPackage/newWorker/index' : '/pages/talentsPackage/editTalent/index'
@@ -39,6 +40,56 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
                 console.log("拨打电话 调用接口", res);
             })
         }
+    }
+
+    const previewResume = (_url) => {
+        wx.downloadFile({
+            url: _url, // 文件服务器地址（需配置合法域名）
+            success: (res) => {
+                wx.openDocument({
+                    filePath: res.tempFilePath, // 临时文件路径
+                    showMenu: true, // 显示右上角菜单（分享、保存等）
+                    success: () => console.log("打开文档成功"),
+                    fail: (err) => console.error("打开失败", err)
+                });
+            },
+            fail: (err) => console.error("下载失败", err)
+        });
+    }
+
+    const dowmLoadResume = (_url) => {
+        wx.downloadFile({
+            url: _url, // 文件服务器地址（需配置合法域名）
+            success: (res) => {
+                if (platform === 'pc') {
+                    Taro.setClipboardData({
+                        data: _url,
+                        success: () => {
+                            Taro.showToast({
+                                title: '下载地址已复制到粘贴板,可下载查看',
+                                icon: 'none',
+                                duration: 3000
+                            })
+                        }
+                    })
+                } else {
+                    if (phonePlatform === 'android') {
+                        Taro.showToast({ title: '点击右上方的按钮然后保存至手机', icon: 'none', duration: 3000 });
+                    } else {
+                        Taro.showToast({ title: '点击右上方的按钮然后分享至微信进行查看', icon: 'none', duration: 3000 });
+                    }
+                }
+                setTimeout(() => {
+                    wx.openDocument({
+                        filePath: res.tempFilePath, // 临时文件路径
+                        showMenu: true, // 显示右上角菜单（分享、保存等）
+                        success: () => console.log("打开文档成功"),
+                        fail: (err) => console.error("打开失败", err)
+                    });
+                }, 3000);
+            },
+            fail: (err) => console.error("下载失败", err)
+        });
     }
 
     return (
@@ -118,6 +169,20 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
                         <View className='userInfo_item'>
                             {/* <Image className='userInfo_item_img' src={`${Taro.$cdnUrl}/index/mine_icon10.webp`}></Image> */}
                             <View className='userInfo_item_content'><Text className='userInfo_item_content_label'>备注：</Text>{info.remark}</View>
+                        </View>
+                    }
+
+                    {
+                        info.resumeUrl &&
+                        <View className='userInfo_resume'>
+                            <View className='upload_resume_info_left'>
+                                <Image src={`${Taro.$cdnUrl}/index/index_icon9${info.resumeName.includes('.pdf') ? '4' : '3'}.webp`}></Image>
+                                <View>{info.resumeName}</View>
+                            </View>
+                            <View className='upload_resume_info_right'>
+                                <View className='upload_resume_info_right_btn' onClick={() => previewResume(info.resumeUrl)}>预览</View>
+                                <Image onClick={() => dowmLoadResume(info.resumeUrl)} src={`${Taro.$cdnUrl}/index/index_icon96.webp`}></Image>
+                            </View>
                         </View>
                     }
                 </View>

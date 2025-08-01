@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-11 14:27:26
+ * @LastEditTime: 2025-08-01 17:10:01
  * @Description:
  */
 export default defineAppConfig({
@@ -154,6 +154,7 @@ export default defineAppConfig({
                 "chooseInterview/index",         // 新增项目选择面试联系人
                 "scanMultiple/index",            // 驻场-批量扫码识别签到
                 "scanFilterJob/index",           // 驻场-扫码识别签到-筛选岗位
+                "editUrgentProject/index",       // 编辑紧急项目
             ]
         },
         {
