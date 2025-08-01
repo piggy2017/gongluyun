@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-05-16 14:58:27
  * @LastEditors: 孙林
- * @LastEditTime: 2025-08-01 13:49:21
+ * @LastEditTime: 2025-08-01 17:35:18
  * @Description: 上传身份证并识别信息
  */
 import { useState, useEffect } from 'react';
@@ -37,20 +37,22 @@ const UploadResume = observer(({ resumeName, resumeUrl, deleteResume, getUploadI
     const uploadResume = () => {    // 选择简历文件
         const allowedExtensions = ['.pdf', '.doc', '.docx'];
         console.log("当前手机平台是:", phonePlatform);
+        wx.chooseMessageFile({
+            count: 1,
+            extension: allowedExtensions,
+            success: res => {
+                const file = res.tempFiles[0];
+                console.log("ios选择文件成功", file);
+                file.platform = 'iOS';
+                uploadToOSS(file);
+            },
+            fail: (err) => {
+                console.log("选择文件失败", err);
+            }
+        });
+        return
         if (phonePlatform === 'ios') {
-            wx.chooseMessageFile({
-                count: 1,
-                extension: allowedExtensions,
-                success: res => {
-                    const file = res.tempFiles[0];
-                    console.log("ios选择文件成功", file);
-                    file.platform = 'iOS';
-                    uploadToOSS(file);
-                },
-                fail: (err) => {
-                    console.log("选择文件失败", err);
-                }
-            });
+
         } else {
             // 检查基础库版本
             if (compareVersion(SDKVersion, '2.17.0') >= 0) {
