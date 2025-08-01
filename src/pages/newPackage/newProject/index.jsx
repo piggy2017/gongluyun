@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-21 15:06:11
+ * @LastEditTime: 2025-07-31 14:49:35
  * @Description:
  */
 
@@ -470,6 +470,21 @@ const Index = observer(({ store }) => {
                         </View>
                     }
                 </View>
+
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>项目名称</View>
+                    <View className='project_item_right'>
+                        <Input
+                            className='new_input'
+                            placeholder='请输入项目名称'
+                            placeholderStyle='color: #999999;'
+                            value={formData.projectName}
+                            confirmType='search'
+                            onInput={(e) => setFormData({ ...formData, projectName: e.detail.value })}
+                        ></Input>
+                    </View>
+                </View>
+
                 <View className='project_item project_item_border'>
                     <View className='project_item_label'>公司简称</View>
                     <View className='project_item_right'>
@@ -610,6 +625,44 @@ const Index = observer(({ store }) => {
                     <View onClick={() => setFormData({ ...formData, settlementType: 'DAY' })} className={`settle_item ${formData.settlementType === 'DAY' ? 'settle_item_active' : ''}`}>日结</View>
                     <View onClick={() => setFormData({ ...formData, settlementType: 'WEEK' })} className={`settle_item ${formData.settlementType === 'WEEK' ? 'settle_item_active' : ''}`}>周结</View>
                     <View onClick={() => setFormData({ ...formData, settlementType: 'MONTH' })} className={`settle_item ${formData.settlementType === 'MONTH' ? 'settle_item_active' : ''}`}>月结</View>
+                </View>
+            </View>
+
+            <View className='project_group'>
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label project_item_label_required'>招聘紧急度</View>
+                    <View className='project_item_right'>
+                        <View onClick={() => setFormData({ ...formData, urgent: true })} className={`traffic_item ${formData.urgent ? 'traffic_item_active' : ''}`}>紧急</View>
+                        <View onClick={() => setFormData({ ...formData, urgent: false })} className={`traffic_item ${formData.urgent === false ? 'traffic_item_active' : ''}`}>非紧急</View>
+                    </View>
+                </View>
+
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>负责人</View>
+                    <View className='project_item_right'>
+                        <Input
+                            className='new_input'
+                            placeholder='请输入负责人'
+                            placeholderStyle='color: #999999;'
+                            value={formData.recManager}
+                            confirmType='search'
+                            onInput={(e) => setFormData({ ...formData, recManager: e.detail.value })}
+                        ></Input>
+                    </View>
+                </View>
+
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>面试时间</View>
+                    <View className='project_item_right'>
+                        <Input
+                            className='new_input'
+                            placeholder='请输入面试时间'
+                            placeholderStyle='color: #999999;'
+                            value={formData.interviewDate}
+                            confirmType='search'
+                            onInput={(e) => setFormData({ ...formData, interviewDate: e.detail.value })}
+                        ></Input>
+                    </View>
                 </View>
             </View>
 

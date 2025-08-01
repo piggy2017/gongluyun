@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-19 10:19:47
+ * @LastEditTime: 2025-08-01 14:24:37
  * @Description: 
  */
 
@@ -17,6 +17,7 @@ import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import SourcePicker from '@/components/sourcePcker';
 import ScanIdCard from '@/components/scanIdCard';
+import UploadResume from '@/components/uploadResume';
 
 import { clueInsert, clueUpdate, parsePerson } from '@/util/api'
 import './index.scss'
@@ -467,6 +468,16 @@ const Index = observer(({ store }) => {
                     </View>
                 </View>
 
+                <UploadResume
+                    deleteResume={() => {
+                        setFormData({ ...formData, resumeUrl: '', resumeName: '' });
+                    }}
+                    getUploadInfo={(src, name) => {
+                        setFormData({ ...formData, resumeUrl: src, resumeName: name });
+                    }}
+                    resumeName={formData.resumeName}
+                    resumeUrl={formData.resumeUrl}></UploadResume>
+
                 {/* <View className='project_item project_item_border'>
                     <View className='project_item_label'>已安排面试</View>
                     <View className='project_item_right'>
@@ -540,7 +551,7 @@ const Index = observer(({ store }) => {
             </Block>
 
             <Block>
-                <Taro.AddError showPicker={showAddError} errorMsg={errorMsg} onClose={()=>{setShowAddError(false)}}></Taro.AddError>
+                <Taro.AddError showPicker={showAddError} errorMsg={errorMsg} onClose={() => { setShowAddError(false) }}></Taro.AddError>
             </Block>
 
         </View>

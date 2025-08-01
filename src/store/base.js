@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-04 11:24:31
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-25 10:23:24
+ * @LastEditTime: 2025-08-01 10:42:02
  * @Description: 用于存放系统的相关信息
  */
 import {
@@ -19,6 +19,8 @@ const baseStore = observable({
     bottomSafeAreaHeight: 20, // 底部安全区域高度
     windowWidth: 0,
     platform: '', // 平台类型  ios=iOS微信（包含 iPhone、iPad）  android=Android微信  windows=Windows微信  mac=macOS微信  devtools=微信开发者工具
+    phonePlatform: '', // 手机平台
+    SDKVersion: '', // 微信SDK版本
     setSystemInfo() { // 在小程序的app.jsx调用
         console.log("获取系统信息xxx", this.tabbarHeight);
         let res = Taro.getSystemInfoSync();
@@ -27,6 +29,8 @@ const baseStore = observable({
         this.bottomSafeAreaHeight = res.screenHeight - res.safeArea.bottom >= 20 ? res.screenHeight - res.safeArea.bottom : 20;
         this.windowWidth = res.windowWidth;
         this.platform = (res.platform === 'windows' || res.platform === 'mac' || res.platform === 'devtools') ? 'pc' : 'ph'
+        this.phonePlatform = res.system.includes('iOS') ? 'ios' : 'android';
+        this.SDKVersion = res.SDKVersion;
 
         let buttonInfo = Taro.getMenuButtonBoundingClientRect();
         this.navHeight = res.statusBarHeight + buttonInfo.height + (buttonInfo.top - res.statusBarHeight) * 2;

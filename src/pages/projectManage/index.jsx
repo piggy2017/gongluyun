@@ -2,11 +2,11 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-24 13:59:20
+ * @LastEditTime: 2025-08-01 15:27:29
  * @Description: 
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useDidShow, useDidHide } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Block, Text } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
@@ -14,15 +14,16 @@ import { selectorQueryDomInfo, debounce, throttle, throttleCustom } from '@/util
 import WorkerJobType from '@/components/workerJobType';
 import TabBar from '@/components/tabBar';
 
-import { contractsList, getContractsInfo } from '@/util/api';
+import { contractsList, getContractsInfo, contractsExport } from '@/util/api';
 import './index.scss';
 
 const Index = observer(({ store }) => {
   const {
-    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight },
+    baseStore: { statusTitleHeight, contenTitleHeight, tabbarHeight, platform },
     userStore: { role, isLogin, companyVerified, myPermissions },
-    businessStore: { jobFilterAddress, setJobFilterAddress, setEditProjectInfo },
+    businessStore: { jobFilterAddress, setJobFilterAddress, setEditProjectInfo, setEditUrgentProjectInfo },
   } = store
+  let [forceUpdate, refreshForceUpdate] = useReducer(x => x + 1, 0);
   const [searchValue, setSearchValue] = useState('');
   const [searchHeight, setSearchHeight] = useState(34);
 
@@ -38,6 +39,7 @@ const Index = observer(({ store }) => {
   const [jobTypes, setJobTypes] = useState([]);          // 岗位类型
   const [chooseJob, setChooseJob] = useState(false);     // 选择岗位类型的弹窗
   const [InternalPerformanceList, setInternalPerformanceList] = useState([]);
+  const [customRequestParams, setCustomRequestParams] = useState({});  // 当前请求参数
 
   useDidShow(() => {
     const _projectSearchValue = Taro.getStorageSync('projectSearchValue');
@@ -94,6 +96,11 @@ const Index = observer(({ store }) => {
       areaCode: jobFilterAddress.adcode,
       jobTypeIds: jobTypes.map(item => item.id),
     }
+    if (type === 'urgent') {
+      params.urgent = true;
+      delete params.status;
+    }
+    setCustomRequestParams({ ...params });
     const { code, data } = await contractsList(params);
     console.log("getList", code, data);
     Taro.hideLoading();
@@ -118,6 +125,7 @@ const Index = observer(({ store }) => {
         }
       }
     }
+    refreshForceUpdate();
   }, 1000);
 
   const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
@@ -169,6 +177,7 @@ const Index = observer(({ store }) => {
       setgoonLoad(true);
       setType(_type);
       setSearchValue('');
+      setList([]);
     }
   }
 
@@ -197,14 +206,80 @@ const Index = observer(({ store }) => {
     setgoonLoad(true);
   }, 200)
 
+  const exportFunc = async () => {
+    if ((type && list.length === 0) || (!type && InternalPerformanceList.length === 0)) {
+      return Taro.showToast({ title: '暂无数据', icon: 'none' });
+    }
+
+    Taro.showLoading({ title: '导出中...' });
+    let params = { ...customRequestParams };
+    delete params.pageNo;
+    delete params.pageSize;
+    const { code, data, msg } = await contractsExport(params);
+    console.log("downloadRoster", code, data, msg);
+    Taro.hideLoading();
+    if (code === 200) {
+      let _downLoadSrc = data;
+      wx.downloadFile({
+        url: _downLoadSrc,
+        success: function (result) {
+          console.log("下载文件成功", result)
+          if (platform === 'pc') {
+            Taro.setClipboardData({
+              data: _downLoadSrc,
+              success: () => {
+                Taro.showToast({
+                  title: '下载地址已复制到粘贴板,可下载查看',
+                  icon: 'none',
+                  duration: 3000
+                })
+              }
+            })
+          } else {
+            if (Taro.getSystemInfoSync().platform === 'android') {
+              Taro.showToast({ title: '点击右上方的按钮然后保存至手机', icon: 'none', duration: 3000 });
+            } else {
+              Taro.showToast({ title: '点击右上方的按钮然后分享至微信进行查看', icon: 'none', duration: 3000 });
+            }
+          }
+          const filePath = result.tempFilePath;  // 临时文件路径
+          setTimeout(() => {
+            wx.openDocument({
+              filePath: filePath,
+              showMenu: true, // 预览文件右上方的...
+              success: function (response) {
+                console.log('打开文档成功', response)
+              }
+            })
+          }, 3000);
+        }
+      })
+    } else {
+      Taro.showToast({ title: msg, icon: 'none' })
+    }
+  }
+
   return (
     <View className='container'>
       <View className='my_header'>
         <View className='my_header_hr' style={`--statusBarHeight:${statusTitleHeight}px;`}></View>
         <View className='my_header_content' style={`--navContentHeight:${contenTitleHeight}px;`}>
-          <View onClick={() => setTypeFunc('PROCESSING')} className={`header_item ${type === 'PROCESSING' ? 'header_item_active' : ''}`}>进行中</View>
+          <ScrollView
+            className='tab_scroll'
+            scrollWithAnimation
+            scrollX
+            enhanced
+            bounces
+            showScrollbar={false}
+          >
+            <View onClick={() => setTypeFunc('PROCESSING')} className={`tab_item ${type === 'PROCESSING' ? 'header_item_active' : ''}`}>进行中</View>
+            <View onClick={() => setTypeFunc('urgent')} className={`tab_item ${type === 'urgent' ? 'header_item_active' : ''}`}>紧急项目</View>
+            <View onClick={() => setTypeFunc('COMPLETED')} className={`tab_item ${type === 'COMPLETED' ? 'header_item_active' : ''}`}>暂停面试</View>
+            <View onClick={() => setTypeFunc('')} className={`tab_item ${type === '' ? 'header_item_active' : ''}`}>绩效管理</View>
+          </ScrollView>
+          {/* <View onClick={() => setTypeFunc('PROCESSING')} className={`header_item ${type === 'PROCESSING' ? 'header_item_active' : ''}`}>进行中</View>
           <View onClick={() => setTypeFunc('COMPLETED')} className={`header_item ${type === 'COMPLETED' ? 'header_item_active' : ''}`}>暂停面试</View>
-          <View onClick={() => setTypeFunc('')} className={`header_item ${type === '' ? 'header_item_active' : ''}`}>绩效管理</View>
+          <View onClick={() => setTypeFunc('')} className={`header_item ${type === '' ? 'header_item_active' : ''}`}>绩效管理</View> */}
         </View>
       </View>
       <View className='search_wrapper'>
@@ -252,6 +327,11 @@ const Index = observer(({ store }) => {
           }}>
             <View>{jobFilterAddress.district ? jobFilterAddress.city + "·" + jobFilterAddress.district : '工作地区'}</View>
             <Image src={`${Taro.$cdnUrl}/supplier/supplier_33.webp`}></Image>
+          </View>
+
+          <View className='filter_item' onClick={() => exportFunc()}>
+            <View>导出</View>
+            <Image src={`${Taro.$cdnUrl}/index/index_icon49.webp`}></Image>
           </View>
         </View>
       </View>
@@ -302,6 +382,47 @@ const Index = observer(({ store }) => {
 
               {
                 InternalPerformanceList.length === 0 && requestState === 3 &&
+                <Taro.NoData></Taro.NoData>
+              }
+            </> ||
+            type === 'urgent' &&
+            <>
+              {
+                list.length > 0 && list.map((item, index) => {
+                  return (
+                    <View className='urgent_item' key={index} onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/projectDetail/index?contractsSerialCode=${item.serialCode}`)}>
+                      <View className='urgent_item_title'>
+                        <View className='urgent_item_title_left'>
+                          <Image src={`${Taro.$cdnUrl}/index/index_icon91.webp`}></Image>
+                          <View className='urgent_item_title_left_name'>{item.projectName}</View>
+                        </View>
+                        <Image onClick={(e) => {
+                          e.stopPropagation();
+                          setEditUrgentProjectInfo(item);
+                          setTimeout(() => {
+                            Taro.navigateTo({
+                              url: `/pages/newPackage/editUrgentProject/index`
+                            })
+                          }, 200);
+                        }} className='urgent_item_title_right' src={`${Taro.$cdnUrl}/index/index_icon90.webp`}></Image>
+                      </View>
+
+                      <View className='urgent_item_title'>{item.title}</View>
+                      <View className='urgent_item_info'>需求人数: {item.numberRecruits}人</View>
+                      <View className='urgent_item_info'>面试时间: {item.interviewDate ? item.interviewDate : '未填'}</View>
+                      <View className='urgent_item_info'>负责人: {item.recManager ? item.recManager : '未填'}</View>
+                    </View>
+                  )
+                })
+              }
+
+              {
+                list.length >= 4 &&
+                <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
+              }
+
+              {
+                list.length === 0 && requestState === 3 &&
                 <Taro.NoData></Taro.NoData>
               }
             </> ||

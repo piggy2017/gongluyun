@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-22 10:42:37
+ * @LastEditTime: 2025-08-01 14:26:11
  * @Description:
  */
 
@@ -15,8 +15,9 @@ import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import ScanIdCard from '@/components/scanIdCard';
+import UploadResume from '@/components/uploadResume';
 
-import { batchInsert, parsePerson } from '@/util/api'
+import { batchInsert, parsePerson } from '@/util/api';
 import './index.scss'
 
 
@@ -492,6 +493,18 @@ const Index = observer(({ store }) => {
                                             </View>
                                         </View>
                                     </View>
+
+                                    <UploadResume
+                                        deleteResume={() => {
+                                            setFormListData(index, 'resumeUrl', '');
+                                            setFormListData(index, 'resumeName', '');
+                                        }}
+                                        getUploadInfo={(src, name) => {
+                                            setFormListData(index, 'resumeUrl', src);
+                                            setFormListData(index, 'resumeName', name);
+                                        }}
+                                        resumeName={arrangList[index].resumeName}
+                                        resumeUrl={arrangList[index].resumeUrl}></UploadResume>
                                 </> ||
                                 <View className='show_close_info'>{arrangList[index].name ? arrangList[index].name : '-'} {arrangList[index].phone ? arrangList[index].phone : '-'}</View>
                             }

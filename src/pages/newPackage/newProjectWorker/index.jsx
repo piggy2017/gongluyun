@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-11-04 11:09:47
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-22 10:42:49
+ * @LastEditTime: 2025-08-01 13:54:36
  * @Description:
  */
 
@@ -15,6 +15,7 @@ import Navbar from '@/components/navbar';
 import WorkerJobType from '@/components/workerJobType';
 import DatePicker from '@/components/datePicker'
 import ScanIdCard from '@/components/scanIdCard';
+import UploadResume from '@/components/uploadResume';
 
 import { batchInsert, parsePerson } from '@/util/api'
 import './index.scss'
@@ -189,24 +190,6 @@ const Index = observer(({ store }) => {
                 Taro.showToast({ title: `请选择第${i + 1}位求职者性别`, icon: 'none', })
                 return;
             }
-            // else if ((!list[i].phone || list[i].phone.length != 11) && !phoneRule) {
-            //     Taro.showToast({ title: '请填写求职者手机号', icon: 'none', })
-            //     return;
-            // } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
-            //     Taro.showToast({ title: '请填写18位身份证号', icon: 'none', })
-            //     return;
-            // }
-
-            // if (phoneRule) {   // 供应商和渠道录入求职者 手机号码非必填 手机号码、身份证选填一个
-            // } else {
-            //     if ((!list[i].phone || list[i].phone.length != 11)) {
-            //         Taro.showToast({ title: `请填写第${i + 1}位求职者手机号`, icon: 'none', })
-            //         return;
-            //     } else if (list[i].idCardNo && list[i].idCardNo.length != 18) {
-            //         Taro.showToast({ title: `请填写第${i + 1}位求职者18位身份证号`, icon: 'none', })
-            //         return;
-            //     }
-            // }
 
             if ((!list[i].phone || list[i].phone.length != 11) && (!list[i].idCardNo || list[i].idCardNo.length != 18)) {
                 Taro.showToast({ title: `请填写第${i + 1}位求职者手机号或身份证`, icon: 'none', })
@@ -538,6 +521,19 @@ const Index = observer(({ store }) => {
                                             </View>
                                         </View>
                                     </View>
+                                    <UploadResume
+                                        deleteResume={() => {
+                                            console.log("出发删除操作");
+                                            setFormListData(index, 'resumeUrl', '');
+                                            setFormListData(index, 'resumeName', '');
+                                        }}
+                                        getUploadInfo={(src, name) => {
+                                            console.log("触发上传操作");
+                                            setFormListData(index, 'resumeUrl', src);
+                                            setFormListData(index, 'resumeName', name);
+                                        }}
+                                        resumeName={arrangList[index].resumeName}
+                                        resumeUrl={arrangList[index].resumeUrl}></UploadResume>
                                 </> ||
                                 <View className='show_close_info'>{arrangList[index].name ? arrangList[index].name : '-'} {arrangList[index].phone ? arrangList[index].phone : '-'}</View>
                             }

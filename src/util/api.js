@@ -2,13 +2,13 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 13:43:28
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-31 13:34:21
+ * @LastEditTime: 2025-08-01 17:03:14
  * @Description:
  */
 
 import http from "./request"
 
-export const env = 'test';
+export const env = 'prod';
 const base = env === 'prod' ? 'https://sa-api.apujiyu.com' : 'https://sa-test.apujiyu.com/'
 export const API_BASE_URL = base + "/mini"
 // const API_BASE_URL_JOB = "https://testios.joymian.com/jobfly/order"
@@ -258,6 +258,11 @@ export const openContracts = params => { // 打开项目
 }
 export const updateContracts = params => { // 编辑项目
     return http(API_BASE_URL + '/contracts/updateContracts', params, "POST", {
+        "Content-Type": "application/json"
+    });
+}
+export const contractsExport = params => { // 导出项目列表
+    return http(API_BASE_URL + '/contracts/export ', params, "POST", {
         "Content-Type": "application/json"
     });
 }
