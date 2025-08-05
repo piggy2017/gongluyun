@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-23 11:41:37
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-09 16:35:55
+ * @LastEditTime: 2025-08-05 11:53:04
  * @Description: 更改用户状态  未到面 已到面 面试失败 面试通过 已离职 已入职
  */
 
@@ -30,7 +30,7 @@ const IndexRosterUpdateStatus = observer(({ showPicker, onChange, currentStatus,
 
     const [statusList, setStatusList] = useState([]);
     const [statusDate, setstatusDate] = useState('')
-    const [showDatePicker, setShowDatePicker] = useState(false);         // 是否显示转项目的日期选择
+    const [showDatePicker, setShowDatePicker] = useState(false);         
 
     useEffect(() => {
         let list = [
