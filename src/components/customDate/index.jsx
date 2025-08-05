@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-05 15:39:11
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-04 11:49:49
+ * @LastEditTime: 2025-08-05 11:53:22
  * @Description: 自定义选择日期或者日期范围
  */
 import React, { useState, useEffect, useReducer } from 'react';
@@ -43,8 +43,8 @@ const CustomDate = observer(({ showPicker, defaultToday, onClose, onChange, stor
     const [dateRange, setDateRange] = useState('');
 
     // const [statusDate, setstatusDate] = useState('');
-    const [showDatePicker, setShowDatePicker] = useState(false);                // 是否显示转项目的日期选择
-    const [showEndDatePicker, setShowEndDatePicker] = useState(false);          // 是否显示转项目的日期选择
+    const [showDatePicker, setShowDatePicker] = useState(false);                
+    const [showEndDatePicker, setShowEndDatePicker] = useState(false);          
 
     const clickFilterDate = (obj, index) => {
         setFilterTime(obj.text);

@@ -48,6 +48,12 @@ View{
   align-items: center;
   justify-content: $justify-content;
 }
+@mixin flex-column($justify-content: $global-justify-content) {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: $justify-content;
+}
 
 @mixin ellipsis() {
   white-space: nowrap;

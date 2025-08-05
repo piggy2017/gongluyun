@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 14:44:48
+ * @LastEditTime: 2025-08-05 11:54:41
  * @Description:
  */
 
@@ -70,10 +70,9 @@ const Index = observer(({ store }) => {
         // if (type == 4) {   // 安排面试
         //     params.uuid = router.params.uuid
         // }
-        if (router.params.type == 3) {
+        if (router.params.type == 3 || router.params.type == 7) {
             params.status = 'PROCESSING';
         }
-
 
         const { code, data } = router.params.type == 4 ? await getArrangeableRecruitList(params) : await contractsJobSelector(params);
         console.log("getClueList", code, data);

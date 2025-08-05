@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-27 10:20:01
+ * @LastEditTime: 2025-08-05 11:55:40
  * @Description:
  */
 
@@ -768,6 +768,7 @@ const Index = observer(({ store }) => {
                                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                                     </View>
                                 </View>
+                                
                                 <View className='exchangeJob_content_hr'></View>
                                 {/* <View className='exchangeJob_content_item'>
                                     <View className='exchangeJob_content_item_label'>
