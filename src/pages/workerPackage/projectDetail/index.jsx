@@ -2,11 +2,11 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-11 14:27:24
+ * @LastEditTime: 2025-08-06 17:40:59
  * @Description:
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Text, Button, RichText, Block, Canvas, Swiper, SwiperItem } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
@@ -17,7 +17,7 @@ import drawQrcode from '@/util/drawQrcode.js'
 import Navbar from '@/components/navbar';
 import './index.scss'
 
-import { getRecruitmentInfo, signUpAdd, env, bgImages } from '@/util/api';
+import { getRecruitmentInfo, signUpAdd, env, bgImages, getUserInfo } from '@/util/api';
 
 const Index = observer(({ store }) => {
     const route = useRouter();
@@ -27,6 +27,7 @@ const Index = observer(({ store }) => {
         userStore: { isLogin, userInfo, setRole, enterParams, setEnterParams },
         ChatStore: { sessionList, setSessionList },
     } = store
+    const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
 
     const [detail, setDetail] = useState({});
     const [isOpened, setIsOpened] = useState(false);
@@ -37,6 +38,8 @@ const Index = observer(({ store }) => {
     const [codesrc, setCodesrc] = useState('');                    //  二维码图片
     const [swiperImages, setSwiperImages] = useState([]);          //  绘制的海报swiper图片
     const [currentSwiper, setcurrentSwiper] = useState(0);         //  当前swiper下标
+    const [shareUserCode, setShareUserCode] = useState('');        //  分享者的用户code
+    const [shareUserInfo, setShareUserInfo] = useState({});        //  分享者的用户信息
 
     useEffect(() => {
         const allCanvsBgs = bgImages.map(item => getImageInfo(item));
@@ -69,21 +72,49 @@ const Index = observer(({ store }) => {
         }
         if (recruitSerialCode) {
             getDetail(recruitSerialCode);
+
         }
         // 缓存进入页面的参数------》管道收益
         if (source && agentSerialCode) {
             setEnterParams({ source, agentSerialCode })
+            setShareUserCode(agentSerialCode);
         }
         if (q) {
             let query = getQueryString(decodeURIComponent(q));
             console.log("项目详情解析出的二维码参数", query);
             setEnterParams(query);
             getDetail(query.recruitSerialCode);
+            setShareUserCode(query.agentSerialCode);
             setRole('SEEK');
             Taro.setStorageSync('role', 'SEEK');
         }
-
     }, [])
+
+    useEffect(() => {   // 如果是通过分享进入,则获取分享者的用户信息
+        if (shareUserCode && isLogin !== 0) {
+            getUserInfo({ userSerialCode: shareUserCode }).then(res => {
+                let info = JSON.parse(decryptData(res.data));
+                console.log("获取分享者的用户信息getUserInfo:", info);
+                // info.recruitPhone = encryptData(info.phone);
+                // info.userNickName = info.nickName;
+                setShareUserInfo(info);
+            })
+        }
+    }, [shareUserCode, isLogin])
+
+    useEffect(() => {   // 合并分享者的用户信息和岗位详情
+        if (Object.keys(shareUserInfo).length > 0 && Object.keys(detail).length > 0 && !detail.isMerge) {
+            console.log("合并分享者的用户信息和岗位详情", shareUserInfo, detail);
+            setDetail({
+                ...detail,
+                userSerialCode: shareUserInfo.userSerialCode,
+                recruitPhone: encryptData(shareUserInfo.phone),
+                userNickName: shareUserInfo.nickName,
+                isMerge: true
+            })
+            forceUpdate();
+        }
+    }, [shareUserInfo, detail])
 
     const getDetail = async (recruitSerialCode) => {
         Taro.showLoading({ title: '加载中...' });
@@ -121,11 +152,11 @@ const Index = observer(({ store }) => {
         }
         if (!detail.signUp) {
             const { inviteRole, q } = route.params;
-            let _signUpChannel='';
-            if(inviteRole || q){
-                _signUpChannel='WECHAT_MINI_SHARE';
-            }else{
-                _signUpChannel='IN_WECHAT_MINI';
+            let _signUpChannel = '';
+            if (inviteRole || q) {
+                _signUpChannel = 'WECHAT_MINI_SHARE';
+            } else {
+                _signUpChannel = 'IN_WECHAT_MINI';
             }
             let params = {
                 source: 'SIGN',

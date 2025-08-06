@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2025-07-07 11:42:26
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-10 11:50:15
+ * @LastEditTime: 2025-08-06 10:30:24
  * @Description: 
  */
 
@@ -20,7 +20,7 @@ import './index.scss'
 import CustomDate from '@/components/customDate';
 import IndexRosterUpdateStatus from '@/components/indexRosterUpdateStatus';
 
-import { employedList, contractsgetRoster, contractsSign, updateInterviewer, batchUpdateInterviewer, downloadRoster,exportRoster } from '@/util/api'
+import { employedList, contractsgetRoster, contractsSign, updateInterviewer, batchUpdateInterviewer, downloadRoster, exportRoster } from '@/util/api'
 
 const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
@@ -335,7 +335,22 @@ const Index = observer(({ store }) => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
-                getList(1, 1);
+                // getList(1, 1);
+                setList(list => {
+                    let _list = list.map(item => {
+                        if (item.uuid === editCustom.uuid) {
+                            item.seekState = state;
+                            item.failReason = reason;
+                            if (state === 'EMPLOYED') {       // 已入职
+                                item.employedDate = date;
+                            } else if (state === 'RESIGN') {   // 已离职
+                                item.resignDate = date;
+                            }
+                        }
+                        return item
+                    })
+                    return _list
+                })
             } else {
                 Taro.showToast({ title: res.msg, icon: 'none' })
             }
@@ -368,7 +383,23 @@ const Index = observer(({ store }) => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
-                getList(1, 1);
+                // getList(1, 1);
+                setList(list => {
+                    let _list = list.map(item => {
+                        if (chooseObjList.some(obj => obj.uuid === item.uuid)) {
+                            item.seekState = state;
+                            item.isChoosed = false;
+                            item.failReason = reason;
+                            if (state === 'EMPLOYED') {       // 已入职
+                                item.employedDate = date;
+                            } else if (state === 'RESIGN') {   // 已离职
+                                item.resignDate = date;
+                            }
+                        }
+                        return item
+                    })
+                    return _list
+                })
                 setChooseList([]);
                 setChooseObjList([]);
                 setChooseAll(false);

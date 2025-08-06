@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:48:48
  * @LastEditors: 孙林
- * @LastEditTime: 2025-08-05 11:55:40
+ * @LastEditTime: 2025-08-06 10:15:05
  * @Description:
  */
 
@@ -321,7 +321,13 @@ const Index = observer(({ store }) => {
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
                 // setClientInfos({ ...clientInfos, seekState: e });
-                getList(1);
+                setList(list.map(item => {
+                    if (item.uuid === editCustom.uuid) {
+                        item.seekState = e;
+                    }
+                    return item;
+                }))
+                // getList(1);
             } else {
                 Taro.showToast({ title: res.msg, icon: 'none' })
             }
@@ -355,10 +361,18 @@ const Index = observer(({ store }) => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
-                getList(1);
+                // getList(1);
+                setList(list.map(item => {
+                    if (chooseList.includes(item.uuid)) {
+                        item.seekState = e;
+                        item.isChoosed = false;
+                    }
+                    return item;
+                }))
                 setChooseList([]);
                 setChooseAll(false);
                 setShowbottomOptions(false);
+                forceUpdate();
             } else {
                 Taro.showToast({ title: res.msg, icon: 'none' })
             }
@@ -768,7 +782,7 @@ const Index = observer(({ store }) => {
                                         <Image src={`${Taro.$cdnUrl}/index/mine_icon11.webp`}></Image>
                                     </View>
                                 </View>
-                                
+
                                 <View className='exchangeJob_content_hr'></View>
                                 {/* <View className='exchangeJob_content_item'>
                                     <View className='exchangeJob_content_item_label'>
