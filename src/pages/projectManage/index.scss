@@ -199,6 +199,19 @@
                         @include ellipsis();
                         max-width: 500rpx;
                         margin-left: 4rpx;
+
+                        text {
+                            background-color: #1678FF;
+                            padding: 2rpx 4rpx;
+                            color: #ffffff;
+                            font-family: "PingFang SC";
+                            font-size: 30rpx;
+                            font-style: normal;
+                            font-weight: 600;
+                            line-height: normal;
+                            border-radius: 16rpx !important;
+                            margin-right: 6rpx;
+                        }
                     }
                 }
 

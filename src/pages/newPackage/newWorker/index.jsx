@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-08-01 14:24:37
+ * @LastEditTime: 2025-08-15 14:44:55
  * @Description: 
  */
 
@@ -122,13 +122,19 @@ const Index = observer(({ store }) => {
     const saveWorker = throttle(async () => {
         console.log("isUpdateisUpdateisUpdate", isUpdate);
 
-
         let params = {
             ...formData,
             entryChannel: route.params.entryChannel,
             interviewArranged: formData.interviewDate ? true : false  // route.params.entryChannel === 'TALENT_POOL' ? true : formData.interviewDate ? true : false
         }
-        console.log("params", params);
+        console.log("params", params, params.sex);
+
+        if (!params.name) {
+            return Taro.showToast({ title: `请填写姓名`, icon: 'none', })
+        }
+        if (params.sex === null || params.sex === undefined) {
+            return Taro.showToast({ title: `请选择性别`, icon: 'none', })
+        }
 
         if (!params.source) {
             return Taro.showToast({ title: `请选择求职者来源`, icon: 'none', })
@@ -305,7 +311,7 @@ const Index = observer(({ store }) => {
                     </View>
                 </View>
                 <View className='project_item project_item_border'>
-                    <View className='project_item_label'>姓名</View>
+                    <View className='project_item_label project_item_label_required'>姓名</View>
                     <View className='project_item_right'>
                         <Input
                             className='new_input'
@@ -317,7 +323,7 @@ const Index = observer(({ store }) => {
                     </View>
                 </View>
                 <View className='project_item project_item_border'>
-                    <View className='project_item_label'>性别</View>
+                    <View className='project_item_label project_item_label_required'>性别</View>
                     <View className='project_item_right'>
                         <View onClick={() => setFormData({ ...formData, sex: 0 })} className={`option_item ${formData.sex === 0 ? 'option_item_active' : ''}`}>男</View>
                         <View onClick={() => setFormData({ ...formData, sex: 1 })} className={`option_item ${formData.sex === 1 ? 'option_item_active' : ''}`}>女</View>
@@ -516,7 +522,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 <View style={`height:20rpx;`}></View>
-                <View onClick={saveWorker} className={`post_btn ${(formData.source) ? 'post_btn_active' : ''}`}>保存</View>
+                <View onClick={saveWorker} className={`post_btn ${(formData.source && formData.name && (formData.sex === 0 || formData.sex === 1)) ? 'post_btn_active' : ''}`}>保存</View>
                 <View style={`height:${bottomSafeAreaHeight}px;`}></View>
             </View>
 

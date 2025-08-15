@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 14:27:58
+ * @LastEditTime: 2025-08-12 10:24:53
  * @Description:
  */
 
@@ -59,12 +59,16 @@ const Index = observer(({ store }) => {
 
     const getList = async (_pageNo) => {
         setRequestState(1);
+        const { userSerialCode } = router.params;
         Taro.showLoading({ title: '加载中...' });
         let params = {
             pageNo: _pageNo,
             pageSize,
             searchInfo: searchValue,
             status: "PROCESSING"
+        }
+        if(userSerialCode){
+            params.onsiteUserSerialCode = userSerialCode;
         }
         const { code, data } = await contractsList(params);
         console.log("getClueList", code, data);

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-08-04 16:10:24
+ * @LastEditTime: 2025-08-15 16:42:27
  * @Description: 
  */
 
@@ -273,9 +273,9 @@ const Index = observer(({ store }) => {
             showScrollbar={false}
           >
             <View onClick={() => setTypeFunc('PROCESSING')} className={`tab_item ${type === 'PROCESSING' ? 'header_item_active' : ''}`}>进行中</View>
-            <View onClick={() => setTypeFunc('COMPLETED')} className={`tab_item ${type === 'COMPLETED' ? 'header_item_active' : ''}`}>暂停面试</View>
-            <View onClick={() => setTypeFunc('')} className={`tab_item ${type === '' ? 'header_item_active' : ''}`}>绩效管理</View>
             <View onClick={() => setTypeFunc('urgent')} className={`tab_item ${type === 'urgent' ? 'header_item_active' : ''}`}>紧急项目</View>
+            <View onClick={() => setTypeFunc('')} className={`tab_item ${type === '' ? 'header_item_active' : ''}`}>绩效管理</View>
+            <View onClick={() => setTypeFunc('COMPLETED')} className={`tab_item ${type === 'COMPLETED' ? 'header_item_active' : ''}`}>暂停面试</View>
           </ScrollView>
           {/* <View onClick={() => setTypeFunc('PROCESSING')} className={`header_item ${type === 'PROCESSING' ? 'header_item_active' : ''}`}>进行中</View>
           <View onClick={() => setTypeFunc('COMPLETED')} className={`header_item ${type === 'COMPLETED' ? 'header_item_active' : ''}`}>暂停面试</View>
@@ -433,7 +433,9 @@ const Index = observer(({ store }) => {
                     <View className='project_item' key={index} onClick={(e) => navigateFunc(e, 1, `/pages/projectPackage/projectDetail/index?contractsSerialCode=${item.serialCode}`)}>
                       <View className='project_item_title'>
                         <View className='project_item_title_left'>
-                          <View className='project_item_title_left_name'>{item.title}</View>
+                          <View className='project_item_title_left_name'>{
+                            item.labels === '新出招聘' && <Text>新出招聘</Text>
+                          }{item.title}</View>
                         </View>
                         {
                           role != 'CUSTOMER' && role != 'CHANNEL' &&
