@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-20 15:30:26
+ * @LastEditTime: 2025-08-15 10:07:18
  * @Description: 
  */
 
@@ -40,12 +40,12 @@ const Index = observer(({ store }) => {
         Taro.showLoading({ title: '创建中...' });
         const { code, data, msg } = await supplierAdd({ ...formData });
         Taro.hideLoading();
-        if(code === 200) {
+        if (code === 200) {
             Taro.showToast({ title: '创建成功', icon: 'none' });
             setTimeout(() => {
                 Taro.navigateBack({ delta: 1 })
             }, 1000)
-        }else{
+        } else {
             Taro.showToast({ title: msg, icon: 'none' });
         }
     }, 200)
@@ -91,6 +91,30 @@ const Index = observer(({ store }) => {
                             value={formData.channelCode}
                             onInput={(e) => setFormData({ ...formData, channelCode: e.detail.value })}
                         ></Input>
+                    </View>
+                </View>
+            </View>
+
+            <View className='project_group_2'>
+                <View className='project_item_textarea'>
+                    <View className='project_item_textarea_title'>
+                        <View className='project_item_textarea_title_left'>备注</View>
+                        {/* <View className='project_item_stick'>粘贴</View> */}
+                    </View>
+                    <View className='input_box'>
+                        <Textarea
+                            count={false}
+                            className='input_text'
+                            auto-height
+                            confirmType='return'
+                            value={formData.remarks}
+                            onInput={(e) => setFormData({ ...formData, remarks: e.detail.value })}
+                            adjustPosition={true} //键盘弹起时，是否自动上推页面
+                            show-confirm-bar
+                            maxlength={500}
+                            autoHeight
+                            placeholder={`其他备注内容（选填）`}
+                        />
                     </View>
                 </View>
             </View>

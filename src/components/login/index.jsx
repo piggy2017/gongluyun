@@ -119,26 +119,26 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
     }
 
     // const loginhxIM = (hxUser) => {
-        //     let { username, password } = hxUser
-        //     console.log(decryptData(password))
-        //     Taro.WebIM.conn.open({
-            //         user: username,
-            //         pwd: decryptData(password),
-        //     }).then(() => {
-            //         console.log("login success");
-            //         getMessageList()
-        //     }).catch((reason) => {
-            //         console.log("login fail", reason);
-        //     });
+    //     let { username, password } = hxUser
+    //     console.log(decryptData(password))
+    //     Taro.WebIM.conn.open({
+    //         user: username,
+    //         pwd: decryptData(password),
+    //     }).then(() => {
+    //         console.log("login success");
+    //         getMessageList()
+    //     }).catch((reason) => {
+    //         console.log("login fail", reason);
+    //     });
     // }
 
     // const getMessageList = () => {
-        //     Taro.WebIM.conn.getServerConversations({ pageSize: 20, cursor: '' }).then((res) => {
-            //         setSessionList(res.data.conversations)
-            //         const { cursor } = res.data
-            //         if (cursor) {
-                //             setCursor(cursor)
-            //         }
+    //     Taro.WebIM.conn.getServerConversations({ pageSize: 20, cursor: '' }).then((res) => {
+    //         setSessionList(res.data.conversations)
+    //         const { cursor } = res.data
+    //         if (cursor) {
+    //             setCursor(cursor)
+    //         }
     //     })
     // }
 
@@ -157,16 +157,18 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
         })
     }
 
-    const accountLogin = () => {
+    const accountLogin = async () => {
         if (!account || account.length < 11) {
             return Taro.showToast({ title: "请输入11位手机号", icon: "none", duration: 2000 })
         }
         if (!password) {
             return Taro.showToast({ title: "请输入密码", icon: "none", duration: 2000 })
         }
+        const info = await Taro.login();
         let params = {
             phone: encryptData(account),
             password: encryptData(password),
+            wxCode: info.code,
         }
         Taro.showLoading({
             title: "登录中...",

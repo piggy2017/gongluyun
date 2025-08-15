@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-15 15:16:20
+ * @LastEditTime: 2025-08-15 16:46:27
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -46,6 +46,13 @@ const Index = observer(({ store }) => {
     const [isOpened, setIsOpened] = useState(false);
     const [searchWidth, setSearchWidth] = useState(694);
     const [logoOpacity, setLogoOpacity] = useState(1);
+
+    const [classifyList, setClassifyList] = useState([
+        { name: '大龄工', imageUrl: 'icon_cate1.webp', key: 'SENIOR_WORKER' },
+        { name: '技术工', imageUrl: 'icon_cate2.webp', key: 'SKILLED_WORKER' },
+        { name: '只白班', imageUrl: 'icon_cate4.webp', key: 'DAY_SHIFT_ONLY' },
+        { name: '拿高薪', imageUrl: 'icon_cate3.webp', key: 'HIGH_SALARY' },
+    ]);
 
     const chooseTypeFunc = (name, salaryType) => {
         setChooseType(false);
@@ -169,7 +176,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 130rpx)`;   //  - 334rpx
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabbarHeight}px - 130rpx - 160rpx)`;   //  - 334rpx
     }
 
     const goDetail = (item) => {
@@ -211,6 +218,23 @@ const Index = observer(({ store }) => {
                     onInput={(e) => { setSearchValue(e.detail.value) }}
                     onConfirm={searchFunc}
                     value={searchValue}></Input>
+            </View>
+
+            <View className='index_categray'>
+                {
+                    classifyList.map((item, index) => {
+                        return (
+                            <View className='index_categray_item' key={index} onClick={() => {
+                                Taro.navigateTo({
+                                    url: `/pages/workerPackage/classify/index?preference=${item.key}&title=${item.name}`
+                                })
+                            }}>
+                                <Image src={`${Taro.$cdnUrl}/supplier/${item.imageUrl}`}></Image>
+                                <View>{item.name}</View>
+                            </View>
+                        )
+                    })
+                }
             </View>
 
             {/* 筛选区 */}
@@ -257,7 +281,11 @@ const Index = observer(({ store }) => {
                         return (
                             <View className='list_item' key={index} onClick={() => goDetail(item)}>
                                 <View className='list_item_title'>
-                                    <View className='list_item_title_name'>{item.recruitTitle}</View>
+                                    <View className='list_item_title_name'>
+                                        {
+                                            item.labels === '新出招聘' && <Text>新出招聘</Text>
+                                        }
+                                        {item.recruitTitle}</View>
                                     {
                                         item.recruitSalaryRange &&
                                         <View className='list_item_title_salary'>

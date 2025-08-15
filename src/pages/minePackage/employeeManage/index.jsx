@@ -2,15 +2,15 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-03-26 10:30:34
+ * @LastEditTime: 2025-08-11 09:55:45
  * @Description: 
  */
 
 import React, { useState, useEffect } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro';
-import { View, Image, Text, ScrollView, Block } from '@tarojs/components'
+import { View, Image, Input, ScrollView, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, debounce, getRoleName } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, getRoleName, throttle } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -42,6 +42,7 @@ const Index = observer(({ store }) => {
     const [roleId, setRoleId] = useState('');     // 角色 2-客服 3-驻场
 
     const [list, setList] = useState([]);
+    const [searchValue, setSearchValue] = useState('');
 
     useEffect(() => {
         setTimeout(async () => {
@@ -74,6 +75,7 @@ const Index = observer(({ store }) => {
             pageNo: _pageNo,
             pageSize,
             companySerialCode: companyInfo.companySerialCode,
+            searchInfo: searchValue,
             roleId: roleId,
             status: type
         }
@@ -111,7 +113,7 @@ const Index = observer(({ store }) => {
     }, 200);
 
     const getHeight = () => {
-        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabHeight + bottomHeight + 15}px)`;
+        return `calc(100vh - ${statusTitleHeight + contenTitleHeight + tabHeight + bottomHeight + 15}px - 80rpx)`;
     }
 
     const setTypeFunc = (_type) => {
@@ -134,9 +136,27 @@ const Index = observer(({ store }) => {
         }
     }
 
+    const searchFunc = throttle(() => {
+        setgoonLoad(true);
+        getList(1);
+    }, 300);
+
     return (
         <View className='container'>
             <Navbar fixed placeholder bgColor='#FFFFFF' title='员工管理'></Navbar>
+
+            <View className='search_content_wrap'>
+                <View className='search_content'>
+                    <Image src={`${Taro.$cdnUrl}/index/index_icon1.webp`}></Image>
+                    <Input className='search_input'
+                        placeholder='搜索姓名、手机号'
+                        confirmType='search'
+                        placeholderStyle='color: #777777;'
+                        onInput={(e) => { setSearchValue(e.detail.value) }}
+                        onConfirm={searchFunc}
+                        value={searchValue}></Input>
+                </View>
+            </View>
 
             <View className='tab_wrapper'>
                 <View className='tab_item' onClick={() => { setShowRoleModel(true) }}>

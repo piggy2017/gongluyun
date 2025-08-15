@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-31 14:52:34
+ * @LastEditTime: 2025-08-15 09:50:36
  * @Description:
  */
 export default defineAppConfig({
@@ -129,6 +129,7 @@ export default defineAppConfig({
                 "projectDetail/index",           // 求职者查看项目详情
                 "signupHistory/index",           // 求职者查看报名记录
                 "editProfile/index",             // 编辑用户资料
+                "classify/index",                // 岗位分类
             ]
         },
         {

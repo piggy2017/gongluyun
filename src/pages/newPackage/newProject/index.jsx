@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:47:15
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-31 14:49:35
+ * @LastEditTime: 2025-08-12 15:58:43
  * @Description:
  */
 
@@ -329,6 +329,10 @@ const Index = observer(({ store }) => {
             params.salaryRange = `${rangeLeft}-${rangeRight}`
         }
 
+        if(!params.sortLevel){
+            params.sortLevel = 0;
+        }
+
         console.log("params", params);
         Taro.showLoading({ title: '提交中...', mask: true });
         if (!isUpdate) {
@@ -429,6 +433,28 @@ const Index = observer(({ store }) => {
                     </View>
                 </View>
 
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>标签类型</View>
+                    <View className='project_item_right'>
+                        <View onClick={() => setFormData({ ...formData, labels: '新出招聘' })} className={`traffic_item ${formData.labels === '新出招聘' ? 'traffic_item_active' : ''}`}>新出招聘</View>
+                        <View onClick={() => setFormData({ ...formData, labels: '普通招聘' })} className={`traffic_item ${formData.labels === '普通招聘' ? 'traffic_item_active' : ''}`}>普通招聘</View>
+                    </View>
+                </View>
+
+                <View className='project_item project_item_border'>
+                    <View className='project_item_label'>置顶排序</View>
+                    <View className='project_item_right'>
+                        <Input
+                            type='number'
+                            maxlength={2}
+                            className='new_input'
+                            placeholder='请输入置顶序号(1~99)'
+                            placeholderStyle='color: #999999;'
+                            value={formData.sortLevel}
+                            onInput={(e) => setFormData({ ...formData, sortLevel: e.detail.value })}
+                        ></Input>
+                    </View>
+                </View>
 
                 <View className='project_item project_item_border'>
                     <View className='project_item_label project_item_label_required'>企业名称</View>
