@@ -59,6 +59,19 @@
                 .list_item_title_name {
                     width: 420rpx;
                     @include ellipsis;
+
+                    text {
+                        background-color: #1678FF;
+                        padding: 2rpx 4rpx;
+                        color: #ffffff;
+                        font-family: "PingFang SC";
+                        font-size: 30rpx;
+                        font-style: normal;
+                        font-weight: 600;
+                        line-height: normal;
+                        border-radius: 16rpx !important;
+                        margin-right: 6rpx;
+                    }
                 }
 
                 .list_item_title_salary {
