@@ -1,0 +1,151 @@
+@import '@/app.scss';
+
+.container {
+    width: 100%;
+    height: 100vh;
+    background: #FFF;
+
+    .search_wrapp {
+        width: 100%;
+        padding-top: 20rpx;
+
+        .input_wrap {
+            width: 694rpx;
+            height: 68rpx;
+            border-radius: 34rpx;
+            flex-shrink: 0;
+            background-color: #F4F4F4;
+            margin: 0 auto;
+
+            image {
+                width: 36rpx;
+                height: 36rpx;
+                flex-shrink: 0;
+                margin: 0 10rpx 0 22rpx;
+            }
+
+            .search_input {
+                font-family: "PingFang SC";
+                font-size: 28rpx;
+                width: 600rpx;
+            }
+        }
+    }
+
+    .scrollWrapper {
+        width: 100%;
+        // border: 1rpx solid red;
+        margin-top: 10rpx;
+
+        .job_item {
+            width: 100%;
+            // height: 180rpx;
+            padding: 20rpx 0;
+            margin: 0 auto;
+            border-bottom: 1rpx solid #0000000a;
+            @include flex-center(flex-start);
+
+            .job_item_choose {
+                width: 36rpx;
+                height: 36rpx;
+                margin-left: 26rpx;
+            }
+
+            .job_item_content {
+                margin-left: 36rpx;
+
+                .job_item_name {
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 32rpx;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: normal;
+                    width: 610rpx;
+                    @include ellipsis;
+                }
+
+                .job_item_num {
+                    color: #222222;
+                    font-family: "PingFang SC";
+                    font-size: 30rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    margin-top: 9rpx;
+                }
+
+                .job_item_time {
+                    color: #999999;
+                    font-family: "PingFang SC";
+                    font-size: 28rpx;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    margin-top: 8rpx;
+                }
+            }
+        }
+    }
+
+    .job_bottom {
+        width: 100%;
+        background-color: #FFF;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+
+        .job_bottom_btns {
+            @include flex-center(space-between);
+            padding: 0 32rpx;
+
+            .footer_wrapper_left {
+                color: #666666;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 26rpx;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+                @include flex-center(flex-start);
+
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                    margin-right: 12rpx;
+                }
+            }
+
+            .cancel_btn {
+                width: 228rpx;
+                height: 100rpx;
+                flex-shrink: 0;
+                border-radius: 10rpx;
+                border: 2rpx solid #0483FF;
+                color: #1678ff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 32rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 100rpx;
+                letter-spacing: 0.3rpx;
+            }
+
+            .comfirm_btn {
+                width: 268rpx;
+                height: 100rpx;
+                flex-shrink: 0;
+                border-radius: 10rpx;
+                background: #0483FF;
+                color: #ffffff;
+                text-align: center;
+                font-family: "PingFang SC";
+                font-size: 32rpx;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 100rpx;
+            }
+        }
+    }
+}

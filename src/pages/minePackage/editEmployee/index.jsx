@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-11 15:58:00
  * @LastEditors: 孙林
- * @LastEditTime: 2025-08-12 10:24:42
+ * @LastEditTime: 2025-08-19 17:29:06
  * @Description: 
  */
 
@@ -296,7 +296,7 @@ const Index = observer(({ store }) => {
                     <View className='employee_item'>
                         <View className='employee_item_label'>绑定项目</View>
                         <View className='employee_item_right' onClick={() => {
-                            Taro.navigateTo({ url: `/pages/newPackage/onSiteProject/index?type=1&userSerialCode=${formData.userSerialCode}` })
+                            Taro.navigateTo({ url: `/pages/newPackage/onSiteBindProject/index?type=1&userSerialCode=${formData.userSerialCode}` })
                         }}>
                             <View className={`option_item_onsite ${onSiteProjectList.length > 0 ? 'option_item_active' : 'option_item_text'} }`}>
                                 {onSiteProjectList.length === 0 ? '请选择' : '已选·' + onSiteProjectList.length}
