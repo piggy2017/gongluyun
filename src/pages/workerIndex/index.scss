@@ -170,13 +170,19 @@
                     // width: 120rpx;
                     padding: 0 14rpx;
                     height: 44rpx;
-                    background: #FFF6ED;
+                    background: #F3F3F3;
                     border-radius: 4rpx;
                     @include flex-center;
                     font-family: PingFangSC-Regular;
                     font-weight: 400;
                     font-size: 24rpx;
-                    color: #E35A0D;
+                    color: #666666;
+                    margin-right: 10rpx;
+                }
+
+                image {
+                    width: 60rpx;
+                    height: 44rpx;
                     margin-right: 10rpx;
                 }
             }

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-08-06 15:03:33
+ * @LastEditTime: 2025-08-21 11:08:33
  * @Description:
  */
 
@@ -151,7 +151,7 @@ const Index = observer(({ store }) => {
             return setIsOpened(true)
         }
         if (!detail.signUp) {
-            const { inviteRole, q } = route.params;
+            const { inviteRole, agentSerialCode, q } = route.params;
             let _signUpChannel = '';
             if (inviteRole || q) {
                 _signUpChannel = 'WECHAT_MINI_SHARE';
@@ -162,7 +162,10 @@ const Index = observer(({ store }) => {
                 source: 'SIGN',
                 recruitSerialCode: detail.recruitSerialCode,
                 signUpChannel: _signUpChannel,
-                agentSerialCode: enterParams.agentSerialCode
+                // agentSerialCode: enterParams.agentSerialCode
+            }
+            if(agentSerialCode){
+                params.agentSerialCode = agentSerialCode;
             }
             console.log("报名——params", params, enterParams);
             Taro.showLoading({ title: '报名中...' });
