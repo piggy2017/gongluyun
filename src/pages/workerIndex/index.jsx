@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-08-15 17:02:15
+ * @LastEditTime: 2025-08-21 16:02:13
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -282,9 +282,9 @@ const Index = observer(({ store }) => {
                             <View className='list_item' key={index} onClick={() => goDetail(item)}>
                                 <View className='list_item_title'>
                                     <View className='list_item_title_name'>
-                                        {
+                                        {/* {
                                             item.labels === '新出招聘' && <Text>新出招聘</Text>
-                                        }
+                                        } */}
                                         {item.recruitTitle}</View>
                                     {
                                         item.recruitSalaryRange &&
@@ -299,6 +299,15 @@ const Index = observer(({ store }) => {
                                 {
                                     item.jobReq && item.tags &&
                                     <View className='require_req'>
+                                        {
+                                            item.urgent && <Image style='width:72rpx;' src={`${Taro.$cdnUrl}/index/index_icon111.webp`}></Image>
+                                        }
+                                        {
+                                            item.sortLevel > 0 && <Image src={`${Taro.$cdnUrl}/index/index_icon113.webp`}></Image>
+                                        }
+                                        {
+                                            item.labels === '新出招聘' && <Image src={`${Taro.$cdnUrl}/index/index_icon112.webp`}></Image>
+                                        }
                                         {
                                             [...item.jobReq, ...item.tags].map((r, i) => {
                                                 return <View key={i}>{r}</View>
