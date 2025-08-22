@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-04-02 14:32:55
+ * @LastEditTime: 2025-08-22 11:13:50
  * @Description: 
  */
 
@@ -93,7 +93,7 @@ const Index = observer(({ store }) => {
         const { code, data, msg } = await switchRoles({ userRole: type === 1 ? 'SEEK' : type === 2 ? 'ADMIN' : 'SUPPLIER' });
         console.log("选择角色", code, data, msg)
         if (code === 200) {
-            getSubTemplates();
+            // getSubTemplates();
             if (calback) calback(data);
         } else {
             Taro.showToast({

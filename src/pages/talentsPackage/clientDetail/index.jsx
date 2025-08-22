@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-09 09:51:48
+ * @LastEditTime: 2025-08-22 11:22:53
  * @Description:
  */
 import React, { useState, useEffect } from 'react'
@@ -20,7 +20,7 @@ import NewUpdateStatus from '@/components/newUpdateStatus';
 import DatePicker from '@/components/datePicker'
 import './index.scss'
 
-import { cluegetUserInfo, updateInterviewer, clueStateFlow, cluemyClients, contractsgetRoster, unsuitable } from '@/util/api'
+import { cluegetUserInfo, updateInterviewer, clueStateFlow, cluemyClients, contractsgetRoster, unsuitable, clueReceive } from '@/util/api'
 
 
 const Index = observer(({ store }) => {
@@ -70,7 +70,9 @@ const Index = observer(({ store }) => {
     }, [])
 
     useEffect(() => {
-        const { uid, myClientCount, index, phone, notEdit } = route.params;
+        // fromPush=1  来自于消息推送,当存在fromPush=1,不能更改状态;
+        // receiveClue=1  来自于消息推送,当存在receiveClue=1,需自动领取客户;
+        const { uid, myClientCount, index, phone, receiveClue, notEdit } = route.params;
         console.log("route.params", route.params);
         getClientDetail(uid, phone);
         getHistoryList(uid);
@@ -83,12 +85,26 @@ const Index = observer(({ store }) => {
                 console.log("_query_query_query", _query.height);
             }
         }, 0);
+        if (receiveClue) {
+            getClient()
+        }
     }, [])
-    
+
+    const getClient = async () => {   // 领取客户
+        const { uid } = route.params;
+        const { code, data, msg } = await clueReceive({ uuid: uid });
+        console.log("领取客户_getClient", code, data);
+        Taro.hideLoading();
+        if (code === 200) {
+            Taro.showToast({ title: '领取成功', icon: 'none', duration: 2000 });
+        } else {
+            Taro.showToast({ title: msg, icon: 'none', duration: 2000 });
+        }
+    }
 
     const getClientDetail = async (_uuid, _phone) => {
         const { code, data, msg } = await cluegetUserInfo({ uuid: _uuid, phone: _phone });
-        console.log("code", code, "data", data, "msg", msg);
+        console.log("获取客户详情code", code, "data", data, "msg", msg);
         if (code === 200) {
             setClientInfos(data);
             setExchangeJobInfo({
@@ -99,7 +115,7 @@ const Index = observer(({ store }) => {
                 setDateText(data.employedDate);
             } else if (data.seekState === 'RESIGN') {
                 setDateText(data.resignDate);
-            }else{
+            } else {
                 setDateText(data.interviewDate || '');
             }
         } else {
@@ -241,6 +257,7 @@ const Index = observer(({ store }) => {
             return Taro.showToast({ title: '暂无权限', icon: 'none' });
         } else {
             // setShowEditStatus(true);
+            console.log('当前角色role:', role, '用户当前状态:', clientInfos.seekState);
             if (role === 'CUSTOMER') {
                 setShowEditStatus(true);
                 // if (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'CONTACT' || clientInfos.seekState === 'UNSUITABLE') {
@@ -366,37 +383,42 @@ const Index = observer(({ store }) => {
             <View style='height:200rpx;'></View>
 
             <View className='bottom_wrapper'>
-                <View className='bottom_wrapper_con'>
-                    <View className='' style='height:16rpx;'></View>
-                    {
-                        (clientInfos && (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'CONTACT')) &&
-                        <View className='create_interview_pedding'>
-                            <View className='inappropriate' onClick={unsuitableFunc}>不合适</View>
-                            <View className='create_interview_btn' onClick={() => goInterview()}>安排面试</View>
-                        </View> ||
-                        (clientInfos && clientInfos.seekState === 'UNSUITABLE') &&
-                        <View className='go_interview_btn' onClick={() => goInterview()}>安排面试</View> ||
-                        (clientInfos && (clientInfos.seekState === 'SCHEDULED_INTERVIEW' || clientInfos.seekState === 'NOT_INTERVIEW')) &&
-                        <View className='change_job' >
-                            <View className='change_job_1' onClick={() => exchangeJob()}>转项目</View>
-                            <View className='change_job_2' onClick={() => editStatusFunc()}>修改状态</View>
-                            <View className='count_wrap'>
-                                <AtIcon onClick={() => setCurrentIndex('reduce')} value='chevron-left' size='20' color={`${current === 1 ? '#999999' : '#333333'}`}></AtIcon>
-                                <View className='count'>{current}/{totalPerson}</View>
-                                <AtIcon onClick={() => setCurrentIndex('add')} value='chevron-right' size='20' color={`${current === totalPerson ? '#999999' : '#333333'}`}></AtIcon>
+                {
+                    route.params.fromPush == 1 &&
+                    <></> ||
+                    <View className='bottom_wrapper_con'>
+                        <View className='' style='height:16rpx;'></View>
+                        {
+                            (clientInfos && (clientInfos.seekState === 'PENDING' || clientInfos.seekState === 'CONTACT')) &&
+                            <View className='create_interview_pedding'>
+                                <View className='inappropriate' onClick={unsuitableFunc}>不合适</View>
+                                <View className='create_interview_btn' onClick={() => goInterview()}>安排面试</View>
+                            </View> ||
+                            (clientInfos && clientInfos.seekState === 'UNSUITABLE') &&
+                            <View className='go_interview_btn' onClick={() => goInterview()}>安排面试</View> ||
+                            (clientInfos && (clientInfos.seekState === 'SCHEDULED_INTERVIEW' || clientInfos.seekState === 'NOT_INTERVIEW')) &&
+                            <View className='change_job' >
+                                <View className='change_job_1' onClick={() => exchangeJob()}>转项目</View>
+                                <View className='change_job_2' onClick={() => editStatusFunc()}>修改状态</View>
+                                <View className='count_wrap'>
+                                    <AtIcon onClick={() => setCurrentIndex('reduce')} value='chevron-left' size='20' color={`${current === 1 ? '#999999' : '#333333'}`}></AtIcon>
+                                    <View className='count'>{current}/{totalPerson}</View>
+                                    <AtIcon onClick={() => setCurrentIndex('add')} value='chevron-right' size='20' color={`${current === totalPerson ? '#999999' : '#333333'}`}></AtIcon>
+                                </View>
+                            </View> ||
+                            <View className='edit_wrap'>
+                                <View className='edit_wrap_btn' onClick={() => editStatusFunc()}>修改状态</View>
+                                <View className='count_wrap'>
+                                    <AtIcon onClick={() => setCurrentIndex('reduce')} value='chevron-left' size='20' color={`${current === 1 ? '#999999' : '#333333'}`}></AtIcon>
+                                    <View className='count'>{current}/{totalPerson}</View>
+                                    <AtIcon onClick={() => setCurrentIndex('add')} value='chevron-right' size='20' color={`${current === totalPerson ? '#999999' : '#333333'}`}></AtIcon>
+                                </View>
                             </View>
-                        </View> ||
-                        <View className='edit_wrap'>
-                            <View className='edit_wrap_btn' onClick={() => editStatusFunc()}>修改状态</View>
-                            <View className='count_wrap'>
-                                <AtIcon onClick={() => setCurrentIndex('reduce')} value='chevron-left' size='20' color={`${current === 1 ? '#999999' : '#333333'}`}></AtIcon>
-                                <View className='count'>{current}/{totalPerson}</View>
-                                <AtIcon onClick={() => setCurrentIndex('add')} value='chevron-right' size='20' color={`${current === totalPerson ? '#999999' : '#333333'}`}></AtIcon>
-                            </View>
-                        </View>
-                    }
-                    <View style={`height:${bottomSafeAreaHeight}px`}></View>
-                </View>
+                        }
+                        <View style={`height:${bottomSafeAreaHeight}px`}></View>
+                    </View>
+                }
+
             </View>
 
             <Block>

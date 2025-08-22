@@ -82,7 +82,7 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
                     getRoleAndPermissionFunc();
                     handleClose();
 
-                    getSubTemplates();
+                    // getSubTemplates();
                     getSupplierCompanyInfo();      // 检查用户是否是供应商
                     if (isSupplier) {
                         console.log("供应商登录后,调接口切换到供应商")
@@ -191,7 +191,7 @@ const Index = observer(({ store, onClose, isOpened, isSupplier }) => {
                 getRoleAndPermissionFunc();
                 handleClose();
 
-                getSubTemplates();
+                // getSubTemplates();
                 getSupplierCompanyInfo();      // 检查用户是否是供应商
                 if (isSupplier) {
                     console.log("供应商登录后,调接口切换到供应商")

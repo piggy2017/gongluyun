@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-24 13:53:39
  * @LastEditors: 孙林
- * @LastEditTime: 2025-05-16 11:32:28
+ * @LastEditTime: 2025-08-22 11:13:55
  * @Description: 
  */
 
@@ -94,7 +94,7 @@ const Index = observer(({ store }) => {
     const chooseRoleFunc = async (type, calback) => {
         const { code, data, msg } = await switchRoles({ userRole: type === 1 ? 'SEEK' : type === 2 ? 'ADMIN' : 'SUPPLIER' });
         if (code === 200) {
-            getSubTemplates();
+            // getSubTemplates();
             setMyPermissions();
             if (calback) calback(data);
         } else {

@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-09 09:50:07
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-24 13:46:48
+ * @LastEditTime: 2025-08-22 11:11:34
  * @Description:
  */
 import React, { useState, useEffect } from 'react'
@@ -364,7 +364,7 @@ const Index = observer(({ store }) => {
             </View>
 
             <TabBar actCurrent={(role === 'SEEK' || role === 'SUPPLIER') ? 2 : role === 'CHANNEL' ? 4 : 4} />
-            <Taro.SubscribeMsg></Taro.SubscribeMsg>
+            {/* <Taro.SubscribeMsg></Taro.SubscribeMsg> */}
 
             <AtModal
                 isOpened={loginoutSure}
