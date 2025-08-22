@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-08-21 16:02:17
+ * @LastEditTime: 2025-08-22 18:35:04
  * @Description:
  */
 
@@ -152,6 +152,7 @@ const Index = observer(({ store }) => {
         }
         if (!detail.signUp) {
             const { inviteRole, agentSerialCode, q } = route.params;
+            console.log("报名——route.params", route.params);
             let _signUpChannel = '';
             if (inviteRole || q) {
                 _signUpChannel = 'WECHAT_MINI_SHARE';
