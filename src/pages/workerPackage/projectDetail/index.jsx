@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-12 16:15:16
  * @LastEditors: 孙林
- * @LastEditTime: 2025-08-21 11:08:33
+ * @LastEditTime: 2025-08-22 18:27:18
  * @Description:
  */
 
@@ -164,8 +164,13 @@ const Index = observer(({ store }) => {
                 signUpChannel: _signUpChannel,
                 // agentSerialCode: enterParams.agentSerialCode
             }
-            if(agentSerialCode){
+            if (agentSerialCode) {
                 params.agentSerialCode = agentSerialCode;
+            }
+            if (q) {
+                let query = getQueryString(decodeURIComponent(q));
+                console.log("项目详情解析出的二维码参数", query);
+                params.agentSerialCode = query.agentSerialCode;
             }
             console.log("报名——params", params, enterParams);
             Taro.showLoading({ title: '报名中...' });
