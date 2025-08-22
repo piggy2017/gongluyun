@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-13 15:15:54
  * @LastEditors: 孙林
- * @LastEditTime: 2025-08-22 11:28:38
+ * @LastEditTime: 2025-08-22 15:06:53
  * @Description:
  */
 import React, { useState, useEffect } from 'react'
@@ -44,6 +44,7 @@ const Index = observer(({ store }) => {
     const [showEditStatus, setShowEditStatus] = useState(false);
     const [showExchangeModel, setShowExchangeModel] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const [receiveSuccess, setReceiveSuccess] = useState(true);
 
     useDidShow(() => {
         if (clientInfos && clientInfos.uuid) {
@@ -74,8 +75,6 @@ const Index = observer(({ store }) => {
         // receiveClue=1  来自于消息推送,当存在receiveClue=1,需自动领取客户;
         const { uid, myClientCount, index, phone, receiveClue, notEdit } = route.params;
         console.log("route.params", route.params);
-        getClientDetail(uid, phone);
-        getHistoryList(uid);
         setUuid(uid);
         setCurrent(index * 1);
         setTotalPerson(myClientCount * 1);
@@ -86,19 +85,30 @@ const Index = observer(({ store }) => {
             }
         }, 0);
         if (receiveClue) {
-            getClient()
+            getClient();
+        } else {
+            getClientDetail(uid, phone);
+            getHistoryList(uid);
         }
     }, [])
 
     const getClient = async () => {   // 领取客户
-        const { uid } = route.params;
+        const { uid, phone } = route.params;
         const { code, data, msg } = await clueReceive({ uuid: uid });
         console.log("领取客户_getClient", code, data);
         Taro.hideLoading();
         if (code === 200) {
             Taro.showToast({ title: '领取成功', icon: 'none', duration: 2000 });
+            setReceiveSuccess(true);
+            setTimeout(() => {
+                getClientDetail(uid, phone);
+                getHistoryList(uid);
+            }, 100);
         } else {
             Taro.showToast({ title: msg, icon: 'none', duration: 2000 });
+            setReceiveSuccess(false);
+            getClientDetail(uid, phone);
+            getHistoryList(uid);
         }
     }
 
@@ -385,7 +395,7 @@ const Index = observer(({ store }) => {
 
             <View className='bottom_wrapper'>
                 {
-                    route.params.fromPush == 1 &&
+                    (route.params.fromPush == 1 || !receiveSuccess) &&
                     <></> ||
                     <View className='bottom_wrapper_con'>
                         <View className='' style='height:16rpx;'></View>
