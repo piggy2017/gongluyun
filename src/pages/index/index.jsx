@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-03 11:01:04
  * @LastEditors: 孙林
- * @LastEditTime: 2025-07-07 11:50:13
+ * @LastEditTime: 2025-08-22 11:11:36
  * @Description: 
  */
 import React, { useState, useEffect } from 'react'
@@ -617,7 +617,7 @@ const Index = observer(({ store }) => {
         <View style={`height:50rpx;`}></View>
       </View>
 
-      <Taro.SubscribeMsg></Taro.SubscribeMsg>
+      {/* <Taro.SubscribeMsg></Taro.SubscribeMsg> */}
 
       <TabBar actCurrent={0} />
     </View>
