@@ -2,7 +2,7 @@
  * @Author: 孙林 1164700321@qq.com
  * @Date: 2024-09-10 14:51:53
  * @LastEditors: 孙林
- * @LastEditTime: 2025-08-01 14:16:50
+ * @LastEditTime: 2025-08-27 10:00:12
  * @Description:
  */
 import React, { useState, useEffect } from 'react';
@@ -111,7 +111,7 @@ const WorkerInfo = observer(({ store, info, interview, type }) => {
                         </View>
                         {
                             // ((info.seekState === 'PENDING' && !interview) || type == 2) &&
-                            ((type == 1 || type == 2) && (role === 'ADMIN' || role === 'ON_SITE' || role === 'CHANNEL')) &&
+                            (type == 1 || type == 2) &&   // (role === 'ADMIN' || role === 'ON_SITE' || role === 'CHANNEL')) &&
                             <View className='userInfo_title_right' onClick={goEdit}>
                                 <Image src={`${Taro.$cdnUrl}/index/index_icon41.webp`}></Image>
                                 <View>编辑</View>
