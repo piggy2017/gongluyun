@@ -4,6 +4,7 @@
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "import/first": "off",  // 关闭 import/first 检查
-    "no-unused-vars": "off"  // 完全关闭
+    "no-unused-vars": "off",  // 完全关闭
+    "react/jsx-indent-props": ["error", 4]
   }
 }

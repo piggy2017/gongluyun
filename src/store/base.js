@@ -8,7 +8,7 @@
 import {
     observable,
     makeAutoObservable
-} from 'mobx'
+} from 'mobx';
 import Taro from '@tarojs/taro';
 const baseStore = observable({
     systemInfo: {}, // 系统信息
@@ -22,20 +22,20 @@ const baseStore = observable({
     phonePlatform: '', // 手机平台
     SDKVersion: '', // 微信SDK版本
     setSystemInfo() { // 在小程序的app.jsx调用
-        console.log("获取系统信息xxx", this.tabbarHeight);
+        console.log("获取系统信息xxx", baseStore.tabbarHeight);
         let res = Taro.getSystemInfoSync();
         console.log("获取系统信息", res);
-        this.systemInfo = res;
-        this.bottomSafeAreaHeight = res.screenHeight - res.safeArea.bottom >= 20 ? res.screenHeight - res.safeArea.bottom : 20;
-        this.windowWidth = res.windowWidth;
-        this.platform = (res.platform === 'windows' || res.platform === 'mac' || res.platform === 'devtools') ? 'pc' : 'ph'
-        this.phonePlatform = res.system.includes('iOS') ? 'ios' : 'android';
-        this.SDKVersion = res.SDKVersion;
+        baseStore.systemInfo = res;
+        baseStore.bottomSafeAreaHeight = res.screenHeight - res.safeArea.bottom >= 20 ? res.screenHeight - res.safeArea.bottom : 20;
+        baseStore.windowWidth = res.windowWidth;
+        baseStore.platform = (res.platform === 'windows' || res.platform === 'mac' || res.platform === 'devtools') ? 'pc' : 'ph'
+        baseStore.phonePlatform = res.system.includes('iOS') ? 'ios' : 'android';
+        baseStore.SDKVersion = res.SDKVersion;
 
         let buttonInfo = Taro.getMenuButtonBoundingClientRect();
-        this.navHeight = res.statusBarHeight + buttonInfo.height + (buttonInfo.top - res.statusBarHeight) * 2;
-        this.statusTitleHeight = res.statusBarHeight;
-        this.contenTitleHeight = buttonInfo.height + (buttonInfo.top - res.statusBarHeight) * 2;
+        baseStore.navHeight = res.statusBarHeight + buttonInfo.height + (buttonInfo.top - res.statusBarHeight) * 2;
+        baseStore.statusTitleHeight = res.statusBarHeight;
+        baseStore.contenTitleHeight = buttonInfo.height + (buttonInfo.top - res.statusBarHeight) * 2;
     },
     setTabbarHeight(value) { // 获取底部tabbar的高度 (进入小程序或者切换角色后会自动计算)
         baseStore.tabbarHeight = value;

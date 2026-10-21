@@ -152,13 +152,13 @@ const IndexRosterUpdateStatus = observer(({ showPicker, onChange, currentStatus,
                                 }
                                 <View className='input_wrapper'>
                                     <Textarea count={false}
-                                        focus={true}
+                                        focus
                                         className='float_input'
                                         auto-height
                                         confirmType='return'
                                         value={failReason}
                                         onInput={(e) => setFailReason(e.detail.value)}
-                                        adjustPosition={true} //键盘弹起时，是否自动上推页面
+                                        adjustPosition //键盘弹起时，是否自动上推页面
                                         showConfirmBar={false}
                                         maxlength={50}
                                         autoHeight

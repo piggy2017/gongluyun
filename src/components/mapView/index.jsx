@@ -29,7 +29,7 @@ const MapView = (observer(({ data, index, store }) => {
 
     return (
         <View className='location-card'>
-            <View className='info' onClick={() => console.log('我惦记了')}>
+            <View className='info' onClick={() => console.log('我点击了')}>
                 <View className='title'>{location.buildingName}</View>
                 <View className='address'>{location.addr}</View>
             </View>

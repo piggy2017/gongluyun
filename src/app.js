@@ -101,20 +101,6 @@ function App({
         Taro.WebIM.conn.addEventHandler("GLOBAL", {
             onTextMessage: function (message) {
                 console.log(message, "全局监听");
-
-                if (message.from === "interactivegonglu") { // 互动消息
-                    FindStore.setInteriavegonglu(JSON.parse(message.ext.extJson))
-                }
-
-                if (message.from === "taskgonglu") {
-                    let _obj = JSON.parse(message.ext.extJson);
-                    if (_obj.taskAward === 'SYSTEM_ASSIST_RED_ENVELOPE') {
-                        showComponentStore.setMatchRedInfo({
-                            show: true,
-                            ..._obj
-                        });
-                    }
-                }
                 unifyData(message)
             },
             onImageMessage: function (message) {
@@ -283,7 +269,7 @@ function App({
     }, []);
 
     return (
-      <Provider store = {store}>
+      <Provider store={store}>
         {
             children
         }

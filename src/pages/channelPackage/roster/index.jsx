@@ -10,7 +10,7 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Button, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, throttleCustom, throttle, debounce, getStatus, getColor } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -18,6 +18,7 @@ import './index.scss'
 
 import CustomDate from '@/components/customDate';
 import NewUpdateStatus from '@/components/newUpdateStatus';
+import { usePagination } from '@/hooks/usePagination';
 
 import { contractsgetRoster, updateInterviewer, batchUpdateInterviewer, downloadRoster, mySupplierList, batchUpdateSupplier } from '@/util/api';
 
@@ -31,18 +32,11 @@ const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
 
     const [searchValue, setSearchValue] = useState('');
+    const [searchInfo, setSearchInfo] = useState('');   // 已提交的搜索关键字（参与请求）
     const [searchHeight, setSearchHeight] = useState(175);
     const [bottomHeight, setBottomHeight] = useState(90);
 
-    const [isRefresh, setIsRefresh] = useState(false);
-    const [goonLoad, setgoonLoad] = useState(true);
-    const [pageNo, setPageNo] = useState(1);
-    const pageSize = 10
-    const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
-    const [totalCount, setTotalCount] = useState(0);
     const [title, setTitle] = useState('');
-
-    const [list, setList] = useState([]);
 
     const [tabList, setTabList] = useState([
         { state: '', name: "全部" },
@@ -85,16 +79,44 @@ const Index = observer(({ store }) => {
     const [showEditStatus, setShowEditStatus] = useState(false);
 
     const [showSupplierModel, setShowSupplierModel] = useState(false);
-    const [supplierList, setSupplierList] = useState([]);
-    const [isRefresh2, setIsRefresh2] = useState(false);
-    const [goonLoad2, setGoonLoad2] = useState(true);
-    const [pageNo2, setPageNo2] = useState(1)
-    const pageSize2 = 20;
-    const [requestState2, setRequestState2] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
     const [supplierValue, setSupplierValue] = useState('');
+    const [supplierSearchInfo, setSupplierSearchInfo] = useState('');   // 已提交的供应商搜索关键字
+
+    // 名单列表分页（统一状态机）
+    const roster = usePagination(contractsgetRoster, {
+        params: {
+            seekState: tabList[currentTabIndex].state,
+            searchInfo,
+            recruitSerialCode: route.params.recruitSerialCode,
+            channelCode: channelFilterSupplier.channelCode,
+            dateRange: dateObj.dateRange,
+            startDate: dateObj.startDate,
+            endDate: dateObj.endDate,
+            channel: 1
+        },
+        pageSize: 10,
+        loadingText: '加载中...',
+        onSuccess: (data, ctx) => setCustomRequestParams({ ...ctx.params }),
+        onEmpty: (data, ctx) => setCustomRequestParams({ ...ctx.params })
+    })
+
+    // 供应商列表分页（统一状态机）：原 pageNo2/goonLoad2/requestState2/isRefresh2/supplierList 由 Hook 托管
+    const supplierPager = usePagination(mySupplierList, {
+        params: {
+            companySerialCode: companyInfo.companySerialCode,
+            supplierSerialCode: '',
+            searchInfo: supplierSearchInfo
+        },
+        pageSize: 20,
+        loadingText: '加载中',
+        loadingMask: true,
+        transform: (rows) => {      // 与旧实现一致：提交前重置选中态
+            rows.forEach(item => { item.selected = false })
+            return rows
+        }
+    })
 
     useEffect(() => {
-        getSupplierList(1);
         return () => {
             console.log("触发 名单页面卸载")
             setChannelFilterSupplier({
@@ -107,8 +129,8 @@ const Index = observer(({ store }) => {
     }, [])
 
     useEffect(() => {
-        if (!showSupplierModel && supplierList.length > 0) {
-            setSupplierList(supplierList => {
+        if (!showSupplierModel && supplierPager.list.length > 0) {
+            supplierPager.setList(supplierList => {
                 supplierList.forEach(i => {
                     i.selected = false
                 })
@@ -125,13 +147,8 @@ const Index = observer(({ store }) => {
     }, [])
 
     useDidShow(() => {
-        getList(1);
+        roster.reload();
     })
-
-    useEffect(() => {
-        console.log("roster-channelFilterSupplier", channelFilterSupplier);
-        getList(1);
-    }, [currentTabIndex, channelFilterSupplier, dateObj])
 
     useEffect(() => {
         setTimeout(async () => {
@@ -155,92 +172,21 @@ const Index = observer(({ store }) => {
     }, [chooseList])
 
 
-    const getSupplierList = throttleCustom(async (_pageNo) => {
-        let params = {
-            pageNo: _pageNo,
-            pageSize: pageSize2,
-            companySerialCode: companyInfo.companySerialCode,
-            supplierSerialCode: '',
-            searchInfo: supplierValue,
-        }
-        setRequestState2(1);
-        Taro.showLoading({ title: '加载中', mask: true });
-        const { code, data } = await mySupplierList(params);
-        Taro.hideLoading();
-        console.log("code, data", code, data);
-        setIsRefresh2(false);
-        if (code === 200 && data?.responses?.length > 0) {
-            data.responses.forEach(item => {
-                item.selected = false;
-            })
-            setSupplierList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
-            setGoonLoad2(true);
-            setPageNo2(data.pageNo);
-            setRequestState2(2);
-        } else {
-            setGoonLoad2(false);
-            setRequestState2(3);
-            if (_pageNo === 1) {
-                setSupplierList([]);
-            }
-        }
-    }, 1000)
-
-    const getList = throttleCustom(async (_pageNo) => {    // 获取名单列表
-        const { recruitSerialCode } = route.params;
-        setRequestState(1);
-        Taro.showLoading({ title: '加载中...' });
-        let params = {
-            pageNo: _pageNo,
-            pageSize,
-            seekState: tabList[currentTabIndex].state,
-            searchInfo: searchValue,
-            recruitSerialCode,
-            // source: sourceObj.source,
-            channelCode: channelFilterSupplier.channelCode,
-            dateRange: dateObj.dateRange,
-            startDate: dateObj.startDate,
-            endDate: dateObj.endDate,
-            channel: 1
-        }
-        const { code, data } = await contractsgetRoster(params);
-        console.log("获取名单列表", code, data);
-        setCustomRequestParams({ ...params });
-        Taro.hideLoading();
-        setIsRefresh(false);
-        if (code === 200 && data.responses?.length > 0) {
-            setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
-            setgoonLoad(true);
-            setPageNo(data.pageNo);
-            setTotalCount(data.totalCount);
-            setRequestState(2);
-        } else {
-            setgoonLoad(false);
-            setRequestState(3);
-            setTotalCount(data.totalCount);
-            if (_pageNo === 1) {
-                setList([]);
-            }
-        }
-    }, 1000)
-
     const handleScrollToLower = debounce((type) => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
-        if (type === 1 && goonLoad) {
-            getList(pageNo + 1);
-        } else if (type === 2 && goonLoad2) {
-            getSupplierList(pageNo2 + 1);
+        if (type === 1) {
+            roster.loadMore();
+        } else if (type === 2) {
+            supplierPager.loadMore();
         }
     }, 500);
 
     const handleScrollToUpper = debounce((type) => {  // 滑动到最顶部,触发下拉刷新
         console.log('下拉刷新');
         if (type === 1) {
-            setIsRefresh(true);
-            getList(1);
+            roster.refresh();
         } else if (type === 2) {
-            setIsRefresh2(true);
-            getSupplierList(1);
+            supplierPager.refresh();
         }
     }, 200);
 
@@ -267,10 +213,10 @@ const Index = observer(({ store }) => {
         if (chooseAll) {
             setChooseList([])
         } else {
-            setChooseList(list.map(item => item.uuid))
+            setChooseList(roster.list.map(item => item.uuid))
         }
         setChooseAll(!chooseAll);
-        setList(list => {
+        roster.setList(list => {
             let _list = list.map(item => {
                 item.isChoosed = !chooseAll
                 return item
@@ -288,7 +234,7 @@ const Index = observer(({ store }) => {
 
     const chooseItemFunc = (obj, index) => {
         if (batchOperations) {
-            setList(list => {
+            roster.setList(list => {
                 let _list = list.map((item, i) => {
                     if (i === index) {
                         item.isChoosed = !item.isChoosed
@@ -343,7 +289,7 @@ const Index = observer(({ store }) => {
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
                 // setClientInfos({ ...clientInfos, seekState: e });
-                getList(1);
+                roster.reload();
             } else {
                 Taro.showToast({ title: res.msg, icon: 'none' })
             }
@@ -377,7 +323,7 @@ const Index = observer(({ store }) => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
-                getList(1);
+                roster.reload();
                 setChooseList([]);
                 setChooseAll(false);
             } else {
@@ -387,7 +333,7 @@ const Index = observer(({ store }) => {
     }
 
     const exportAllFunc = async () => {
-        if (list.length === 0) {
+        if (roster.list.length === 0) {
             return Taro.showToast({ title: '暂无数据', icon: 'none' });
         }
 
@@ -446,7 +392,7 @@ const Index = observer(({ store }) => {
 
 
     const setPatternFunc = () => {
-        if (list.length === 0) {
+        if (roster.list.length === 0) {
             return Taro.showToast({ title: '暂无数据', icon: 'none' });
         }
         if (chooseList.length === 0) {
@@ -473,7 +419,7 @@ const Index = observer(({ store }) => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
-                getList(1);
+                roster.reload();
                 setChooseList([]);
                 setChooseAll(false);
                 setShowPatternModel(false);
@@ -493,7 +439,7 @@ const Index = observer(({ store }) => {
     }
 
     const chooseSupplierFunc = async (obj, index) => {    // 设置供应商
-        setSupplierList(supplierList => {
+        supplierPager.setList(supplierList => {
             supplierList.forEach(i => {
                 i.selected = false
             })
@@ -521,7 +467,7 @@ const Index = observer(({ store }) => {
             Taro.showToast({ title: '更新成功', icon: 'none' })
             setChooseList([]);
             setChooseAll(false);
-            getList(1);
+            roster.reload();
             setTimeout(() => {
                 setShowSupplierModel(false);
             }, 500);
@@ -530,15 +476,13 @@ const Index = observer(({ store }) => {
         }
     }
 
-    const searchFunc = throttle((type) => {
+    const searchFunc = (type) => {      // 提交搜索：关键字状态变化会驱动对应 Hook 重置到第 1 页
         if (type === 1) {
-            getList(1);
-            setgoonLoad(true);
+            setSearchInfo(searchValue);
         } else if (type === 2) {
-            setGoonLoad2(true);
-            getSupplierList(1);
+            setSupplierSearchInfo(supplierValue);
         }
-    }, 300);
+    };
 
     return (
         <View className='container'>
@@ -593,7 +537,7 @@ const Index = observer(({ store }) => {
                 </ScrollView>
 
                 <View className='search_total'>
-                    <View className='search_total_left'>共计 <Text>{totalCount}</Text> 人</View>
+                    <View className='search_total_left'>共计 <Text>{roster.totalCount}</Text> 人</View>
                     <View className='search_total_right_wrap'>
 
                         {
@@ -635,13 +579,13 @@ const Index = observer(({ store }) => {
                 showScrollbar={false}
                 enablePassive
                 refresherEnabled
-                refresherTriggered={isRefresh}
+                refresherTriggered={roster.isRefresh}
                 onScrollToLower={() => handleScrollToLower(1)}
                 onRefresherRefresh={() => handleScrollToUpper(1)}
                 lowerThreshold={300}
             >
                 {
-                    list.length > 0 && list.map((item, index) => {
+                    roster.list.length > 0 && roster.list.map((item, index) => {
                         return (
                             <View onClick={() => chooseItemFunc(item, index)} className='roster_item' key={index} style={`padding:${batchOperations ? '30rpx 28rpx 30rpx 126rpx' : '30rpx 40rpx 30rpx 68rpx'}`}>
                                 <View className='roster_item_title'>
@@ -692,12 +636,12 @@ const Index = observer(({ store }) => {
                     })
                 }
                 {
-                    list.length >= 6 &&
-                    <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
+                    roster.list.length >= 6 &&
+                    <Taro.LoadMore goonLoad={roster.goonLoad}></Taro.LoadMore>
                 }
 
                 {
-                    list.length === 0 && requestState === 3 &&
+                    roster.isEmpty &&
                     <Taro.NoData></Taro.NoData>
                 }
             </ScrollView>
@@ -784,12 +728,12 @@ const Index = observer(({ store }) => {
                                     showScrollbar={false}
                                     enablePassive
                                     refresherEnabled
-                                    refresherTriggered={isRefresh2}
+                                    refresherTriggered={supplierPager.isRefresh}
                                     onScrollToLower={() => handleScrollToLower(2)}
                                     onRefresherRefresh={() => handleScrollToUpper(2)}
                                     lowerThreshold={300}>
                                     {
-                                        supplierList.length > 0 && supplierList.map((item, index) => {
+                                        supplierPager.list.length > 0 && supplierPager.list.map((item, index) => {
                                             return (
                                                 <View onClick={() => chooseSupplierFunc(item, index)} className={`sup_item ${item.selected ? 'sup_item_active' : ''}`} key={index}>
                                                     {item.name}
@@ -798,11 +742,11 @@ const Index = observer(({ store }) => {
                                         })
                                     }
                                     {
-                                        supplierList.length >= 7 &&
-                                        <Taro.LoadMore goonLoad={goonLoad2}></Taro.LoadMore>
+                                        supplierPager.list.length >= 7 &&
+                                        <Taro.LoadMore goonLoad={supplierPager.goonLoad}></Taro.LoadMore>
                                     }
                                     {
-                                        supplierList.length === 0 && requestState2 === 3 &&
+                                        supplierPager.isEmpty &&
                                         <Taro.NoData></Taro.NoData>
                                     }
                                 </ScrollView>

@@ -10,7 +10,7 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro';
 import { View, Image, Button, ScrollView, Text, Block, RootPortal, Input, Textarea } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, throttleCustom, throttle, debounce, getStatus, getColor } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -18,6 +18,7 @@ import "taro-ui/dist/style/components/float-layout.scss";
 import TabBar from '@/components/tabBar';
 import CustomDate from '@/components/customDate';
 import NewUpdateStatus from '@/components/newUpdateStatus';
+import { usePagination } from '@/hooks/usePagination';
 
 import { contractsgetRoster, mySupplierList, updateInterviewer, batchUpdateInterviewer, downloadRoster, batchUpdateSupplier, getContractsCoopModels } from '@/util/api'
 import './index.scss'
@@ -34,17 +35,9 @@ const Index = observer(({ store }) => {
 
     // 定义一些状态变量
     const [searchValue, setSearchValue] = useState('');
+    const [searchInfo, setSearchInfo] = useState('');   // 已提交的搜索关键字（参与请求）
     const [searchHeight, setSearchHeight] = useState(175);
     const [bottomHeight, setBottomHeight] = useState(90);
-
-    const [isRefresh, setIsRefresh] = useState(false);
-    const [goonLoad, setgoonLoad] = useState(true);
-    const [requestState, setRequestState] = useState(0);                // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
-    const [totalCount, setTotalCount] = useState(0);
-    const [pageNo, setPageNo] = useState(1);
-    const pageSize = 10
-
-    const [list, setList] = useState([]);
 
     const [tabList, setTabList] = useState([
         { state: '', name: '全部' },
@@ -83,43 +76,100 @@ const Index = observer(({ store }) => {
 
     const [showSupplierModel, setShowSupplierModel] = useState(false);
     const [showPatternModel, setShowPatternModel] = useState(false);
-    const [supplierList, setSupplierList] = useState([]);
-    const [isRefresh2, setIsRefresh2] = useState(false);
-    const [goonLoad2, setGoonLoad2] = useState(true);
-    const [pageNo2, setPageNo2] = useState(1)
-    const pageSize2 = 20;
-    const [requestState2, setRequestState2] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
     const [supplierValue, setSupplierValue] = useState('');
+    const [supplierSearchInfo, setSupplierSearchInfo] = useState('');   // 已提交的供应商搜索关键字
 
     const [modelValue, setModelValue] = useState('');
-    const [isRefresh3, setIsRefresh3] = useState(false);
-    const [goonLoad3, setGoonLoad3] = useState(true);
-    const [pageNo3, setPageNo3] = useState(1)
-    const [requestState3, setRequestState3] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
-    const [modelList, setModelList] = useState([
-        // { content: "模式1", selected: false, isEdit: false }, { content: "模式2", selected: false, isEdit: false },
-        // { content: "模式3", selected: false, isEdit: false }
-    ]);
+    const [modelSearchInfo, setModelSearchInfo] = useState('');         // 已提交的合作模式搜索关键字
     const [showCoopsModel, setShowCoopModel] = useState(false);        // 是否显示选择合作模式的弹窗
     const [chooseCoopsContent, setChooseCoopsContent] = useState('');  // 选择的合作模式
 
     const [chooseObjList, setChooseObjList] = useState([]);              // 选中的列表
     const [showCoopCopy, setShowCoopCopy] = useState(false);            // 是否显示一键粘贴
-    // 页面加载时获取名单列表
-    useDidShow(() => {
-        getList(1);
+
+    // 岗位筛选码：与原实现一致，仅选中「全部岗位」时置空数组
+    let _recruitSerialCodes = channelListFilterJob.map(item => item.recruitSerialCode);
+    if (_recruitSerialCodes.length === 1 && _recruitSerialCodes[0] === '') {
+        _recruitSerialCodes = [];
+    }
+    // 供应商筛选码：同上
+    let _channelCodes = channelListSupplier.map(item => item.channelCode);
+    if (_channelCodes.length === 1 && _channelCodes[0] === '') {
+        _channelCodes = [];
+    }
+
+    // 名单列表分页（统一状态机）
+    const roster = usePagination(contractsgetRoster, {
+        params: {
+            seekState: tabList[currentTab].state,
+            searchInfo,
+            recruitSerialCodes: _recruitSerialCodes,
+            channelCodes: _channelCodes,
+            source: '',
+            dateRange: dateObj.dateRange,
+            startDate: dateObj.startDate,
+            endDate: dateObj.endDate
+        },
+        pageSize: 10,
+        loadingText: '加载中...',
+        onSuccess: (data, ctx) => setCustomRequestParams({ ...ctx.params }),
+        onEmpty: (data, ctx) => setCustomRequestParams({ ...ctx.params }),
+        transform: (rows, ctx) => {     // 批量操作期间保留勾选态（meta.skipReselect 时跳过）
+            if (batchOperations && chooseObjList.length > 0 && !ctx.meta?.skipReselect) {
+                const _uuids = chooseObjList.map(item => item.uuid);
+                for (let i = 0; i < rows.length; i++) {
+                    if (_uuids.includes(rows[i].uuid)) {
+                        rows[i].isChoosed = true;
+                    }
+                }
+            }
+            return rows
+        }
     })
 
-    // 监听channelListFilterJob的变化，如果变化则获取合作模式
-    useEffect(() => {
-        if (channelListFilterJob.length > 0 && channelListFilterJob[0].recruitSerialCode != '') {
-            getCoopModels(1);
+    // 供应商列表分页（统一状态机）
+    const supplierPager = usePagination(mySupplierList, {
+        params: {
+            companySerialCode: companyInfo.companySerialCode,
+            supplierSerialCode: '',
+            searchInfo: supplierSearchInfo
+        },
+        pageSize: 20,
+        loadingText: '加载中',
+        loadingMask: true,
+        transform: (rows) => {          // 与旧实现一致：提交前重置选中态
+            rows.forEach(item => { item.selected = false })
+            return rows
         }
-    }, [channelListFilterJob])
+    })
+
+    // 合作模式列表分页（统一状态机）：仅在已选择具体岗位时才请求，故用 enabled 控制
+    const modelPager = usePagination(getContractsCoopModels, {
+        params: {
+            contractsSerialCodes: channelListFilterJob.map(item => item.serialCode),
+            searchInfo: modelSearchInfo
+        },
+        pageSize: 10,
+        enabled: channelListFilterJob.length > 0 && channelListFilterJob[0].recruitSerialCode != '',
+        transform: (rows) => rows.map(item => ({
+            content: item,
+            selected: false,
+            isEdit: false
+        })),
+        onSuccess: () => setShowCoopCopy(false),
+        onEmpty: () => {
+            setChooseCoopsContent('');
+            setShowCoopCopy(true);
+        }
+    })
+
+    // 页面加载时获取名单列表
+    useDidShow(() => {
+        roster.reload();
+    })
 
     // 页面加载时获取供应商列表，并在组件卸载时重置channelListFilterJob和channelListSupplier
     useEffect(() => {
-        getSupplierList(1);
         return () => {
             setchannelListFilterJob([
                 {
@@ -137,11 +187,6 @@ const Index = observer(({ store }) => {
             ])
         }
     }, [])
-
-    // 监听currentTab、dateObj、channelListFilterJob的变化，如果变化则获取名单列表
-    useEffect(() => {
-        getList(1);
-    }, [currentTab, dateObj, channelListFilterJob])
 
     // 监听batchOperations的变化，如果变化则获取searchHeight和bottomHeight
     useEffect(() => {
@@ -180,141 +225,15 @@ const Index = observer(({ store }) => {
         setDateObj(e);
     }
 
-    // 根据serialCode获取合作模式
-    const getCoopModels = async (_pageNo) => {   // 根据serialCode获取合作模式
-        let params = {
-            pageNo: _pageNo,
-            pageSize: 10,
-            contractsSerialCodes: channelListFilterJob.map(item => item.serialCode),
-            searchInfo: modelValue,
-        }
-        setRequestState3(1);
-        const { code, data } = await getContractsCoopModels(params);
-        console.log("getContractsCoopModels--code, data", code, data);
-        setIsRefresh3(false);
-        if (code === 200 && data?.responses?.length > 0) {
-            let _list = data.responses.map(item => {
-                let obj = {
-                    content: item,
-                    selected: false,
-                    isEdit: false
-                }
-                return obj;
-            })
-            setModelList(_pageNo === 1 ? _list : [...modelList, ..._list]);
-            setGoonLoad3(true);
-            setPageNo3(data.pageNo);
-            setRequestState3(2);
-            setShowCoopCopy(false);
-        } else {
-            setGoonLoad3(false);
-            setRequestState3(3);
-            if (_pageNo === 1) {
-                setModelList([]);
-                setChooseCoopsContent('');
-                setShowCoopCopy(true);
-            }
-        }
-    }
-
-    // 获取供应商列表
-    const getSupplierList = async (_pageNo) => {
-        let params = {
-            pageNo: _pageNo,
-            pageSize: pageSize2,
-            companySerialCode: companyInfo.companySerialCode,
-            supplierSerialCode: '',
-            searchInfo: supplierValue,
-        }
-        setRequestState2(1);
-        Taro.showLoading({ title: '加载中', mask: true });
-        const { code, data } = await mySupplierList(params);
-        Taro.hideLoading();
-        console.log("code, data", code, data);
-        setIsRefresh2(false);
-        if (code === 200 && data?.responses?.length > 0) {
-            data.responses.forEach(item => {
-                item.selected = false;
-            })
-            setSupplierList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
-            setGoonLoad2(true);
-            setPageNo2(data.pageNo);
-            setRequestState2(2);
-        } else {
-            setGoonLoad2(false);
-            setRequestState2(3);
-            if (_pageNo === 1) {
-                setSupplierList([]);
-            }
-        }
-    }
-
-    // 获取名单列表
-    const getList = throttleCustom(async (_pageNo, type) => {    // 获取名单列表
-        setRequestState(1);
-        Taro.showLoading({ title: '加载中...' });
-        let _recruitSerialCodes = channelListFilterJob.map(item => item.recruitSerialCode);
-        if (_recruitSerialCodes.length === 1 && _recruitSerialCodes[0] === '') {
-            _recruitSerialCodes = [];
-        }
-
-        let _channelCodes = channelListSupplier.map(item => item.channelCode);
-        if (_channelCodes.length === 1 && _channelCodes[0] === '') {
-            _channelCodes = [];
-        }
-        let params = {
-            pageNo: _pageNo,
-            pageSize,
-            seekState: tabList[currentTab].state,
-            searchInfo: searchValue,
-            // recruitSerialCode: channelListFilterJob.recruitSerialCode,
-            recruitSerialCodes: _recruitSerialCodes,
-            channelCodes: _channelCodes,
-            // agentSerialCode: onSiteFilterSUPPLIER.channelCode,
-            source: '',
-            dateRange: dateObj.dateRange,
-            startDate: dateObj.startDate,
-            endDate: dateObj.endDate,
-        }
-        console.log("params", params);
-        const { code, data } = await contractsgetRoster(params);
-        console.log("获取名单列表", code, data);
-        setCustomRequestParams({ ...params });
-        Taro.hideLoading();
-        setIsRefresh(false);
-        if (code === 200 && data.responses?.length > 0) {
-            if (batchOperations && chooseObjList.length > 0 && !type) {
-                let _uuids = chooseObjList.map(item => item.uuid);
-                for (let i = 0; i < data.responses.length; i++) {
-                    if (_uuids.includes(data.responses[i].uuid)) {
-                        data.responses[i].isChoosed = true;
-                    }
-                }
-            }
-            setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
-            setgoonLoad(true);
-            setPageNo(data.pageNo);
-            setTotalCount(data.totalCount);
-            setRequestState(2);
-        } else {
-            setgoonLoad(false);
-            setRequestState(3);
-            setTotalCount(data.totalCount);
-            if (_pageNo === 1) {
-                setList([]);
-            }
-        }
-    }, 1000);
-
     // 滑动到底部时加载下一页的数据
     const handleScrollToLower = debounce((type) => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
-        if (type == 1 && goonLoad) {
-            getList(pageNo + 1);
-        } else if (type == 2 && goonLoad2) {
-            getSupplierList(pageNo2 + 1);
-        } else if (type == 3 && goonLoad3) {
-            getCoopModels(pageNo3 + 1)
+        if (type == 1) {
+            roster.loadMore();
+        } else if (type == 2) {
+            supplierPager.loadMore();
+        } else if (type == 3) {
+            modelPager.loadMore();
         }
     }, 500);
 
@@ -322,14 +241,11 @@ const Index = observer(({ store }) => {
     const handleScrollToUpper = debounce((type) => {  // 滑动到最顶部,触发下拉刷新
         console.log('下拉刷新');
         if (type == 1) {
-            setIsRefresh(true);
-            getList(1);
+            roster.refresh();
         } else if (type == 2) {
-            setIsRefresh2(true);
-            getSupplierList(1);
+            supplierPager.refresh();
         } else if (type == 3) {
-            setIsRefresh3(true);
-            getCoopModels(1);
+            modelPager.refresh();
         }
     }, 200);
 
@@ -372,22 +288,22 @@ const Index = observer(({ store }) => {
             setChooseList([]);
             setChooseObjList(chooseObjList => {
                 let _list = JSON.parse(JSON.stringify(chooseObjList));
-                const arr2Ids = new Set(list.map(item => item.uuid));
+                const arr2Ids = new Set(roster.list.map(item => item.uuid));
                 const arr3 = _list.filter(item => !arr2Ids.has(item.uuid));
                 return arr3
             });
         } else {
-            setChooseList(list.map(item => item.uuid));
+            setChooseList(roster.list.map(item => item.uuid));
             setChooseObjList(chooseObjList => {
                 let _list = JSON.parse(JSON.stringify(chooseObjList));
                 const arr3 = Array.from(
-                    [..._list, ...list].reduce((map, obj) => map.set(obj.uuid, obj), new Map()).values()
+                    [..._list, ...roster.list].reduce((map, obj) => map.set(obj.uuid, obj), new Map()).values()
                 );
                 return arr3;
             });
         }
         setChooseAll(!chooseAll);
-        setList(list => {
+        roster.setList(list => {
             let _list = list.map(item => {
                 item.isChoosed = !chooseAll
                 return item
@@ -408,7 +324,7 @@ const Index = observer(({ store }) => {
     // 选择名单
     const chooseItemFunc = (obj, index) => {
         if (batchOperations) {
-            // setList(list => {
+            // roster.setList(list => {
             //     let _list = list.map((item, i) => {
             //         if (i === index) {
             //             item.isChoosed = !item.isChoosed
@@ -427,7 +343,7 @@ const Index = observer(({ store }) => {
                     return [...chooseObjList, obj];
                 })
             }
-            setList(list => {
+            roster.setList(list => {
                 let _list = list.map((item, i) => {
                     if (i === index) {
                         item.isChoosed = !item.isChoosed
@@ -439,7 +355,7 @@ const Index = observer(({ store }) => {
             })
         } else {
             Taro.navigateTo({
-                url: `/pages/talentsPackage/clientDetail/index?uid=${obj.uuid}&myClientCount=${totalCount}&index=${index * 1 + 1}&type=1`
+                url: `/pages/talentsPackage/clientDetail/index?uid=${obj.uuid}&myClientCount=${roster.totalCount}&index=${index * 1 + 1}&type=1`
             })
         }
     }
@@ -451,7 +367,7 @@ const Index = observer(({ store }) => {
         setChooseList([]);
         setChooseObjList([]);
         setChooseAll(false);
-        setList(list => {
+        roster.setList(list => {
             let _list = list.map(item => {
                 item.isChoosed = false;
                 return item;
@@ -483,7 +399,7 @@ const Index = observer(({ store }) => {
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
                 // getList(1, 1);
-                setList(list => {
+                roster.setList(list => {
                     let _list = list.map(item => {
                         if (item.uuid === editCustom.uuid) {
                             item.seekState = state;
@@ -532,7 +448,7 @@ const Index = observer(({ store }) => {
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
                 // getList(1, 1);
-                setList(list => {
+                roster.setList(list => {
                     let _list = list.map(item => {
                         if (chooseObjList.some(obj => obj.uuid === item.uuid)) {
                             item.seekState = state;
@@ -570,7 +486,7 @@ const Index = observer(({ store }) => {
 
     // 导出全部名单
     const exportAllFunc = async () => {
-        if (list.length === 0) {
+        if (roster.list.length === 0) {
             return Taro.showToast({ title: '暂无数据', icon: 'none' });
         }
         Taro.showLoading({ title: '导出中...' });
@@ -645,7 +561,7 @@ const Index = observer(({ store }) => {
     }
 
     const chooseSupplierFunc = async (obj, index) => {    // 设置供应商
-        setSupplierList(supplierList => {
+        supplierPager.setList(supplierList => {
             supplierList.forEach(i => {
                 i.selected = false
             })
@@ -673,7 +589,7 @@ const Index = observer(({ store }) => {
             Taro.showToast({ title: '更新成功', icon: 'none' })
             setChooseList([]);
             setChooseAll(false);
-            getList(1, 1);
+            roster.reload({ skipReselect: true });
             setChooseObjList([]);
             setShowbottomOptions(false);
             setTimeout(() => {
@@ -686,7 +602,7 @@ const Index = observer(({ store }) => {
 
     const getChoosePattern = async () => {   // 批量设置合作模式
         console.log("选择的模式", chooseCoopsContent);
-        if (modelList.length === 0) {
+        if (modelPager.list.length === 0) {
             setChooseCoopsContent('');
             return Taro.showToast({ title: '暂无数据', icon: 'none' });
         }
@@ -705,7 +621,7 @@ const Index = observer(({ store }) => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
-                getList(1, 1);
+                roster.reload({ skipReselect: true });
                 setChooseList([]);
                 setChooseAll(false);
                 setShowCoopModel(false);
@@ -718,24 +634,21 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const searchFunc = throttle((type) => {
+    const searchFunc = (type) => {      // 提交搜索：关键字状态变化会驱动对应 Hook 重置到第 1 页
         if (type === 1) {
-            getList(1);
-            setgoonLoad(true);
+            setSearchInfo(searchValue);
         } else if (type === 2) {
-            setGoonLoad2(true);
-            getSupplierList(1);
+            setSupplierSearchInfo(supplierValue);
         } else if (type === 3) {
-            setGoonLoad3(true);
-            getCoopModels(1);
+            setModelSearchInfo(modelValue);
         }
-    }, 300);
+    };
 
     const clearChoosed = () => {    // 清空所有的选中数据
         setChooseObjList([]);
         setChooseList([]);
         setChooseAll(false);
-        setList(list => {
+        roster.setList(list => {
             list = list.map(item => {
                 item.isChoosed = false;
                 return item;
@@ -751,7 +664,7 @@ const Index = observer(({ store }) => {
             return chooseObjList;
         })
 
-        setList(list => {
+        roster.setList(list => {
             list = list.map(item => {
                 if (item.uuid === obj.uuid) {
                     item.isChoosed = false;
@@ -767,7 +680,7 @@ const Index = observer(({ store }) => {
             success: function (res) {
                 console.log('res')
                 // setFormListData(index, 'phone', res.data);
-                setModelList(modelList => {
+                modelPager.setList(modelList => {
                     let _modelList = JSON.parse(JSON.stringify(modelList));
                     let obj = {
                         content: res.data,
@@ -839,7 +752,7 @@ const Index = observer(({ store }) => {
                 </ScrollView>
 
                 <View className='search_total'>
-                    <View className='search_total_left'>共计 <Text>{totalCount}</Text> 人</View>
+                    <View className='search_total_left'>共计 <Text>{roster.totalCount}</Text> 人</View>
                     <View className='search_total_right_wrap'>
                         {
                             myPermissions.includes('12') &&
@@ -877,13 +790,13 @@ const Index = observer(({ store }) => {
                 showScrollbar={false}
                 enablePassive
                 refresherEnabled
-                refresherTriggered={isRefresh}
+                refresherTriggered={roster.isRefresh}
                 onScrollToLower={() => handleScrollToLower(1)}
                 onRefresherRefresh={() => handleScrollToUpper(1)}
                 lowerThreshold={300}
             >
                 {
-                    list.length > 0 && list.map((item, index) => {
+                    roster.list.length > 0 && roster.list.map((item, index) => {
                         return (
                             <View onClick={() => chooseItemFunc(item, index)} className='roster_item' key={index} style={`padding:${batchOperations ? '30rpx 28rpx 30rpx 126rpx' : '30rpx 40rpx 30rpx 68rpx'}`}>
                                 <View className='roster_item_wrap'>
@@ -943,11 +856,11 @@ const Index = observer(({ store }) => {
                     })
                 }
                 {
-                    list.length >= 5 &&
-                    <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
+                    roster.list.length >= 5 &&
+                    <Taro.LoadMore goonLoad={roster.goonLoad}></Taro.LoadMore>
                 }
                 {
-                    list.length === 0 && requestState === 3 &&
+                    roster.isEmpty &&
                     <Taro.NoData></Taro.NoData>
                 }
             </ScrollView>
@@ -1061,12 +974,12 @@ const Index = observer(({ store }) => {
                                     showScrollbar={false}
                                     enablePassive
                                     refresherEnabled
-                                    refresherTriggered={isRefresh2}
+                                    refresherTriggered={supplierPager.isRefresh}
                                     onScrollToLower={() => handleScrollToLower(2)}
                                     onRefresherRefresh={() => handleScrollToUpper(2)}
                                     lowerThreshold={300}>
                                     {
-                                        supplierList.length > 0 && supplierList.map((item, index) => {
+                                        supplierPager.list.length > 0 && supplierPager.list.map((item, index) => {
                                             return (
                                                 <View onClick={() => chooseSupplierFunc(item, index)} className={`sup_item ${item.selected ? 'sup_item_active' : ''}`} key={index}>
                                                     {item.name}
@@ -1075,11 +988,11 @@ const Index = observer(({ store }) => {
                                         })
                                     }
                                     {
-                                        supplierList.length >= 7 &&
-                                        <Taro.LoadMore goonLoad={goonLoad2}></Taro.LoadMore>
+                                        supplierPager.list.length >= 7 &&
+                                        <Taro.LoadMore goonLoad={supplierPager.goonLoad}></Taro.LoadMore>
                                     }
                                     {
-                                        supplierList.length === 0 && requestState2 === 3 &&
+                                        supplierPager.isEmpty &&
                                         <Taro.NoData></Taro.NoData>
                                     }
                                 </ScrollView>
@@ -1125,13 +1038,13 @@ const Index = observer(({ store }) => {
                                     showScrollbar={false}
                                     enablePassive
                                     refresherEnabled
-                                    refresherTriggered={isRefresh3}
+                                    refresherTriggered={modelPager.isRefresh}
                                     onScrollToLower={() => handleScrollToLower(3)}
                                     onRefresherRefresh={() => handleScrollToUpper(3)}
                                     lowerThreshold={300}>
 
                                     {
-                                        modelList.length > 0 && modelList.map((item, index) => {
+                                        modelPager.list.length > 0 && modelPager.list.map((item, index) => {
                                             return (
                                                 // <View onClick={() => chooseSupplierFunc(item, index)} className={`sup_item ${item.selected ? 'sup_item_active' : ''}`} key={index}>
                                                 //     {item}
@@ -1147,7 +1060,7 @@ const Index = observer(({ store }) => {
                                                         <View>模式{index + 1}:</View>
                                                         <View className='filter_coops_edit' onClick={(e) => {
                                                             e.stopPropagation();
-                                                            setModelList(modelList.map((item2, index2) => {
+                                                            modelPager.setList(modelPager.list.map((item2, index2) => {
                                                                 if (index === index2) {
                                                                     item2.isEdit = !item2.isEdit
                                                                 } else {
@@ -1170,7 +1083,7 @@ const Index = observer(({ store }) => {
                                                             value={item.content}
                                                             onInput={(e) => {
                                                                 // setChooseCoopsContent(e.detail.value)
-                                                                setModelList(modelList.map((item2, index2) => {
+                                                                modelPager.setList(modelPager.list.map((item2, index2) => {
                                                                     if (index === index2) {
                                                                         item2.content = e.detail.value
                                                                     }
@@ -1185,11 +1098,11 @@ const Index = observer(({ store }) => {
                                         })
                                     }
                                     {
-                                        modelList.length >= 7 &&
-                                        <Taro.LoadMore goonLoad={goonLoad3}></Taro.LoadMore>
+                                        modelPager.list.length >= 7 &&
+                                        <Taro.LoadMore goonLoad={modelPager.goonLoad}></Taro.LoadMore>
                                     }
                                     {
-                                        modelList.length === 0 && requestState3 === 3 &&
+                                        modelPager.isEmpty &&
                                         <Taro.NoData padding='150'></Taro.NoData>
                                     }
                                 </ScrollView>

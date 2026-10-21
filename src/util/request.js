@@ -1,5 +1,5 @@
 /*
- * @Author: yinzhengchao yinzhengchao@apujiyu.com
+ * @Author: 
  * @Date: 2024-01-24 18:11:08
  * @LastEditors: 孙林
  * @LastEditTime: 2025-05-16 17:44:15
@@ -12,80 +12,64 @@ import {
     API_BASE_URL
 } from './api'
 
-export default function request(url, data, method, header) {
-    let {
+export default async function request(url, data, method = 'GET', header = {}) {
+    const {
         token,
         setToken,
-        setRole,
-        setIsLogin,
+        setIsLogin
     } = userStore
-    let {
+    const role = Taro.getStorageSync('role')
+    const {
         brand
-    } = Taro.getSystemInfoSync(); //  手机厂商
-    let role = Taro.getStorageSync('role');
-    header = {
-        accessToken: token, //token,
-        channel: brand,
-        appid: 'wxf653f23600828801',
-        userRole: role,
-    }
-    return new Promise((resolve, reject) => {
-        Taro.request({
-            url: url,
-            data: data,
-            method: method,
-            header: header,
-            success: function (res) {
-                if (res.statusCode == 200) {
-                    resolve(res.data);
-                    if (res.data.code !== 200 && url.includes(API_BASE_URL)) {
-                        Taro.hideLoading()
-                        if (res.data.showMsg) {
-                            // Taro.showToast({
-                            //     title: res.data.showMsg,
-                            //     icon: 'none'
-                            // })
-                        }
-                    }
-                    if (res.data.code == 7001 || res.data.code == 7002) {
-                        console.log("==========================请求失效===========================", res);
-                        setIsLogin(0)
-                        setToken('')
-                        Taro.showToast({
-                            title: '请登录~',
-                            icon: 'none'
-                        })
-                        const pages = Taro.getCurrentPages();
-                        console.log("当前页面", pages[0].route);
-                        if (pages[0].route !== "pages/supplierProject/index") {
-                            Taro.redirectTo({
-                                url: '/pages/launch/index',
-                            })
-                        }
-                        // Taro.redirectTo({
-                        //     url: '/pages/launch/index',
-                        // })
-                        return
-                    }
-                } else {
-                    Taro.hideLoading()
-                    console.log(res.errMsg, 'code res.errMsg')
-                    reject(res.errMsg);
-                    Taro.showToast({
-                        title: "请求超时，请检查网络后重试",
-                        icon: "none"
-                    })
-                }
-            },
-            fail: function (err) {
-                Taro.hideLoading()
-                console.log(url, err, 'statusCode 打印错误日志')
-                Taro.showToast({
-                    title: "请求超时，请检查网络后重试",
-                    icon: "none"
-                })
-                resolve(err)
-            }
-        })
+    } = Taro.getSystemInfoSync()
+
+    const res = await Taro.request({
+        url,
+        data,
+        method,
+        header: {
+            accessToken: token,
+            channel: brand,
+            appid: 'wxf653f23600828801',
+            userRole: role,
+            ...header
+        },
     })
+
+    if (res.statusCode !== 200) {
+        const e = new Error(`HTTP ${res.statusCode}`);
+        e.type = 'http';
+        throw e
+    }
+    const body = res.data || {}
+    if (body.code === 7001 || body.code === 7002) {
+        setIsLogin(0);
+        setToken('')
+        Taro.showToast({
+            title: '请登录~',
+            icon: 'none'
+        })
+        const pages = Taro.getCurrentPages()
+        const route = pages[pages.length - 1]?.route // 栈顶才是当前页
+        if (route !== 'pages/supplierProject/index') {
+            Taro.redirectTo({
+                url: '/pages/launch/index'
+            })
+        }
+        const e = new Error('unauthorized');
+        e.type = 'auth';
+        throw e
+    }
+    if (body.code !== 200) {
+        if (body.showMsg) Taro.showToast({
+            title: body.showMsg,
+            icon: 'none'
+        })
+        const e = new Error(body.showMsg || '业务处理失败')
+        e.type = 'business';
+        e.code = body.code;
+        e.data = body.data
+        throw e
+    }
+    return body
 }

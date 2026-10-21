@@ -10,7 +10,7 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import { View, Image, Input, ScrollView, Text, Button, Block } from '@tarojs/components'
 import { observer, inject } from 'mobx-react';
-import { selectorQueryDomInfo, throttleCustom, throttle, debounce, getStatus, getColor } from '@/util/utils'
+import { selectorQueryDomInfo, debounce, getStatus, getColor } from '@/util/utils'
 import { AtIcon, AtFloatLayout } from 'taro-ui'
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -19,6 +19,7 @@ import CustomDate from '@/components/customDate';
 import SourcePicker from '@/components/sourcePcker';
 import NewUpdateStatus from '@/components/newUpdateStatus';
 import DatePicker from '@/components/datePicker'
+import { usePagination } from '@/hooks/usePagination'
 import './index.scss'
 
 import { contractsgetRoster, updateInterviewer, batchUpdateInterviewer, downloadRoster } from '@/util/api';
@@ -33,18 +34,11 @@ const Index = observer(({ store }) => {
     const [forceUpdateId, forceUpdate] = useReducer(() => [], []);
 
     const [searchValue, setSearchValue] = useState('');
+    const [searchInfo, setSearchInfo] = useState('');   // 已提交的搜索关键字（参与请求）
     const [searchHeight, setSearchHeight] = useState(175);
     const [bottomHeight, setBottomHeight] = useState(90);
 
-    const [isRefresh, setIsRefresh] = useState(false);
-    const [goonLoad, setgoonLoad] = useState(true);
-    const [pageNo, setPageNo] = useState(1);
-    const pageSize = 10
-    const [requestState, setRequestState] = useState(0);   // 请求状态 0 未请求 1 请求中 2 请求成功 3 请求失败
-    const [totalCount, setTotalCount] = useState(0);
     const [title, setTitle] = useState('');
-
-    const [list, setList] = useState([]);
 
     const [tabList, setTabList] = useState([
         { state: '', name: "全部" }, { name: '待处理', state: 'PENDING', },
@@ -91,6 +85,25 @@ const Index = observer(({ store }) => {
     const [showDatePicker, setShowDatePicker] = useState(false);         // 是否显示转项目的日期选择
     const [dateText, setDateText] = useState("请选择日期");
 
+    // 名单列表分页（统一状态机）：原 isRefresh/goonLoad/pageNo/pageSize/requestState/totalCount/list 由 Hook 托管
+    const roster = usePagination(contractsgetRoster, {
+        params: {
+            seekState: tabList[currentTabIndex].state,
+            searchInfo,
+            recruitSerialCode: route.params.recruitSerialCode,
+            channelCode: rosterFilterSupplier.channelCode,
+            dateRange: dateObj.dateRange,
+            startDate: dateObj.startDate,
+            endDate: dateObj.endDate,
+            channel: 1
+        },
+        deps: [sourceObj],              // 来源筛选：不参与请求参数，但变化时需重新拉取
+        pageSize: 10,
+        loadingText: '加载中...',
+        onSuccess: (data, ctx) => setCustomRequestParams({ ...ctx.params }),
+        onEmpty: (data, ctx) => setCustomRequestParams({ ...ctx.params })
+    })
+
     useEffect(() => {
         return () => {
             console.log("触发 名单页面卸载")
@@ -124,13 +137,9 @@ const Index = observer(({ store }) => {
                 edit: false
             })
         } else {
-            getList(1);
+            roster.reload();
         }
     })
-
-    useEffect(() => {
-        getList(1);
-    }, [currentTabIndex, sourceObj, rosterFilterSupplier, dateObj])
 
     useEffect(() => {
         setTimeout(async () => {
@@ -154,54 +163,14 @@ const Index = observer(({ store }) => {
         }
     }, [chooseList])
 
-    const getList = throttleCustom(async (_pageNo) => {    // 获取名单列表
-        const { recruitSerialCode } = route.params;
-        setRequestState(1);
-        Taro.showLoading({ title: '加载中...' });
-        let params = {
-            pageNo: _pageNo,
-            pageSize,
-            seekState: tabList[currentTabIndex].state,
-            searchInfo: searchValue,
-            recruitSerialCode,
-            channelCode: rosterFilterSupplier.channelCode,
-            dateRange: dateObj.dateRange,
-            startDate: dateObj.startDate,
-            endDate: dateObj.endDate,
-            channel: 1
-        }
-        const { code, data } = await contractsgetRoster(params);
-        console.log("获取名单列表", code, data);
-        setCustomRequestParams({ ...params });
-        Taro.hideLoading();
-        setIsRefresh(false);
-        if (code === 200 && data.responses?.length > 0) {
-            setList(_pageNo === 1 ? data.responses : [...list, ...data.responses]);
-            setgoonLoad(true);
-            setPageNo(data.pageNo);
-            setTotalCount(data.totalCount);
-            setRequestState(2);
-        } else {
-            setgoonLoad(false);
-            setRequestState(3);
-            setTotalCount(data.totalCount);
-            if (_pageNo === 1) {
-                setList([]);
-            }
-        }
-    }, 1000)
-
     const handleScrollToLower = debounce(() => {   // 在这里处理滑动到最底部的逻辑 ,判断是否加载下一页的数据
         console.log('滑动到了最底部');
-        if (goonLoad) {
-            getList(pageNo + 1);
-        }
+        roster.loadMore();
     }, 500);
 
     const handleScrollToUpper = debounce(() => {  // 滑动到最顶部,触发下拉刷新
         console.log('下拉刷新');
-        setIsRefresh(true);
-        getList(1);
+        roster.refresh();
     }, 200);
 
     const getHeight = () => {
@@ -244,10 +213,10 @@ const Index = observer(({ store }) => {
         if (chooseAll) {
             setChooseList([])
         } else {
-            setChooseList(list.map(item => item.uuid))
+            setChooseList(roster.list.map(item => item.uuid))
         }
         setChooseAll(!chooseAll);
-        setList(list => {
+        roster.setList(list => {
             let _list = list.map(item => {
                 item.isChoosed = !chooseAll
                 return item
@@ -265,7 +234,7 @@ const Index = observer(({ store }) => {
 
     const chooseItemFunc = (obj, index) => {
         if (batchOperations) {
-            setList(list => {
+            roster.setList(list => {
                 let _list = list.map((item, i) => {
                     if (i === index) {
                         item.isChoosed = !item.isChoosed
@@ -321,7 +290,7 @@ const Index = observer(({ store }) => {
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
                 // setClientInfos({ ...clientInfos, seekState: e });
-                setList(list.map(item => {
+                roster.setList(roster.list.map(item => {
                     if (item.uuid === editCustom.uuid) {
                         item.seekState = e;
                     }
@@ -362,7 +331,7 @@ const Index = observer(({ store }) => {
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
                 // getList(1);
-                setList(list.map(item => {
+                roster.setList(roster.list.map(item => {
                     if (chooseList.includes(item.uuid)) {
                         item.seekState = e;
                         item.isChoosed = false;
@@ -384,7 +353,7 @@ const Index = observer(({ store }) => {
     }
 
     const exportAllFunc = async () => {
-        if (list.length === 0) {
+        if (roster.list.length === 0) {
             return Taro.showToast({ title: '暂无数据', icon: 'none' });
         }
 
@@ -495,7 +464,7 @@ const Index = observer(({ store }) => {
             Taro.hideLoading();
             if (res.code === 200) {
                 Taro.showToast({ title: '更新成功', icon: 'none' })
-                getList(1);
+                roster.reload();
                 setChooseList([]);
                 setChooseAll(false);
                 setShowbottomOptions(false);
@@ -506,11 +475,10 @@ const Index = observer(({ store }) => {
         })
     }
 
-    const searchFunc = throttle(() => {
+    const searchFunc = () => {          // 提交搜索：searchInfo 变化会驱动 Hook 重置到第 1 页
         setChooseList([]);
-        getList(1);
-        setgoonLoad(true);
-    }, 300);
+        setSearchInfo(searchValue);
+    };
 
     return (
         <View className='container'>
@@ -579,7 +547,7 @@ const Index = observer(({ store }) => {
                 </ScrollView>
 
                 <View className='search_total'>
-                    <View className='search_total_left'>共计 <Text>{totalCount}</Text> 人</View>
+                    <View className='search_total_left'>共计 <Text>{roster.totalCount}</Text> 人</View>
                     <View className='search_total_right_wrap'>
 
                         {
@@ -625,13 +593,13 @@ const Index = observer(({ store }) => {
                 showScrollbar={false}
                 enablePassive
                 refresherEnabled
-                refresherTriggered={isRefresh}
+                refresherTriggered={roster.isRefresh}
                 onScrollToLower={handleScrollToLower}
                 onRefresherRefresh={handleScrollToUpper}
                 lowerThreshold={300}
             >
                 {
-                    list.length > 0 && list.map((item, index) => {
+                    roster.list.length > 0 && roster.list.map((item, index) => {
                         return (
                             <View onClick={() => chooseItemFunc(item, index)} className='roster_item' key={index} style={`padding:${batchOperations ? '30rpx 28rpx 30rpx 126rpx' : '30rpx 40rpx 30rpx 68rpx'}`}>
                                 <View className='roster_item_title'>
@@ -685,12 +653,12 @@ const Index = observer(({ store }) => {
                     })
                 }
                 {
-                    list.length >= 6 &&
-                    <Taro.LoadMore goonLoad={goonLoad}></Taro.LoadMore>
+                    roster.list.length >= 6 &&
+                    <Taro.LoadMore goonLoad={roster.goonLoad}></Taro.LoadMore>
                 }
 
                 {
-                    list.length === 0 && requestState === 3 &&
+                    roster.isEmpty &&
                     <Taro.NoData></Taro.NoData>
                 }
             </ScrollView>

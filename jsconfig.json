@@ -8,7 +8,7 @@
     "target": "ES6",
     "module": "commonjs",
     "allowSyntheticDefaultImports": true,
-    "checkJs": true
+    "checkJs": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "build"]

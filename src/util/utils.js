@@ -84,6 +84,7 @@ export const isOneDayOrMore = function (timestamp1, timestamp2) {
     const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
     return daysDiff >= 1;
 };
+
 export const throttle = function (fn, delay) {
     let canRun = true;
 
@@ -179,6 +180,7 @@ export const getTimeMH = function (time) {
         return `${year}-${padding(month, 2)}-${padding(day, 2)} ${padding(hours, 2)}:${padding(minutes, 2)}`;
     }
 }
+
 export const validateIDCard = function (idCard) {
     // 正则表达式匹配规则
     var pattern = /^\d{17}(\d|X|x)$/;
